@@ -4,6 +4,7 @@
  */
 package com.xlend.dbutil;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,15 +19,9 @@ import java.util.Properties;
 public class DbConnection {
 
     private static boolean isFirstTime = true;
-    private static Connection connection = null;
+//    private static Connection connection = null;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = new String[]{
-        "create table clientgroup"
-        + "("
-        + "    clientgroup_id int not null identity,"
-        + "    groupname      varchar(80) not null,"
-        + "    constraint clientgroup_pk primary key (clientgroup_id)"
-        + ");",
         "create table profile "
         + "("
         + "    profile_id   int not null identity,"
@@ -55,24 +50,6 @@ public class DbConnection {
         + "    constraint userprofile_pk primary key (profile_id),"
         + "    constraint userprofile_profile_fk foreign key (profile_id) references profile on delete cascade"
         + ");",
-        "create table clientprofile"
-        + "("
-        + "    profile_id        int not null,"
-        + "    clientgroup_id    int not null,"
-        + "    salesperson_id    int,"
-        + "    birthday          date,"
-        + "    spouse_first_name varchar(32), "
-        + "    spouse_last_name  varchar(32), "
-        + "    spouse_birthday   date,"
-        + "    spouse_email      varchar(80),"
-        + "    source_type       varchar(10),"
-        + "    source_descr      varchar(255),"
-        + "    sales_potential   integer,"
-        + "    constraint clientprofile_pk primary key (profile_id),"
-        + "    constraint clientprofile_clientgroup_fk foreign key (clientgroup_id) references clientgroup,"
-        + "    constraint clientprofile_profile_spers_fk foreign key (salesperson_id) references profile,"
-        + "    constraint clientprofile_profile_fk foreign key (profile_id) references profile on delete cascade"
-        + ");",
         "create  view v_userprofile as "
         + "select p.profile_id,"
         + "       p.first_name,"
@@ -92,74 +69,50 @@ public class DbConnection {
         + "       u.manager    "
         + "  from profile p, userprofile u"
         + " where u.profile_id = p.profile_id;",
-        "create  view v_clientprofile as "
-        + "select p.profile_id,"
-        + "       p.first_name,"
-        + "       p.last_name,"
-        + "       c.birthday,"
-        + "       c.spouse_first_name,"
-        + "       c.spouse_last_name,"
-        + "       c.spouse_birthday,"
-        + "       p.address1,"
-        + "       p.address2,"
-        + "       p.city,"
-        + "       p.state,"
-        + "       p.zip_code,"
-        + "       p.phone as home_phone,"
-        + "       p.cell_phone,"
-        + "       p.email,"
-        + "       c.spouse_email,"
-        + "       c.source_type,"
-        + "       c.source_descr,"
-        + "       c.sales_potential,"
-        + "       g.groupname as clientlist"
-        + "  from profile p, clientprofile c, clientgroup g"
-        + " where c.profile_id = p.profile_id"
-        + "   and g.clientgroup_id = c.clientgroup_id;",
-        "insert into clientgroup (clientgroup_id,groupname) values(1,'Main Group');",
-        "insert into profile(profile_id,first_name,last_name,address1) values(1,'Admin','Adminson','not known');",
+        "insert into profile(first_name,last_name,address1) values('Admin','Adminson','not known');",
         "insert into userprofile(profile_id,salesperson,manager,login,pwdmd5) select profile_id,0,1,'admin','admin' from profile where first_name='Admin';",
-        "insert into profile(profile_id,first_name,last_name,address1) values(2,'Salesman','Sale','not known');",
+        "insert into profile(first_name,last_name,address1) values('Salesman','Sale','not known');",
         "insert into userprofile(profile_id,salesperson,manager,login,pwdmd5) select profile_id,1,0,'sale','sale' from profile where first_name='Salesman';"
+    };
+    private static String[] fixLocalDBsqls = new String[]{ //TODO: put here database fixes
     };
 
     public static Connection getConnection() {
-        if (null == connection) {
-            try {
-                Locale.setDefault(Locale.ENGLISH);
-                DriverManager.registerDriver(
-                        (java.sql.Driver) Class.forName(
-                        props.getProperty("dbDriverName",
-                        "org.hsqldb.jdbcDriver")).newInstance());
-//                        "org.postgresql.Driver")).newInstance());
-//                        "oracle.jdbc.driver.OracleDriver")).newInstance());
-                connection = DriverManager.getConnection(
-                        props.getProperty("dbConnection",
-                        "jdbc:hsqldb:file://C:/Program Files/CMCServer/DB/LacusServer"),
-//                        "jdbc:postgresql://localhost:5432/postgres"),
-//                        "jdbc:oracle:thin:@localhost:1521:XE"),
-//                        props.getProperty("dbUser", "lacus"),
-//                        props.getProperty("dbPassword", "lacus"));
-                        props.getProperty("dbUser", "sa"),
-                        props.getProperty("dbPassword", ""));
-                connection.setAutoCommit(true);
-            } catch (Exception e) {
-                DbUtil.log(e);
-            }
-            if (isFirstTime && props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
-                initLocalDB(connection);
-//                fixLocalDB(connection);
-                isFirstTime = false;
-            }
+//        if (null == connection) {
+        Connection connection = null;
+        try {
+            Locale.setDefault(Locale.ENGLISH);
+            DriverManager.registerDriver(
+                    (java.sql.Driver) Class.forName(
+                    props.getProperty("dbDriverName",
+                    "org.hsqldb.jdbcDriver")).newInstance());
+            connection = DriverManager.getConnection(
+                    props.getProperty("dbConnection",
+                    "jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
+                    props.getProperty("dbUser", "sa"),
+                    props.getProperty("dbPassword", ""));
+            connection.setAutoCommit(true);
+        } catch (Exception e) {
+            DbUtil.log(e);
         }
+        if (isFirstTime && props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
+            initLocalDB(connection);
+            fixLocalDB(connection);
+            isFirstTime = false;
+        }
+//        }
         return connection;
     }
 
     public static void initLocalDB(Connection connection) {
-        sqlBatch(createLocalDBsqls);
+        sqlBatch(createLocalDBsqls, connection);
     }
 
-    private static void sqlBatch(String[] sqls) {
+    public static void fixLocalDB(Connection connection) {
+        sqlBatch(fixLocalDBsqls, connection);
+    }
+
+    private static void sqlBatch(String[] sqls, Connection connection) {
         PreparedStatement ps = null;
         for (int i = 0; i < sqls.length; i++) {
             try {
@@ -175,14 +128,19 @@ public class DbConnection {
             }
         }
     }
-    
+
     public static void setProps(Properties props) {
         DbConnection.props = props;
     }
 
-    public static void closeConnection() throws SQLException {
+    public static void closeConnection(Connection connection) throws SQLException {
         connection.commit();
         connection.close();
         connection = null;
+    }
+
+    private static String getCurDir() {
+        File curdir = new File("./");
+        return curdir.getAbsolutePath();
     }
 }

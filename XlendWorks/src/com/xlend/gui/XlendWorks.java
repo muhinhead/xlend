@@ -43,7 +43,6 @@ public class XlendWorks {
             logAndShowMessage(ne);
             System.exit(1);
         }
-        // TODO code application logic here
     }
 
     public static void log(String msg) {
@@ -115,4 +114,5 @@ public class XlendWorks {
             }
         }
     }
+
 }

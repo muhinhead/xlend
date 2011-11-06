@@ -1,5 +1,10 @@
 package com.xlend.gui;
 
+import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
+import com.jtattoo.plaf.aero.AeroLookAndFeel;
+import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
+import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
+import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -25,7 +30,7 @@ import javax.swing.UIManager;
  * @author Nick Mukhin
  */
 public class LoginDialog extends PopupDialog {
-    
+
     private JButton okButton;
     private JButton cancelButton;
     private static boolean okPressed;
@@ -35,20 +40,32 @@ public class LoginDialog extends PopupDialog {
     private JTextField loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
-    
+
     public LoginDialog(Object[] params) {
-        super(null, "Login", .3, .3, params);
+        super(null, "Login", params);
     }
-    
+
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
+
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
+            String theme = MainFrame.readProperty("LookAndFeel", 
+                    "com.nilo.plaf.nimrod.NimRODLookAndFeel");
+            if (theme.contains("jtattoo")) {
+                MainFrame.setSubThemes();
+            }
+            UIManager.setLookAndFeel(theme);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+            } catch (Exception ie) {
+                XlendWorks.log(ie);
+            }
         }
-        SwingUtilities.updateComponentTreeUI(this);
-        
+
         getContentPane().setLayout(new BorderLayout());
         JPanel upperPane = new JPanel(new BorderLayout());
         JPanel upFramePane = new JPanel(new BorderLayout());
@@ -57,10 +74,10 @@ public class LoginDialog extends PopupDialog {
         upFramePane.add(new JPanel(), BorderLayout.EAST);
         upFramePane.add(upperPane, BorderLayout.CENTER);
         getContentPane().add(upFramePane, BorderLayout.NORTH);
-        
+
         Object[] edits = (Object[]) getObject();
         exchanger = (IMessageSender) edits[2];
-        
+
         JPanel labelPane = new JPanel(new GridLayout(3, 1, 10, 10));
         JPanel editPane = new JPanel(new GridLayout(3, 1, 10, 10));
         labelPane.add(new JLabel(" Login:", SwingUtilities.RIGHT));
@@ -69,21 +86,21 @@ public class LoginDialog extends PopupDialog {
         editPane.add(loginField = (JTextField) edits[0]);
         editPane.add(pwdField = (JPasswordField) edits[1]);
         editPane.add(savePwdCB = new JCheckBox());
-        
+
         Preferences userPref = Preferences.userRoot();
         String pwdmd5 = userPref.get(MainFrame.PWDMD5, "");
         pwdField.setText(pwdmd5);
         savePwdCB.setSelected(pwdmd5.length() > 0);
         loginField.setText(MainFrame.readProperty(MainFrame.LASTLOGIN, ""));
-        
+
         upperPane.add(labelPane, BorderLayout.WEST);
         upperPane.add(editPane, BorderLayout.CENTER);
         upperPane.add(new JPanel(), BorderLayout.EAST);
-        
+
         JPanel buttonPane = new JPanel();
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
         buttonPane.add(okButton = new JButton(okAction = new AbstractAction("OK") {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 String login = loginField.getText();
@@ -108,27 +125,27 @@ public class LoginDialog extends PopupDialog {
                         loginField.requestFocus();
                     }
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null,"Server not respondind, sorry","Error:", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Server not respondind, sorry", "Error:", JOptionPane.ERROR_MESSAGE);
                     XlendWorks.log(ex);
                     dispose();
                 }
-                
+
             }
         }));
-        
+
         buttonPane.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = false;
                 dispose();
             }
         }));
-        
+
         getRootPane().setDefaultButton(okButton);
         pack();
     }
-    
+
     @Override
     public void freeResources() {
         okButton.removeActionListener(okAction);

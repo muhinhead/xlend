@@ -42,6 +42,7 @@ public class LoginDialog extends PopupDialog {
     
     @Override
     protected void fillContent() {
+        XlendWorks.setWindowIcon(this, "Xcost.png");
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ex) {

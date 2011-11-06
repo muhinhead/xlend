@@ -2,12 +2,17 @@ package com.xlend.gui;
 
 import com.xlend.orm.Userprofile;
 import com.xlend.remote.IMessageSender;
+import java.awt.Image;
+import java.awt.Window;
+import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -40,7 +45,7 @@ public class XlendWorks {
         }
         // TODO code application logic here
     }
-    
+
     public static void log(String msg) {
         log(msg, null);
     }
@@ -91,5 +96,23 @@ public class XlendWorks {
         JPasswordField pwdField = new JPasswordField(20);
         new LoginDialog(new Object[]{loginField, pwdField, exchanger});
         return LoginDialog.isOkPressed();
+    }
+
+    public static void setWindowIcon(Window w, String iconName) {
+        if (new File("images/" + iconName).exists()) {
+            try {
+                ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
+                Image im = ic.getImage();
+                w.setIconImage(ic.getImage());
+            } catch (Exception ex) {
+                log(ex);
+            }
+        } else {
+            try {
+                w.setIconImage(ImageIO.read(w.getClass().getResourceAsStream("/" + iconName)));
+            } catch (Exception ie) {
+                log(ie);
+            }
+        }
     }
 }

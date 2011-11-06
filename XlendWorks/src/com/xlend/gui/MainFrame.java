@@ -45,21 +45,7 @@ class MainFrame extends JFrame {
     public final static String PWDMD5 = "PWDMD5";
 
     private void fillContentPane() {
-        if (new File("images/Xcost.png").exists()) {
-            try {
-                ImageIcon ic = new javax.swing.ImageIcon("images/Xcost.png", "");
-                Image im = ic.getImage();
-                setIconImage(ic.getImage());
-            } catch (Exception ex) {
-                XlendWorks.log(ex);
-            }
-        } else {
-            try {
-                setIconImage(ImageIO.read(MainFrame.class.getResourceAsStream("/Xcost.png")));
-            } catch (Exception ie) {
-                XlendWorks.log(ie);
-            }
-        }
+        XlendWorks.setWindowIcon(this, "Xcost.png");
         buildMenu();
         getContentPane().setLayout(new BorderLayout());
         JTabbedPane tabs = new JTabbedPane();//JTabbedPane.LEFT);

@@ -10,6 +10,14 @@
 <project name="XlendWorks" default="default" basedir=".">
     <description>Builds, tests, and runs the project XlendWorks.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <target name="-pre-jar">
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}/../images" />
+        </copy>
+    </target>
+
+
     <!--
 
     There exist several targets which are by default empty and which can be 

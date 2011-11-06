@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -40,6 +45,21 @@ class MainFrame extends JFrame {
     public final static String PWDMD5 = "PWDMD5";
 
     private void fillContentPane() {
+        if (new File("images/Xcost.png").exists()) {
+            try {
+                ImageIcon ic = new javax.swing.ImageIcon("images/Xcost.png", "");
+                Image im = ic.getImage();
+                setIconImage(ic.getImage());
+            } catch (Exception ex) {
+                XlendWorks.log(ex);
+            }
+        } else {
+            try {
+                setIconImage(ImageIO.read(MainFrame.class.getResourceAsStream("/Xcost.png")));
+            } catch (Exception ie) {
+                XlendWorks.log(ie);
+            }
+        }
         buildMenu();
         getContentPane().setLayout(new BorderLayout());
         JTabbedPane tabs = new JTabbedPane();//JTabbedPane.LEFT);

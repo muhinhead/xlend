@@ -38,10 +38,10 @@ public class EditClientPanel extends ProfilePanel {
     //private JComboBox clientGroupBox;
     private JSpinner salesPotentialSpinner;
     private JSpinner birthDaySpinner;
-    private JTextField spouseFirstNameField;
-    private JTextField spouseLastNameField;
-    private JSpinner spouseBirthDaySpinner;
-    private JTextField spouseEmailField;
+//    private JTextField spouseFirstNameField;
+//    private JTextField spouseLastNameField;
+//    private JSpinner spouseBirthDaySpinner;
+//    private JTextField spouseEmailField;
     private JComboBox sourceTypeBox;
     private JTextField sourceDescrField;
     private JComboBox salesPersonBox;
@@ -64,10 +64,10 @@ public class EditClientPanel extends ProfilePanel {
             new JPanel(),
 //            clientGroupBox = new JComboBox(clientGroups = getClientGroups()),
             birthDaySpinner = new JSpinner(new SpinnerDateModel()),
-            spouseFirstNameField = new JTextField(),
-            spouseLastNameField = new JTextField(),
-            spouseBirthDaySpinner = new JSpinner(new SpinnerDateModel()),
-            spouseEmailField = new JTextField(),
+//            spouseFirstNameField = new JTextField(),
+//            spouseLastNameField = new JTextField(),
+//            spouseBirthDaySpinner = new JSpinner(new SpinnerDateModel()),
+//            spouseEmailField = new JTextField(),
             sourceTypeBox = new JComboBox(new String[]{"Phonebook", "Referral", "Location", "Others"}),
             sourceDescrField = new JTextField(),
             salesPotentialSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 100)),
@@ -76,8 +76,8 @@ public class EditClientPanel extends ProfilePanel {
         };
         JSpinner.DateEditor de1 = new JSpinner.DateEditor(birthDaySpinner, "yyyy/MM/dd");
         birthDaySpinner.setEditor(de1);
-        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spouseBirthDaySpinner, "yyyy/MM/dd");
-        spouseBirthDaySpinner.setEditor(de2);
+//        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spouseBirthDaySpinner, "yyyy/MM/dd");
+//        spouseBirthDaySpinner.setEditor(de2);
 
         organizePanels(labels, edits);
         for (int i = 0; i < labels.length; i++) {
@@ -102,12 +102,12 @@ public class EditClientPanel extends ProfilePanel {
 //                    findItem(clientGroups, cp.getClientgroupId()));
             birthDaySpinner.setValue(cp.getBirthday() == null ? new Date()
                     : new Date(cp.getBirthday().getTime()));
-            spouseFirstNameField.setText(cp.getSpouseFirstName());
-            spouseLastNameField.setText(cp.getSpouseLastName());
-            spouseBirthDaySpinner.setValue(
-                    cp.getSpouseBirthday() == null ? new Date()
-                    : new Date(cp.getSpouseBirthday().getTime()));
-            spouseEmailField.setText(cp.getSpouseEmail());
+//            spouseFirstNameField.setText(cp.getSpouseFirstName());
+//            spouseLastNameField.setText(cp.getSpouseLastName());
+//            spouseBirthDaySpinner.setValue(
+//                    cp.getSpouseBirthday() == null ? new Date()
+//                    : new Date(cp.getSpouseBirthday().getTime()));
+//            spouseEmailField.setText(cp.getSpouseEmail());
             sourceTypeBox.setSelectedItem(cp.getSourceType());
             sourceDescrField.setText(cp.getSourceDescr());
             salesPotentialSpinner.setValue(
@@ -140,13 +140,13 @@ public class EditClientPanel extends ProfilePanel {
         cp.setSourceDescr(sourceDescrField.getText());
         cp.setSourceType(sourceTypeBox.getSelectedItem() == null ? null
                 : sourceTypeBox.getSelectedItem().toString());
-        b = (Date) spouseBirthDaySpinner.getValue();
-        if (b != null) {
-            cp.setSpouseBirthday(new java.sql.Date(b.getTime()));
-        }
-        cp.setSpouseFirstName(spouseFirstNameField.getText());
-        cp.setSpouseLastName(spouseLastNameField.getText());
-        cp.setSpouseEmail(spouseEmailField.getText());
+//        b = (Date) spouseBirthDaySpinner.getValue();
+//        if (b != null) {
+//            cp.setSpouseBirthday(new java.sql.Date(b.getTime()));
+//        }
+//        cp.setSpouseFirstName(spouseFirstNameField.getText());
+//        cp.setSpouseLastName(spouseLastNameField.getText());
+//        cp.setSpouseEmail(spouseEmailField.getText());
 
 //        ci = (ComboItem) salesPersonBox.getSelectedItem();
 //        if (ci != null) {

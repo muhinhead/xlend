@@ -52,7 +52,7 @@ public class DbTableGridPanel extends JPanel {
         btnPanel.add(delButton = new JButton(delAction));
         leftPanel.add(btnPanel, BorderLayout.NORTH);
         add(sp = new JScrollPane(getTableView()), BorderLayout.CENTER);
-        add(leftPanel, BorderLayout.WEST);
+        add(leftPanel, BorderLayout.EAST);
         tableView.addMouseListener(new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {

@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -49,6 +50,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -81,16 +84,21 @@ class MainFrame extends JFrame {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         statusPanel.setBorder(BorderFactory.createEtchedBorder());
         statusPanel.setLayout(new BorderLayout());
-        setStatusLabel1Text("");
+        setStatusLabel1Text(" ");
         statusLabel1.setBorder(BorderFactory.createEtchedBorder());
         statusLabel2.setHorizontalTextPosition(SwingConstants.CENTER);
         statusLabel2.setText(" ");
+//        statusPanel.add(statusLabel1,BorderLayout.WEST);
+        statusPanel.add(statusLabel2,BorderLayout.CENTER);
 
         buildMenu();
         getContentPane().setLayout(new BorderLayout());
         JTabbedPane tabs = new JTabbedPane();
         tabs.add(getContactsPanel(), "Contacts");
         tabs.add(getDocumentPanel(), "Documents");
+        tabs.add(new JPanel(), "Contracts");
+        tabs.add(new JPanel(), "Machines");
+        tabs.add(new JPanel(), "Sites");
         tabs.add(getUsersPanel(), "Users");
 
         newDocumentButton = new ToolBarButton("newdoc.png");
@@ -108,7 +116,8 @@ class MainFrame extends JFrame {
 
         getContentPane().add(toolBar, BorderLayout.NORTH);
         getContentPane().add(tabs);
-        getContentPane().add(statusPanel, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(statusPanel, 
+                java.awt.BorderLayout.SOUTH);
 
         exitButton.addActionListener(new AbstractAction() {
 
@@ -237,8 +246,8 @@ class MainFrame extends JFrame {
 
     private void buildMenu() {
         JMenuBar bar = new JMenuBar();
-        JMenu m = new JMenu("File");
-        JMenuItem mi = new JMenuItem("Exit");
+        JMenu m = createMenu("File", "File Operations");//new JMenu("File");
+        JMenuItem mi = createMenuItem("Exit","Exit from program");//new JMenuItem("Exit");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -248,7 +257,7 @@ class MainFrame extends JFrame {
         m.add(mi);
         bar.add(m);
 
-        m = new JMenu("Options");
+        m = createMenu("Options","Program settings");//new JMenu("Options");
         m.add(appearanceMenu("Theme"));
         bar.add(m);
 
@@ -258,8 +267,8 @@ class MainFrame extends JFrame {
     protected JMenu appearanceMenu(String item) {
         JMenu m;
         JMenuItem it;
-        m = new JMenu(item);
-        it = m.add(new JMenuItem("Tiny"));
+        m = createMenu(item);
+        it = m.add(createMenuItem("Tiny"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -269,7 +278,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Acryl"));
+        it = m.add(createMenuItem("Acryl"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -280,7 +289,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Nimbus"));
+        it = m.add(createMenuItem("Nimbus"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -290,7 +299,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Noire"));
+        it = m.add(createMenuItem("Noire"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -301,7 +310,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("HiFi"));
+        it = m.add(createMenuItem("HiFi"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -312,7 +321,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Bernstein"));
+        it = m.add(createMenuItem("Bernstein"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -323,7 +332,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Aero"));
+        it = m.add(createMenuItem("Aero"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -334,7 +343,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Nimrod"));
+        it = m.add(createMenuItem("Nimrod"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -344,7 +353,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("System"));
+        it = m.add(createMenuItem("System"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -354,7 +363,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Java"));
+        it = m.add(createMenuItem("Java"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -364,7 +373,7 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(new JMenuItem("Motif"));
+        it = m.add(createMenuItem("Motif"));
         it.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -514,6 +523,7 @@ class MainFrame extends JFrame {
         userPref.put(PWDMD5, XlendWorks.getCurrentUser().getPwdmd5());
         saveProperties();
         dispose();
+        System.exit(1);
     }
 
     public void saveProperties() {
@@ -536,4 +546,33 @@ class MainFrame extends JFrame {
         BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
         AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
     }
+
+    protected JMenuItem createMenuItem(String label, String microHelp) {
+        JMenuItem m = new JMenuItem(label);
+        setMenuStatusMicroHelp(m, microHelp);
+        return m;
+    }
+
+    protected JMenuItem createMenuItem(String label) {
+        return createMenuItem(label,label);
+    }
+
+    protected JMenu createMenu(String label, String microHelp) {
+        JMenu m = new JMenu(label);
+        setMenuStatusMicroHelp(m, microHelp);
+        return m;
+    }
+    
+    protected JMenu createMenu(String label) {
+        return createMenu(label, label);
+    }
+
+    protected void setMenuStatusMicroHelp(final JMenuItem m, final String msg) {
+        m.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                statusLabel2.setText(msg == null ? m.getText() : msg);
+            }
+        });
+    }    
 }

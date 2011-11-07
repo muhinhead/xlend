@@ -1,0 +1,20 @@
+Hi Nick ,
+Ok, here is a little summary to try and explain what the program must do for us and what we need it to do.
+
+Our company rents out machines and trucks to other companies doing construction work on various different places in our country.
+
+For example.
+Xlend plant (our company) – Rents out a Bulldozer (Machine with number M1) to a client (Transnet) at Mahlumbe (Site Name) under purchase order 4322552 (Purchase Order) for 300 hours (Quantity).
+
+We supply the machine with a bulldozer-operator, David kumalo 318 (Name, Surname, Clock number).
+
+We have a fleet of over 150 machines and truck and over 180 employees working for us. It becomes very difficult for us to keep track of all of our machines and the hours they worked and what they are costing us in breakdown costs, income, diesel consumption etc etc. So the cost income program will help us to capture all the data from our hard copy documents (time sheets, purchase orders, operator clock sheets, diesel cards, site diaries, et c etc.) onto a database to track a machine, how much money it is bringing in and what it is costing us in terms of various costs.
+
+I’m sending you another little program we use to keep track of machines to give you a better understanding of how we operate. Just give both files an ".exe" extension as gmail wouldn't allow me to send exe files - so I just removed the extensions. 
+Open "mapmanagerfinal.zip", First install "bmtool" and then "setup"- the password for opening the program is "admin"
+Then click the database icon, select import and import the database file i'm sending you. It has current up to date info on all of our plant working all over the country with their operators. 
+
+
+I will also be sending you other info throughout the day.
+ 
+With Regards

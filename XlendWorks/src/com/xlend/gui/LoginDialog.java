@@ -8,6 +8,7 @@ import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -48,7 +49,7 @@ public class LoginDialog extends PopupDialog {
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
-
+        super.fillContent();
         try {
             String theme = MainFrame.readProperty("LookAndFeel", 
                     "com.nilo.plaf.nimrod.NimRODLookAndFeel");
@@ -66,14 +67,14 @@ public class LoginDialog extends PopupDialog {
             }
         }
 
-        getContentPane().setLayout(new BorderLayout());
+//        getContentPane().setLayout(new BorderLayout());
         JPanel upperPane = new JPanel(new BorderLayout());
         JPanel upFramePane = new JPanel(new BorderLayout());
         upFramePane.add(new JPanel(), BorderLayout.NORTH);
         upFramePane.add(new JPanel(), BorderLayout.WEST);
         upFramePane.add(new JPanel(), BorderLayout.EAST);
         upFramePane.add(upperPane, BorderLayout.CENTER);
-        getContentPane().add(upFramePane, BorderLayout.NORTH);
+        getContentPane().add(upFramePane, BorderLayout.CENTER);
 
         Object[] edits = (Object[]) getObject();
         exchanger = (IMessageSender) edits[2];

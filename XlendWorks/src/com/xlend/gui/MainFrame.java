@@ -14,6 +14,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -109,6 +110,7 @@ class MainFrame extends JFrame {
         exitButton.setToolTipText("Exit");
 
         toolBar = new JToolBar();
+//        toolBar.setBackground(new Color(255, 203, 0));
         toolBar.add(newDocumentButton);
         toolBar.addSeparator();
         toolBar.add(aboutButton);

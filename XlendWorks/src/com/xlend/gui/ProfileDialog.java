@@ -10,7 +10,12 @@ package com.xlend.gui;
 //import com.csa.util.PopupDialog;
 import com.xlend.orm.Profile;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.ImagePanel;
+import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -19,7 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 /**
  *
@@ -45,6 +53,7 @@ public abstract class ProfileDialog extends PopupDialog {
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
+        super.fillContent();
         EditContactDialog.okPressed = false;
         if (getObject() != null) {
             DbObject[] recs = (DbObject[]) getObject();
@@ -52,13 +61,18 @@ public abstract class ProfileDialog extends PopupDialog {
             additionalProfile = recs[1];
         }
         JPanel mainPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-        getContentPane().setLayout(new BorderLayout());
+//        getContentPane().setLayout(new BorderLayout(10,10));
         mainPanel.add(profileEditPanel = new EditProfilePanel(profile));
         mainPanel.add(additionalEditPanel = getAdditionalPanel());
         if (profile != null) {
             additionalEditPanel.setProfile_id(profile.getProfileId());
         }
-        getContentPane().add(new JPanel(), BorderLayout.NORTH);
+//        JPanel headerPanel = new JPanel();
+//        headerPanel.setBackground(new Color(255, 203, 0));
+//        JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
+//        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
+//        headerPanel.add(lbl);
+//        getContentPane().add(headerPanel, BorderLayout.NORTH);
         getContentPane().add(new JPanel(), BorderLayout.WEST);
         getContentPane().add(new JPanel(), BorderLayout.EAST);
         getContentPane().add(mainPanel, BorderLayout.CENTER);

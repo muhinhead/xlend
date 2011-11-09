@@ -97,22 +97,41 @@ public class XlendWorks {
         return LoginDialog.isOkPressed();
     }
 
-    public static void setWindowIcon(Window w, String iconName) {
+    public static Image loadImage(String iconName,Window w) {
+        Image im = null;
         if (new File("images/" + iconName).exists()) {
             try {
                 ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
-                Image im = ic.getImage();
-                w.setIconImage(ic.getImage());
+                im = ic.getImage();
             } catch (Exception ex) {
                 log(ex);
             }
         } else {
             try {
-                w.setIconImage(ImageIO.read(w.getClass().getResourceAsStream("/" + iconName)));
+                im = ImageIO.read(w.getClass().getResourceAsStream("/" + iconName));
             } catch (Exception ie) {
                 log(ie);
             }
         }
+        return im;
     }
 
+    public static void setWindowIcon(Window w, String iconName) {
+        w.setIconImage(loadImage(iconName,w));
+//        if (new File("images/" + iconName).exists()) {
+//            try {
+//                ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
+//                Image im = ic.getImage();
+//                w.setIconImage(ic.getImage());
+//            } catch (Exception ex) {
+//                log(ex);
+//            }
+//        } else {
+//            try {
+//                w.setIconImage(ImageIO.read(w.getClass().getResourceAsStream("/" + iconName)));
+//            } catch (Exception ie) {
+//                log(ie);
+//            }
+//        }
+    }
 }

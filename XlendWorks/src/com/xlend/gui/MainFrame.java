@@ -12,8 +12,10 @@ import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.ToggleToolBarButton;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -72,7 +74,10 @@ class MainFrame extends JFrame {
     public final static String LASTLOGIN = "LastLogin";
     public final static String PWDMD5 = "PWDMD5";
     protected JToolBar toolBar;
-    protected ToolBarButton newDocumentButton;
+    protected ToggleToolBarButton workButton;
+    protected ToggleToolBarButton hrbutton;
+    protected ToggleToolBarButton fleetbutton;
+    protected ToolBarButton logoutbutton;
     protected ToolBarButton aboutButton;
     protected ToolBarButton exitButton;
     private JPanel statusPanel = new JPanel();
@@ -80,6 +85,11 @@ class MainFrame extends JFrame {
     private JLabel statusLabel2 = new JLabel();
     private JLabel statusLabel3 = new JLabel();
     private DbTableGridPanel usersPanel = null;
+    private JPanel mainPanel;
+    private CardLayout cardLayout;
+    private JTabbedPane workTab;
+    private JTabbedPane hrTab;
+    private JTabbedPane fleetTab;
 
     private void fillContentPane() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
@@ -90,37 +100,58 @@ class MainFrame extends JFrame {
         statusLabel2.setHorizontalTextPosition(SwingConstants.CENTER);
         statusLabel2.setText(" ");
 //        statusPanel.add(statusLabel1,BorderLayout.WEST);
-        statusPanel.add(statusLabel2,BorderLayout.CENTER);
+        statusPanel.add(statusLabel2, BorderLayout.CENTER);
 
         buildMenu();
         getContentPane().setLayout(new BorderLayout());
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.add(getContactsPanel(), "Contacts");
-        tabs.add(getDocumentPanel(), "Documents");
-        tabs.add(new JPanel(), "Contracts");
-        tabs.add(new JPanel(), "Machines");
-        tabs.add(new JPanel(), "Sites");
-        tabs.add(getUsersPanel(), "Users");
 
-        newDocumentButton = new ToolBarButton("newdoc.png");
-        newDocumentButton.setToolTipText("New document");
-        aboutButton = new ToolBarButton("help.png");
-        aboutButton.setToolTipText("About program");
-        exitButton = new ToolBarButton("exit.png");
-        exitButton.setToolTipText("Exit");
+        workButton = new ToggleToolBarButton("work.png");
+        hrbutton = new ToggleToolBarButton("hr.png");
+        fleetbutton = new ToggleToolBarButton("fleet.png");
+        exitButton = new ToolBarButton("logout.png");
+
+//        aboutButton = new ToolBarButton("help.png");
+//        aboutButton.setToolTipText("About program");
+//        exitButton = new ToolBarButton("exit.png");
+//        exitButton.setToolTipText("Exit");
 
         toolBar = new JToolBar();
-//        toolBar.setBackground(new Color(255, 203, 0));
-        toolBar.add(newDocumentButton);
-        toolBar.addSeparator();
-        toolBar.add(aboutButton);
+        toolBar.add(workButton);
+        toolBar.add(hrbutton);
+        toolBar.add(fleetbutton);
         toolBar.add(exitButton);
 
-        getContentPane().add(toolBar, BorderLayout.NORTH);
-        getContentPane().add(tabs);
-        getContentPane().add(statusPanel, 
-                java.awt.BorderLayout.SOUTH);
+        workButton.addActionListener(new AbstractAction() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.first(mainPanel);
+                fleetbutton.setSelected(false);
+                hrbutton.setSelected(false);
+            }
+        });
+        hrbutton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (workTab.isVisible()) {
+                    cardLayout.next(mainPanel);
+                } else if (fleetTab.isVisible()) {
+                    cardLayout.previous(mainPanel);
+                }
+                fleetbutton.setSelected(false);
+                workButton.setSelected(false);
+            }
+        });
+        fleetbutton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.last(mainPanel);
+                hrbutton.setSelected(false);
+                workButton.setSelected(false);
+            }
+        });
         exitButton.addActionListener(new AbstractAction() {
 
             @Override
@@ -128,20 +159,33 @@ class MainFrame extends JFrame {
                 exit();
             }
         });
-        newDocumentButton.addActionListener(new AbstractAction() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                notImplementedYet();
-            }
-        });
-        aboutButton.addActionListener(new AbstractAction() {
+        getContentPane().add(toolBar, BorderLayout.NORTH);
+        mainPanel = new JPanel(cardLayout = new CardLayout());
+        getContentPane().add(mainPanel);
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                notImplementedYet();
-            }
-        });
+        workTab = new JTabbedPane();
+        workTab.add(new JPanel(), "Contracts");
+        workTab.add(new JPanel(), "Quotas");
+        workTab.add(new JPanel(), "Orders");
+        mainPanel.add(workTab);
+        hrTab = new JTabbedPane();
+        hrTab.add(new JPanel(), "Employee Files");
+        hrTab.add(new JPanel(), "Wages");
+        hrTab.add(new JPanel(), "Salaries");
+        hrTab.add(new JPanel(), "Diciplinary Actions");
+        hrTab.add(new JPanel(), "Rewards Program");
+        mainPanel.add(hrTab);
+        fleetTab = new JTabbedPane();
+        fleetTab.add(new JPanel(), "Machine Files");
+        fleetTab.add(new JPanel(), "Truck Files");
+        fleetTab.add(new JPanel(), "Low-Beds");
+        fleetTab.add(new JPanel(), "Pool Vehicles");
+        fleetTab.add(new JPanel(), "Company Vehicles");
+        mainPanel.add(fleetTab);
+
+        getContentPane().add(statusPanel, java.awt.BorderLayout.SOUTH);
+
     }
 
     private Component getContactsPanel() {
@@ -249,7 +293,7 @@ class MainFrame extends JFrame {
     private void buildMenu() {
         JMenuBar bar = new JMenuBar();
         JMenu m = createMenu("File", "File Operations");//new JMenu("File");
-        JMenuItem mi = createMenuItem("Exit","Exit from program");//new JMenuItem("Exit");
+        JMenuItem mi = createMenuItem("Exit", "Exit from program");//new JMenuItem("Exit");
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -259,7 +303,7 @@ class MainFrame extends JFrame {
         m.add(mi);
         bar.add(m);
 
-        m = createMenu("Options","Program settings");//new JMenu("Options");
+        m = createMenu("Options", "Program settings");//new JMenu("Options");
         m.add(appearanceMenu("Theme"));
         bar.add(m);
 
@@ -427,19 +471,6 @@ class MainFrame extends JFrame {
         super("Contact Management");
         exchanger = exch;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        try {
-//            String theme = readProperty("LookAndFeel", "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-//            if (theme.contains("jtattoo")) {
-//                setSubThemes();
-//            }
-//            setLookAndFeel(theme);
-//        } catch (Exception e) {
-//            try {
-//                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            } catch (Exception ie) {
-//                XlendWorks.log(ie);
-//            }
-//        }
         addWindowListener(new WinListener(this));
         fillContentPane();
         float width = Float.valueOf(readProperty("WindowWidth", "0.7"));
@@ -556,7 +587,7 @@ class MainFrame extends JFrame {
     }
 
     protected JMenuItem createMenuItem(String label) {
-        return createMenuItem(label,label);
+        return createMenuItem(label, label);
     }
 
     protected JMenu createMenu(String label, String microHelp) {
@@ -564,7 +595,7 @@ class MainFrame extends JFrame {
         setMenuStatusMicroHelp(m, microHelp);
         return m;
     }
-    
+
     protected JMenu createMenu(String label) {
         return createMenu(label, label);
     }
@@ -576,5 +607,5 @@ class MainFrame extends JFrame {
                 statusLabel2.setText(msg == null ? m.getText() : msg);
             }
         });
-    }    
+    }
 }

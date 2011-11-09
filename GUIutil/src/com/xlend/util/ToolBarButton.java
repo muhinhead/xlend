@@ -20,30 +20,11 @@ public class ToolBarButton extends JButton {
     }
 
     public ToolBarButton(String imageFile) {
-        super(new ImageIcon(loadImage(imageFile)));
+        super(new ImageIcon(Util.loadImage(imageFile)));
     }
 
     public ToolBarButton(String imageFile, String text) {
         super(text);
-        setIcon(new ImageIcon(loadImage(imageFile)));
-//        setText(text);
-    }
-    
-    private static Image loadImage(String imageFile) {
-        String fileName = "images/" + imageFile;
-        Image image = null;
-        if (new File(fileName).exists()) {
-            try {
-                ImageIcon ic = new javax.swing.ImageIcon(fileName, "");
-                image = ic.getImage();
-            } catch (Exception ex) {
-            }
-        } else {
-            try {
-                image = ImageIO.read(ToolBarButton.class.getResourceAsStream("/" + imageFile));
-            } catch (Exception ie) {
-            }
-        }     
-        return image;
+        setIcon(new ImageIcon(Util.loadImage(imageFile)));
     }
 }

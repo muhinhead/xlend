@@ -99,7 +99,9 @@ public class XlendWorks {
 
     public static Image loadImage(String iconName,Window w) {
         Image im = null;
-        if (new File("images/" + iconName).exists()) {
+        File f = new File("images/" + iconName);
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath()+" EXISTS");
             try {
                 ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
                 im = ic.getImage();
@@ -107,6 +109,7 @@ public class XlendWorks {
                 log(ex);
             }
         } else {
+            System.out.println(f.getAbsolutePath()+" NOT EXISTS");
             try {
                 im = ImageIO.read(w.getClass().getResourceAsStream("/" + iconName));
             } catch (Exception ie) {

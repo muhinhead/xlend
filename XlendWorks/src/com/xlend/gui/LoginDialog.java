@@ -8,8 +8,11 @@ import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.ImagePanel;
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
@@ -49,7 +52,8 @@ public class LoginDialog extends PopupDialog {
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
-        super.fillContent();
+        //super.fillContent();
+        getContentPane().setLayout(new BorderLayout());
         try {
             String theme = MainFrame.readProperty("LookAndFeel", 
                     "com.nilo.plaf.nimrod.NimRODLookAndFeel");
@@ -70,10 +74,14 @@ public class LoginDialog extends PopupDialog {
 //        getContentPane().setLayout(new BorderLayout());
         JPanel upperPane = new JPanel(new BorderLayout());
         JPanel upFramePane = new JPanel(new BorderLayout());
-        upFramePane.add(new JPanel(), BorderLayout.NORTH);
+//        upFramePane.add(new JPanel(), BorderLayout.NORTH);
         upFramePane.add(new JPanel(), BorderLayout.WEST);
         upFramePane.add(new JPanel(), BorderLayout.EAST);
         upFramePane.add(upperPane, BorderLayout.CENTER);
+
+        JPanel imgPanel = new JPanel();
+        imgPanel.add(new ImagePanel(XlendWorks.loadImage("XcostBtn.jpg", this)));
+        getContentPane().add(imgPanel, BorderLayout.NORTH);
         getContentPane().add(upFramePane, BorderLayout.CENTER);
 
         Object[] edits = (Object[]) getObject();

@@ -1,5 +1,6 @@
 package com.xlend.util;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.LayoutManager;
@@ -14,16 +15,21 @@ public class ImagePanel extends JPanel {
 
   private Image img;
 
-  public ImagePanel(String img, LayoutManager mgr) {
-    this(new ImageIcon(img).getImage(), mgr);
+  public ImagePanel(String img) {
+    this(new ImageIcon(img).getImage());
   }
 
-  public ImagePanel(Image img, LayoutManager mgr) {
+  public ImagePanel(Image img) {
     this.img = img;
-    setLayout(mgr);
+    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+    setPreferredSize(size);
+    setMinimumSize(size);
+    setMaximumSize(size);
+    setSize(size);
+    setLayout(null);
   }
 
   public void paintComponent(Graphics g) {
-    g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+    g.drawImage(img, 0, 0, null);
   }
 }

@@ -1,3 +1,23 @@
+create table xclient
+(
+    xclient_id      int not null identity,
+    clientcode      varchar(16) not null,
+    companyname     varchar(255) not null,
+    contactname	    varchar(255),
+    phonenumber	    varchar(12),
+    vatnumber       varchar(32),
+    address	        varchar(255),
+    constraint xclient_pk primary key (xclient_id)
+);
+
+
+create table picture
+(
+    picture_id   int not null identity,
+    picture      other,
+    constraint picture_pk primary key (picture_id)
+);
+
 create table profile 
 (
     profile_id   int not null identity,
@@ -11,8 +31,9 @@ create table profile
     phone        varchar(12),
     cell_phone   varchar(12),
     email        varchar(80),
-    photo        other,
-    constraint profile_pk primary key (profile_id)
+    picture_id   int,
+    constraint profile_pk primary key (profile_id),
+    constraint profile_picture_fk foreign key (picture_id) references picture on delete cascade
 );
 
 create table userprofile
@@ -34,7 +55,7 @@ create table clientprofile
     profile_id        int not null,
     salesperson_id    int,
     birthday          date,
-    source_type       varchar(10) check (source_type in('Phonebook','Referral','Location','Others')),
+    source_type       varchar(10) --check (source_type in('Phonebook','Referral','Location','Others')),
     source_descr      varchar(255),
     sales_potential   int,
     constraint clientprofile_pk primary key (profile_id),
@@ -122,3 +143,9 @@ select p.profile_id,
        c.sales_potential
   from profile p, clientprofile c
  where c.profile_id = p.profile_id;
+
+insert into profile(profile_id,first_name,last_name,address1) values(1,'Admin','Adminson','not known');
+insert into userprofile(profile_id,salesperson,manager,login,pwdmd5) select profile_id,0,1,'admin','admin' from profile where first_name='Admin';
+
+insert into profile(profile_id,first_name,last_name,address1) values(2,'Salesman','Sale','not known');
+insert into userprofile(profile_id,salesperson,manager,login,pwdmd5) select profile_id,1,0,'sale','sale' from profile where first_name='Salesman';

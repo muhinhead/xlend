@@ -21,6 +21,7 @@ import java.util.Iterator;
  * @author Nick Mukhin
  */
 public class ORMGenerator {
+
     public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Usage:\n\tjava com.xlend.orm.tools.dbgen.ORMGenerator <creating_database.sql> <output directory> [package_name]");
@@ -29,9 +30,9 @@ public class ORMGenerator {
                 BufferedReader in = new BufferedReader(new FileReader(args[0]));
                 String line;
                 while ((line = in.readLine()) != null) {
-                    if (line.trim().startsWith("create ") && line.indexOf("table ")>0) {
+                    if (line.trim().startsWith("create ") && line.indexOf("table ") > 0) {
                         Table table = new Table(line, in);
-                    } else if (line.trim().indexOf("foreign key")>0) {
+                    } else if (line.trim().indexOf("foreign key") > 0) {
                         new ForeignKey(line, in);
                     }
                 }
@@ -60,7 +61,7 @@ public class ORMGenerator {
         dir.mkdirs();
         File oldVersion = new File(filePath);
         if (oldVersion.exists()) {
-            oldVersion.renameTo(new File(oldVersion+".bak"));
+            oldVersion.renameTo(new File(oldVersion + ".bak"));
         }
         System.out.println("...generating " + capitalize(table.getName()) + "." + JAVA);
         output = new PrintWriter(new FileWriter(filePath));
@@ -76,7 +77,6 @@ public class ORMGenerator {
         output.println("package " + packageName + ";");
         output.println();
     }
-
 
     private static void generateClasses(String outputDir, String packageName) throws IOException {
         for (Iterator it = Table.allTables.values().iterator(); it.hasNext();) {
@@ -96,29 +96,29 @@ public class ORMGenerator {
         output.println("import java.sql.*;");
         output.println("import java.util.ArrayList;");
         output.println();
-        output.println("public class " + capitalize(table.getName()) + " extends DbObject "+table.getImplementsInterfaces()+" {");
+        output.println("public class " + capitalize(table.getName()) + " extends DbObject " + table.getImplementsInterfaces() + " {");
         output.println("    private static Triggers activeTriggers = null;");
         if (pkColumn != null) {
-            output.println("    private " + pkColumn.getType().getJavaType() + " " +
-                    pkColumn.getJavaName() + " = null;");
+            output.println("    private " + pkColumn.getType().getJavaType() + " "
+                    + pkColumn.getJavaName() + " = null;");
         }
         for (it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
-                output.println("    private " + col.getType().getJavaType() + " " +
-                        col.getJavaName() + " = null;");
+                output.println("    private " + col.getType().getJavaType() + " "
+                        + col.getJavaName() + " = null;");
             }
         }
         output.println();
         output.println("    public " + capitalize(table.getName()) + "(Connection connection) {");
-        output.println("        super(connection, \"" + table.getName() + "\", \"" +
-                table.getPrimaryKeyColumnName() + "\");");
+        output.println("        super(connection, \"" + table.getName() + "\", \""
+                + table.getPrimaryKeyColumnName() + "\");");
         output.print("        setColumnNames(new String[]{");
         if (pkColumn != null) {
             output.print("\"" + pkColumn.getName() + "\"");
         }
         int n = 0;
-        for (it = table.getSortedColumns().iterator(); it.hasNext();n++) {
+        for (it = table.getSortedColumns().iterator(); it.hasNext(); n++) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
                 output.print(", \"" + col.getName() + "\"");
@@ -129,8 +129,8 @@ public class ORMGenerator {
         output.println();
         output.print("    public " + capitalize(table.getName()) + "(Connection connection");
         if (pkColumn != null) {
-            output.print(", " + pkColumn.getType().getJavaType() + " " +
-                    pkColumn.getJavaName());
+            output.print(", " + pkColumn.getType().getJavaType() + " "
+                    + pkColumn.getJavaName());
         }
         for (it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
@@ -139,12 +139,14 @@ public class ORMGenerator {
             }
         }
         output.println(") {");
-        output.println("        super(connection, \"" + table.getName() + "\", \"" +
-                table.getPrimaryKeyColumnName() + "\");");
+        output.println("        super(connection, \"" + table.getName() + "\", \""
+                + table.getPrimaryKeyColumnName() + "\");");
+
         output.println("        setNew(" + pkColumn.getJavaName() + ".intValue() <= 0);");
         output.println("//        if (" + pkColumn.getJavaName() + ".intValue() != 0) {");
         output.println("            this." + pkColumn.getJavaName() + " = " + pkColumn.getJavaName() + ";");
         output.println("//        }");
+
         for (it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
@@ -176,8 +178,8 @@ public class ORMGenerator {
         for (it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
-                output.println("                " + lowerTabName + ".set" + capitalize(col.getJavaName()) + "(" +
-                        Type.getODBCfuncGetName("rs.get", col.getType().getJavaType(), null, n) + ");");
+                output.println("                " + lowerTabName + ".set" + capitalize(col.getJavaName()) + "("
+                        + Type.getODBCfuncGetName("rs.get", col.getType().getJavaType(), null, n) + ");");
                 n++;
             }
         }
@@ -202,7 +204,7 @@ public class ORMGenerator {
         output.println("         String stmt =");
         output.print("                \"INSERT INTO " + table.getName() + " (");// + table.getPrimaryKeyColumnName());
 
-        output.print( "\"+(get"+capitalize(pkColumn.getJavaName())+"().intValue()!=0?\""+pkColumn.getName()+",\":\"\")+\"");
+        output.print("\"+(get" + capitalize(pkColumn.getJavaName()) + "().intValue()!=0?\"" + pkColumn.getName() + ",\":\"\")+\"");
         for (n = 0, it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
@@ -212,7 +214,7 @@ public class ORMGenerator {
         }
         output.print(") ");
         output.print("values(");
-        output.print( "\"+(get"+capitalize(pkColumn.getJavaName())+"().intValue()!=0?\"?,\":\"\")+\"");
+        output.print("\"+(get" + capitalize(pkColumn.getJavaName()) + "().intValue()!=0?\"?,\":\"\")+\"");
         for (n = 0, it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
@@ -225,15 +227,15 @@ public class ORMGenerator {
         output.println("             ps = getConnection().prepareStatement(stmt);");
         output.println("             int n = 0;");
         n = 0;
-        output.println("             if (get"+capitalize(pkColumn.getJavaName())+"().intValue()!=0) {");
+        output.println("             if (get" + capitalize(pkColumn.getJavaName()) + "().intValue()!=0) {");
         output.println("                 ps.setObject(++n, get" + capitalize(pkColumn.getJavaName()) + "());");
         output.println("             }");
         for (it = table.getSortedColumns().iterator(); it.hasNext();) {
             col = (Column) it.next();
             String delim = (col.getType().getJavaType().equals("String") ? "'" : "");
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
-                output.println("             " +
-                        "ps.setObject(++n, get" + capitalize(col.getJavaName()) + "());");
+                output.println("             "
+                        + "ps.setObject(++n, get" + capitalize(col.getJavaName()) + "());");
             }
         }
         output.println("             ps.execute();");
@@ -241,7 +243,7 @@ public class ORMGenerator {
         output.println("             if (ps != null) ps.close();");
         output.println("         }");
         output.println("         ResultSet rs = null;");
-        output.println("         if (get"+capitalize(pkColumn.getJavaName())+"().intValue()==0) {");
+        output.println("         if (get" + capitalize(pkColumn.getJavaName()) + "().intValue()==0) {");
         output.println("             stmt = \"SELECT max(" + table.getPrimaryKeyColumnName() + ") FROM " + table.getName() + "\";");
         output.println("             try {");
         output.println("                 ps = getConnection().prepareStatement(stmt);");
@@ -296,8 +298,8 @@ public class ORMGenerator {
             col = (Column) it.next();
             String delim = (col.getType().getJavaType().equals("String") ? "'" : "");
             if (!col.getName().equals(table.getPrimaryKeyColumnName())) {
-                output.println("                " +
-                        "ps.setObject(" + (++n) + ", get" + capitalize(col.getJavaName()) + "());");
+                output.println("                "
+                        + "ps.setObject(" + (++n) + ", get" + capitalize(col.getJavaName()) + "());");
             }
         }
         output.println("                ps.execute();");
@@ -335,8 +337,8 @@ public class ORMGenerator {
                 if (fk.getTableTo().getName().equals(table.getName())) {
                     if (fk.isDeleteCascade()) {
                         output.println("        {// delete cascade from " + fk.getTableFrom().getName());
-                        output.println("            " + capitalize(fk.getTableFrom().getName()) + "[] records = (" + capitalize(fk.getTableFrom().getName()) + "[])" +
-                                "" + capitalize(fk.getTableFrom().getName()) + ".load(getConnection(),\"" + col.getName() + " = \" + get" + capitalize(pkColumn.getJavaName()) + "(),null);");
+                        output.println("            " + capitalize(fk.getTableFrom().getName()) + "[] records = (" + capitalize(fk.getTableFrom().getName()) + "[])"
+                                + "" + capitalize(fk.getTableFrom().getName()) + ".load(getConnection(),\"" + col.getName() + " = \" + get" + capitalize(pkColumn.getJavaName()) + "(),null);");
                         output.println("            for (int i = 0; i<records.length; i++) {");
                         output.println("                " + capitalize(fk.getTableFrom().getName()) + " " + uncapitalize(fk.getTableFrom().getName()) + " = records[i];");
                         output.println("                " + uncapitalize(fk.getTableFrom().getName()) + ".delete();");
@@ -344,8 +346,8 @@ public class ORMGenerator {
                         output.println("        }");
                     } else if (fk.isDeleteSetNull()) {
                         output.println("        {// on delete set null at " + fk.getTableFrom().getName());
-                        output.println("            " + capitalize(fk.getTableFrom().getName()) + "[] records = (" + capitalize(fk.getTableFrom().getName()) + "[])" +
-                                "" + capitalize(fk.getTableFrom().getName()) + ".load(getConnection(),\"" + col.getName() + " = \" + get" + capitalize(pkColumn.getJavaName()) + "(),null);");
+                        output.println("            " + capitalize(fk.getTableFrom().getName()) + "[] records = (" + capitalize(fk.getTableFrom().getName()) + "[])"
+                                + "" + capitalize(fk.getTableFrom().getName()) + ".load(getConnection(),\"" + col.getName() + " = \" + get" + capitalize(pkColumn.getJavaName()) + "(),null);");
                         output.println("            for (int i = 0; i<records.length; i++) {");
                         output.println("                " + capitalize(fk.getTableFrom().getName()) + " " + uncapitalize(fk.getTableFrom().getName()) + " = records[i];");
                         output.println("                " + uncapitalize(fk.getTableFrom().getName()) + ".set" + capitalize(col.getJavaName()) + "(null);");
@@ -431,7 +433,7 @@ public class ORMGenerator {
         output.println("        boolean ok = false;");
         output.println("        PreparedStatement ps = null;");
         output.println("        ResultSet rs = null;");
-        output.println("        String stmt = \"SELECT " + table.getPrimaryKeyColumnName() + " FROM " + table.getName()+" \" +" ); //+" WHERE \" + whereCondition;");
+        output.println("        String stmt = \"SELECT " + table.getPrimaryKeyColumnName() + " FROM " + table.getName() + " \" +"); //+" WHERE \" + whereCondition;");
         output.println("                ((whereCondition != null && whereCondition.length() > 0) ?");
         output.println("                \"WHERE \" + whereCondition : \"\");");
 
@@ -471,11 +473,11 @@ public class ORMGenerator {
                 output.println("    }");
                 output.println();
                 output.println("    public void set" + capitalize(col.getJavaName()) + "(" + col.getType().getJavaType() + " " + col.getJavaName() + ") throws SQLException, ForeignKeyViolationException {");
-                boolean isFirst=true;
+                boolean isFirst = true;
                 for (Iterator inner = table.getForeignKeys().values().iterator(); inner.hasNext();) {
                     if (isFirst && col.getType().getJavaType().equals("Integer") && col.isNullable()) {
-                        output.println("        if (null != "+col.getJavaName()+")");
-                        output.println("            "+col.getJavaName()+" = "+col.getJavaName()+" == 0 ? null : "+col.getJavaName()+";");
+                        output.println("        if (null != " + col.getJavaName() + ")");
+                        output.println("            " + col.getJavaName() + " = " + col.getJavaName() + " == 0 ? null : " + col.getJavaName() + ";");
                         isFirst = false;
                     }
                     ForeignKey fk = (ForeignKey) inner.next();
@@ -492,10 +494,10 @@ public class ORMGenerator {
             }
         }
         output.println("    public Object[] getAsRow() {");
-        output.println("        Object[] columnValues = new Object["+table.getColumns().size()+"];");
-        for (it = table.getSortedColumns().iterator(),n = 0; it.hasNext();n++) {
+        output.println("        Object[] columnValues = new Object[" + table.getColumns().size() + "];");
+        for (it = table.getSortedColumns().iterator(), n = 0; it.hasNext(); n++) {
             col = (Column) it.next();
-            output.println("        columnValues["+n+"] = get" + capitalize(col.getJavaName()) + "();");
+            output.println("        columnValues[" + n + "] = get" + capitalize(col.getJavaName()) + "();");
         }
         output.println("        return columnValues;");
         output.println("    }");
@@ -512,33 +514,33 @@ public class ORMGenerator {
         output.println("    @Override");
         output.println("    public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {");
         output.println("        String[] flds = splitStr(row, delimiter);");
-        for (it = table.getSortedColumns().iterator(),n = 0; it.hasNext();n++) {
+        for (it = table.getSortedColumns().iterator(), n = 0; it.hasNext(); n++) {
             col = (Column) it.next();
             if (col.getType().getJavaType().equals("Integer")) {
                 output.println("        try {");
-                output.println("            set" + capitalize(col.getJavaName()) + "(Integer.parseInt(flds["+n+"]));");
+                output.println("            set" + capitalize(col.getJavaName()) + "(Integer.parseInt(flds[" + n + "]));");
                 output.println("        } catch(NumberFormatException ne) {");
                 output.println("            set" + capitalize(col.getJavaName()) + "(null);");
                 output.println("        }");
-            } else if(col.getType().getJavaType().equals("Date")) {
-                output.println("        set" + capitalize(col.getJavaName()) + "(toDate(flds["+n+"]));");
-            } else if(col.getType().getJavaType().equals("Double")) {
+            } else if (col.getType().getJavaType().equals("Date")) {
+                output.println("        set" + capitalize(col.getJavaName()) + "(toDate(flds[" + n + "]));");
+            } else if (col.getType().getJavaType().equals("Double")) {
                 output.println("        try {");
-                output.println("            set" + capitalize(col.getJavaName()) + "(Double.parseDouble(flds["+n+"]));");
+                output.println("            set" + capitalize(col.getJavaName()) + "(Double.parseDouble(flds[" + n + "]));");
                 output.println("        } catch(NumberFormatException ne) {");
                 output.println("            set" + capitalize(col.getJavaName()) + "(null);");
                 output.println("        }");
-            } else if(col.getType().getJavaType().equals("Float")) {
+            } else if (col.getType().getJavaType().equals("Float")) {
                 output.println("        try {");
-                output.println("            set" + capitalize(col.getJavaName()) + "(Float.parseFloat(flds["+n+"]));");
+                output.println("            set" + capitalize(col.getJavaName()) + "(Float.parseFloat(flds[" + n + "]));");
                 output.println("        } catch(NumberFormatException ne) {");
                 output.println("            set" + capitalize(col.getJavaName()) + "(null);");
                 output.println("        }");
             } else {
-                output.println("        set" + capitalize(col.getJavaName()) + "(flds["+n+"]);");
+                output.println("        set" + capitalize(col.getJavaName()) + "(flds[" + n + "]);");
             }
         }
-        output.println("    }");        
+        output.println("    }");
         output.println("}");
         output.close();
     }

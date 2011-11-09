@@ -71,7 +71,7 @@ public class DbConnection {
                 ps = connection.prepareStatement(sqls[i]);
                 ps.execute();
             } catch (SQLException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
             } finally {
                 try {
                     ps.close();

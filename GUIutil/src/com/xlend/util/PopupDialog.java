@@ -10,34 +10,43 @@ import javax.swing.table.AbstractTableModel;
  */
 public abstract class PopupDialog extends JDialog {
 
-    protected double xScale;
-    protected double yScale;
+//    protected double xScale;
+//    protected double yScale;
     protected Frame ownerFrame;
     private Object object;
 
-    public PopupDialog(Frame owner, String title,
-            double xScale, double yScale, Object obj) {
+    public PopupDialog(Frame owner, String title, Object obj) {
         super(owner, title);
         ownerFrame = owner;
         setObject(obj);
-        init(xScale, yScale);
+        init();
     }
 
-    private void init(double xScale, double yScale) {
-        this.xScale = xScale;
-        this.yScale = yScale;
-        initSize();
+    private void init() {//double xScale, double yScale) {
+//        this.xScale = xScale;
+//        this.yScale = yScale;
         fillContent();
         setMinimumSize(getSize());
+        initSize();
         setVisible(true);
     }
 
-    protected abstract void fillContent();
+    protected void fillContent() {
+        getContentPane().setLayout(new BorderLayout(10,10));
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(255, 203, 0));
+        JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
+        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
+        headerPanel.add(lbl);
+        getContentPane().add(headerPanel, BorderLayout.NORTH);
+    }
 
     protected void initSize() {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int) (xScale * d.width), (int) (yScale * d.height));
-        setLocation((int) ((1.0 - xScale) / 2 * d.width), (int) ((1.0 - yScale) / 2 * d.height));
+        //setSize((int) (xScale * d.width), (int) (yScale * d.height));
+        pack();
+        //setLocation((int) ((1.0 - xScale) / 2 * d.width), (int) ((1.0 - yScale) / 2 * d.height));
+        setLocation(d.width/2 - getWidth()/2, d.height/2 - getHeight()/2);
         this.setModal(true);
     }
 
@@ -105,12 +114,5 @@ public abstract class PopupDialog extends JDialog {
                 tableView.setRowSelectionInterval(selectedRow, selectedRow);
             }
         });
-    }
-
-    protected void setLookAndFeel(String lf) throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException,
-            UnsupportedLookAndFeelException {
-        UIManager.setLookAndFeel(lf);
-        SwingUtilities.updateComponentTreeUI(this);
     }
 }

@@ -1,6 +1,8 @@
 package com.xlend.gui;
 
+import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
+import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
@@ -8,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.rmi.RemoteException;
 import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -33,7 +36,7 @@ import javax.swing.event.ChangeListener;
  */
 public class WorkFrame extends JFrame implements WindowListener {
 
-    private IMessageSender exchanger;
+    protected IMessageSender exchanger;
 //    private final Properties props;
     private JPanel statusPanel = new JPanel();
     private JLabel statusLabel1 = new JLabel();
@@ -100,6 +103,8 @@ public class WorkFrame extends JFrame implements WindowListener {
         });
 
         toolBar = new JToolBar();
+        toolBar.add(aboutButton);
+        toolBar.add(exitButton);
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
         mainPanel = getMainPanel();
@@ -182,6 +187,17 @@ public class WorkFrame extends JFrame implements WindowListener {
                 statusLabel2.setText(msg == null ? m.getText() : msg);
             }
         });
+    }
+
+    protected void updateGrid(DbTableView view, DbTableDocument doc, String select)
+            throws RemoteException {
+        int row = view.getSelectedRow();
+        doc.setBody(exchanger.getTableBody(select));
+        view.getController().updateExcept(null);
+        row = row < view.getRowCount() ? row : row - 1;
+        if (row >= 0) {
+            view.setRowSelectionInterval(row, row);
+        }
     }
 
 //    private void hideWindow() {

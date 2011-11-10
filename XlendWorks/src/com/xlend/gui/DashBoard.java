@@ -76,7 +76,8 @@ public class DashBoard extends JFrame {
     private WorkFrame workFrame = null;
     private HRFrame hrFrame = null;
     private FleetFrame fleetFrame = null;
-
+    private AdminFrame adminFrame = null;
+    private ToolBarButton adminButton = null;
     private class WinListener extends WindowAdapter {
 
         public WinListener(JFrame frame) {
@@ -119,6 +120,12 @@ public class DashBoard extends JFrame {
         getContentPane().add(layers, BorderLayout.CENTER);
         readProperty("junk", ""); // just to init properties
 
+        img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
+        adminButton = new ToolBarButton("admin.png");
+        adminButton.setBounds(10, 30, img.getWidth() + 3, img.getHeight() + 3);
+        main.add(adminButton);
+        adminButton.setVisible(XlendWorks.isCurrentAdmin());
+
         workButton = new ToolBarButton("work.png");
         hrbutton = new ToolBarButton("hr.png");
         fleetbutton = new ToolBarButton("fleet.png");
@@ -134,6 +141,22 @@ public class DashBoard extends JFrame {
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
         logoutButton.setBounds(325, 260, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
+
+        adminButton.addActionListener(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (adminFrame == null) {
+                    adminFrame = new AdminFrame(exchanger);
+                } else {
+                    try {
+                        adminFrame.setLookAndFeel(readProperty("LookAndFeel",
+                                UIManager.getSystemLookAndFeelClassName()));
+                    } catch (Exception ex) {
+                    }
+                    adminFrame.setVisible(true);
+                }
+            }
+        });
 
         workButton.addActionListener(new AbstractAction() {
 
@@ -190,6 +213,7 @@ public class DashBoard extends JFrame {
                 saveProps();
                 if (XlendWorks.login(exchanger)) {
                     userLogin.setText(XlendWorks.getCurrentUserLogin());
+                    adminButton.setVisible(XlendWorks.isCurrentAdmin());
                     setVisible(true);
                 } else {
                     exit();
@@ -212,6 +236,10 @@ public class DashBoard extends JFrame {
     }
 
     public void setVisible(boolean show) {
+        if (adminFrame != null) {
+            adminFrame.dispose();
+            adminFrame = null;
+        }
         if (workFrame != null) {
             workFrame.dispose();
             workFrame = null;
@@ -224,7 +252,7 @@ public class DashBoard extends JFrame {
             fleetFrame.dispose();
             fleetFrame = null;
         }
-        
+
         super.setVisible(show);
     }
 
@@ -283,7 +311,7 @@ public class DashBoard extends JFrame {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize((int) (x * d.width), (int) (y * d.height));
     }
-    
+
     public static float getXratio(JFrame frame) {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         return (float) frame.getWidth() / d.width;

@@ -98,6 +98,10 @@ public class XlendWorks {
         return "";
     }
 
+    public static boolean isCurrentAdmin() {
+        return currentUser.getLogin().equalsIgnoreCase("admin");
+    }
+
     public static void logAndShowMessage(Exception ne) {
         log(ne);
         WorkFrame.errMessageBox("Error:", ne.getMessage());

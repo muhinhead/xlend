@@ -1,10 +1,5 @@
 package com.xlend.gui;
 
-import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-import com.jtattoo.plaf.aero.AeroLookAndFeel;
-import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
-import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
-import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
@@ -324,17 +319,17 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(createMenuItem("Acryl"));
-        it.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    AcrylLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
-                    setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
+//        it = m.add(createMenuItem("Acryl"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    AcrylLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
         it = m.add(createMenuItem("Nimbus"));
         it.addActionListener(new ActionListener() {
 
@@ -345,50 +340,50 @@ class MainFrame extends JFrame {
                 }
             }
         });
-        it = m.add(createMenuItem("Noire"));
-        it.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    NoireLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
-                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(createMenuItem("HiFi"));
-        it.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    HiFiLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
-                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(createMenuItem("Bernstein"));
-        it.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
-                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(createMenuItem("Aero"));
-        it.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", XLEND_PLANT);
-                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
+//        it = m.add(createMenuItem("Noire"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    NoireLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(createMenuItem("HiFi"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    HiFiLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(createMenuItem("Bernstein"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(createMenuItem("Aero"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
         it = m.add(createMenuItem("Nimrod"));
         it.addActionListener(new ActionListener() {
 
@@ -570,14 +565,6 @@ class MainFrame extends JFrame {
 
     public static IMessageSender getExchanger() {
         return exchanger;
-    }
-
-    public static void setSubThemes() {
-        AcrylLookAndFeel.setTheme("Default", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
-        HiFiLookAndFeel.setTheme("Default", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
-        NoireLookAndFeel.setTheme("Default", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
-        BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
-        AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", MainFrame.XLEND_PLANT);
     }
 
     protected JMenuItem createMenuItem(String label, String microHelp) {

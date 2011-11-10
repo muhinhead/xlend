@@ -20,8 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -45,8 +47,8 @@ public class LoginDialog extends PopupDialog {
     private static boolean okPressed;
     private AbstractAction okAction;
     private AbstractAction cancelAction;
-    private JCheckBox savePwdCB;
-    private JTextField loginField;
+//    private JCheckBox savePwdCB;
+    private JComboBox loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
     private static String currentLogin;
@@ -95,16 +97,16 @@ public class LoginDialog extends PopupDialog {
         JPanel editPane = new JPanel(new GridLayout(3, 1, 10, 10));
         labelPane.add(new JLabel(" Login:", SwingUtilities.RIGHT));
         labelPane.add(new JLabel(" Password:", SwingUtilities.RIGHT));
-        labelPane.add(new JLabel(" Save password:", SwingUtilities.RIGHT));
-        editPane.add(loginField = (JTextField) edits[0]);
+//        labelPane.add(new JLabel(" Save password:", SwingUtilities.RIGHT));
+        editPane.add(loginField = (JComboBox) edits[0]);
         editPane.add(pwdField = (JPasswordField) edits[1]);
-        editPane.add(savePwdCB = new JCheckBox());
+//        editPane.add(savePwdCB = new JCheckBox());
 
         Preferences userPref = Preferences.userRoot();
-        String pwdmd5 = userPref.get(DashBoard.PWDMD5, "");
-        pwdField.setText(pwdmd5);
-        savePwdCB.setSelected(pwdmd5.length() > 0);
-        loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
+//        String pwdmd5 = userPref.get(DashBoard.PWDMD5, "");
+//        pwdField.setText(pwdmd5);
+//        savePwdCB.setSelected(pwdmd5.length() > 0);
+        //loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
 
         upperPane.add(labelPane, BorderLayout.WEST);
         upperPane.add(editPane, BorderLayout.CENTER);
@@ -116,7 +118,7 @@ public class LoginDialog extends PopupDialog {
 
 //            @Override
             public void actionPerformed(ActionEvent e) {
-                String login = loginField.getText();
+                String login = (String)loginField.getSelectedItem();
                 String pwd = new String(pwdField.getPassword());
                 try {
                     //TODO: check MD5(pwd) instead of pwd
@@ -125,16 +127,16 @@ public class LoginDialog extends PopupDialog {
                     okPressed = (users.length > 0);
                     if (okPressed) {
                         Userprofile currentUser = (Userprofile) users[0];
-                        if (!savePwdCB.isSelected()) {
+//                        if (!savePwdCB.isSelected()) {
                             try {
                                 currentUser.setPwdmd5("");
                             } catch (Exception ex) {
                             }
-                        }
+//                        }
                         XlendWorks.setCurrentUser(currentUser);
                         dispose();
                     } else {
-                        JOptionPane.showMessageDialog(null, "Unknown user", "Sorry!", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Access denied", "Oops!", JOptionPane.ERROR_MESSAGE);
                         loginField.requestFocus();
                     }
                 } catch (Exception ex) {

@@ -1,5 +1,7 @@
 package com.xlend.gui;
 
+import com.xlend.orm.Userprofile;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.TexturedPanel;
@@ -27,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +55,7 @@ public class DashBoard extends JFrame {
     public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
     public final static String LASTLOGIN = "LastLogin";
-    public final static String PWDMD5 = "PWDMD5";
+//    public final static String PWDMD5 = "PWDMD5";
     private static IMessageSender exchanger;
     //private final ImagePanel backgroundImg;
     private static Properties props;
@@ -242,7 +245,7 @@ public class DashBoard extends JFrame {
             props.setProperty("ServerAddress", props.getProperty("ServerAddress", "localhost:1099"));
         }
         Preferences userPref = Preferences.userRoot();
-        userPref.put(PWDMD5, XlendWorks.getCurrentUser().getPwdmd5());
+//        userPref.put(PWDMD5, XlendWorks.getCurrentUser().getPwdmd5());
         saveProperties();
     }
 

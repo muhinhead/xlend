@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.orm.Userprofile;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
 import java.awt.Window;
@@ -8,12 +9,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPasswordField;
@@ -101,10 +104,27 @@ public class XlendWorks {
     }
 
     public static boolean login(IMessageSender exchanger) {
-        JTextField loginField = new JTextField(20);
+        JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
+        loginField.setEditable(true);
         JPasswordField pwdField = new JPasswordField(20);
         new LoginDialog(new Object[]{loginField, pwdField, exchanger});
         return LoginDialog.isOkPressed();
+    }
+
+    public static String[] loadAllLogins(IMessageSender exchanger) {
+        try {
+            DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");
+            String[] logins = new String[users.length];
+            int i=0;
+            for(DbObject o : users) {
+                Userprofile up = (Userprofile) o;
+                logins[i++] = up.getLogin();
+            }
+            return logins;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
     }
 
     public static Image loadImage(String iconName, Window w) {

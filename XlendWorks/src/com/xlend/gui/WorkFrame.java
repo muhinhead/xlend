@@ -50,14 +50,17 @@ public class WorkFrame extends JFrame implements WindowListener {
         addWindowListener(this);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.exchanger = exch;
-//        this.props = props;
         fillContentPane();
-        float width = Float.valueOf(DashBoard.readProperty("WindowWidth", "0.7"));
+        float width = Float.valueOf(DashBoard.readProperty("WindowWidth", "0.8"));
         float height = Float.valueOf(DashBoard.readProperty("WindowHeight", "0.8"));
-        width = (width > 0.0 ? width : (float)0.7);
-        height = (height>0.0? height : (float)0.8);
+        boolean maximize = (width < 0 || width < 0);
+        width = (width > 0.0 ? width : (float) 0.8);
+        height = (height > 0.0 ? height : (float) 0.8);
         DashBoard.setSizes(this, width, height);
         DashBoard.centerWindow(this);
+        if (maximize) {
+            setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        }
         setVisible(true);
     }
 
@@ -184,7 +187,6 @@ public class WorkFrame extends JFrame implements WindowListener {
 //    private void hideWindow() {
 //        setVisible(false);
 //    }
-
     @Override
     public void windowOpened(WindowEvent e) {
     }
@@ -195,10 +197,14 @@ public class WorkFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowClosed(WindowEvent e) {
-        float xRatio = DashBoard.getXratio(this);
-        float yRatio = DashBoard.getYratio(this);
-        DashBoard.getProperties().setProperty("WindowWidth", ""+xRatio);
-        DashBoard.getProperties().setProperty("WindowHeight", ""+yRatio);
+        float xRatio = -1;
+        float yRatio = -1;
+        if (this.getExtendedState() != JFrame.MAXIMIZED_BOTH) {
+            xRatio = DashBoard.getXratio(this);
+            yRatio = DashBoard.getYratio(this);
+        }
+        DashBoard.getProperties().setProperty("WindowWidth", "" + xRatio);
+        DashBoard.getProperties().setProperty("WindowHeight", "" + yRatio);
         DashBoard.saveProps();
     }
 

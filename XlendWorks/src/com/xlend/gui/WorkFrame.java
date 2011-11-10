@@ -1,10 +1,5 @@
 package com.xlend.gui;
 
-//import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-//import com.jtattoo.plaf.aero.AeroLookAndFeel;
-//import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
-//import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
-//import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
@@ -31,16 +26,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-//import sun.awt.AWTAccessor.WindowAccessor;
 
 /**
  *
  * @author Admin
  */
-public class WorkFrame extends JFrame {
+public class WorkFrame extends JFrame implements WindowListener {
 
     private IMessageSender exchanger;
-    private final Properties props;
+//    private final Properties props;
     private JPanel statusPanel = new JPanel();
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
@@ -51,21 +45,24 @@ public class WorkFrame extends JFrame {
     private ToolBarButton exitButton;
     private JToolBar toolBar;
 
-    public WorkFrame(String title, IMessageSender exch, Properties props) {
+    public WorkFrame(String title, IMessageSender exch) {
         super(title);
+        addWindowListener(this);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.exchanger = exch;
-        this.props = props;
+//        this.props = props;
         fillContentPane();
         float width = Float.valueOf(DashBoard.readProperty("WindowWidth", "0.7"));
         float height = Float.valueOf(DashBoard.readProperty("WindowHeight", "0.8"));
+        width = (width > 0.0 ? width : (float)0.7);
+        height = (height>0.0? height : (float)0.8);
         DashBoard.setSizes(this, width, height);
         DashBoard.centerWindow(this);
         setVisible(true);
     }
 
-    public WorkFrame(IMessageSender exch, Properties props) {
-        this("Works", exch, props);
+    public WorkFrame(IMessageSender exch) {
+        this("Works", exch);
     }
 
     public void setLookAndFeel(String lf) throws ClassNotFoundException,
@@ -95,7 +92,7 @@ public class WorkFrame extends JFrame {
         exitButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
-                hideWindow();
+                setVisible(false);
             }
         });
 
@@ -138,7 +135,7 @@ public class WorkFrame extends JFrame {
         mi.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                hideWindow();
+                setVisible(false);
             }
         });
         m.add(mi);
@@ -184,8 +181,40 @@ public class WorkFrame extends JFrame {
         });
     }
 
-    private void hideWindow() {
-        setVisible(false);
+//    private void hideWindow() {
+//        setVisible(false);
+//    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+        float xRatio = DashBoard.getXratio(this);
+        float yRatio = DashBoard.getYratio(this);
+        DashBoard.getProperties().setProperty("WindowWidth", ""+xRatio);
+        DashBoard.getProperties().setProperty("WindowHeight", ""+yRatio);
         DashBoard.saveProps();
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
     }
 }

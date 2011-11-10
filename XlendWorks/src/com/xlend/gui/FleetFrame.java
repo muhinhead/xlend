@@ -10,8 +10,8 @@ import javax.swing.JTabbedPane;
  * @author Nick Mukhin
  */
 public class FleetFrame extends WorkFrame {
-    public FleetFrame(IMessageSender exch, Properties props) {
-        super("Fleet", exch, props);
+    public FleetFrame(IMessageSender exch) {
+        super("Fleet", exch);
     }
 
     protected JTabbedPane getMainPanel() {

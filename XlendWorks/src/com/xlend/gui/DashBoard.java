@@ -136,7 +136,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
-                    workFrame = new WorkFrame(exchanger, props);
+                    workFrame = new WorkFrame(exchanger);
                 } else {
                     try {
                         workFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -152,7 +152,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (hrFrame == null) {
-                    hrFrame = new HRFrame(exchanger, props);
+                    hrFrame = new HRFrame(exchanger);
                 } else {
                     try {
                         hrFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -168,7 +168,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (fleetFrame == null) {
-                    fleetFrame = new FleetFrame(exchanger, props);
+                    fleetFrame = new FleetFrame(exchanger);
                 } else {
                     try {
                         fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -194,7 +194,7 @@ public class DashBoard extends JFrame {
             }
         });
 
-        JLabel greeting = new JLabel("WELLCOME");
+        JLabel greeting = new JLabel("WELCOME");
         greeting.setFont(greeting.getFont().deriveFont(Font.BOLD, 12));
         greeting.setBounds(10, 10, greeting.getPreferredSize().width, greeting.getPreferredSize().height);
         main.add(greeting);
@@ -221,6 +221,7 @@ public class DashBoard extends JFrame {
             fleetFrame.dispose();
             fleetFrame = null;
         }
+        
         super.setVisible(show);
     }
 
@@ -278,6 +279,16 @@ public class DashBoard extends JFrame {
     public static void setSizes(JFrame frame, double x, double y) {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize((int) (x * d.width), (int) (y * d.height));
+    }
+    
+    public static float getXratio(JFrame frame) {
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        return (float) frame.getWidth() / d.width;
+    }
+
+    public static float getYratio(JFrame frame) {
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        return (float) frame.getHeight() / d.height;
     }
 
     public static void centerWindow(JFrame frame) {

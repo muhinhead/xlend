@@ -10,8 +10,8 @@ import javax.swing.JTabbedPane;
  * @author Nick Mukhin
  */
 public class HRFrame extends WorkFrame {
-    public HRFrame(IMessageSender exch, Properties props) {
-        super("HR", exch, props);
+    public HRFrame(IMessageSender exch) {
+        super("HR", exch);
     }
 
     protected JTabbedPane getMainPanel() {

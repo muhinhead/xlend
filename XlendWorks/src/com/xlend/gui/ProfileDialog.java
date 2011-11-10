@@ -81,7 +81,7 @@ public abstract class ProfileDialog extends PopupDialog {
 
             private final String TRANSNAME = "CLIENTPROFILESAVE";
 
-            @Override
+//            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     startTransaction(TRANSNAME);
@@ -91,7 +91,7 @@ public abstract class ProfileDialog extends PopupDialog {
                             additionalEditPanel.setProfile_id(profile.getProfileId());
                         }
                         if (additionalEditPanel.save()) {
-                            MainFrame.getExchanger().commitTransaction();
+                            DashBoard.getExchanger().commitTransaction();
                             EditContactDialog.okPressed = true;
                             dispose();
                         } else {
@@ -102,14 +102,14 @@ public abstract class ProfileDialog extends PopupDialog {
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    MainFrame.errMessageBox("Error:", ex.getMessage());
+                    WorkFrame.errMessageBox("Error:", ex.getMessage());
                     rollbackTransaction(TRANSNAME);
                 }
             }
         }));
         btnPanel.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
 
-            @Override
+//            @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
@@ -130,7 +130,7 @@ public abstract class ProfileDialog extends PopupDialog {
 
     private void startTransaction(String transactionName) {
         try {
-            MainFrame.getExchanger().startTransaction(transactionName);
+            DashBoard.getExchanger().startTransaction(transactionName);
             insideTransaction = true;
         } catch (RemoteException ex1) {
             Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex1);
@@ -140,7 +140,7 @@ public abstract class ProfileDialog extends PopupDialog {
     private void rollbackTransaction(String transactionName) {
         if (insideTransaction) {
             try {
-                MainFrame.getExchanger().rollbackTransaction(transactionName);
+                DashBoard.getExchanger().rollbackTransaction(transactionName);
                 insideTransaction = false;
             } catch (RemoteException ex1) {
                 Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex1);

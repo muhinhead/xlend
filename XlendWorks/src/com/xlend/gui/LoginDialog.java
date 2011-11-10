@@ -1,10 +1,10 @@
 package com.xlend.gui;
 
-import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-import com.jtattoo.plaf.aero.AeroLookAndFeel;
-import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
-import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
-import com.jtattoo.plaf.noire.NoireLookAndFeel;
+//import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
+//import com.jtattoo.plaf.aero.AeroLookAndFeel;
+//import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
+//import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
+//import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -15,6 +15,7 @@ import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -22,12 +23,16 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -44,6 +49,7 @@ public class LoginDialog extends PopupDialog {
     private JTextField loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
+    private static String currentLogin;
 
     public LoginDialog(Object[] params) {
         super(null, "Login", params);
@@ -53,13 +59,11 @@ public class LoginDialog extends PopupDialog {
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         //super.fillContent();
+        buildMenu();
         getContentPane().setLayout(new BorderLayout());
         try {
-            String theme = MainFrame.readProperty("LookAndFeel", 
+            String theme = DashBoard.readProperty("LookAndFeel",
                     "com.nilo.plaf.nimrod.NimRODLookAndFeel");
-            if (theme.contains("jtattoo")) {
-                MainFrame.setSubThemes();
-            }
             UIManager.setLookAndFeel(theme);
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
@@ -97,10 +101,10 @@ public class LoginDialog extends PopupDialog {
         editPane.add(savePwdCB = new JCheckBox());
 
         Preferences userPref = Preferences.userRoot();
-        String pwdmd5 = userPref.get(MainFrame.PWDMD5, "");
+        String pwdmd5 = userPref.get(DashBoard.PWDMD5, "");
         pwdField.setText(pwdmd5);
         savePwdCB.setSelected(pwdmd5.length() > 0);
-        loginField.setText(MainFrame.readProperty(MainFrame.LASTLOGIN, ""));
+        loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
 
         upperPane.add(labelPane, BorderLayout.WEST);
         upperPane.add(editPane, BorderLayout.CENTER);
@@ -110,7 +114,7 @@ public class LoginDialog extends PopupDialog {
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
         buttonPane.add(okButton = new JButton(okAction = new AbstractAction("OK") {
 
-            @Override
+//            @Override
             public void actionPerformed(ActionEvent e) {
                 String login = loginField.getText();
                 String pwd = new String(pwdField.getPassword());
@@ -144,7 +148,7 @@ public class LoginDialog extends PopupDialog {
 
         buttonPane.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
 
-            @Override
+//            @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = false;
                 dispose();
@@ -153,6 +157,155 @@ public class LoginDialog extends PopupDialog {
 
         getRootPane().setDefaultButton(okButton);
         pack();
+    }
+
+    private void buildMenu() {
+        JMenuBar bar = new JMenuBar();
+        JMenu m = new JMenu("Options");
+        m.add(appearanceMenu("Theme"));
+        bar.add(m);
+        setJMenuBar(bar);
+    }
+
+    protected JMenu appearanceMenu(String item) {
+        JMenu m;
+        JMenuItem it;
+        m = new JMenu(item);
+        it = m.add(new JMenuItem("Tiny"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+//        it = m.add(new JMenuItem("Acryl"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    AcrylLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+        it = m.add(new JMenuItem("Nimbus"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+//        it = m.add(new JMenuItem("Noire"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    NoireLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("HiFi"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    HiFiLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Bernstein"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Aero"));
+//        it.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
+//                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+        it = m.add(new JMenuItem("Nimrod"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Plastic"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("System"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Java"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Motif"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        return m;
+    }
+
+    private void setLookAndFeel(String lf) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException,
+            UnsupportedLookAndFeelException {
+        UIManager.setLookAndFeel(lf);
+        SwingUtilities.updateComponentTreeUI(this);
+        DashBoard.getProperties().setProperty("LookAndFeel", lf);
+        DashBoard.saveProps();
     }
 
     @Override

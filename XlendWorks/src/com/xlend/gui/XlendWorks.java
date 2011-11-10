@@ -4,6 +4,7 @@ import com.xlend.orm.Userprofile;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
 import java.awt.Window;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
@@ -13,6 +14,8 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -30,12 +33,12 @@ public class XlendWorks {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String serverIP = MainFrame.readProperty("ServerAddress", "localhost");
+        String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
         IMessageSender exchanger;
         try {
             exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
             if (login(exchanger)) {
-                new MainFrame(exchanger);
+                new DashBoard(exchanger);
             } else {
                 System.exit(1);
             }
@@ -85,23 +88,29 @@ public class XlendWorks {
         currentUser = aCurrentUser;
     }
 
-    public static void logAndShowMessage(Exception ne) {
-        log(ne);
-        MainFrame.errMessageBox("Error:", ne.getMessage());
+    public static String getCurrentUserLogin() {
+        if (currentUser != null) {
+            return currentUser.getLogin();
+        }
+        return "";
     }
 
-    private static boolean login(IMessageSender exchanger) {
+    public static void logAndShowMessage(Exception ne) {
+        log(ne);
+        WorkFrame.errMessageBox("Error:", ne.getMessage());
+    }
+
+    public static boolean login(IMessageSender exchanger) {
         JTextField loginField = new JTextField(20);
         JPasswordField pwdField = new JPasswordField(20);
         new LoginDialog(new Object[]{loginField, pwdField, exchanger});
         return LoginDialog.isOkPressed();
     }
 
-    public static Image loadImage(String iconName,Window w) {
+    public static Image loadImage(String iconName, Window w) {
         Image im = null;
         File f = new File("images/" + iconName);
         if (f.exists()) {
-            System.out.println(f.getAbsolutePath()+" EXISTS");
             try {
                 ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
                 im = ic.getImage();
@@ -109,7 +118,6 @@ public class XlendWorks {
                 log(ex);
             }
         } else {
-            System.out.println(f.getAbsolutePath()+" NOT EXISTS");
             try {
                 im = ImageIO.read(w.getClass().getResourceAsStream("/" + iconName));
             } catch (Exception ie) {
@@ -120,21 +128,6 @@ public class XlendWorks {
     }
 
     public static void setWindowIcon(Window w, String iconName) {
-        w.setIconImage(loadImage(iconName,w));
-//        if (new File("images/" + iconName).exists()) {
-//            try {
-//                ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
-//                Image im = ic.getImage();
-//                w.setIconImage(ic.getImage());
-//            } catch (Exception ex) {
-//                log(ex);
-//            }
-//        } else {
-//            try {
-//                w.setIconImage(ImageIO.read(w.getClass().getResourceAsStream("/" + iconName)));
-//            } catch (Exception ie) {
-//                log(ie);
-//            }
-//        }
+        w.setIconImage(loadImage(iconName, w));
     }
 }

@@ -31,7 +31,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
 //        }
     }
 
-    @Override
+//    @Override
     public DbObject[] getDbObjects(Class dbobClass, String whereCondition,
             String orderCondition) throws RemoteException {
         DbObject[] rows = null;
@@ -53,7 +53,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         return rows;
     }
 
-    @Override
+//    @Override
     public DbObject saveDbObject(DbObject dbob) throws RemoteException {
         if (dbob != null) {
             Connection connection = DbConnection.getConnection();
@@ -75,7 +75,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         return dbob;
     }
 
-    @Override
+//    @Override
     public DbObject loadDbObjectOnID(Class dbobClass, int id) throws RemoteException {
         Connection connection = DbConnection.getConnection();
         DbObject dbob = null;
@@ -96,7 +96,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
-    @Override
+//    @Override
     public Vector[] getTableBody(String select) throws RemoteException {
         Vector headers = getColNames(select);
         return new Vector[]{headers, getRows(select, headers.size())};
@@ -186,7 +186,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
-    @Override
+//    @Override
     public void deleteObject(DbObject dbob) throws RemoteException {
         if (dbob != null) {
             Connection connection = DbConnection.getConnection();
@@ -232,17 +232,17 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
-    @Override
+//    @Override
     public void startTransaction(String transactionName) throws RemoteException {
         //execute("SAVEPOINT " + transactionName);
     }
 
-    @Override
+//    @Override
     public void commitTransaction() throws RemoteException {
         //execute("COMMIT");
     }
 
-    @Override
+//    @Override
     public void rollbackTransaction(String transactionName) throws RemoteException {
         //execute("ROLLBACK to " + transactionName);
     }

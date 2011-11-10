@@ -53,7 +53,7 @@ public class Table {
         String line;
         int number = 0;
         while ((line = in.readLine()) != null) {
-            if (!line.isEmpty() && !line.trim().startsWith("--") && !line.trim().startsWith("check") && !line.trim().startsWith("key ")) {
+            if (line.trim().length()==0 && !line.trim().startsWith("--") && !line.trim().startsWith("check") && !line.trim().startsWith("key ")) {
                 int cmntStart = line.indexOf("--");
                 line = cmntStart > -1 ? line.substring(0, cmntStart) : line;
                 try {

@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.gui;
 
-//import com.csa.dbutil.ComboItem;
-//import com.csa.formutil.RecordEditPanel;
-//import com.csa.orm.Clientprofile;
-//import com.csa.orm.dbobject.DbObject;
 import com.xlend.orm.Clientprofile;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -154,11 +146,11 @@ public class EditClientPanel extends ProfilePanel {
 //        }
         try {
             cp.setNew(isNew);
-            DbObject saved = MainFrame.getExchanger().saveDbObject(cp);
+            DbObject saved = DashBoard.getExchanger().saveDbObject(cp);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            MainFrame.errMessageBox("Error:", ex.getMessage());
+            WorkFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

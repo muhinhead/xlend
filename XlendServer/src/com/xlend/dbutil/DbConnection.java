@@ -25,7 +25,7 @@ public class DbConnection {
     private static boolean isFirstTime = true;
 //    private static Connection connection = null;
     private static Properties props = new Properties();
-    private static String[] createLocalDBsqls = loadDDLscript("../sql/crebas_hsqldb.sql");
+    private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
     private static String[] fixLocalDBsqls = new String[]{ //TODO: put here database fixes
     };
 
@@ -105,6 +105,12 @@ public class DbConnection {
     private static String[] loadDDLscript(String fname) {
         String[] ans = new String[0];
         File sqlFile = new File(fname);
+        boolean toclean = true;
+        if (!sqlFile.exists()) {
+            fname = "../sql/" + fname;
+            sqlFile = new File(fname);
+            toclean = false;
+        }
         if (sqlFile.exists()) {
             StringBuffer contents = new StringBuffer();
             java.io.BufferedReader reader = null;
@@ -129,6 +135,9 @@ public class DbConnection {
                     }
                 } catch (IOException ie) {
                 }
+            }
+            if (toclean) {
+                sqlFile.delete();
             }
         } else {
             XlendServer.log("File " + fname + " not found");

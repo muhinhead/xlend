@@ -1,6 +1,9 @@
 package com.xlend.util;
 
+import java.awt.Cursor;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -11,20 +14,45 @@ import javax.swing.JButton;
  *
  * @author Nick Mukhin
  */
-public class ToolBarButton extends JButton {
+public class ToolBarButton extends JButton implements MouseListener {
+
+    private static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
 
     public ToolBarButton(Icon icon) {
         super(icon);
         setVerticalTextPosition(BOTTOM);
         setHorizontalTextPosition(CENTER);
+        addMouseListener(this);
     }
 
     public ToolBarButton(String imageFile) {
         super(new ImageIcon(Util.loadImage(imageFile)));
+        addMouseListener(this);
     }
 
     public ToolBarButton(String imageFile, String text) {
         super(text);
         setIcon(new ImageIcon(Util.loadImage(imageFile)));
+        addMouseListener(this);
+    }
+
+    public void mouseClicked(MouseEvent e) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void mousePressed(MouseEvent e) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void mouseReleased(MouseEvent e) {
+//        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void mouseEntered(MouseEvent e) {
+        setCursor(handCursor);
+    }
+
+    public void mouseExited(MouseEvent e) {
+        setCursor(Cursor.getDefaultCursor().getDefaultCursor());
     }
 }

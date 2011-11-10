@@ -52,7 +52,7 @@ public abstract class RecordEditPanel extends JPanel {
     }
 
     protected String notEmpty(JTextComponent fld, String name) throws Exception {
-        if (fld.getText().isEmpty()) {
+        if (fld.getText().trim().length()==0) {
             fld.requestFocus();
             throw new EmptyValueException("Enter value for " + name);
         }

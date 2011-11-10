@@ -76,6 +76,7 @@ public class XlendServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println("Java version used: "+System.getProperty("java.version"));
         if (args.length < 1) {
             System.out.println("Usage:\n\tcom.csa.cmc.XlendServer [port] (default 1099)");
         }

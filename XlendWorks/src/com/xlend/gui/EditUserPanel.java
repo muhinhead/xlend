@@ -97,11 +97,11 @@ public class EditUserPanel extends ProfilePanel {
         up.setPwdmd5(new String(passwordField.getPassword()));
         try {
             up.setNew(isNew);
-            DbObject saved = MainFrame.getExchanger().saveDbObject(up);
+            DbObject saved = DashBoard.getExchanger().saveDbObject(up);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            MainFrame.errMessageBox("Error:", ex.getMessage());
+            WorkFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

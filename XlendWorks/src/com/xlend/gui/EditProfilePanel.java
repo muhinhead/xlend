@@ -49,7 +49,7 @@ class EditProfilePanel extends RecordEditPanel {
         Vector statesVector = null;
         String[] states = null;
         try {
-            statesVector = MainFrame.getExchanger().getTableBody(
+            statesVector = DashBoard.getExchanger().getTableBody(
                     "Select distinct state from profile order by state")[1];
             states = new String[statesVector.size()];
             int i = 0;
@@ -140,11 +140,11 @@ class EditProfilePanel extends RecordEditPanel {
         profile.setCellPhone(cellPhoneField.getText());
         profile.setEmail(emailField.getText());
         try {
-            DbObject saved = MainFrame.getExchanger().saveDbObject(profile);
+            DbObject saved = DashBoard.getExchanger().saveDbObject(profile);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            MainFrame.errMessageBox("Error:", ex.getMessage());
+            WorkFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

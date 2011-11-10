@@ -33,7 +33,7 @@ public abstract class ProfilePanel extends RecordEditPanel {
     private static ComboItem[] getComboItems(String select, ComboItem unknown) {
         Vector itemsVector = null;
         try {
-            itemsVector = MainFrame.getExchanger().getTableBody(select)[1];
+            itemsVector = DashBoard.getExchanger().getTableBody(select)[1];
             ComboItem[] items = new ComboItem[itemsVector.size() + (unknown != null ? 1 : 0)];
             int i = 0;
             if (unknown != null) {

@@ -63,47 +63,6 @@ create table clientprofile
     constraint clientprofile_profile_fk foreign key (profile_id) references profile on delete cascade
 );
 
--- Buldozer operator
-create table boperator
-(
-    profile_id        int not null,
-    clocksheets       smallint default 0,
-    clocknumber       varchar(32),
-    contractnumber    varchar(32),
-    loan_amount       int,
-    loan_balance      int,
-    loan_repayment    int,
-    rate              smallint,
-    mon_normaltime    smallint default 8,
-    mon_overtime      smallint default 0,
-    mon_doubletime    smallint default 0,
-    tue_normaltime    smallint default 8,
-    tue_overtime      smallint default 0,
-    tue_doubletime    smallint default 0,
-    wen_normaltime    smallint default 8,
-    wen_overtime      smallint default 0,
-    wen_doubletime    smallint default 0,
-    thu_normaltime    smallint default 8,
-    thu_overtime      smallint default 0,
-    thu_doubletime    smallint default 0,
-    fri_normaltime    smallint default 8,
-    fri_overtime      smallint default 0,
-    fri_doubletime    smallint default 0,
-    sat_normaltime    smallint default 8,
-    sat_overtime      smallint default 0,
-    sat_doubletime    smallint default 0,
-    sun_normaltime    smallint default 8,
-    sun_overtime      smallint default 0,
-    sun_doubletime    smallint default 0,
-    tot_norm_hours    smallint default 40,
-    tot_overtime      smallint default 0,
-    tot_doubletime    smallint default 0,
-    contract_term     smallint default 12, -- 1|3|6|12|0 --
-    contract_start    date,
-    contract_end      date,
-    constraint boperator_pk primary key (profile_id),
-    constraint boperator_profile_fk foreign key (profile_id) references profile,
-);
 
 create view v_userprofile as 
 select p.profile_id,

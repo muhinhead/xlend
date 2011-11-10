@@ -88,7 +88,7 @@ public class AdminFrame extends WorkFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = usersPanel.getSelectedID();
-                if (id > 0) {
+                if (id > 1) {
                     try {
                         Profile pf = (Profile) exchanger.loadDbObjectOnID(Profile.class, id);
                         if (yesNo("Attention!", "Do you want to delete user [" + pf.getFirstName() + " " + pf.getLastName() + "]?")
@@ -101,6 +101,8 @@ public class AdminFrame extends WorkFrame {
                         ex.printStackTrace();
                         errMessageBox("Error:", ex.getMessage());
                     }
+                } else {
+                    errMessageBox("Attention!", "You can't delete admin!");
                 }
             }
         };

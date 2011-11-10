@@ -55,7 +55,7 @@ create table clientprofile
     profile_id        int not null,
     salesperson_id    int,
     birthday          date,
-    source_type       varchar(10) --check (source_type in('Phonebook','Referral','Location','Others')),
+    source_type       varchar(10), --check (source_type in('Phonebook','Referral','Location','Others')),
     source_descr      varchar(255),
     sales_potential   int,
     constraint clientprofile_pk primary key (profile_id),

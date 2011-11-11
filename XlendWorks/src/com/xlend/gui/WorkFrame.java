@@ -110,6 +110,8 @@ public class WorkFrame extends JFrame implements WindowListener {
         mainPanel = getMainPanel();
         getContentPane().add(mainPanel, BorderLayout.CENTER);
 
+        getContentPane().add(statusPanel, BorderLayout.SOUTH);
+        
         buildMenu();
 
     }

@@ -1,10 +1,5 @@
 package com.xlend.gui;
 
-//import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
-//import com.jtattoo.plaf.aero.AeroLookAndFeel;
-//import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
-//import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
-//import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -61,6 +56,7 @@ public class LoginDialog extends PopupDialog {
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         //super.fillContent();
+        okPressed = false;
         buildMenu();
         getContentPane().setLayout(new BorderLayout());
         try {
@@ -103,8 +99,8 @@ public class LoginDialog extends PopupDialog {
 //        editPane.add(savePwdCB = new JCheckBox());
 
         Preferences userPref = Preferences.userRoot();
-//        String pwdmd5 = userPref.get(DashBoard.PWDMD5, "");
-//        pwdField.setText(pwdmd5);
+        String pwdmd5 = userPref.get("PWDMD5", "");
+        pwdField.setText(pwdmd5);
 //        savePwdCB.setSelected(pwdmd5.length() > 0);
         //loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
 

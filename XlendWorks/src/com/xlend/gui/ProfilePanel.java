@@ -25,9 +25,7 @@ import javax.swing.JPanel;
  */
 public abstract class ProfilePanel extends RecordEditPanel {
 
-    protected JPanel lblPanel;
-    protected JPanel editPanel;
-    protected JPanel upPanel;
+    
     protected int profile_id;
     
     private static ComboItem[] getComboItems(String select, ComboItem unknown) {
@@ -70,16 +68,5 @@ public abstract class ProfilePanel extends RecordEditPanel {
      */
     public void setProfile_id(int profile_id) {
         this.profile_id = profile_id;
-    }
-
-    protected void organizePanels(String[] labels, JComponent[] edits) {
-        setLayout(new BorderLayout());
-        lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
-        editPanel = new JPanel(new GridLayout(edits.length, 1, 5, 5));
-        upPanel = new JPanel(new BorderLayout());
-        add(upPanel, BorderLayout.NORTH);
-        upPanel.add(lblPanel, BorderLayout.WEST);
-        upPanel.add(editPanel, BorderLayout.CENTER);
-        upPanel.add(new JPanel(), BorderLayout.EAST);
     }
 }

@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.gui;
 
-//import com.csa.orm.Clientprofile;
-//import com.csa.orm.Profile;
-//import com.csa.orm.dbobject.DbObject;
-//import com.csa.util.PopupDialog;
 import com.xlend.orm.Profile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.ImagePanel;

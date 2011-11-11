@@ -2,6 +2,8 @@ package com.xlend.gui;
 
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
 
@@ -12,6 +14,20 @@ import javax.swing.text.JTextComponent;
 public abstract class RecordEditPanel extends JPanel {
 
     private DbObject dbObject;
+    protected JPanel lblPanel;
+    protected JPanel editPanel;
+    protected JPanel upPanel;
+    
+    protected void organizePanels(String[] labels, JComponent[] edits) {
+        setLayout(new BorderLayout());
+        lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
+        editPanel = new JPanel(new GridLayout(edits.length, 1, 5, 5));
+        upPanel = new JPanel(new BorderLayout());
+        add(upPanel, BorderLayout.NORTH);
+        upPanel.add(lblPanel, BorderLayout.WEST);
+        upPanel.add(editPanel, BorderLayout.CENTER);
+        upPanel.add(new JPanel(), BorderLayout.EAST);
+    }
 
     protected static class EmptyValueException extends Exception {
 

@@ -1,8 +1,12 @@
-package com.xlend.gui;
+package com.xlend.gui.user;
 
 //import com.csa.formutil.RecordEditPanel;
 //import com.csa.orm.Userprofile;
 //import com.csa.orm.dbobject.DbObject;
+import com.xlend.gui.DashBoard;
+import com.xlend.gui.ProfilePanel;
+import com.xlend.gui.WorkFrame;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;

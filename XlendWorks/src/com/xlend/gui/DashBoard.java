@@ -60,11 +60,11 @@ public class DashBoard extends JFrame {
     //private final ImagePanel backgroundImg;
     private static Properties props;
 
-    static Properties getProperties() {
+    public static Properties getProperties() {
         return props;
     }
 
-    static IMessageSender getExchanger() {
+    public static IMessageSender getExchanger() {
         return exchanger;
     }
     private final ToolBarButton workButton;
@@ -213,8 +213,11 @@ public class DashBoard extends JFrame {
                 saveProps();
                 if (XlendWorks.login(exchanger)) {
                     userLogin.setText(XlendWorks.getCurrentUserLogin());
+//                    boolean isadmin = XlendWorks.isCurrentAdmin();
+//                    System.out.println("User "+XlendWorks.getCurrentUserLogin()+" is admin:"+isadmin);
                     adminButton.setVisible(XlendWorks.isCurrentAdmin());
                     setVisible(true);
+                    repaint();
                 } else {
                     exit();
                 }
@@ -230,7 +233,8 @@ public class DashBoard extends JFrame {
         userLogin.setBounds(10, 30, 50, userLogin.getPreferredSize().height);
         main.add(userLogin);
 
-        centerWindow(this);
+//        centerWindow(this);
+        setLocation(10,10);
         setResizable(false);
         setVisible(true);
     }

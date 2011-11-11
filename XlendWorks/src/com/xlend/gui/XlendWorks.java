@@ -8,7 +8,9 @@ import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -45,8 +47,12 @@ public class XlendWorks {
             } else {
                 System.exit(1);
             }
-        } catch (Exception ne) {
-            logAndShowMessage(ne);
+//        } catch (java.rmi.ServerException re) {
+//            logAndShowMessage(re.detail);
+//            System.exit(1);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            logAndShowMessage(ex);
             System.exit(1);
         }
     }
@@ -102,25 +108,32 @@ public class XlendWorks {
         return currentUser.getLogin().equalsIgnoreCase("admin");
     }
 
-    public static void logAndShowMessage(Exception ne) {
-        log(ne);
+    public static void logAndShowMessage(Throwable ne) {
         WorkFrame.errMessageBox("Error:", ne.getMessage());
+        log(ne);
     }
 
     public static boolean login(IMessageSender exchanger) {
-        JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
-        loginField.setEditable(true);
-        JPasswordField pwdField = new JPasswordField(20);
-        new LoginDialog(new Object[]{loginField, pwdField, exchanger});
-        return LoginDialog.isOkPressed();
+        try {
+            JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
+            loginField.setEditable(true);
+            JPasswordField pwdField = new JPasswordField(20);
+            new LoginDialog(new Object[]{loginField, pwdField, exchanger});
+            return LoginDialog.isOkPressed();
+        } catch (Throwable ee) {
+            WorkFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
+            log(ee);
+        }
+        return false;
     }
 
     public static String[] loadAllLogins(IMessageSender exchanger) {
         try {
             DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");
-            String[] logins = new String[users.length];
-            int i=0;
-            for(DbObject o : users) {
+            String[] logins = new String[users.length + 1];
+            logins[0] = "";
+            int i = 1;
+            for (DbObject o : users) {
                 Userprofile up = (Userprofile) o;
                 logins[i++] = up.getLogin();
             }

@@ -119,7 +119,7 @@ public class AdminFrame extends WorkFrame {
             }
         };
     }
-    
+
     private AbstractAction addSiteAction() {
         return new AbstractAction("Add Site") {
 
@@ -148,7 +148,7 @@ public class AdminFrame extends WorkFrame {
                 if (id > 0) {
                     try {
                         Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
-                        new EditSiteDialog(_this,"Edit Site", xsite);
+                        new EditSiteDialog(_this, "Edit Site", xsite);
                         if (EditSiteDialog.okPressed) {
                             updateGrid(sitesPanel.getTableView(),
                                     sitesPanel.getTableDoc(), SELECT_FROM_SITES);
@@ -162,10 +162,32 @@ public class AdminFrame extends WorkFrame {
         };
     }
 
-    
+    private AbstractAction delSiteAction() {
+        return new AbstractAction("Delete Site") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = sitesPanel.getSelectedID();
+                try {
+                    Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
+                    if (yesNo("Attention!", "Do you want to delete site [" + xsite.getName() + "]?")
+                            == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xsite);
+                        updateGrid(sitesPanel.getTableView(),
+                                sitesPanel.getTableDoc(), SELECT_FROM_SITES);
+                    }
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    errMessageBox("Error:", ex.getMessage());
+                }
+
+            }
+        };
+    }
+
     private JPanel getUsersPanel() {
         if (usersPanel == null) {
-            usersPanel = createGridPanel(SELECT_FROM_USERS, addUserAction(), 
+            usersPanel = createGridPanel(SELECT_FROM_USERS, addUserAction(),
                     editUserAction(), delUserAction(), null);
         }
         return usersPanel;
@@ -173,23 +195,23 @@ public class AdminFrame extends WorkFrame {
 
     private JPanel getSitesPanel() {
         if (sitesPanel == null) {
-            HashMap<Integer, Integer> maxWidths =  new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
             maxWidths.put(0, 40);
             maxWidths.put(1, 150);
             maxWidths.put(3, 100);
             maxWidths.put(4, 100);
-            sitesPanel = createGridPanel(SELECT_FROM_SITES, addSiteAction(), 
-                    editSiteAction(), null, maxWidths);
+            sitesPanel = createGridPanel(SELECT_FROM_SITES, addSiteAction(),
+                    editSiteAction(), delSiteAction(), maxWidths);
         }
         return sitesPanel;
     }
 
     private DbTableGridPanel createGridPanel(String select,
-            AbstractAction add, AbstractAction edit, AbstractAction del,HashMap<Integer, Integer> maxWidths) {
+            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
         DbTableGridPanel targetPanel = null;
         try {
             targetPanel = new DbTableGridPanel(
-                    add, edit, del, exchanger.getTableBody(select),maxWidths);
+                    add, edit, del, exchanger.getTableBody(select), maxWidths);
             if (del != null) {
                 targetPanel.getDelAction().setEnabled(XlendWorks.getCurrentUser().getManager() == 1);
             }

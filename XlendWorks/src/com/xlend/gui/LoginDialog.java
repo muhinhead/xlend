@@ -99,8 +99,8 @@ public class LoginDialog extends PopupDialog {
 //        editPane.add(savePwdCB = new JCheckBox());
 
         Preferences userPref = Preferences.userRoot();
-        String pwdmd5 = userPref.get("PWDMD5", "");
-        pwdField.setText(pwdmd5);
+//        String pwdmd5 = userPref.get("PWDMD5", "");
+//        pwdField.setText(pwdmd5);
 //        savePwdCB.setSelected(pwdmd5.length() > 0);
         //loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
 

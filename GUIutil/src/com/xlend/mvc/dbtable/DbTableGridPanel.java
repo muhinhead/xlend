@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -36,12 +37,24 @@ public class DbTableGridPanel extends JPanel {
             final AbstractAction editAction,
             AbstractAction delAction,
             Vector[] tableBody) {
+        this(addAction, editAction, delAction, tableBody, null);
+    }
+    
+    public DbTableGridPanel(
+            AbstractAction addAction,
+            final AbstractAction editAction,
+            AbstractAction delAction,
+            Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
         super(new BorderLayout());
         this.addAction = addAction;
         this.editAction = editAction;
         this.delAction = delAction;
         tableView = new DbTableView();
-        tableView.setMaxColWidth(0, 40);
+        if (maxWidths != null) {
+            tableView.setMaxColWidths(maxWidths);
+        } else {
+            tableView.setMaxColWidth(0, 40);
+        }
         tableDoc = new DbTableDocument(toString(), tableBody);
         new Controller(getTableDoc(), getTableView());
         JPanel btnPanel = new JPanel(new GridLayout(4, 1, 5, 5));
@@ -56,7 +69,7 @@ public class DbTableGridPanel extends JPanel {
         tableView.addMouseListener(new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 2 && editAction != null) {
                     editAction.actionPerformed(null);
                 }
             }

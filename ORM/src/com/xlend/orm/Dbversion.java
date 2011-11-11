@@ -8,38 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Picture extends DbObject  {
+public class Dbversion extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer pictureId = null;
-    private Object picture = null;
+    private Integer dbversionId = null;
+    private Integer versionId = null;
+    private String version = null;
 
-    public Picture(Connection connection) {
-        super(connection, "picture", "picture_id");
-        setColumnNames(new String[]{"picture_id", "picture"});
+    public Dbversion(Connection connection) {
+        super(connection, "dbversion", "dbversion_id");
+        setColumnNames(new String[]{"dbversion_id", "version_id", "version"});
     }
 
-    public Picture(Connection connection, Integer pictureId, Object picture) {
-        super(connection, "picture", "picture_id");
-        setNew(pictureId.intValue() <= 0);
-//        if (pictureId.intValue() != 0) {
-            this.pictureId = pictureId;
+    public Dbversion(Connection connection, Integer dbversionId, Integer versionId, String version) {
+        super(connection, "dbversion", "dbversion_id");
+        setNew(dbversionId.intValue() <= 0);
+//        if (dbversionId.intValue() != 0) {
+            this.dbversionId = dbversionId;
 //        }
-        this.picture = picture;
+        this.versionId = versionId;
+        this.version = version;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Picture picture = null;
+        Dbversion dbversion = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture WHERE picture_id=" + id;
+        String stmt = "SELECT dbversion_id,version_id,version FROM dbversion WHERE dbversion_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                picture = new Picture(getConnection());
-                picture.setPictureId(new Integer(rs.getInt(1)));
-                picture.setPicture(rs.getObject(2));
-                picture.setNew(false);
+                dbversion = new Dbversion(getConnection());
+                dbversion.setDbversionId(new Integer(rs.getInt(1)));
+                dbversion.setVersionId(new Integer(rs.getInt(2)));
+                dbversion.setVersion(rs.getString(3));
+                dbversion.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +51,7 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return picture;
+        return dbversion;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +60,27 @@ public class Picture extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO picture ("+(getPictureId().intValue()!=0?"picture_id,":"")+"picture) values("+(getPictureId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO dbversion ("+(getDbversionId().intValue()!=0?"dbversion_id,":"")+"version_id,version) values("+(getDbversionId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getPictureId().intValue()!=0) {
-                 ps.setObject(++n, getPictureId());
+             if (getDbversionId().intValue()!=0) {
+                 ps.setObject(++n, getDbversionId());
              }
-             ps.setObject(++n, getPicture());
+             ps.setObject(++n, getVersionId());
+             ps.setObject(++n, getVersion());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getPictureId().intValue()==0) {
-             stmt = "SELECT max(picture_id) FROM picture";
+         if (getDbversionId().intValue()==0) {
+             stmt = "SELECT max(dbversion_id) FROM dbversion";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setPictureId(new Integer(rs.getInt(1)));
+                     setDbversionId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +106,13 @@ public class Picture extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE picture " +
-                    "SET picture = ?" + 
-                    " WHERE picture_id = " + getPictureId();
+                    "UPDATE dbversion " +
+                    "SET version_id = ?, version = ?" + 
+                    " WHERE dbversion_id = " + getDbversionId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPicture());
+                ps.setObject(1, getVersionId());
+                ps.setObject(2, getVersion());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,41 +125,31 @@ public class Picture extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (getTriggers() != null) {
-            getTriggers().beforeDelete(this);
-        }
-        {// delete cascade from profile
-            Profile[] records = (Profile[])Profile.load(getConnection(),"picture_id = " + getPictureId(),null);
-            for (int i = 0; i<records.length; i++) {
-                Profile profile = records[i];
-                profile.delete();
-            }
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM picture " +
-                "WHERE picture_id = " + getPictureId();
+                "DELETE FROM dbversion " +
+                "WHERE dbversion_id = " + getDbversionId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setPictureId(new Integer(-getPictureId().intValue()));
+        setDbversionId(new Integer(-getDbversionId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getPictureId().intValue() < 0);
+        return (getDbversionId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture " +
+        String stmt = "SELECT dbversion_id,version_id,version FROM dbversion " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -164,7 +159,7 @@ public class Picture extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Picture(con,new Integer(rs.getInt(1)),rs.getObject(2)));
+                lst.add(dbObj=new Dbversion(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getString(3)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -174,10 +169,10 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Picture[] objects = new Picture[lst.size()];
+        Dbversion[] objects = new Dbversion[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Picture picture = (Picture) lst.get(i);
-            objects[i] = picture;
+            Dbversion dbversion = (Dbversion) lst.get(i);
+            objects[i] = dbversion;
         }
         return objects;
     }
@@ -189,7 +184,7 @@ public class Picture extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id FROM picture " +
+        String stmt = "SELECT dbversion_id FROM dbversion " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -207,31 +202,41 @@ public class Picture extends DbObject  {
     }
 
     //public String toString() {
-    //    return getPictureId() + getDelimiter();
+    //    return getDbversionId() + getDelimiter();
     //}
 
-    public Integer getPictureId() {
-        return pictureId;
+    public Integer getDbversionId() {
+        return dbversionId;
     }
 
-    public void setPictureId(Integer pictureId) throws ForeignKeyViolationException {
-        setWasChanged(this.pictureId != null && this.pictureId != pictureId);
-        this.pictureId = pictureId;
-        setNew(pictureId.intValue() == 0);
+    public void setDbversionId(Integer dbversionId) throws ForeignKeyViolationException {
+        setWasChanged(this.dbversionId != null && this.dbversionId != dbversionId);
+        this.dbversionId = dbversionId;
+        setNew(dbversionId.intValue() == 0);
     }
 
-    public Object getPicture() {
-        return picture;
+    public Integer getVersionId() {
+        return versionId;
     }
 
-    public void setPicture(Object picture) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.picture != null && !this.picture.equals(picture));
-        this.picture = picture;
+    public void setVersionId(Integer versionId) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.versionId != null && !this.versionId.equals(versionId));
+        this.versionId = versionId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.version != null && !this.version.equals(version));
+        this.version = version;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getPictureId();
-        columnValues[1] = getPicture();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getDbversionId();
+        columnValues[1] = getVersionId();
+        columnValues[2] = getVersion();
         return columnValues;
     }
 
@@ -248,10 +253,15 @@ public class Picture extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setPictureId(Integer.parseInt(flds[0]));
+            setDbversionId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setPictureId(null);
+            setDbversionId(null);
         }
-        setPicture(flds[1]);
+        try {
+            setVersionId(Integer.parseInt(flds[1]));
+        } catch(NumberFormatException ne) {
+            setVersionId(null);
+        }
+        setVersion(flds[2]);
     }
 }

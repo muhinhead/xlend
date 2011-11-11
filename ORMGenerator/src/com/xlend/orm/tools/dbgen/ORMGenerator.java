@@ -59,10 +59,10 @@ public class ORMGenerator {
         String filePath = dirName + File.separatorChar + capitalize(table.getName()) + "." + JAVA;
         File dir = new File(dirName);
         dir.mkdirs();
-        File oldVersion = new File(filePath);
-        if (oldVersion.exists()) {
-            oldVersion.renameTo(new File(oldVersion + ".bak"));
-        }
+//        File oldVersion = new File(filePath);
+//        if (oldVersion.exists()) {
+//            oldVersion.renameTo(new File(oldVersion + ".bak"));
+//        }
         System.out.println("...generating " + capitalize(table.getName()) + "." + JAVA);
         output = new PrintWriter(new FileWriter(filePath));
         javaHeader(output, packageName, table.getName());

@@ -35,7 +35,11 @@ public class Table {
         columns = new HashMap(); //Column objects
         foreignKeys = new HashMap(); //ForeignKey objects
 
-        int p;
+        int p = inLine.toLowerCase().indexOf("cached");
+        if (p>0) {
+            inLine.replaceAll("cached", "");
+        }
+        
         if ((p = inLine.indexOf("--")) > 0) {
             String cmnt = inLine.substring(p + 2);
             if (cmnt.trim().startsWith("implements")) {

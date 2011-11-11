@@ -11,7 +11,8 @@ import java.util.StringTokenizer;
  * @author Nick Mukhin
  */
 public class Column {
-        private int number;
+
+    private int number;
     private String name = null;
     private Type type = null;
     private Integer length = null;
@@ -21,9 +22,8 @@ public class Column {
 
     public Column(String inLine, int number) throws NotColumnDescribingLineException {
         this.number = number;
-        if (inLine.trim().length() == 0 || inLine.charAt(0) != ' ' ||
-                inLine.indexOf("primary key") > 0 || inLine.indexOf("foreign key") > 0)
-        {
+        if (inLine.trim().length() == 0 || inLine.charAt(0) != ' '
+                || inLine.indexOf("primary key") > 0 || inLine.indexOf("foreign key") > 0) {
             throw new NotColumnDescribingLineException(inLine);
         }
         int n = 0, p;//, r;
@@ -38,7 +38,10 @@ public class Column {
             } else if (n == 1) {
                 type = new Type(s);
             } else if (n == 2 && isLength) {
-                length = new Integer(s);
+                try {
+                    length = new Integer(s);
+                } catch (NumberFormatException ne) {
+                }
             } else if (n == 3 && isLength) {
                 try {
                     precision = new Integer(s);

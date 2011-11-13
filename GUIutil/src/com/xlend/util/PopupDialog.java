@@ -22,12 +22,10 @@ public abstract class PopupDialog extends JDialog {
         init();
     }
 
-    private void init() {//double xScale, double yScale) {
-//        this.xScale = xScale;
-//        this.yScale = yScale;
+    private void init() {
         fillContent();
-        setMinimumSize(getSize());
         initSize();
+        setMinimumSize(getSize());
         setVisible(true);
     }
 
@@ -43,9 +41,7 @@ public abstract class PopupDialog extends JDialog {
 
     protected void initSize() {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        //setSize((int) (xScale * d.width), (int) (yScale * d.height));
         pack();
-        //setLocation((int) ((1.0 - xScale) / 2 * d.width), (int) ((1.0 - yScale) / 2 * d.height));
         setLocation(d.width/2 - getWidth()/2, d.height/2 - getHeight()/2);
         this.setModal(true);
     }
@@ -78,9 +74,9 @@ public abstract class PopupDialog extends JDialog {
         for (int i = components.length - 1; i >= 0; i--) {
             Component comp = components[i];
             if (comp != null) {
-//                if (comp instanceof Container) {
-//                    removeComponents((Container) comp);
-//                }
+                if (comp instanceof Container) {
+                    removeComponents((Container) comp);
+                }
                 if (comp instanceof PopupDialog) {
                     ((PopupDialog) comp).freeResources();
                 }

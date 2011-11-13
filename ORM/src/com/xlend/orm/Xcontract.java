@@ -8,47 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xsite extends DbObject  {
+public class Xcontract extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xsiteId = null;
-    private String name = null;
+    private Integer xcontractId = null;
+    private String contractref = null;
     private String description = null;
-    private Integer dieselsponsor = null;
-    private String sitetype = null;
+    private Integer xclientId = null;
+    private Integer pictureId = null;
 
-    public Xsite(Connection connection) {
-        super(connection, "xsite", "xsite_id");
-        setColumnNames(new String[]{"xsite_id", "name", "description", "dieselsponsor", "sitetype"});
+    public Xcontract(Connection connection) {
+        super(connection, "xcontract", "xcontract_id");
+        setColumnNames(new String[]{"xcontract_id", "contractref", "description", "xclient_id", "picture_id"});
     }
 
-    public Xsite(Connection connection, Integer xsiteId, String name, String description, Integer dieselsponsor, String sitetype) {
-        super(connection, "xsite", "xsite_id");
-        setNew(xsiteId.intValue() <= 0);
-//        if (xsiteId.intValue() != 0) {
-            this.xsiteId = xsiteId;
+    public Xcontract(Connection connection, Integer xcontractId, String contractref, String description, Integer xclientId, Integer pictureId) {
+        super(connection, "xcontract", "xcontract_id");
+        setNew(xcontractId.intValue() <= 0);
+//        if (xcontractId.intValue() != 0) {
+            this.xcontractId = xcontractId;
 //        }
-        this.name = name;
+        this.contractref = contractref;
         this.description = description;
-        this.dieselsponsor = dieselsponsor;
-        this.sitetype = sitetype;
+        this.xclientId = xclientId;
+        this.pictureId = pictureId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xsite xsite = null;
+        Xcontract xcontract = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id,name,description,dieselsponsor,sitetype FROM xsite WHERE xsite_id=" + id;
+        String stmt = "SELECT xcontract_id,contractref,description,xclient_id,picture_id FROM xcontract WHERE xcontract_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xsite = new Xsite(getConnection());
-                xsite.setXsiteId(new Integer(rs.getInt(1)));
-                xsite.setName(rs.getString(2));
-                xsite.setDescription(rs.getString(3));
-                xsite.setDieselsponsor(new Integer(rs.getInt(4)));
-                xsite.setSitetype(rs.getString(5));
-                xsite.setNew(false);
+                xcontract = new Xcontract(getConnection());
+                xcontract.setXcontractId(new Integer(rs.getInt(1)));
+                xcontract.setContractref(rs.getString(2));
+                xcontract.setDescription(rs.getString(3));
+                xcontract.setXclientId(new Integer(rs.getInt(4)));
+                xcontract.setPictureId(new Integer(rs.getInt(5)));
+                xcontract.setNew(false);
             }
         } finally {
             try {
@@ -57,7 +57,7 @@ public class Xsite extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xsite;
+        return xcontract;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -66,29 +66,29 @@ public class Xsite extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xsite ("+(getXsiteId().intValue()!=0?"xsite_id,":"")+"name,description,dieselsponsor,sitetype) values("+(getXsiteId().intValue()!=0?"?,":"")+"?,?,?,?)";
+                "INSERT INTO xcontract ("+(getXcontractId().intValue()!=0?"xcontract_id,":"")+"contractref,description,xclient_id,picture_id) values("+(getXcontractId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXsiteId().intValue()!=0) {
-                 ps.setObject(++n, getXsiteId());
+             if (getXcontractId().intValue()!=0) {
+                 ps.setObject(++n, getXcontractId());
              }
-             ps.setObject(++n, getName());
+             ps.setObject(++n, getContractref());
              ps.setObject(++n, getDescription());
-             ps.setObject(++n, getDieselsponsor());
-             ps.setObject(++n, getSitetype());
+             ps.setObject(++n, getXclientId());
+             ps.setObject(++n, getPictureId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXsiteId().intValue()==0) {
-             stmt = "SELECT max(xsite_id) FROM xsite";
+         if (getXcontractId().intValue()==0) {
+             stmt = "SELECT max(xcontract_id) FROM xcontract";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXsiteId(new Integer(rs.getInt(1)));
+                     setXcontractId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -114,15 +114,15 @@ public class Xsite extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xsite " +
-                    "SET name = ?, description = ?, dieselsponsor = ?, sitetype = ?" + 
-                    " WHERE xsite_id = " + getXsiteId();
+                    "UPDATE xcontract " +
+                    "SET contractref = ?, description = ?, xclient_id = ?, picture_id = ?" + 
+                    " WHERE xcontract_id = " + getXcontractId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getName());
+                ps.setObject(1, getContractref());
                 ps.setObject(2, getDescription());
-                ps.setObject(3, getDieselsponsor());
-                ps.setObject(4, getSitetype());
+                ps.setObject(3, getXclientId());
+                ps.setObject(4, getPictureId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -135,31 +135,34 @@ public class Xsite extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (getTriggers() != null) {
+            getTriggers().beforeDelete(this);
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xsite " +
-                "WHERE xsite_id = " + getXsiteId();
+                "DELETE FROM xcontract " +
+                "WHERE xcontract_id = " + getXcontractId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXsiteId(new Integer(-getXsiteId().intValue()));
+        setXcontractId(new Integer(-getXcontractId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXsiteId().intValue() < 0);
+        return (getXcontractId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id,name,description,dieselsponsor,sitetype FROM xsite " +
+        String stmt = "SELECT xcontract_id,contractref,description,xclient_id,picture_id FROM xcontract " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -169,7 +172,7 @@ public class Xsite extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xsite(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3),new Integer(rs.getInt(4)),rs.getString(5)));
+                lst.add(dbObj=new Xcontract(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3),new Integer(rs.getInt(4)),new Integer(rs.getInt(5))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -179,10 +182,10 @@ public class Xsite extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xsite[] objects = new Xsite[lst.size()];
+        Xcontract[] objects = new Xcontract[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xsite xsite = (Xsite) lst.get(i);
-            objects[i] = xsite;
+            Xcontract xcontract = (Xcontract) lst.get(i);
+            objects[i] = xcontract;
         }
         return objects;
     }
@@ -194,7 +197,7 @@ public class Xsite extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id FROM xsite " +
+        String stmt = "SELECT xcontract_id FROM xcontract " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -212,26 +215,26 @@ public class Xsite extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXsiteId() + getDelimiter();
+    //    return getXcontractId() + getDelimiter();
     //}
 
-    public Integer getXsiteId() {
-        return xsiteId;
+    public Integer getXcontractId() {
+        return xcontractId;
     }
 
-    public void setXsiteId(Integer xsiteId) throws ForeignKeyViolationException {
-        setWasChanged(this.xsiteId != null && this.xsiteId != xsiteId);
-        this.xsiteId = xsiteId;
-        setNew(xsiteId.intValue() == 0);
+    public void setXcontractId(Integer xcontractId) throws ForeignKeyViolationException {
+        setWasChanged(this.xcontractId != null && this.xcontractId != xcontractId);
+        this.xcontractId = xcontractId;
+        setNew(xcontractId.intValue() == 0);
     }
 
-    public String getName() {
-        return name;
+    public String getContractref() {
+        return contractref;
     }
 
-    public void setName(String name) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.name != null && !this.name.equals(name));
-        this.name = name;
+    public void setContractref(String contractref) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.contractref != null && !this.contractref.equals(contractref));
+        this.contractref = contractref;
     }
 
     public String getDescription() {
@@ -243,30 +246,38 @@ public class Xsite extends DbObject  {
         this.description = description;
     }
 
-    public Integer getDieselsponsor() {
-        return dieselsponsor;
+    public Integer getXclientId() {
+        return xclientId;
     }
 
-    public void setDieselsponsor(Integer dieselsponsor) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.dieselsponsor != null && !this.dieselsponsor.equals(dieselsponsor));
-        this.dieselsponsor = dieselsponsor;
+    public void setXclientId(Integer xclientId) throws SQLException, ForeignKeyViolationException {
+        if (xclientId!=null && !Xclient.exists(getConnection(),"xclient_id = " + xclientId)) {
+            throw new ForeignKeyViolationException("Can't set xclient_id, foreign key violation: xcontract_xclient_fk");
+        }
+        setWasChanged(this.xclientId != null && !this.xclientId.equals(xclientId));
+        this.xclientId = xclientId;
     }
 
-    public String getSitetype() {
-        return sitetype;
+    public Integer getPictureId() {
+        return pictureId;
     }
 
-    public void setSitetype(String sitetype) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.sitetype != null && !this.sitetype.equals(sitetype));
-        this.sitetype = sitetype;
+    public void setPictureId(Integer pictureId) throws SQLException, ForeignKeyViolationException {
+        if (null != pictureId)
+            pictureId = pictureId == 0 ? null : pictureId;
+        if (pictureId!=null && !Picture.exists(getConnection(),"picture_id = " + pictureId)) {
+            throw new ForeignKeyViolationException("Can't set picture_id, foreign key violation: xcontact_picture_fk");
+        }
+        setWasChanged(this.pictureId != null && !this.pictureId.equals(pictureId));
+        this.pictureId = pictureId;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[5];
-        columnValues[0] = getXsiteId();
-        columnValues[1] = getName();
+        columnValues[0] = getXcontractId();
+        columnValues[1] = getContractref();
         columnValues[2] = getDescription();
-        columnValues[3] = getDieselsponsor();
-        columnValues[4] = getSitetype();
+        columnValues[3] = getXclientId();
+        columnValues[4] = getPictureId();
         return columnValues;
     }
 
@@ -283,17 +294,21 @@ public class Xsite extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXsiteId(Integer.parseInt(flds[0]));
+            setXcontractId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXsiteId(null);
+            setXcontractId(null);
         }
-        setName(flds[1]);
+        setContractref(flds[1]);
         setDescription(flds[2]);
         try {
-            setDieselsponsor(Integer.parseInt(flds[3]));
+            setXclientId(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
-            setDieselsponsor(null);
+            setXclientId(null);
         }
-        setSitetype(flds[4]);
+        try {
+            setPictureId(Integer.parseInt(flds[4]));
+        } catch(NumberFormatException ne) {
+            setPictureId(null);
+        }
     }
 }

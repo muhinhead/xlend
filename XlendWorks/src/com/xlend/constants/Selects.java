@@ -18,8 +18,11 @@ public class Selects {
     public static final String SELECT_FROM_CLIENTS = "Select xclient_id \"Id\","
             + "clientcode \"Client Code\", companyname \"Company name\", "
             + "contactname \"Contact Name\", phonenumber \"Tel Nr.\", vatnumber \"Vat Nr.\" "
-            + "from xclient order by clientcode";
+            + "from xclient order by upper(clientcode)";
     public static final String SELECT_FROM_CONTRACTS = "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
+    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
+            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","
+            + "orderqty \"Order Quantity\",priceperunit \"Price per Unit\" from xcontractitem where xcontract_id = #";            
 }

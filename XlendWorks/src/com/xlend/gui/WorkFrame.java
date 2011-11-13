@@ -1,9 +1,12 @@
 package com.xlend.gui;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.contract.EditContractDialog;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.orm.Xclient;
+import com.xlend.orm.Xcontract;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
@@ -45,15 +48,17 @@ public class WorkFrame extends JFrame implements WindowListener {
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
     private JLabel statusLabel3 = new JLabel();
-    private DbTableGridPanel usersPanel = null;
+//    private DbTableGridPanel usersPanel = null;
     private DbTableGridPanel contractsPanel = null;
     private JTabbedPane mainPanel;
     private ToolBarButton aboutButton;
     private ToolBarButton exitButton;
     private JToolBar toolBar;
+//    protected WorkFrame _this;
 
     public WorkFrame(String title, IMessageSender exch) {
         super(title);
+//        _this = this;
         addWindowListener(this);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.exchanger = exch;
@@ -251,17 +256,15 @@ public class WorkFrame extends JFrame implements WindowListener {
             HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
             maxWidths.put(0, 40);
             maxWidths.put(1, 150);
-            contractsPanel = createGridPanel(Selects.SELECT_FROM_CONTRACTS,
-                    addContractAction(),
-                    null,//editContractAction(), 
-                    null,//delContractAction(), 
-                    maxWidths);
+            contractsPanel = createGridPanel(exchanger,Selects.SELECT_FROM_CONTRACTS,
+                    addContractAction(), editContractAction(),
+                    delContractAction(), maxWidths);
         }
         return contractsPanel;
 
     }
 
-    protected DbTableGridPanel createGridPanel(String select,
+    public static DbTableGridPanel createGridPanel(IMessageSender exchanger, String select,
             AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
         DbTableGridPanel targetPanel = null;
         try {
@@ -281,7 +284,62 @@ public class WorkFrame extends JFrame implements WindowListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                try {
+                    new EditContractDialog("New Contract", null);
+                    if (EditContractDialog.okPressed) {
+                        updateGrid(contractsPanel.getTableView(),
+                                contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
+                    }
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
+    }
+
+    private AbstractAction editContractAction() {
+        return new AbstractAction("Edit Contract") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = contractsPanel.getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
+                        new EditContractDialog("Edit Contract", xcontract);
+                        if (EditContractDialog.okPressed) {
+                            updateGrid(contractsPanel.getTableView(),
+                                    contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
+                        }
+                    } catch (RemoteException ex) {
+                        ex.printStackTrace();
+                        errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
+    }
+
+    private AbstractAction delContractAction() {
+        return new AbstractAction("Delete Contract") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = contractsPanel.getSelectedID();
+                try {
+                    Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xclient.class, id);
+                    if (yesNo("Attention!", "Do you want to delete contract  [" + xcontract.getContractref() + "]?")
+                            == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xcontract);
+                        updateGrid(contractsPanel.getTableView(),
+                                contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
+                    }
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    errMessageBox("Error:", ex.getMessage());
+                }
+
             }
         };
     }

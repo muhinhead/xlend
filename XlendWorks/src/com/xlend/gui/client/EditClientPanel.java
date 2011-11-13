@@ -90,7 +90,7 @@ public class EditClientPanel extends RecordEditPanel {
         form.add(upper, BorderLayout.NORTH);
 
         JPanel leftpanel = new JPanel(new BorderLayout());
-        leftpanel.add(new JLabel(labels[2], SwingConstants.RIGHT), BorderLayout.NORTH);
+        leftpanel.add(new JLabel(labels[4], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
         form.add(edits[4]);
@@ -108,8 +108,8 @@ public class EditClientPanel extends RecordEditPanel {
 
         form.add(downper, BorderLayout.SOUTH);
 
-        alignPanelOnWidth(uplabel, downlabel);
         alignPanelOnWidth(leftpanel, downlabel);
+        alignPanelOnWidth(uplabel, downlabel);
 
         add(form);
 

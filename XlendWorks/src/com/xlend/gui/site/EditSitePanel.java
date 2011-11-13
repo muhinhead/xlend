@@ -103,10 +103,6 @@ public class EditSitePanel extends RecordEditPanel {
 
         form.add(downper, BorderLayout.SOUTH);
 
-//        uplabel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
-//                uplabel.getPreferredSize().height));
-//        leftpanel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
-//                leftpanel.getPreferredSize().height));
         alignPanelOnWidth(uplabel, downlabel);
         alignPanelOnWidth(leftpanel, downlabel);
 

@@ -19,8 +19,8 @@ public class EditClientDialog extends EditRecordDialog {
 
     public static boolean okPressed;
 
-    public EditClientDialog(Frame owner, String title, Object obj) {
-        super(owner, title, obj);
+    public EditClientDialog(String title, Object obj) {
+        super(title, obj);
     }
 
     @Override

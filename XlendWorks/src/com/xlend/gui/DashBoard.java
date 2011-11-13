@@ -55,11 +55,10 @@ public class DashBoard extends JFrame {
     public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
     private static final String BACKGROUNDIMAGE = "gears-background+xcost.jpg";
-    public final static String LASTLOGIN = "LastLogin";
-//    public final static String PWDMD5 = "PWDMD5";
+    public final static String LASTLOGIN = "LastLogin";//    public final static String PWDMD5 = "PWDMD5";
     private static IMessageSender exchanger;
-    //private final ImagePanel backgroundImg;
     private static Properties props;
+    public static DashBoard ourInstance;
 
     public static Properties getProperties() {
         return props;
@@ -104,6 +103,7 @@ public class DashBoard extends JFrame {
 
     public DashBoard(IMessageSender exch) {
         super("Xcost");
+        ourInstance = this;
         XlendWorks.setWindowIcon(this, "Xcost.png");
         addWindowListener(new WinListener(this));
         exchanger = exch;
@@ -147,7 +147,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (adminFrame == null) {
-                    adminFrame = new AdminFrame(exchanger);
+                    adminFrame = new AdminFrame(getExchanger());
                 } else {
                     try {
                         adminFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -163,7 +163,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
-                    workFrame = new WorkFrame(exchanger);
+                    workFrame = new WorkFrame(getExchanger());
                 } else {
                     try {
                         workFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -179,7 +179,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (hrFrame == null) {
-                    hrFrame = new HRFrame(exchanger);
+                    hrFrame = new HRFrame(getExchanger());
                 } else {
                     try {
                         hrFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -195,7 +195,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (fleetFrame == null) {
-                    fleetFrame = new FleetFrame(exchanger);
+                    fleetFrame = new FleetFrame(getExchanger());
                 } else {
                     try {
                         fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -212,7 +212,7 @@ public class DashBoard extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 saveProps();
-                if (XlendWorks.login(exchanger)) {
+                if (XlendWorks.login(getExchanger())) {
                     userLogin.setText(XlendWorks.getCurrentUserLogin());
 //                    boolean isadmin = XlendWorks.isCurrentAdmin();
 //                    System.out.println("User "+XlendWorks.getCurrentUserLogin()+" is admin:"+isadmin);

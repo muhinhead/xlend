@@ -20,8 +20,8 @@ public abstract class EditRecordDialog extends PopupDialog {
     private AbstractAction cancelAction;
     private RecordEditPanel editPanel;
 
-    public EditRecordDialog(Frame owner, String title, Object obj) {
-        super(owner, title, obj);
+    public EditRecordDialog(String title, Object obj) {
+        super(null, title, obj);
     }
 
     protected void fillContent(RecordEditPanel editPanel) {

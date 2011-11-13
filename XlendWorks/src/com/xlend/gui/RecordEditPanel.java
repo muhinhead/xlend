@@ -1,9 +1,11 @@
 package com.xlend.gui;
 
+import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
@@ -78,5 +80,15 @@ public abstract class RecordEditPanel extends JPanel {
         int width = a.width > b.width ? a.width : b.width;
         one.setPreferredSize(new Dimension(width,a.height));
         two.setPreferredSize(new Dimension(width,b.height));
+    }
+    
+    protected static void selectComboItem(JComboBox cb, int id) {
+        for (int i=0; i<cb.getItemCount(); i++) {
+            ComboItem itm = (ComboItem) cb.getItemAt(i);
+            if (itm.getId()==id) {
+                cb.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 }

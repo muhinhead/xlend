@@ -1,6 +1,8 @@
 package com.xlend.gui;
 
 import com.xlend.orm.Userprofile;
+import com.xlend.orm.Xclient;
+import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
@@ -12,6 +14,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -127,6 +130,26 @@ public class XlendWorks {
         return false;
     }
 
+    public static ComboItem[] loadAllClients(IMessageSender exchanger) {
+        try {
+            DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
+            ComboItem[] itms = new ComboItem[clients.length+1];
+//            ArrayList<ComboItem> itms = new ArrayList<ComboItem>();
+            itms[0] = new ComboItem(0, "--Add new client--");
+//            itms.add(new ComboItem(0, "--Add new client--"));
+            int i=1;
+            for (DbObject o : clients) {
+                Xclient xclient = (Xclient) o;
+                itms[i++] = new ComboItem(xclient.getXclientId(), xclient.getCompanyname());
+//                itms.add(new ComboItem(xclient.getXclientId(), xclient.getCompanyname()));
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
     public static String[] loadAllLogins(IMessageSender exchanger) {
         try {
             DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");

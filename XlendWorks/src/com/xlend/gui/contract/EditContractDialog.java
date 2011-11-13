@@ -1,35 +1,31 @@
-package com.xlend.gui.site;
+package com.xlend.gui.contract;
 
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.gui.WorkFrame;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xsite;
-import com.xlend.util.PopupDialog;
-import java.awt.BorderLayout;
-import java.awt.Component;
+import com.xlend.orm.Xcontract;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Nick Mukhin
  */
-public class EditSiteDialog extends EditRecordDialog {
+public class EditContractDialog extends EditRecordDialog {
 
-    public static boolean okPressed;
+     public static boolean okPressed;
 
-    public EditSiteDialog(String title, Object obj) {
+    public EditContractDialog(String title, Object obj) {
         super(title, obj);
     }
-
+    
     @Override
     protected void fillContent() {
-        super.fillContent(new EditSitePanel((Xsite) getObject()));
+        super.fillContent(new EditContractPanel((Xcontract) getObject()));
     }
 
+    
     @Override
     protected AbstractAction getSaveAction() {
         return new AbstractAction("Save") {
@@ -48,4 +44,5 @@ public class EditSiteDialog extends EditRecordDialog {
             }
         };
     }
+    
 }

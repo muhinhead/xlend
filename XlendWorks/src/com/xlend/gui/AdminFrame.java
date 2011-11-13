@@ -31,11 +31,9 @@ public class AdminFrame extends WorkFrame {
     private DbTableGridPanel usersPanel;
     private DbTableGridPanel sitesPanel;
     private DbTableGridPanel clientsPanel;
-    private AdminFrame _this;
 
     public AdminFrame(IMessageSender exch) {
         super("Admin Console", exch);
-        _this = this;
     }
 
     protected JTabbedPane getMainPanel() {
@@ -122,7 +120,7 @@ public class AdminFrame extends WorkFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditClientDialog(_this, "New Client", null);
+                    new EditClientDialog("New Client", null);
                     if (EditClientDialog.okPressed) {
                         updateGrid(clientsPanel.getTableView(),
                                 clientsPanel.getTableDoc(), Selects.SELECT_FROM_CLIENTS);
@@ -144,7 +142,7 @@ public class AdminFrame extends WorkFrame {
                 if (id > 0) {
                     try {
                         Xclient xclient = (Xclient) exchanger.loadDbObjectOnID(Xclient.class, id);
-                        new EditClientDialog(_this, "Edit Client", xclient);
+                        new EditClientDialog("Edit Client", xclient);
                         if (EditClientDialog.okPressed) {
                             updateGrid(clientsPanel.getTableView(),
                                     clientsPanel.getTableDoc(), Selects.SELECT_FROM_CLIENTS);
@@ -187,7 +185,7 @@ public class AdminFrame extends WorkFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditSiteDialog(_this, "New Site", null);
+                    new EditSiteDialog("New Site", null);
                     if (EditSiteDialog.okPressed) {
                         updateGrid(sitesPanel.getTableView(),
                                 sitesPanel.getTableDoc(), Selects.SELECT_FROM_SITES);
@@ -209,7 +207,7 @@ public class AdminFrame extends WorkFrame {
                 if (id > 0) {
                     try {
                         Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
-                        new EditSiteDialog(_this, "Edit Site", xsite);
+                        new EditSiteDialog("Edit Site", xsite);
                         if (EditSiteDialog.okPressed) {
                             updateGrid(sitesPanel.getTableView(),
                                     sitesPanel.getTableDoc(), Selects.SELECT_FROM_SITES);
@@ -248,7 +246,7 @@ public class AdminFrame extends WorkFrame {
 
     private JPanel getUsersPanel() {
         if (usersPanel == null) {
-            usersPanel = createGridPanel(Selects.SELECT_FROM_USERS, addUserAction(),
+            usersPanel = createGridPanel(exchanger, Selects.SELECT_FROM_USERS, addUserAction(),
                     editUserAction(), delUserAction(), null);
         }
         return usersPanel;
@@ -262,7 +260,7 @@ public class AdminFrame extends WorkFrame {
             maxWidths.put(2, 500);
             maxWidths.put(3, 200);
             maxWidths.put(4, 200);
-            sitesPanel = createGridPanel(Selects.SELECT_FROM_SITES, addSiteAction(),
+            sitesPanel = createGridPanel(exchanger,Selects.SELECT_FROM_SITES, addSiteAction(),
                     editSiteAction(), delSiteAction(), maxWidths);
         }
         return sitesPanel;
@@ -275,7 +273,7 @@ public class AdminFrame extends WorkFrame {
             maxWidths.put(1, 100);
             maxWidths.put(4, 200);
             maxWidths.put(5, 200);
-            clientsPanel = createGridPanel(Selects.SELECT_FROM_CLIENTS, addClientAction(),
+            clientsPanel = createGridPanel(exchanger,Selects.SELECT_FROM_CLIENTS, addClientAction(),
                     editClientAction(), delClientAction(), maxWidths);
         }
         return clientsPanel;

@@ -99,10 +99,13 @@ public class LoginDialog extends PopupDialog {
 //        editPane.add(savePwdCB = new JCheckBox());
 
         Preferences userPref = Preferences.userRoot();
-//        String pwdmd5 = userPref.get("PWDMD5", "");
-//        pwdField.setText(pwdmd5);
+        String pwdmd5 = userPref.get("DEVPWD", "");
+        pwdField.setText(pwdmd5);
+        if (pwdmd5.trim().length() > 0) {
+            loginField.setSelectedItem(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
+        }
 //        savePwdCB.setSelected(pwdmd5.length() > 0);
-        //loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
+//        loginField.setText(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
 
         upperPane.add(labelPane, BorderLayout.WEST);
         upperPane.add(editPane, BorderLayout.CENTER);
@@ -114,7 +117,7 @@ public class LoginDialog extends PopupDialog {
 
 //            @Override
             public void actionPerformed(ActionEvent e) {
-                String login = (String)loginField.getSelectedItem();
+                String login = (String) loginField.getSelectedItem();
                 String pwd = new String(pwdField.getPassword());
                 try {
                     //TODO: check MD5(pwd) instead of pwd
@@ -124,10 +127,10 @@ public class LoginDialog extends PopupDialog {
                     if (okPressed) {
                         Userprofile currentUser = (Userprofile) users[0];
 //                        if (!savePwdCB.isSelected()) {
-                            try {
-                                currentUser.setPwdmd5("");
-                            } catch (Exception ex) {
-                            }
+                        try {
+                            currentUser.setPwdmd5("");
+                        } catch (Exception ex) {
+                        }
 //                        }
                         XlendWorks.setCurrentUser(currentUser);
                         dispose();
@@ -179,17 +182,6 @@ public class LoginDialog extends PopupDialog {
                 }
             }
         });
-//        it = m.add(new JMenuItem("Acryl"));
-//        it.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    AcrylLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
-//                    setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");
-//                } catch (Exception e1) {
-//                }
-//            }
-//        });
         it = m.add(new JMenuItem("Nimbus"));
         it.addActionListener(new ActionListener() {
 
@@ -200,50 +192,6 @@ public class LoginDialog extends PopupDialog {
                 }
             }
         });
-//        it = m.add(new JMenuItem("Noire"));
-//        it.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    NoireLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
-//                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
-//                } catch (Exception e1) {
-//                }
-//            }
-//        });
-//        it = m.add(new JMenuItem("HiFi"));
-//        it.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    HiFiLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
-//                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-//                } catch (Exception e1) {
-//                }
-//            }
-//        });
-//        it = m.add(new JMenuItem("Bernstein"));
-//        it.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    BernsteinLookAndFeel.setTheme("Default", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
-//                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
-//                } catch (Exception e1) {
-//                }
-//            }
-//        });
-//        it = m.add(new JMenuItem("Aero"));
-//        it.addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                try {
-//                    AeroLookAndFeel.setTheme("Green", "LICENSE KEY HERE", DashBoard.XLEND_PLANT);
-//                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
-//                } catch (Exception e1) {
-//                }
-//            }
-//        });
         it = m.add(new JMenuItem("Nimrod"));
         it.addActionListener(new ActionListener() {
 

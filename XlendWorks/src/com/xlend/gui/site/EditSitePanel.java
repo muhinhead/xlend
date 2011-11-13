@@ -48,61 +48,67 @@ public class EditSitePanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             siteNameField = new JTextField(),
-            new JScrollPane(descriptionField = new JTextArea(5, 20)),
+            new JScrollPane(descriptionField = new JTextArea(6, 30),
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
             dieselSponsoredCB = new JCheckBox(),
             typeBox = new JComboBox(new String[]{"Work Site", "Additional"})
         };
+        descriptionField.setWrapStyleWord(true);
+        descriptionField.setLineWrap(true);
         organizePanels(labels, edits);
     }
 
     protected void organizePanels(String[] labels, JComponent[] edits) {
         setLayout(new BorderLayout());
-        JPanel form = new JPanel(new BorderLayout(5,5));
+        JPanel form = new JPanel(new BorderLayout(5, 5));
 
         idField.setEnabled(false);
-        
-        JPanel upper = new JPanel(new BorderLayout(5,5));
-        JPanel uplabel = new JPanel(new GridLayout(2,1,5,5));
-        JPanel upedit = new JPanel(new GridLayout(2,1,5,5));
+
+        JPanel upper = new JPanel(new BorderLayout(5, 5));
+        JPanel uplabel = new JPanel(new GridLayout(2, 1, 5, 5));
+        JPanel upedit = new JPanel(new GridLayout(2, 1, 5, 5));
         upper.add(uplabel, BorderLayout.WEST);
         upper.add(upedit, BorderLayout.CENTER);
-        
+
         uplabel.add(new JLabel(labels[0], SwingConstants.RIGHT));
         uplabel.add(new JLabel(labels[1], SwingConstants.RIGHT));
-        
-        JPanel ided = new JPanel(new GridLayout(1,3,5,5));
+
+        JPanel ided = new JPanel(new GridLayout(1, 3, 5, 5));
         ided.add(idField);
         ided.add(new JPanel());
         ided.add(new JPanel());
         upedit.add(ided);
         upedit.add(siteNameField);
-        
-        form.add(upper,BorderLayout.NORTH);
-        
+
+        form.add(upper, BorderLayout.NORTH);
+
         JPanel leftpanel = new JPanel(new BorderLayout());
         leftpanel.add(new JLabel(labels[2], SwingConstants.RIGHT), BorderLayout.NORTH);
-        
+
         form.add(leftpanel, BorderLayout.WEST);
         form.add(edits[2]);
-        
-        JPanel downper = new JPanel(new BorderLayout(5,5));
-        JPanel downlabel = new JPanel(new GridLayout(2,1,5,5));
-        JPanel downedit = new JPanel(new GridLayout(2,1,5,5));
+
+        JPanel downper = new JPanel(new BorderLayout(5, 5));
+        JPanel downlabel = new JPanel(new GridLayout(2, 1, 5, 5));
+        JPanel downedit = new JPanel(new GridLayout(2, 1, 5, 5));
         downper.add(downlabel, BorderLayout.WEST);
         downper.add(downedit, BorderLayout.CENTER);
-        
+
         downlabel.add(new JLabel(labels[3], SwingConstants.RIGHT));
         downlabel.add(new JLabel(labels[4], SwingConstants.RIGHT));
-        
+
         downedit.add(dieselSponsoredCB);
         downedit.add(typeBox);
-        
-        form.add(downper,BorderLayout.SOUTH);
 
-        uplabel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
-                uplabel.getPreferredSize().height));
-        leftpanel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
-                leftpanel.getPreferredSize().height));
+        form.add(downper, BorderLayout.SOUTH);
+
+//        uplabel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
+//                uplabel.getPreferredSize().height));
+//        leftpanel.setPreferredSize(new Dimension(downlabel.getPreferredSize().width, 
+//                leftpanel.getPreferredSize().height));
+        alignPanelOnWidth(uplabel, downlabel);
+        alignPanelOnWidth(leftpanel, downlabel);
 
         add(form);
     }
@@ -114,8 +120,8 @@ public class EditSitePanel extends RecordEditPanel {
             idField.setText(xsite.getXsiteId().toString());
             siteNameField.setText(xsite.getName());
             descriptionField.setText(xsite.getDescription());
-            typeBox.setSelectedIndex(xsite.getSitetype().equals("W")?0:1);
-            dieselSponsoredCB.setSelected(xsite.getDieselsponsor()!=null && xsite.getDieselsponsor()==1);
+            typeBox.setSelectedIndex(xsite.getSitetype().equals("W") ? 0 : 1);
+            dieselSponsoredCB.setSelected(xsite.getDieselsponsor() != null && xsite.getDieselsponsor() == 1);
         }
     }
 
@@ -123,7 +129,7 @@ public class EditSitePanel extends RecordEditPanel {
     public boolean save() throws Exception {
         Xsite xsite = (Xsite) getDbObject();
         boolean isNew = false;
-        if (xsite==null) {
+        if (xsite == null) {
             xsite = new Xsite(null);
             xsite.setXsiteId(0);
             isNew = true;
@@ -131,8 +137,8 @@ public class EditSitePanel extends RecordEditPanel {
         xsite.setName(siteNameField.getText());
         xsite.setDescription(descriptionField.getText());
         String tp = (String) typeBox.getSelectedItem();
-        xsite.setSitetype(tp.substring(0,1));
-        xsite.setDieselsponsor(dieselSponsoredCB.isSelected()?1:0);
+        xsite.setSitetype(tp.substring(0, 1));
+        xsite.setDieselsponsor(dieselSponsoredCB.isSelected() ? 1 : 0);
         try {
             xsite.setNew(isNew);
             DbObject saved = DashBoard.getExchanger().saveDbObject(xsite);

@@ -1,16 +1,19 @@
 package com.xlend.gui;
 
+import com.xlend.constants.Selects;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -43,6 +46,7 @@ public class WorkFrame extends JFrame implements WindowListener {
     private JLabel statusLabel2 = new JLabel();
     private JLabel statusLabel3 = new JLabel();
     private DbTableGridPanel usersPanel = null;
+    private DbTableGridPanel contractsPanel = null;
     private JTabbedPane mainPanel;
     private ToolBarButton aboutButton;
     private ToolBarButton exitButton;
@@ -111,7 +115,7 @@ public class WorkFrame extends JFrame implements WindowListener {
         getContentPane().add(mainPanel, BorderLayout.CENTER);
 
         getContentPane().add(statusPanel, BorderLayout.SOUTH);
-        
+
         buildMenu();
 
     }
@@ -156,7 +160,7 @@ public class WorkFrame extends JFrame implements WindowListener {
 
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
-        workTab.add(new JPanel(), "Contracts");
+        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(new JPanel(), "Quotas");
         workTab.add(new JPanel(), "Orders");
         return workTab;
@@ -240,5 +244,45 @@ public class WorkFrame extends JFrame implements WindowListener {
 
     @Override
     public void windowDeactivated(WindowEvent e) {
+    }
+
+    private JPanel getContractsPanel() {
+        if (contractsPanel == null) {
+            HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+            maxWidths.put(0, 40);
+            maxWidths.put(1, 150);
+            contractsPanel = createGridPanel(Selects.SELECT_FROM_CONTRACTS,
+                    addContractAction(),
+                    null,//editContractAction(), 
+                    null,//delContractAction(), 
+                    maxWidths);
+        }
+        return contractsPanel;
+
+    }
+
+    protected DbTableGridPanel createGridPanel(String select,
+            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
+        DbTableGridPanel targetPanel = null;
+        try {
+            targetPanel = new DbTableGridPanel(
+                    add, edit, del, exchanger.getTableBody(select), maxWidths);
+            if (del != null) {
+                targetPanel.getDelAction().setEnabled(XlendWorks.getCurrentUser().getManager() == 1);
+            }
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+        return targetPanel;
+    }
+
+    private AbstractAction addContractAction() {
+        return new AbstractAction("New Contract") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
     }
 }

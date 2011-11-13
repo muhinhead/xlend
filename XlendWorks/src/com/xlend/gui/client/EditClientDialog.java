@@ -1,33 +1,31 @@
-package com.xlend.gui.site;
+package com.xlend.gui.client;
 
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.gui.WorkFrame;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xsite;
+import com.xlend.gui.site.EditSitePanel;
+import com.xlend.orm.Xclient;
 import com.xlend.util.PopupDialog;
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Nick Mukhin
  */
-public class EditSiteDialog extends EditRecordDialog {
+public class EditClientDialog extends EditRecordDialog {
 
     public static boolean okPressed;
 
-    public EditSiteDialog(Frame owner, String title, Object obj) {
+    public EditClientDialog(Frame owner, String title, Object obj) {
         super(owner, title, obj);
     }
 
     @Override
     protected void fillContent() {
-        super.fillContent(new EditSitePanel((Xsite) getObject()));
+        super.fillContent(new EditClientPanel((Xclient) getObject()));
     }
 
     @Override

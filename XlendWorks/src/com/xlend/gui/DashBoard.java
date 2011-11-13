@@ -54,6 +54,7 @@ public class DashBoard extends JFrame {
 
     public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
+    private static final String BACKGROUNDIMAGE = "gears-background+xcost.jpg";
     public final static String LASTLOGIN = "LastLogin";
 //    public final static String PWDMD5 = "PWDMD5";
     private static IMessageSender exchanger;
@@ -110,10 +111,10 @@ public class DashBoard extends JFrame {
 
         LayerPanel layers = new LayerPanel();
         controlsPanel = new JPanel(new BorderLayout());
-        JPanel main = new TexturedPanel("startmenu.jpg");
+        JPanel main = new TexturedPanel(BACKGROUNDIMAGE);
         controlsPanel.add(main, BorderLayout.CENTER);
-        ImagePanel img = new ImagePanel(XlendWorks.loadImage("startmenu.jpg", this));
-        this.setMinimumSize(new Dimension(380, 320));
+        ImagePanel img = new ImagePanel(XlendWorks.loadImage(BACKGROUNDIMAGE, this));
+        this.setMinimumSize(new Dimension(img.getWidth(), img.getHeight()));
 //        controlsPanel.setPreferredSize(img.getPreferredSize());
         layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -132,14 +133,14 @@ public class DashBoard extends JFrame {
         logoutButton = new ToolBarButton("logoutsmall.png");
 
         img = new ImagePanel(XlendWorks.loadImage("work.png", this));
-        workButton.setBounds(32, 168, img.getWidth() + 3, img.getHeight() + 3);
+        workButton.setBounds(32, 220, img.getWidth() + 3, img.getHeight() + 3);
         main.add(workButton);
-        hrbutton.setBounds(153, 168, img.getWidth() + 3, img.getHeight() + 3);
+        hrbutton.setBounds(153, 220, img.getWidth() + 3, img.getHeight() + 3);
         main.add(hrbutton);
-        fleetbutton.setBounds(270, 168, img.getWidth() + 3, img.getHeight() + 3);
+        fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
         main.add(fleetbutton);
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(325, 260, img.getWidth() + 3, img.getHeight() + 3);
+        logoutButton.setBounds(310, 30, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {
@@ -235,7 +236,7 @@ public class DashBoard extends JFrame {
 
 //        centerWindow(this);
         setLocation(10,10);
-        setResizable(false);
+//        setResizable(false);
         setVisible(true);
     }
 

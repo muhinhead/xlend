@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -17,7 +18,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected JPanel lblPanel;
     protected JPanel editPanel;
     protected JPanel upPanel;
-    
+
     protected void organizePanels(String[] labels, JComponent[] edits) {
         setLayout(new BorderLayout());
         lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
@@ -64,10 +65,18 @@ public abstract class RecordEditPanel extends JPanel {
     }
 
     protected String notEmpty(JTextComponent fld, String name) throws Exception {
-        if (fld.getText().trim().length()==0) {
+        if (fld.getText().trim().length() == 0) {
             fld.requestFocus();
             throw new EmptyValueException("Enter value for " + name);
         }
         return fld.getText();
+    }
+
+    protected static void alignPanelOnWidth(JPanel one, JPanel two) {
+        Dimension a = one.getPreferredSize();
+        Dimension b = two.getPreferredSize();
+        int width = a.width > b.width ? a.width : b.width;
+        one.setPreferredSize(new Dimension(width,a.height));
+        two.setPreferredSize(new Dimension(width,b.height));
     }
 }

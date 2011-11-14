@@ -2,6 +2,10 @@ package com.xlend.util;
 
 import java.awt.Image;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
@@ -27,5 +31,32 @@ public class Util {
             }
         }
         return image;
+    }
+
+    public static byte[] readFile(String fileName) {
+        byte[] b = null;
+        try {
+            File file = new File(fileName);
+            FileInputStream fin = new FileInputStream(file);
+            int n = 0;
+            b = new byte[(int) file.length()];
+            n = fin.read(b);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public static void writeFile(File file, byte[] imageData) {
+        try {
+            FileOutputStream fout = new FileOutputStream(file);
+            fout.write(imageData);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

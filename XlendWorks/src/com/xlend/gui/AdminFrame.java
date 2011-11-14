@@ -246,7 +246,7 @@ public class AdminFrame extends WorkFrame {
 
     private JPanel getUsersPanel() {
         if (usersPanel == null) {
-            usersPanel = createGridPanel(exchanger, Selects.SELECT_FROM_USERS, addUserAction(),
+            usersPanel = createAndRegisterGrid(Selects.SELECT_FROM_USERS, addUserAction(),
                     editUserAction(), delUserAction(), null);
         }
         return usersPanel;
@@ -260,7 +260,7 @@ public class AdminFrame extends WorkFrame {
             maxWidths.put(2, 500);
             maxWidths.put(3, 200);
             maxWidths.put(4, 200);
-            sitesPanel = createGridPanel(exchanger,Selects.SELECT_FROM_SITES, addSiteAction(),
+            sitesPanel = createAndRegisterGrid(Selects.SELECT_FROM_SITES, addSiteAction(),
                     editSiteAction(), delSiteAction(), maxWidths);
         }
         return sitesPanel;
@@ -273,7 +273,7 @@ public class AdminFrame extends WorkFrame {
             maxWidths.put(1, 100);
             maxWidths.put(4, 200);
             maxWidths.put(5, 200);
-            clientsPanel = createGridPanel(exchanger,Selects.SELECT_FROM_CLIENTS, addClientAction(),
+            clientsPanel = createAndRegisterGrid(Selects.SELECT_FROM_CLIENTS, addClientAction(),
                     editClientAction(), delClientAction(), maxWidths);
         }
         return clientsPanel;

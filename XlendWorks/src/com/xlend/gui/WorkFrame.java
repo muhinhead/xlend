@@ -18,6 +18,8 @@ import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -48,13 +50,13 @@ public class WorkFrame extends JFrame implements WindowListener {
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
     private JLabel statusLabel3 = new JLabel();
-//    private DbTableGridPanel usersPanel = null;
     private DbTableGridPanel contractsPanel = null;
     private JTabbedPane mainPanel;
     private ToolBarButton aboutButton;
     private ToolBarButton exitButton;
     private JToolBar toolBar;
-//    protected WorkFrame _this;
+    private ToolBarButton refreshButton;
+    private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
 
     public WorkFrame(String title, IMessageSender exch) {
         super(title);
@@ -100,6 +102,14 @@ public class WorkFrame extends JFrame implements WindowListener {
 //        statusPanel.add(statusLabel1,BorderLayout.WEST);
         statusPanel.add(statusLabel2, BorderLayout.CENTER);
 
+        refreshButton = new ToolBarButton("refresh.png");
+        refreshButton.setToolTipText("Refresh data");
+        refreshButton.addActionListener(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                refreshGrids();
+            }
+        });
         aboutButton = new ToolBarButton("help.png");
         aboutButton.setToolTipText("About program");
         exitButton = new ToolBarButton("exit.png");
@@ -112,8 +122,11 @@ public class WorkFrame extends JFrame implements WindowListener {
         });
 
         toolBar = new JToolBar();
+        toolBar.add(refreshButton);
         toolBar.add(aboutButton);
         toolBar.add(exitButton);
+        aboutButton.setToolTipText("About program...");
+        exitButton.setToolTipText("Close thiw window");
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
         mainPanel = getMainPanel();
@@ -123,6 +136,16 @@ public class WorkFrame extends JFrame implements WindowListener {
 
         buildMenu();
 
+    }
+
+    private void refreshGrids() {
+        for (DbTableGridPanel grid : grids.keySet()) {
+            try {
+                updateGrid(grid.getTableView(), grid.getTableDoc(), grids.get(grid));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+            }
+        }
     }
 
     public static void errMessageBox(String title, String msg) {
@@ -256,12 +279,20 @@ public class WorkFrame extends JFrame implements WindowListener {
             HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
             maxWidths.put(0, 40);
             maxWidths.put(1, 150);
-            contractsPanel = createGridPanel(exchanger,Selects.SELECT_FROM_CONTRACTS,
+            contractsPanel = createAndRegisterGrid(Selects.SELECT_FROM_CONTRACTS,
                     addContractAction(), editContractAction(),
                     delContractAction(), maxWidths);
+            grids.put(contractsPanel, Selects.SELECT_FROM_CONTRACTS);
         }
         return contractsPanel;
 
+    }
+
+    protected DbTableGridPanel createAndRegisterGrid(String select,
+            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
+        DbTableGridPanel panel = createGridPanel(exchanger, select, add, edit, del, maxWidths);
+        grids.put(panel, select);
+        return panel;
     }
 
     public static DbTableGridPanel createGridPanel(IMessageSender exchanger, String select,

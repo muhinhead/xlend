@@ -13,6 +13,7 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.util.PopupListener;
+import com.xlend.util.TexturedPanel;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -26,6 +27,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -37,7 +39,9 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -62,6 +66,7 @@ public class EditContractPanel extends RecordEditPanel {
     private JButton loadButton;
     private JPanel picPanel;
     private ImageIcon currentPicture;
+    private JPopupMenu picturePopMenu;
 
     public EditContractPanel(DbObject dbObject) {
         super(dbObject);
@@ -119,7 +124,7 @@ public class EditContractPanel extends RecordEditPanel {
         leftpanel.add(new JLabel(labels[3], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
-        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT );
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         sp.setTopComponent(edits[3]);
         sp.setBottomComponent(getScanPanel());
         form.add(sp);
@@ -226,7 +231,7 @@ public class EditContractPanel extends RecordEditPanel {
             String name = chooser.getSelectedFile().getAbsolutePath();
             byte[] imageData = Util.readFile(name);
             Xcontract xcontract = (Xcontract) getDbObject();
-            if (xcontract==null) {
+            if (xcontract == null) {
                 try {
                     save();
                     xcontract = (Xcontract) getDbObject();
@@ -235,20 +240,17 @@ public class EditContractPanel extends RecordEditPanel {
                     XlendWorks.log(ex);
                 }
             }
-            if (xcontract.getPictureId() == null) {
-                try {
-                    Picture picture = new Picture(null);
-                    picture.setPictureId(0);
-                    picture.setPicture(imageData);
-                    picture.setNew(true);
-                    DbObject saved = DashBoard.getExchanger().saveDbObject(picture);
-                    picture = (Picture) saved;
-                    xcontract.setPictureId(picture.getPictureId());
-                    setPhoto(imageData);
-                } catch (Exception ex) {
-                    XlendWorks.log(ex);
-                }
-
+            try {
+                Picture picture = new Picture(null);
+                picture.setPictureId(0);
+                picture.setPicture(imageData);
+                picture.setNew(true);
+                DbObject saved = DashBoard.getExchanger().saveDbObject(picture);
+                picture = (Picture) saved;
+                xcontract.setPictureId(picture.getPictureId());
+                setPhoto(imageData);
+            } catch (Exception ex) {
+                XlendWorks.log(ex);
             }
         }
     }
@@ -259,8 +261,7 @@ public class EditContractPanel extends RecordEditPanel {
         JPanel insPanel = new JPanel();
         insPanel.add(getLoadPictureButton());
         picPanel.add(insPanel);
-//        picPanel.setBorder(BorderFactory.createTitledBorder(
-//                BorderFactory.createEtchedBorder(), "Image"));
+
         tp.add(new JScrollPane(picPanel), "Scanned image");
         return tp;
     }
@@ -290,7 +291,6 @@ public class EditContractPanel extends RecordEditPanel {
                 + "></img>");
         JEditorPane ed = new JEditorPane("text/html", html.toString());
         ed.setEditable(false);
-        ed.setEnabled(false);
         picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
         picPanel.setVisible(true);
         ed.addMouseListener(new MouseAdapter() {
@@ -302,6 +302,7 @@ public class EditContractPanel extends RecordEditPanel {
             }
         });
         ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+
     }
 
     private void viewDocumentImage() {
@@ -325,5 +326,85 @@ public class EditContractPanel extends RecordEditPanel {
         currentPicture = null;
     }
 
+    private JPopupMenu getPhotoPopupMenu() {
+        if (null == picturePopMenu) {
+            picturePopMenu = new JPopupMenu();
+            picturePopMenu.add(new AbstractAction("Open in window") {
 
+                public void actionPerformed(ActionEvent e) {
+                    viewDocumentImage();
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Replace image") {
+
+                public void actionPerformed(ActionEvent e) {
+                    loadDocImageFromFile();
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Save image to file") {
+
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Xcontract xcontract = (Xcontract) getDbObject();
+                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, xcontract.getPictureId());
+                        exportDocImage((byte[]) pic.getPicture());
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Remove image from DB") {
+
+                public void actionPerformed(ActionEvent e) {
+                    Xcontract xcontract = (Xcontract) getDbObject();
+                    try {
+                        Integer pictureId = xcontract.getPictureId();
+                        xcontract.setPictureId(null);
+                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, pictureId);
+                        //DashBoard.getExchanger().deleteObject(pic);
+                        loadData();
+
+                    } catch (Exception ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            });
+        }
+        return picturePopMenu;
+    }
+
+    public static void exportDocImage(byte[] imageData) {
+        JFileChooser chooser =
+                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+            public boolean accept(File f) {
+                boolean ok = f.isDirectory()
+                        || f.getName().toLowerCase().endsWith("jpg")
+                        || f.getName().toLowerCase().endsWith("jpeg")
+                        || f.getName().toLowerCase().endsWith("gif");
+
+                return ok;
+            }
+
+            public String getDescription() {
+                return "*.JPG ; *.GIF";
+            }
+        });
+        chooser.setDialogTitle("Save image to file");
+        chooser.setApproveButtonText("Save");
+        int retVal = chooser.showOpenDialog(null);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            String name = chooser.getSelectedFile().getAbsolutePath();
+            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
+            File fout = new File(name);
+            if (fout.exists()) {
+                if (WorkFrame.yesNo("Attention",
+                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+            Util.writeFile(fout, imageData);
+        }
+    }
 }

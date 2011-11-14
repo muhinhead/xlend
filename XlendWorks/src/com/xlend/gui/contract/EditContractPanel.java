@@ -98,7 +98,7 @@ public class EditContractPanel extends RecordEditPanel {
         form.add(leftpanel, BorderLayout.WEST);
         form.add(edits[3]);
 
-        form.add(detailsTab = getDetailsPanel(), BorderLayout.SOUTH);
+        form.add(detailsTab = getScanPanel(), BorderLayout.SOUTH);
 
         alignPanelOnWidth(leftpanel, uplabel);
 
@@ -154,15 +154,21 @@ public class EditContractPanel extends RecordEditPanel {
 
     }
 
-    private JTabbedPane getDetailsPanel() {
-        Xcontract xcontract = (Xcontract) getDbObject();
+    private JTabbedPane getScanPanel() {
         JTabbedPane tp = new JTabbedPane();
-        tp.add(WorkFrame.createGridPanel(DashBoard.getExchanger(),
-                Selects.SELECT_FROM_CONTRACTITEMS.replace("#", xcontract == null
-                ? "0" : xcontract.getXcontractId().toString()), 
-                null, null, null, 
-                null),
-                "Contract Items");
+        tp.add(new JPanel(),"Scanned image");
         return tp;
     }
+
+//    private JTabbedPane getDetailsPanel() {
+//        Xcontract xcontract = (Xcontract) getDbObject();
+//        JTabbedPane tp = new JTabbedPane();
+//        tp.add(WorkFrame.createGridPanel(DashBoard.getExchanger(),
+//                Selects.SELECT_FROM_CONTRACTITEMS.replace("#", xcontract == null
+//                ? "0" : xcontract.getXcontractId().toString()),
+//                null, null, null,
+//                null),
+//                "Contract Items");
+//        return tp;
+//    }
 }

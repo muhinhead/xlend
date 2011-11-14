@@ -138,6 +138,13 @@ public class WorkFrame extends JFrame implements WindowListener {
 
     }
 
+    public void setVisible(boolean b) {
+        if (b) {
+            refreshGrids();
+        }
+        super.setVisible(b);
+    }
+
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {

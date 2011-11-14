@@ -366,7 +366,7 @@ public class WorkFrame extends JFrame implements WindowListener {
             public void actionPerformed(ActionEvent e) {
                 int id = contractsPanel.getSelectedID();
                 try {
-                    Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xclient.class, id);
+                    Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
                     if (yesNo("Attention!", "Do you want to delete contract  [" + xcontract.getContractref() + "]?")
                             == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xcontract);

@@ -39,6 +39,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -55,8 +56,8 @@ public class EditContractPanel extends RecordEditPanel {
     private JTextField contractRefField;
     private JTextArea descriptionField;
     private JComboBox contractorBox;
-    private JTabbedPane detailsTab;
-    private JPanel imagePanel;
+//    private JTabbedPane detailsTab;
+//    private JPanel imagePanel;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
     private JPanel picPanel;
@@ -96,11 +97,11 @@ public class EditContractPanel extends RecordEditPanel {
         idField.setEnabled(false);
 
         JPanel upper = new JPanel(new BorderLayout(5, 5));
-        JPanel uplabel = new JPanel(new GridLayout(3, 1, 5, 5));
-        JPanel upedit = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel uplabel = new JPanel(new GridLayout(4, 1, 5, 5));
+        JPanel upedit = new JPanel(new GridLayout(4, 1, 5, 5));
         upper.add(uplabel, BorderLayout.WEST);
         upper.add(upedit, BorderLayout.CENTER);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             uplabel.add(new JLabel(labels[i], SwingConstants.RIGHT));
         }
         JPanel ided = new JPanel(new GridLayout(1, 3, 5, 5));
@@ -118,9 +119,10 @@ public class EditContractPanel extends RecordEditPanel {
         leftpanel.add(new JLabel(labels[3], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
-        form.add(edits[3]);
-
-        form.add(detailsTab = getScanPanel(), BorderLayout.SOUTH);
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT );
+        sp.setTopComponent(edits[3]);
+        sp.setBottomComponent(getScanPanel());
+        form.add(sp);
 
         alignPanelOnWidth(leftpanel, uplabel);
 
@@ -206,14 +208,14 @@ public class EditContractPanel extends RecordEditPanel {
             public boolean accept(File f) {
                 boolean ok = f.isDirectory()
                         || f.getName().toLowerCase().endsWith("jpg")
-//                        || f.getName().toLowerCase().endsWith("png")
+                        || f.getName().toLowerCase().endsWith("png")
                         || f.getName().toLowerCase().endsWith("jpeg")
                         || f.getName().toLowerCase().endsWith("gif");
                 return ok;
             }
 
             public String getDescription() {
-                return "*.JPG ; *.GIF";//; *.PNG";
+                return "*.JPG ; *.GIF; *.PNG";
             }
         });
         chooser.setDialogTitle("Import Picture");
@@ -224,6 +226,15 @@ public class EditContractPanel extends RecordEditPanel {
             String name = chooser.getSelectedFile().getAbsolutePath();
             byte[] imageData = Util.readFile(name);
             Xcontract xcontract = (Xcontract) getDbObject();
+            if (xcontract==null) {
+                try {
+                    save();
+                    xcontract = (Xcontract) getDbObject();
+                    loadData();
+                } catch (Exception ex) {
+                    XlendWorks.log(ex);
+                }
+            }
             if (xcontract.getPictureId() == null) {
                 try {
                     Picture picture = new Picture(null);
@@ -244,13 +255,13 @@ public class EditContractPanel extends RecordEditPanel {
 
     private JTabbedPane getScanPanel() {
         JTabbedPane tp = new JTabbedPane();
-        picPanel = new JPanel(new BorderLayout());
+        picPanel = new JPanel();//new BorderLayout());
         JPanel insPanel = new JPanel();
         insPanel.add(getLoadPictureButton());
         picPanel.add(insPanel);
-        picPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Image"));
-        tp.add(picPanel, "Scanned image");
+//        picPanel.setBorder(BorderFactory.createTitledBorder(
+//                BorderFactory.createEtchedBorder(), "Image"));
+        tp.add(new JScrollPane(picPanel), "Scanned image");
         return tp;
     }
 
@@ -290,7 +301,7 @@ public class EditContractPanel extends RecordEditPanel {
                 }
             }
         });
-//        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
     }
 
     private void viewDocumentImage() {
@@ -313,4 +324,6 @@ public class EditContractPanel extends RecordEditPanel {
         picPanel.setVisible(true);
         currentPicture = null;
     }
+
+
 }

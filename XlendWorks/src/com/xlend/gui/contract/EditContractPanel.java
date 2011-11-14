@@ -169,7 +169,7 @@ public class EditContractPanel extends RecordEditPanel {
         xcontract.setContractref(contractRefField.getText());
         xcontract.setDescription(descriptionField.getText());
         ComboItem itm = (ComboItem) contractorBox.getSelectedItem();
-        if (itm.getId() == 0) { // add new client
+        if (itm.getValue().startsWith("--")) { // add new client
             EditClientDialog ecd = new EditClientDialog("New Client", null);
             if (EditClientDialog.okPressed) {
                 Xclient cl = (Xclient) ecd.getEditPanel().getDbObject();
@@ -267,7 +267,7 @@ public class EditContractPanel extends RecordEditPanel {
     }
 
     private void setPhoto(byte[] imgData) {//ImageIcon img) {
-        String tmpImgFile = "./images/$$$.jpg";
+        String tmpImgFile = "$$$.img";
         currentPicture = new ImageIcon(imgData);
         Dimension d = picPanel.getSize();
         picPanel.setVisible(false);
@@ -302,7 +302,7 @@ public class EditContractPanel extends RecordEditPanel {
             }
         });
         ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
-
+        new File(tmpImgFile).deleteOnExit();
     }
 
     private void viewDocumentImage() {

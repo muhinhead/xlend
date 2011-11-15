@@ -176,7 +176,15 @@ public class XlendServer {
                     new AboutDialog();
                 }
             });
+            MenuItem miLog = new MenuItem("Server log...");
+            miLog.addActionListener(new ActionListener(){
+
+                public void actionPerformed(ActionEvent e) {
+                    new LogViewDialog();
+                }
+            });
             
+            popup.add(miLog);
             popup.add(miAbout);
             popup.addSeparator();
             popup.add(miExit);
@@ -185,13 +193,7 @@ public class XlendServer {
             ti.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    
-                    //TODO: show real main dialog here
-//                    if (mainWindow == null) {
-//                        mainWindow = new SimpleGui("Gaming Server Console");
-//                    } else {
-//                        mainWindow.setVisible(!mainWindow.isVisible());
-//                    }
+                    new LogViewDialog();
                 }
             });
             tray.add(ti);

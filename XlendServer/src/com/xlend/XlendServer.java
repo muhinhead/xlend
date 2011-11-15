@@ -7,6 +7,14 @@ package com.xlend;
 import com.xlend.dbutil.DbConnection;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +25,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -24,11 +34,15 @@ import java.util.logging.SimpleFormatter;
  */
 public class XlendServer {
 
+    private static final String PROPERTYFILENAME = "XlendServer.config";
+    private static final String ICONNAME = "Xcost.png"; 
     private static Logger logger = null;
     private static FileHandler fh;
     private static Thread rmiServer;
-    public static final String PROPERTYFILENAME = "XlendServer.config";
+    private static TrayIcon ti;
     private static Properties props;
+    private static boolean isTraySupported = SystemTray.isSupported();
+    private static final String XLEND_SERVER = "Xlend Server";
 
     private static class CtrlCtrapper extends Thread {
 
@@ -76,9 +90,13 @@ public class XlendServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Java version used: "+System.getProperty("java.version"));
-        if (args.length < 1) {
-            System.out.println("Usage:\n\tcom.csa.cmc.XlendServer [port] (default 1099)");
+        if (!isTraySupported) {
+            System.out.println("Java version: " + System.getProperty("java.version"));
+            if (args.length < 1) {
+                System.out.println("Usage:\n\tcom.csa.cmc.XlendServer [port] (default 1099)");
+            }
+        } else {
+            initTray();
         }
         final int port = (args.length > 0 ? Integer.parseInt(args[0]) : 1099);
         rmiServer = new Thread() {
@@ -102,7 +120,9 @@ public class XlendServer {
                     }
                     IMessageSender c = new RmiMessageSender();
                     Naming.rebind("rmi://localhost:" + port + "/XlendServer", c);
-                    Runtime.getRuntime().addShutdownHook(new CtrlCtrapper(queueRunner));
+                    if (!isTraySupported) {
+                        Runtime.getRuntime().addShutdownHook(new CtrlCtrapper(queueRunner));
+                    }
                 } catch (Exception ex) {
                     log("RMI server trouble: " + ex.getMessage());
                     System.exit(1);
@@ -110,5 +130,47 @@ public class XlendServer {
             }
         };
         rmiServer.start();
+    }
+
+    private static Image loadImage(String iconName) {
+        Image im = null;
+        File f = new File("images/" + iconName);
+        if (f.exists()) {
+            try {
+                ImageIcon ic = new javax.swing.ImageIcon("images/" + iconName, "");
+                im = ic.getImage();
+            } catch (Exception ex) {
+                log(ex);
+            }
+        } else {
+            try {
+                im = ImageIO.read(XlendServer.class.getResourceAsStream("/" + iconName));
+            } catch (Exception ie) {
+                log(ie);
+            }
+        }
+        return im;
+    }
+
+    private static void initTray() {
+        final SystemTray tray = SystemTray.getSystemTray();
+        try {
+            Image icon = loadImage(ICONNAME);
+            final PopupMenu popup = new PopupMenu();
+            MenuItem miExit = new MenuItem("Exit");
+            miExit.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+            popup.add(miExit);
+            ti = new TrayIcon(icon, XLEND_SERVER, popup);
+
+        } catch (Exception ex) {
+            log("RMI server trouble: " + ex.getMessage());
+            System.exit(2);
+        }
     }
 }

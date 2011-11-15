@@ -13,6 +13,7 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -28,6 +29,8 @@ import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu.Separator;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -133,7 +136,7 @@ public class XlendServer {
         rmiServer.start();
     }
 
-    private static Image loadImage(String iconName) {
+    public static Image loadImage(String iconName) {
         Image im = null;
         File f = new File("images/" + iconName);
         if (f.exists()) {
@@ -166,13 +169,23 @@ public class XlendServer {
                     System.exit(0);
                 }
             });
+            MenuItem miAbout = new MenuItem("About...");
+            miAbout.addActionListener(new ActionListener(){
+
+                public void actionPerformed(ActionEvent e) {
+                    new AboutDialog();
+                }
+            });
+            
+            popup.add(miAbout);
+            popup.addSeparator();
             popup.add(miExit);
             ti = new TrayIcon(icon, XLEND_SERVER, popup);
             ti.setActionCommand("DoubleClick");
             ti.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showConfirmDialog(null,"Xlend Server");
+                    
                     //TODO: show real main dialog here
 //                    if (mainWindow == null) {
 //                        mainWindow = new SimpleGui("Gaming Server Console");
@@ -187,4 +200,9 @@ public class XlendServer {
             System.exit(2);
         }
     }
+
+    public static void setWindowIcon(Window w, String iconName) {
+        w.setIconImage(loadImage(iconName));
+    }
+
 }

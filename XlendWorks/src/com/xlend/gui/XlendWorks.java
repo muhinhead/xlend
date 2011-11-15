@@ -134,14 +134,11 @@ public class XlendWorks {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
             ComboItem[] itms = new ComboItem[clients.length+1];
-//            ArrayList<ComboItem> itms = new ArrayList<ComboItem>();
             itms[0] = new ComboItem(0, "--Add new client--");
-//            itms.add(new ComboItem(0, "--Add new client--"));
             int i=1;
             for (DbObject o : clients) {
                 Xclient xclient = (Xclient) o;
                 itms[i++] = new ComboItem(xclient.getXclientId(), xclient.getCompanyname());
-//                itms.add(new ComboItem(xclient.getXclientId(), xclient.getCompanyname()));
             }
             return itms;
         } catch (RemoteException ex) {

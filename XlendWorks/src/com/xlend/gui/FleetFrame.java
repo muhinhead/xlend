@@ -9,7 +9,7 @@ import javax.swing.JTabbedPane;
  *
  * @author Nick Mukhin
  */
-public class FleetFrame extends WorkFrame {
+public class FleetFrame extends GeneralFrame {
     public FleetFrame(IMessageSender exch) {
         super("Fleet", exch);
     }

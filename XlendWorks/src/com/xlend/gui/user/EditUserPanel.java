@@ -5,7 +5,7 @@ package com.xlend.gui.user;
 //import com.csa.orm.dbobject.DbObject;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.ProfilePanel;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
@@ -105,7 +105,7 @@ public class EditUserPanel extends ProfilePanel {
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            WorkFrame.errMessageBox("Error:", ex.getMessage());
+            GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

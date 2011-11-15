@@ -150,7 +150,7 @@ public class EditClientPanel extends ProfilePanel {
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            WorkFrame.errMessageBox("Error:", ex.getMessage());
+            GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

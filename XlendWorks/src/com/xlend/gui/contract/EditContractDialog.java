@@ -1,7 +1,7 @@
 package com.xlend.gui.contract;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xcontract;
 import java.awt.Frame;
@@ -39,7 +39,7 @@ public class EditContractDialog extends EditRecordDialog {
                     }
                 } catch (Exception ex) {
                     XlendWorks.log(ex);
-                    WorkFrame.errMessageBox("Error:", ex.getMessage());
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
         };

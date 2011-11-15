@@ -2,10 +2,11 @@ package com.xlend.gui;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.contract.EditContractDialog;
+import com.xlend.gui.work.ClientsGrid;
+import com.xlend.gui.work.SitesGrid;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
-import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
@@ -17,9 +18,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -42,15 +40,15 @@ import javax.swing.event.ChangeListener;
  *
  * @author Admin
  */
-public class WorkFrame extends JFrame implements WindowListener {
+public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     protected IMessageSender exchanger;
-//    private final Properties props;
     private JPanel statusPanel = new JPanel();
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
-    private JLabel statusLabel3 = new JLabel();
-    private DbTableGridPanel contractsPanel = null;
+//    private DbTableGridPanel contractsPanel = null;
+//    private DbTableGridPanel sitesPanel = null;
+//    private DbTableGridPanel clientsPanel = null;
     private JTabbedPane mainPanel;
     private ToolBarButton aboutButton;
     private ToolBarButton exitButton;
@@ -58,9 +56,8 @@ public class WorkFrame extends JFrame implements WindowListener {
     private ToolBarButton refreshButton;
     private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
 
-    public WorkFrame(String title, IMessageSender exch) {
+    public GeneralFrame(String title, IMessageSender exch) {
         super(title);
-//        _this = this;
         addWindowListener(this);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.exchanger = exch;
@@ -78,7 +75,7 @@ public class WorkFrame extends JFrame implements WindowListener {
         setVisible(true);
     }
 
-    public WorkFrame(IMessageSender exch) {
+    public GeneralFrame(IMessageSender exch) {
         this("Works", exch);
     }
 
@@ -99,7 +96,6 @@ public class WorkFrame extends JFrame implements WindowListener {
         statusLabel1.setBorder(BorderFactory.createEtchedBorder());
         statusLabel2.setHorizontalTextPosition(SwingConstants.CENTER);
         statusLabel2.setText(" ");
-//        statusPanel.add(statusLabel1,BorderLayout.WEST);
         statusPanel.add(statusLabel2, BorderLayout.CENTER);
 
         refreshButton = new ToolBarButton("refresh.png");
@@ -148,7 +144,7 @@ public class WorkFrame extends JFrame implements WindowListener {
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {
-                updateGrid(grid.getTableView(), grid.getTableDoc(), grids.get(grid));
+                updateGrid(exchanger, grid.getTableView(), grid.getTableDoc(), grids.get(grid));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -193,13 +189,18 @@ public class WorkFrame extends JFrame implements WindowListener {
         setJMenuBar(bar);
     }
 
-    protected JTabbedPane getMainPanel() {
-        JTabbedPane workTab = new JTabbedPane();
-        workTab.add(getContractsPanel(), "Contracts");
-        workTab.add(new JPanel(), "Quotas");
-        workTab.add(new JPanel(), "Orders");
-        return workTab;
-    }
+    protected abstract JTabbedPane getMainPanel();
+//    {
+//        JTabbedPane workTab = new JTabbedPane();
+//        workTab.add(getContractsPanel(), "Contracts");
+//        //TODO: Quotas panel
+//        workTab.add(new JPanel(), "Quotas");
+//        //TODO: Orders panel
+//        workTab.add(new JPanel(), "Orders");
+//        workTab.add(getSitesPanel(), "Sites");
+//        workTab.add(getClientsPanel(), "Clients");
+//        return workTab;
+//    }
 
     protected JMenuItem createMenuItem(String label, String microHelp) {
         JMenuItem m = new JMenuItem(label);
@@ -230,7 +231,7 @@ public class WorkFrame extends JFrame implements WindowListener {
         });
     }
 
-    protected void updateGrid(DbTableView view, DbTableDocument doc, String select)
+    public static void updateGrid(IMessageSender exchanger, DbTableView view, DbTableDocument doc, String select)
             throws RemoteException {
         int row = view.getSelectedRow();
         doc.setBody(exchanger.getTableBody(select));
@@ -241,9 +242,6 @@ public class WorkFrame extends JFrame implements WindowListener {
         }
     }
 
-//    private void hideWindow() {
-//        setVisible(false);
-//    }
     @Override
     public void windowOpened(WindowEvent e) {
     }
@@ -281,19 +279,18 @@ public class WorkFrame extends JFrame implements WindowListener {
     public void windowDeactivated(WindowEvent e) {
     }
 
-    private JPanel getContractsPanel() {
-        if (contractsPanel == null) {
-            HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
-            maxWidths.put(0, 40);
-            maxWidths.put(1, 150);
-            contractsPanel = createAndRegisterGrid(Selects.SELECT_FROM_CONTRACTS,
-                    addContractAction(), editContractAction(),
-                    delContractAction(), maxWidths);
-            grids.put(contractsPanel, Selects.SELECT_FROM_CONTRACTS);
-        }
-        return contractsPanel;
-
-    }
+//    private JPanel getContractsPanel() {
+//        if (contractsPanel == null) {
+//            HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+//            maxWidths.put(0, 40);
+//            maxWidths.put(1, 150);
+//            contractsPanel = createAndRegisterGrid(Selects.SELECT_FROM_CONTRACTS,
+//                    addContractAction(), editContractAction(),
+//                    delContractAction(), maxWidths);
+//            grids.put(contractsPanel, Selects.SELECT_FROM_CONTRACTS);
+//        }
+//        return contractsPanel;
+//    }
 
     protected DbTableGridPanel createAndRegisterGrid(String select,
             AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
@@ -317,68 +314,7 @@ public class WorkFrame extends JFrame implements WindowListener {
         return targetPanel;
     }
 
-    private AbstractAction addContractAction() {
-        return new AbstractAction("New Contract") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    new EditContractDialog("New Contract", null);
-                    if (EditContractDialog.okPressed) {
-                        updateGrid(contractsPanel.getTableView(),
-                                contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
-                    }
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                    errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
-    }
-
-    private AbstractAction editContractAction() {
-        return new AbstractAction("Edit Contract") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int id = contractsPanel.getSelectedID();
-                if (id > 0) {
-                    try {
-                        Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
-                        new EditContractDialog("Edit Contract", xcontract);
-                        if (EditContractDialog.okPressed) {
-                            updateGrid(contractsPanel.getTableView(),
-                                    contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
-                        }
-                    } catch (RemoteException ex) {
-                        ex.printStackTrace();
-                        errMessageBox("Error:", ex.getMessage());
-                    }
-                }
-            }
-        };
-    }
-
-    private AbstractAction delContractAction() {
-        return new AbstractAction("Delete Contract") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int id = contractsPanel.getSelectedID();
-                try {
-                    Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
-                    if (yesNo("Attention!", "Do you want to delete contract  [" + xcontract.getContractref() + "]?")
-                            == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(xcontract);
-                        updateGrid(contractsPanel.getTableView(),
-                                contractsPanel.getTableDoc(), Selects.SELECT_FROM_CONTRACTS);
-                    }
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                    errMessageBox("Error:", ex.getMessage());
-                }
-
-            }
-        };
+    protected void registerGrid(GeneralGridPanel grid) {
+        grids.put(grid, grid.getSelect());
     }
 }

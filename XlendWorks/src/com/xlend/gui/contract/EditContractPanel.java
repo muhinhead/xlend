@@ -3,7 +3,7 @@ package com.xlend.gui.contract;
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.orm.Picture;
@@ -187,7 +187,7 @@ public class EditContractPanel extends RecordEditPanel {
                 setDbObject(saved);
                 return true;
             } catch (Exception ex) {
-                WorkFrame.errMessageBox("Error:", ex.getMessage());
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
         }
         return false;
@@ -399,7 +399,7 @@ public class EditContractPanel extends RecordEditPanel {
             name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
             File fout = new File(name);
             if (fout.exists()) {
-                if (WorkFrame.yesNo("Attention",
+                if (GeneralFrame.yesNo("Attention",
                         "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
                     return;
                 }

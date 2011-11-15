@@ -9,7 +9,7 @@ import javax.swing.JTabbedPane;
  *
  * @author Nick Mukhin
  */
-public class HRFrame extends WorkFrame {
+public class HRFrame extends GeneralFrame {
     public HRFrame(IMessageSender exch) {
         super("HR", exch);
     }

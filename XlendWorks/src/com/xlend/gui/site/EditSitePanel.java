@@ -2,7 +2,7 @@ package com.xlend.gui.site;
 
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.orm.Xsite;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
@@ -141,7 +141,7 @@ public class EditSitePanel extends RecordEditPanel {
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
-            WorkFrame.errMessageBox("Error:", ex.getMessage());
+            GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

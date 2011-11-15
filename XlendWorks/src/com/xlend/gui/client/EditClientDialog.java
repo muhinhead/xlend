@@ -1,7 +1,7 @@
 package com.xlend.gui.client;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.site.EditSitePanel;
 import com.xlend.orm.Xclient;
@@ -41,7 +41,7 @@ public class EditClientDialog extends EditRecordDialog {
                     }
                 } catch (Exception ex) {
                     XlendWorks.log(ex);
-                    WorkFrame.errMessageBox("Error:", ex.getMessage());
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
         };

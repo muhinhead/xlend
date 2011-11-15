@@ -94,7 +94,7 @@ public abstract class ProfileDialog extends PopupDialog {
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex);
-                    WorkFrame.errMessageBox("Error:", ex.getMessage());
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
                     rollbackTransaction(TRANSNAME);
                 }
             }

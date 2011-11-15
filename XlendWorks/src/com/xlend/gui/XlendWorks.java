@@ -112,7 +112,7 @@ public class XlendWorks {
     }
 
     public static void logAndShowMessage(Throwable ne) {
-        WorkFrame.errMessageBox("Error:", ne.getMessage());
+        GeneralFrame.errMessageBox("Error:", ne.getMessage());
         log(ne);
     }
 
@@ -124,7 +124,7 @@ public class XlendWorks {
             new LoginDialog(new Object[]{loginField, pwdField, exchanger});
             return LoginDialog.isOkPressed();
         } catch (Throwable ee) {
-            WorkFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
+            GeneralFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
             log(ee);
         }
         return false;

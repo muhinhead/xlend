@@ -1,5 +1,7 @@
 package com.xlend.gui;
 
+import com.xlend.gui.admin.AdminFrame;
+import com.xlend.gui.work.WorkFrame;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -73,7 +75,7 @@ public class DashBoard extends JFrame {
     private final ToolBarButton logoutButton;
     private JPanel controlsPanel;
     private final JLabel userLogin;
-    private WorkFrame workFrame = null;
+    private GeneralFrame workFrame = null;
     private HRFrame hrFrame = null;
     private FleetFrame fleetFrame = null;
     private AdminFrame adminFrame = null;

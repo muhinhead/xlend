@@ -1,17 +1,11 @@
 package com.xlend.gui.site;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.gui.WorkFrame;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xsite;
-import com.xlend.util.PopupDialog;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *
@@ -43,7 +37,7 @@ public class EditSiteDialog extends EditRecordDialog {
                     }
                 } catch (Exception ex) {
                     XlendWorks.log(ex);
-                    WorkFrame.errMessageBox("Error:", ex.getMessage());
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
         };

@@ -1,5 +1,6 @@
 package com.xlend.rmi;
 
+import com.xlend.XlendServer;
 import com.xlend.dbutil.DbConnection;
 import com.xlend.dbutil.DbUtil;
 import com.xlend.orm.dbobject.DbObject;
@@ -40,13 +41,13 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             Method method = dbobClass.getDeclaredMethod("load", Connection.class, String.class, String.class);
             rows = (DbObject[]) method.invoke(null, connection, whereCondition, orderCondition);
         } catch (Exception ex) {
-            DbUtil.log(ex);
+            XlendServer.log(ex);
             throw new java.rmi.RemoteException(ex.getMessage());
         } finally {
             try {
                 DbConnection.closeConnection(connection);
             } catch (SQLException ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             }
         }
@@ -61,13 +62,13 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
                 dbob.setConnection(connection);
                 dbob.save();
             } catch (Exception ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException("Can't save DB object:", ex);
             } finally {
                 try {
                     DbConnection.closeConnection(connection);
                 } catch (SQLException ex) {
-                    DbUtil.log(ex);
+                    XlendServer.log(ex);
                     throw new java.rmi.RemoteException(ex.getMessage());
                 }
             }
@@ -84,13 +85,13 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             dbob = (DbObject) constructor.newInstance(DbConnection.getConnection());
             return dbob.loadOnId(id);
         } catch (Exception ex) {
-            DbUtil.log(ex);
+            XlendServer.log(ex);
             throw new java.rmi.RemoteException(ex.getMessage());
         } finally {
             try {
                 DbConnection.closeConnection(connection);
             } catch (SQLException ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             }
         }
@@ -116,7 +117,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             }
             return colNames;
         } catch (SQLException ex) {
-            DbUtil.log(ex);
+            XlendServer.log(ex);
             throw new java.rmi.RemoteException(ex.getMessage());
         } finally {
             try {
@@ -135,7 +136,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             try {
                 DbConnection.closeConnection(connection);
             } catch (SQLException ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             }
         }
@@ -161,7 +162,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             }
             return rows;
         } catch (SQLException ex) {
-            DbUtil.log(ex);
+            XlendServer.log(ex);
             throw new java.rmi.RemoteException(ex.getMessage());
         } finally {
             try {
@@ -180,7 +181,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             try {
                 DbConnection.closeConnection(connection);
             } catch (SQLException ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             }
         }
@@ -194,13 +195,13 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
                 dbob.setConnection(connection);
                 dbob.delete();
             } catch (Exception ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             } finally {
                 try {
                     DbConnection.closeConnection(connection);
                 } catch (SQLException ex) {
-                    DbUtil.log(ex);
+                    XlendServer.log(ex);
                     throw new java.rmi.RemoteException(ex.getMessage());
                 }
             }
@@ -214,7 +215,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             ps = connection.prepareStatement(stmt);
             ps.execute();
         } catch (SQLException ex) {
-            DbUtil.log(ex);
+            XlendServer.log(ex);
             throw new java.rmi.RemoteException(ex.getMessage());
         } finally {
             try {
@@ -226,7 +227,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             try {
                 DbConnection.closeConnection(connection);
             } catch (SQLException ex) {
-                DbUtil.log(ex);
+                XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
             }
         }

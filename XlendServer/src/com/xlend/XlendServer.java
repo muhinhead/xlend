@@ -38,8 +38,9 @@ import javax.swing.JSeparator;
  */
 public class XlendServer {
 
+    public static final String version = "0.6";
     private static final String PROPERTYFILENAME = "XlendServer.config";
-    private static final String ICONNAME = "Xcost.png"; 
+    private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
     private static FileHandler fh;
     private static Thread rmiServer;
@@ -87,6 +88,8 @@ public class XlendServer {
                 e.printStackTrace();
             }
         }
+        String appToLog = "\n" + (msg == null ? th.getMessage() : msg);
+        LogViewDialog.logBuffer.append(appToLog);
         logger.log(Level.SEVERE, msg, th);
     }
 
@@ -166,24 +169,26 @@ public class XlendServer {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    rmiServer.stop();
+//                    DbConnection.shutDownDatabase();
                     System.exit(0);
                 }
             });
             MenuItem miAbout = new MenuItem("About...");
-            miAbout.addActionListener(new ActionListener(){
+            miAbout.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
                     new AboutDialog();
                 }
             });
             MenuItem miLog = new MenuItem("Server log...");
-            miLog.addActionListener(new ActionListener(){
+            miLog.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    new LogViewDialog();
+                    showLog();
                 }
             });
-            
+
             popup.add(miLog);
             popup.add(miAbout);
             popup.addSeparator();
@@ -193,7 +198,7 @@ public class XlendServer {
             ti.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    new LogViewDialog();
+                    showLog();
                 }
             });
             tray.add(ti);
@@ -203,8 +208,11 @@ public class XlendServer {
         }
     }
 
+    private static void showLog() {
+        new LogViewDialog(version, DbConnection.DB_VERSION);
+    }
+
     public static void setWindowIcon(Window w, String iconName) {
         w.setIconImage(loadImage(iconName));
     }
-
 }

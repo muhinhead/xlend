@@ -22,33 +22,42 @@ import javax.swing.JScrollPane;
  */
 public class DbTableGridPanel extends JPanel {
 
-    private DbTableView tableView;
-    private DbTableDocument tableDoc;
-    private final JScrollPane sp;
-    private final AbstractAction addAction;
-    private final AbstractAction editAction;
-    private final AbstractAction delAction;
-    private final JButton addButton;
-    private final JButton editButton;
-    private final JButton delButton;
+    private DbTableView tableView = null;
+    private DbTableDocument tableDoc = null;
+    private JScrollPane sp = null;
+    protected AbstractAction addAction = null;
+    protected AbstractAction editAction = null;
+    protected AbstractAction delAction = null;
+    private JButton addButton = null;
+    private JButton editButton = null;
+    private JButton delButton = null;
+
+    public DbTableGridPanel(
+            AbstractAction addAction,
+            AbstractAction editAction,
+            AbstractAction delAction,
+            Vector[] tableBody) {
+        this(addAction, editAction, delAction, tableBody, null);
+    }
+
+    public DbTableGridPanel() {
+        super(new BorderLayout());
+    }
 
     public DbTableGridPanel(
             AbstractAction addAction,
             final AbstractAction editAction,
             AbstractAction delAction,
-            Vector[] tableBody) {
-        this(addAction, editAction, delAction, tableBody, null);
-    }
-    
-    public DbTableGridPanel(
-            AbstractAction addAction,
-            final AbstractAction editAction,
-            AbstractAction delAction,
             Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
-        super(new BorderLayout());
-        this.addAction = addAction;
-        this.editAction = editAction;
-        this.delAction = delAction;
+        this();
+        init(addAction, editAction, delAction, tableBody, maxWidths);
+    }
+
+    protected void init(AbstractAction add, AbstractAction edit,
+            AbstractAction del, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
+        this.addAction = add;
+        this.editAction = edit;
+        this.delAction = del;
         tableView = new DbTableView();
         if (maxWidths != null) {
             tableView.setMaxColWidths(maxWidths);
@@ -59,7 +68,6 @@ public class DbTableGridPanel extends JPanel {
         new Controller(getTableDoc(), getTableView());
         JPanel btnPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         JPanel leftPanel = new JPanel(new BorderLayout());
-//        btnPanel.add(new JPanel());
         btnPanel.add(addButton = new JButton(addAction));
         btnPanel.add(editButton = new JButton(editAction));
         btnPanel.add(delButton = new JButton(delAction));

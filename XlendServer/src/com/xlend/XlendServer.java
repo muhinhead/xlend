@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -167,7 +168,20 @@ public class XlendServer {
             });
             popup.add(miExit);
             ti = new TrayIcon(icon, XLEND_SERVER, popup);
+            ti.setActionCommand("DoubleClick");
+            ti.addActionListener(new ActionListener() {
 
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showConfirmDialog(null,"Xlend Server");
+                    //TODO: show real main dialog here
+//                    if (mainWindow == null) {
+//                        mainWindow = new SimpleGui("Gaming Server Console");
+//                    } else {
+//                        mainWindow.setVisible(!mainWindow.isVisible());
+//                    }
+                }
+            });
+            tray.add(ti);
         } catch (Exception ex) {
             log("RMI server trouble: " + ex.getMessage());
             System.exit(2);

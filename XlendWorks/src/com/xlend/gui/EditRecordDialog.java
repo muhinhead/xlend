@@ -31,7 +31,7 @@ public abstract class EditRecordDialog extends PopupDialog {
         JPanel btnPanel = new JPanel();
         btnPanel.add(saveButton = new JButton(saveAction = getSaveAction()));
         btnPanel.add(cancelButton = new JButton(cancelAction = getCancelAction()));
-        
+
         getContentPane().add(new JPanel(), BorderLayout.WEST);
         getContentPane().add(new JPanel(), BorderLayout.EAST);
         getContentPane().add(editPanel, BorderLayout.CENTER);
@@ -40,7 +40,7 @@ public abstract class EditRecordDialog extends PopupDialog {
         aroundButton.add(btnPanel, BorderLayout.EAST);
         getContentPane().add(aroundButton, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(saveButton);
-        
+
     }
 
     @Override
@@ -51,7 +51,27 @@ public abstract class EditRecordDialog extends PopupDialog {
         cancelAction = null;
     }
 
-    protected abstract AbstractAction getSaveAction();
+    protected AbstractAction getSaveAction() {
+        return new AbstractAction("Save") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (getEditPanel().save()) {
+                        //okPressed = true;
+                        setOkPressed(true);
+                        dispose();
+                    }
+                } catch (Exception ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
+    }
+
+    protected void setOkPressed(boolean b) {
+    }
 
     protected AbstractAction getCancelAction() {
         return new AbstractAction("Cancel") {

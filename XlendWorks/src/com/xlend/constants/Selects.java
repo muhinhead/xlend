@@ -23,6 +23,9 @@ public class Selects {
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
+    public static final String SELECT_FROM_CONTRACTPAGE = //"select * from xcontractpage ";
+            "Select xcontractpage_id \"Id\", pagenum \"Ord.No\", description \"Nootes\" from xcontractpage where xcontract_id = # order by pagenum";
+            
 //    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
 //            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","
 //            + "orderqty \"Order Quantity\",priceperunit \"Price per Unit\" from xcontractitem where xcontract_id = #";            

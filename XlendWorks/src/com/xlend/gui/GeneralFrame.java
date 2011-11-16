@@ -1,17 +1,11 @@
 package com.xlend.gui;
 
-import com.xlend.constants.Selects;
-import com.xlend.gui.contract.EditContractDialog;
-import com.xlend.gui.work.ClientsGrid;
-import com.xlend.gui.work.SitesGrid;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
-import com.xlend.orm.Xcontract;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;

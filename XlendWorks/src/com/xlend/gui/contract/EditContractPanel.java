@@ -64,9 +64,10 @@ public class EditContractPanel extends RecordEditPanel {
 //    private JPanel imagePanel;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
-    private JPanel picPanel;
-    private ImageIcon currentPicture;
-    private JPopupMenu picturePopMenu;
+//    private JPanel picPanel;
+//    private ImageIcon currentPicture;
+//    private JPopupMenu picturePopMenu;
+    private ContractPagesGrid pagesdPanel;
 
     public EditContractPanel(DbObject dbObject) {
         super(dbObject);
@@ -102,11 +103,11 @@ public class EditContractPanel extends RecordEditPanel {
         idField.setEnabled(false);
 
         JPanel upper = new JPanel(new BorderLayout(5, 5));
-        JPanel uplabel = new JPanel(new GridLayout(4, 1, 5, 5));
-        JPanel upedit = new JPanel(new GridLayout(4, 1, 5, 5));
+        JPanel uplabel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel upedit = new JPanel(new GridLayout(3, 1, 5, 5));
         upper.add(uplabel, BorderLayout.WEST);
         upper.add(upedit, BorderLayout.CENTER);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             uplabel.add(new JLabel(labels[i], SwingConstants.RIGHT));
         }
         JPanel ided = new JPanel(new GridLayout(1, 3, 5, 5));
@@ -126,7 +127,7 @@ public class EditContractPanel extends RecordEditPanel {
         form.add(leftpanel, BorderLayout.WEST);
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         sp.setTopComponent(edits[3]);
-        sp.setBottomComponent(getScanPanel());
+        sp.setBottomComponent(getDetailsPanel());
         form.add(sp);
 
         alignPanelOnWidth(leftpanel, uplabel);
@@ -143,17 +144,17 @@ public class EditContractPanel extends RecordEditPanel {
             contractRefField.setText(xcontract.getContractref());
             selectComboItem(contractorBox, xcontract.getXclientId());
             descriptionField.setText(xcontract.getDescription());
-            if (xcontract.getPictureId() != null) {
-                try {
-                    Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, xcontract.getPictureId());
-                    currentPicture = new ImageIcon((byte[]) pic.getPicture());
-                    setPhoto((byte[]) pic.getPicture());
-                } catch (RemoteException ex) {
-                    XlendWorks.log(ex);
-                }
-            } else {
-                noImage();
-            }
+//            if (xcontract.getPictureId() != null) {
+//                try {
+//                    Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, xcontract.getPictureId());
+//                    currentPicture = new ImageIcon((byte[]) pic.getPicture());
+//                    setPhoto((byte[]) pic.getPicture());
+//                } catch (RemoteException ex) {
+//                    XlendWorks.log(ex);
+//                }
+//            } else {
+//                noImage();
+//            }
         }
     }
 
@@ -194,185 +195,193 @@ public class EditContractPanel extends RecordEditPanel {
 
     }
 
-    private JButton getLoadPictureButton() {
-        loadButton = new JButton("Choose picture...");
-        loadButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                loadDocImageFromFile();
-            }
-        });
-        return loadButton;
-    }
-
-    private void loadDocImageFromFile() {
-        JFileChooser chooser =
-                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-            public boolean accept(File f) {
-                boolean ok = f.isDirectory()
-                        || f.getName().toLowerCase().endsWith("jpg")
-                        || f.getName().toLowerCase().endsWith("png")
-                        || f.getName().toLowerCase().endsWith("jpeg")
-                        || f.getName().toLowerCase().endsWith("gif");
-                return ok;
-            }
-
-            public String getDescription() {
-                return "*.JPG ; *.GIF; *.PNG";
-            }
-        });
-        chooser.setDialogTitle("Import Picture");
-        chooser.setApproveButtonText("Import");
-        int retVal = chooser.showOpenDialog(null);
-
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            String name = chooser.getSelectedFile().getAbsolutePath();
-            byte[] imageData = Util.readFile(name);
-            Xcontract xcontract = (Xcontract) getDbObject();
-            if (xcontract == null) {
-                try {
-                    save();
-                    xcontract = (Xcontract) getDbObject();
-                    loadData();
-                } catch (Exception ex) {
-                    XlendWorks.log(ex);
-                }
-            }
-            try {
-                Picture picture = new Picture(null);
-                picture.setPictureId(0);
-                picture.setPicture(imageData);
-                picture.setNew(true);
-                DbObject saved = DashBoard.getExchanger().saveDbObject(picture);
-                picture = (Picture) saved;
-                xcontract.setPictureId(picture.getPictureId());
-                setPhoto(imageData);
-            } catch (Exception ex) {
-                XlendWorks.log(ex);
-            }
-        }
-    }
-
-    private JTabbedPane getScanPanel() {
+//    private JButton getLoadPictureButton() {
+//        loadButton = new JButton("Choose picture...");
+//        loadButton.addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                loadDocImageFromFile();
+//            }
+//        });
+//        return loadButton;
+//    }
+//
+//    private void loadDocImageFromFile() {
+//        JFileChooser chooser =
+//                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+//        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+//
+//            public boolean accept(File f) {
+//                boolean ok = f.isDirectory()
+//                        || f.getName().toLowerCase().endsWith("jpg")
+//                        || f.getName().toLowerCase().endsWith("png")
+//                        || f.getName().toLowerCase().endsWith("jpeg")
+//                        || f.getName().toLowerCase().endsWith("gif");
+//                return ok;
+//            }
+//
+//            public String getDescription() {
+//                return "*.JPG ; *.GIF; *.PNG";
+//            }
+//        });
+//        chooser.setDialogTitle("Import Picture");
+//        chooser.setApproveButtonText("Import");
+//        int retVal = chooser.showOpenDialog(null);
+//
+//        if (retVal == JFileChooser.APPROVE_OPTION) {
+//            String name = chooser.getSelectedFile().getAbsolutePath();
+//            byte[] imageData = Util.readFile(name);
+//            Xcontract xcontract = (Xcontract) getDbObject();
+//            if (xcontract == null) {
+//                try {
+//                    save();
+//                    xcontract = (Xcontract) getDbObject();
+//                    loadData();
+//                } catch (Exception ex) {
+//                    XlendWorks.log(ex);
+//                }
+//            }
+//            try {
+//                Picture picture = new Picture(null);
+//                picture.setPictureId(0);
+//                picture.setPicture(imageData);
+//                picture.setNew(true);
+//                DbObject saved = DashBoard.getExchanger().saveDbObject(picture);
+//                picture = (Picture) saved;
+////                xcontract.setPictureId(picture.getPictureId());
+////                setPhoto(imageData);
+//            } catch (Exception ex) {
+//                XlendWorks.log(ex);
+//            }
+//        }
+//    }
+    private JTabbedPane getDetailsPanel() {
         JTabbedPane tp = new JTabbedPane();
-        picPanel = new JPanel();//new BorderLayout());
-        JPanel insPanel = new JPanel();
-        insPanel.add(getLoadPictureButton());
-        picPanel.add(insPanel);
+//        picPanel = new JPanel();//new BorderLayout());
+//        JPanel insPanel = new JPanel();
+//        insPanel.setPreferredSize(new Dimension(insPanel.getPreferredSize().width, 400));
+//        insPanel.add(getLoadPictureButton());
+//        picPanel.add(insPanel);
 
-        tp.add(new JScrollPane(picPanel), "Scanned image");
+//        tp.add(new JScrollPane(picPanel), "Scanned papers");
+        try {
+            Xcontract xcontract = (Xcontract) getDbObject();
+            if (xcontract != null) {
+                int contract_id = xcontract.getXcontractId();
+                pagesdPanel = new ContractPagesGrid(DashBoard.getExchanger(), contract_id);
+            }
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
+        tp.add(new JScrollPane(pagesdPanel), "Scanned papers");
+        //TODO: add orders for contract grid
+        tp.add(new JPanel(), "Orders");
         return tp;
     }
 
-    private void setPhoto(byte[] imgData) {//ImageIcon img) {
-        String tmpImgFile = "$$$.img";
-        currentPicture = new ImageIcon(imgData);
-        Dimension d = picPanel.getSize();
-        picPanel.setVisible(false);
-        picPanel.removeAll();
-        JScrollPane sp = null;
-        int height = 1;
-        int wscale = 1;
-        int hscale = 1;
-        int width = 0;
-        Util.writeFile(new File(tmpImgFile), imgData);
-        width = currentPicture.getImage().getWidth(null);
-        height = currentPicture.getImage().getHeight(null);
-        wscale = width / (d.width - 70);
-        hscale = height / (d.height - 70);
-        wscale = wscale <= 0 ? 1 : wscale;
-        hscale = hscale <= 0 ? 1 : hscale;
-        int scale = wscale < hscale ? wscale : hscale;
-        StringBuffer html = new StringBuffer("<html>");
-        html.append("<img margin=20 src='file:" + tmpImgFile + "' "
-                + "width=" + width / scale + " height=" + height / scale
-                + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
-        picPanel.setVisible(true);
-        ed.addMouseListener(new MouseAdapter() {
-
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    viewDocumentImage();
-                }
-            }
-        });
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
-        new File(tmpImgFile).deleteOnExit();
-    }
-
-    private void viewDocumentImage() {
-        JDialog dlg = new JDialog();
-        dlg.setModal(true);
-        JPanel pane = new JPanel(new BorderLayout());
-        pane.add(new JScrollPane(new JLabel(currentPicture)),
-                BorderLayout.CENTER);
-        dlg.setContentPane(pane);
-        dlg.pack();
-        dlg.setVisible(true);
-    }
-
-    private void noImage() {
-        picPanel.setVisible(false);
-        picPanel.removeAll();
-        JPanel insPanel = new JPanel();
-        insPanel.add(getLoadPictureButton());
-        picPanel.add(insPanel);
-        picPanel.setVisible(true);
-        currentPicture = null;
-    }
-
-    private JPopupMenu getPhotoPopupMenu() {
-        if (null == picturePopMenu) {
-            picturePopMenu = new JPopupMenu();
-            picturePopMenu.add(new AbstractAction("Open in window") {
-
-                public void actionPerformed(ActionEvent e) {
-                    viewDocumentImage();
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Replace image") {
-
-                public void actionPerformed(ActionEvent e) {
-                    loadDocImageFromFile();
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Save image to file") {
-
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        Xcontract xcontract = (Xcontract) getDbObject();
-                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, xcontract.getPictureId());
-                        exportDocImage((byte[]) pic.getPicture());
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                    }
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Remove image from DB") {
-
-                public void actionPerformed(ActionEvent e) {
-                    Xcontract xcontract = (Xcontract) getDbObject();
-                    try {
-                        Integer pictureId = xcontract.getPictureId();
-                        xcontract.setPictureId(null);
-                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, pictureId);
-                        //DashBoard.getExchanger().deleteObject(pic);
-                        loadData();
-
-                    } catch (Exception ex) {
-                        XlendWorks.log(ex);
-                    }
-                }
-            });
-        }
-        return picturePopMenu;
-    }
-
+//    private void setPhoto(byte[] imgData) {//ImageIcon img) {
+//        String tmpImgFile = "$$$.img";
+//        currentPicture = new ImageIcon(imgData);
+//        Dimension d = picPanel.getSize();
+//        picPanel.setVisible(false);
+//        picPanel.removeAll();
+//        JScrollPane sp = null;
+//        int height = 1;
+//        int wscale = 1;
+//        int hscale = 1;
+//        int width = 0;
+//        Util.writeFile(new File(tmpImgFile), imgData);
+//        width = currentPicture.getImage().getWidth(null);
+//        height = currentPicture.getImage().getHeight(null);
+//        wscale = width / (d.width - 70);
+//        hscale = height / (d.height - 70);
+//        wscale = wscale <= 0 ? 1 : wscale;
+//        hscale = hscale <= 0 ? 1 : hscale;
+//        int scale = wscale < hscale ? wscale : hscale;
+//        StringBuffer html = new StringBuffer("<html>");
+//        html.append("<img margin=20 src='file:" + tmpImgFile + "' "
+//                + "width=" + width / scale + " height=" + height / scale
+//                + "></img>");
+//        JEditorPane ed = new JEditorPane("text/html", html.toString());
+//        ed.setEditable(false);
+//        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+//        picPanel.setVisible(true);
+//        ed.addMouseListener(new MouseAdapter() {
+//
+//            public void mouseClicked(MouseEvent e) {
+//                if (e.getClickCount() == 2) {
+//                    viewDocumentImage();
+//                }
+//            }
+//        });
+//        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+//        new File(tmpImgFile).deleteOnExit();
+//    }
+//    private void viewDocumentImage() {
+//        JDialog dlg = new JDialog();
+//        dlg.setModal(true);
+//        JPanel pane = new JPanel(new BorderLayout());
+//        pane.add(new JScrollPane(new JLabel(currentPicture)),
+//                BorderLayout.CENTER);
+//        dlg.setContentPane(pane);
+//        dlg.pack();
+//        dlg.setVisible(true);
+//    }
+//    private void noImage() {
+//        picPanel.setVisible(false);
+//        picPanel.removeAll();
+//        JPanel insPanel = new JPanel();
+//        insPanel.add(getLoadPictureButton());
+//        picPanel.add(insPanel);
+//        picPanel.setVisible(true);
+//        currentPicture = null;
+//    }
+//    private JPopupMenu getPhotoPopupMenu() {
+//        if (null == picturePopMenu) {
+//            picturePopMenu = new JPopupMenu();
+//            picturePopMenu.add(new AbstractAction("Open in window") {
+//
+//                public void actionPerformed(ActionEvent e) {
+//                    viewDocumentImage();
+//                }
+//            });
+//            picturePopMenu.add(new AbstractAction("Replace image") {
+//
+//                public void actionPerformed(ActionEvent e) {
+//                    loadDocImageFromFile();
+//                }
+//            });
+//            picturePopMenu.add(new AbstractAction("Save image to file") {
+//
+//                public void actionPerformed(ActionEvent e) {
+//                    try {
+//                        Xcontract xcontract = (Xcontract) getDbObject();
+//                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, xcontract.getPictureId());
+//                        exportDocImage((byte[]) pic.getPicture());
+//                    } catch (RemoteException ex) {
+//                        XlendWorks.log(ex);
+//                    }
+//                }
+//            });
+//            picturePopMenu.add(new AbstractAction("Remove image from DB") {
+//
+//                public void actionPerformed(ActionEvent e) {
+//                    Xcontract xcontract = (Xcontract) getDbObject();
+//                    try {
+//                        Integer pictureId = xcontract.getPictureId();
+//                        xcontract.setPictureId(null);
+//                        Picture pic = (Picture) DashBoard.getExchanger().loadDbObjectOnID(Picture.class, pictureId);
+//                        //DashBoard.getExchanger().deleteObject(pic);
+//                        loadData();
+//
+//                    } catch (Exception ex) {
+//                        XlendWorks.log(ex);
+//                    }
+//                }
+//            });
+//        }
+//        return picturePopMenu;
+//    }
     public static void exportDocImage(byte[] imageData) {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));

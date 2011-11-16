@@ -38,7 +38,7 @@ import javax.swing.JSeparator;
  */
 public class XlendServer {
 
-    public static final String version = "0.6";
+    public static final String version = "0.7";
     private static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

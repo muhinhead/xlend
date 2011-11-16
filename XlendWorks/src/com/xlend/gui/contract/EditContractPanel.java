@@ -1,54 +1,33 @@
 package com.xlend.gui.contract;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
-import com.xlend.orm.Picture;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.orm.dbobject.ForeignKeyViolationException;
-import com.xlend.util.PopupListener;
-import com.xlend.util.TexturedPanel;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.ListDataListener;
 
 /**
  *

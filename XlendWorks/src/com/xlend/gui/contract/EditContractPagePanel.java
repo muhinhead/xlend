@@ -3,13 +3,38 @@ package com.xlend.gui.contract;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xcontractpage;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.orm.dbobject.ForeignKeyViolationException;
+import com.xlend.util.PopupListener;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -23,6 +48,11 @@ public class EditContractPagePanel extends RecordEditPanel {
     private JTextField idField;
     private JTextField pageNumField;
     private JTextArea descriptionField;
+    private JScrollPane sp;
+    private JPanel picPanel;
+    private JButton loadButton;
+    private ImageIcon currentPicture;
+    private JPopupMenu picturePopMenu;
 
     public EditContractPagePanel(DbObject dbObject) {
         super(dbObject);
@@ -30,11 +60,13 @@ public class EditContractPagePanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
-        String[] labels = new String[]{"Id:", "Ord.No:", "Description:"};
+        String[] labels = new String[]{"Id:", "Index No:", "Description:"};
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             pageNumField = new JTextField(),
-            descriptionField = new JTextArea(3, 30)
+            sp = new JScrollPane(descriptionField = new JTextArea(3, 30),
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
         };
         descriptionField.setWrapStyleWord(true);
         descriptionField.setLineWrap(true);
@@ -69,7 +101,11 @@ public class EditContractPagePanel extends RecordEditPanel {
         leftpanel.add(new JLabel(labels[2], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
-        form.add(edits[2]);
+        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        split.setTopComponent(edits[2]);
+        split.setBottomComponent(getPicturesPanel());
+//        form.add(edits[2]);
+        form.add(split);
 
         alignPanelOnWidth(leftpanel, uplabel);
 
@@ -83,6 +119,9 @@ public class EditContractPagePanel extends RecordEditPanel {
             idField.setText(contrpage.getXcontractId().toString());
             pageNumField.setText(contrpage.getPagenum().toString());
             descriptionField.setText(contrpage.getDescription());
+            if (contrpage.getPagescan() != null) {
+                setPhoto((byte[]) contrpage.getPagescan());
+            }
         }
     }
 
@@ -91,7 +130,6 @@ public class EditContractPagePanel extends RecordEditPanel {
         Xcontractpage contrpage = (Xcontractpage) getDbObject();
         boolean isNew = false;
         if (contrpage.getXcontractpageId() == null) {
-//            contrpage = new Xcontractpage(null);
             contrpage.setXcontractpageId(0);
             isNew = true;
         }
@@ -106,5 +144,194 @@ public class EditContractPagePanel extends RecordEditPanel {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
+    }
+
+    private Component getPicturesPanel() {
+        picPanel = new JPanel();
+        JPanel insPanel = new JPanel();
+        insPanel.add(getLoadPictureButton());
+        picPanel.add(insPanel);
+        JScrollPane scroll = new JScrollPane(picPanel);
+        scroll.setPreferredSize(new Dimension(800, 400));
+        return scroll;
+    }
+
+    private JButton getLoadPictureButton() {
+        loadButton = new JButton("Choose picture...");
+        loadButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                loadDocImageFromFile();
+            }
+        });
+        return loadButton;
+    }
+
+    private void loadDocImageFromFile() {
+        JFileChooser chooser =
+                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+            public boolean accept(File f) {
+                boolean ok = f.isDirectory()
+                        || f.getName().toLowerCase().endsWith("jpg")
+                        || f.getName().toLowerCase().endsWith("png")
+                        || f.getName().toLowerCase().endsWith("jpeg")
+                        || f.getName().toLowerCase().endsWith("gif");
+                return ok;
+            }
+
+            public String getDescription() {
+                return "*.JPG ; *.GIF; *.PNG";
+            }
+        });
+        chooser.setDialogTitle("Import Picture");
+        chooser.setApproveButtonText("Import");
+        int retVal = chooser.showOpenDialog(null);
+
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            String name = chooser.getSelectedFile().getAbsolutePath();
+            byte[] imageData = Util.readFile(name);
+            Xcontractpage page = (Xcontractpage) getDbObject();
+            try {
+                page.setPagescan(imageData);
+                setPhoto(imageData);
+            } catch (Exception ex) {
+                XlendWorks.log(ex);
+            }
+        }
+    }
+
+    private void viewDocumentImage() {
+        JDialog dlg = new JDialog();
+        dlg.setModal(true);
+        JPanel pane = new JPanel(new BorderLayout());
+        pane.add(new JScrollPane(new JLabel(currentPicture)),
+                BorderLayout.CENTER);
+        dlg.setContentPane(pane);
+        dlg.pack();
+        dlg.setVisible(true);
+    }
+
+    private void noImage() {
+        picPanel.setVisible(false);
+        picPanel.removeAll();
+        JPanel insPanel = new JPanel();
+        insPanel.add(getLoadPictureButton());
+        picPanel.add(insPanel);
+        picPanel.setVisible(true);
+        currentPicture = null;
+    }
+
+    private void setPhoto(byte[] imgData) {//ImageIcon img) {
+        String tmpImgFile = "$$$.img";
+        currentPicture = new ImageIcon(imgData);
+        Dimension d = picPanel.getSize();
+        picPanel.setVisible(false);
+        picPanel.removeAll();
+        JScrollPane sp = null;
+        int height = 1;
+        int wscale = 1;
+        int hscale = 1;
+        int width = 0;
+        Util.writeFile(new File(tmpImgFile), imgData);
+        width = currentPicture.getImage().getWidth(null);
+        height = currentPicture.getImage().getHeight(null);
+        wscale = width / (d.width - 70);
+        hscale = height / (d.height - 70);
+        wscale = wscale <= 0 ? 1 : wscale;
+        hscale = hscale <= 0 ? 1 : hscale;
+        int scale = wscale < hscale ? wscale : hscale;
+        StringBuffer html = new StringBuffer("<html>");
+        html.append("<img margin=20 src='file:" + tmpImgFile + "' "
+                + "width=" + width / scale + " height=" + height / scale
+                + "></img>");
+        JEditorPane ed = new JEditorPane("text/html", html.toString());
+        ed.setEditable(false);
+        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+        picPanel.setVisible(true);
+        ed.addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    viewDocumentImage();
+                }
+            }
+        });
+        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+        new File(tmpImgFile).deleteOnExit();
+    }
+
+    private JPopupMenu getPhotoPopupMenu() {
+        if (null == picturePopMenu) {
+            picturePopMenu = new JPopupMenu();
+            picturePopMenu.add(new AbstractAction("Open in window") {
+
+                public void actionPerformed(ActionEvent e) {
+                    viewDocumentImage();
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Replace image") {
+
+                public void actionPerformed(ActionEvent e) {
+                    loadDocImageFromFile();
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Save image to file") {
+
+                public void actionPerformed(ActionEvent e) {
+                    Xcontractpage page = (Xcontractpage) getDbObject();
+                    exportDocImage((byte[]) page.getPagescan());
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Remove image from DB") {
+
+                public void actionPerformed(ActionEvent e) {
+                    Xcontractpage page = (Xcontractpage) getDbObject();
+                    try {
+                        page.setPagescan(null);
+                        noImage();
+                    } catch (Exception ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            });
+        }
+        return picturePopMenu;
+    }
+
+    public static void exportDocImage(byte[] imageData) {
+        JFileChooser chooser =
+                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+            public boolean accept(File f) {
+                boolean ok = f.isDirectory()
+                        || f.getName().toLowerCase().endsWith("jpg")
+                        || f.getName().toLowerCase().endsWith("jpeg")
+                        || f.getName().toLowerCase().endsWith("gif");
+
+                return ok;
+            }
+
+            public String getDescription() {
+                return "*.JPG ; *.GIF";
+            }
+        });
+        chooser.setDialogTitle("Save image to file");
+        chooser.setApproveButtonText("Save");
+        int retVal = chooser.showOpenDialog(null);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            String name = chooser.getSelectedFile().getAbsolutePath();
+            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
+            File fout = new File(name);
+            if (fout.exists()) {
+                if (GeneralFrame.yesNo("Attention",
+                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+            Util.writeFile(fout, imageData);
+        }
     }
 }

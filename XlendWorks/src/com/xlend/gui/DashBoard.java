@@ -142,7 +142,7 @@ public class DashBoard extends JFrame {
         fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
         main.add(fleetbutton);
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(310, 30, img.getWidth() + 3, img.getHeight() + 3);
+        logoutButton.setBounds(285, 30, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {

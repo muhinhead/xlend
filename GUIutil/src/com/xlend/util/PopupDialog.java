@@ -10,8 +10,6 @@ import javax.swing.table.AbstractTableModel;
  */
 public abstract class PopupDialog extends JDialog {
 
-//    protected double xScale;
-//    protected double yScale;
     protected Frame ownerFrame;
     private Object object;
 

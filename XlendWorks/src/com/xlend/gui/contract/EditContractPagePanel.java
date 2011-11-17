@@ -95,7 +95,10 @@ public class EditContractPagePanel extends RecordEditPanel {
         upedit.add(ided);
         upedit.add(pageNumField);
 
-        form.add(upper, BorderLayout.NORTH);
+        JPanel half = new JPanel(new GridLayout(1,2));
+        half.add(upper);
+        half.add(new JPanel());
+        form.add(half, BorderLayout.NORTH);
 
         JPanel leftpanel = new JPanel(new BorderLayout());
         leftpanel.add(new JLabel(labels[2], SwingConstants.RIGHT), BorderLayout.NORTH);

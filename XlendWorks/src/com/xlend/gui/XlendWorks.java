@@ -22,10 +22,13 @@ import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -43,20 +46,22 @@ public class XlendWorks {
     public static void main(String[] args) {
         String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
         IMessageSender exchanger;
-        try {
-            exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
-            if (login(exchanger)) {
-                new DashBoard(exchanger);
-            } else {
-                System.exit(1);
+        while (true) {
+            try {
+                exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
+                if (login(exchanger)) {
+                    new DashBoard(exchanger);
+                    break;
+                } else {
+                    System.exit(1);
+                }
+            } catch (Exception ex) {
+                //ex.printStackTrace();
+                logAndShowMessage(ex);
+                if ((serverIP = serverSetup("Check server settings")) == null) {
+                    System.exit(1);
+                }
             }
-//        } catch (java.rmi.ServerException re) {
-//            logAndShowMessage(re.detail);
-//            System.exit(1);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            logAndShowMessage(ex);
-            System.exit(1);
         }
     }
 
@@ -130,12 +135,28 @@ public class XlendWorks {
         return false;
     }
 
+    public static String serverSetup(String title) {
+        String address = DashBoard.readProperty("ServerAddress", "localhost");
+        String[] vals = address.split(":");
+        JTextField addressField = new JTextField(16);
+        addressField.setText(vals[0]);
+        JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
+                vals.length > 0 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
+        JComponent[] edits = new JComponent[]{addressField, portSpinner};
+        new ConfigEditor(title, edits);
+        if (addressField.getText().trim().length() > 0) {
+            return addressField.getText() + ":" + portSpinner.getValue();
+        } else {
+            return null;
+        }
+    }
+
     public static ComboItem[] loadAllClients(IMessageSender exchanger) {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
-            ComboItem[] itms = new ComboItem[clients.length+1];
+            ComboItem[] itms = new ComboItem[clients.length + 1];
             itms[0] = new ComboItem(0, "--Add new client--");
-            int i=1;
+            int i = 1;
             for (DbObject o : clients) {
                 Xclient xclient = (Xclient) o;
                 itms[i++] = new ComboItem(xclient.getXclientId(), xclient.getCompanyname());
@@ -146,7 +167,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static String[] loadAllLogins(IMessageSender exchanger) {
         try {
             DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");

@@ -69,6 +69,9 @@ public class DashBoard extends JFrame {
     public static IMessageSender getExchanger() {
         return exchanger;
     }
+    public static void setExchanger(IMessageSender exch) {
+        exchanger = exch;
+    }
     private final ToolBarButton workButton;
     private final ToolBarButton hrbutton;
     private final ToolBarButton fleetbutton;

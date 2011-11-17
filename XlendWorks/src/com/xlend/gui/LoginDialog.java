@@ -6,19 +6,20 @@ import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -26,7 +27,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -46,7 +49,7 @@ public class LoginDialog extends PopupDialog {
     private JComboBox loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
-    private static String currentLogin;
+//    private static String currentLogin;
 
     public LoginDialog(Object[] params) {
         super(null, "Login", params);
@@ -115,7 +118,7 @@ public class LoginDialog extends PopupDialog {
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
         buttonPane.add(okButton = new JButton(okAction = new AbstractAction("OK") {
 
-//            @Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String login = (String) loginField.getSelectedItem();
                 String pwd = new String(pwdField.getPassword());
@@ -126,12 +129,10 @@ public class LoginDialog extends PopupDialog {
                     okPressed = (users.length > 0);
                     if (okPressed) {
                         Userprofile currentUser = (Userprofile) users[0];
-//                        if (!savePwdCB.isSelected()) {
                         try {
                             currentUser.setPwdmd5("");
                         } catch (Exception ex) {
                         }
-//                        }
                         XlendWorks.setCurrentUser(currentUser);
                         dispose();
                     } else {
@@ -149,7 +150,7 @@ public class LoginDialog extends PopupDialog {
 
         buttonPane.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
 
-//            @Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = false;
                 dispose();
@@ -163,6 +164,22 @@ public class LoginDialog extends PopupDialog {
     private void buildMenu() {
         JMenuBar bar = new JMenuBar();
         JMenu m = new JMenu("Options");
+        m.add(new JMenuItem(new AbstractAction("Settings") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newAddress = XlendWorks.serverSetup("Server's location");
+                if (newAddress != null) {
+                    DashBoard.getProperties().setProperty("ServerAddress", newAddress);
+                    try {
+                        DashBoard.setExchanger(exchanger = (IMessageSender) Naming.lookup("rmi://" + newAddress + "/XlendServer"));
+                    } catch (Exception ex) {
+                        XlendWorks.logAndShowMessage(ex);
+                        System.exit(1);
+                    }
+                }
+            }
+        }));
         m.add(appearanceMenu("Theme"));
         bar.add(m);
         setJMenuBar(bar);

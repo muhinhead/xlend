@@ -7,7 +7,6 @@ package com.xlend;
 import com.xlend.dbutil.DbConnection;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
-import java.awt.AWTException;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -28,9 +27,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu.Separator;
-import javax.swing.JSeparator;
 
 /**
  *

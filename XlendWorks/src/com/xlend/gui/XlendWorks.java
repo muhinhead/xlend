@@ -142,7 +142,7 @@ public class XlendWorks {
         JTextField addressField = new JTextField(16);
         addressField.setText(vals[0]);
         JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
-                vals.length > 0 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
+                vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
         JComponent[] edits = new JComponent[]{addressField, portSpinner};
         new ConfigEditor(title, edits);
         if (addressField.getText().trim().length() > 0) {

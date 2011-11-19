@@ -74,7 +74,7 @@ public abstract class RecordEditPanel extends JPanel {
         return fld.getText();
     }
 
-    protected static void alignPanelOnWidth(JPanel one, JPanel two) {
+    protected static void alignPanelOnWidth(JComponent one, JComponent two) {
         Dimension a = one.getPreferredSize();
         Dimension b = two.getPreferredSize();
         int width = a.width > b.width ? a.width : b.width;

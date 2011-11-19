@@ -155,7 +155,7 @@ public class EditContractPagePanel extends RecordEditPanel {
         insPanel.add(getLoadPictureButton());
         picPanel.add(insPanel);
         JScrollPane scroll = new JScrollPane(picPanel);
-        scroll.setPreferredSize(new Dimension(800, 400));
+        scroll.setPreferredSize(new Dimension(600, 300));
         return scroll;
     }
 

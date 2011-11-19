@@ -10,6 +10,8 @@ import com.xlend.util.NoFrameButton;
 import com.xlend.util.PopupListener;
 import com.xlend.util.Util;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
@@ -104,7 +106,8 @@ public class PagesPanel extends JPanel {
         for (DbObject o : pages) {
             NoFrameButton btn;
             final Xcontractpage contractPage = (Xcontractpage) o;
-            add(btn = new NoFrameButton(new ImageIcon("images/page.png")));
+            Image ic = XlendWorks.loadImage("page.png",DashBoard.ourInstance);
+            add(btn = new NoFrameButton(new ImageIcon(ic)));
             btn.setText(contractPage.getDescription() == null ? "" : contractPage.getDescription().trim());
             btn.setTag(contractPage);
             AbstractAction editAction = new AbstractAction("Edit page") {

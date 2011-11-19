@@ -183,14 +183,12 @@ public class EditContractPanel extends RecordEditPanel {
             if (xcontract != null) {
                 int contract_id = xcontract.getXcontractId();
                 pagesdPanel = new PagesPanel(DashBoard.getExchanger(), contract_id);
-                        //new ContractPagesGrid(DashBoard.getExchanger(), contract_id);
             }
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
         JScrollPane sp;
         tp.add(sp = new JScrollPane(pagesdPanel), "Scanned papers");
-        //alignPanelOnWidth(sp, descrScroll);
         sp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 150));
         //TODO: add orders for contract grid
         tp.add(new JPanel(), "Orders");

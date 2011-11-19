@@ -36,6 +36,7 @@ import javax.swing.SpinnerNumberModel;
  */
 public class XlendWorks {
 
+    public static final String version = "0.7";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;

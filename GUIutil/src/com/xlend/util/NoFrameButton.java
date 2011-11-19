@@ -19,6 +19,7 @@ import javax.swing.JButton;
 public class NoFrameButton extends JButton {
 
     private final Cursor normalCursor;
+    private Object tag;
 
     public NoFrameButton(Icon icon) {
         super(icon);
@@ -59,5 +60,19 @@ public class NoFrameButton extends JButton {
             getIcon().paintIcon(this, g, getWidth() / 2 - w / 2, 1);
         }
         g.drawString(getText(), getWidth() / 2 - labelWidth / 2, getHeight() - 5);
+    }
+
+    /**
+     * @return the tag
+     */
+    public Object getTag() {
+        return tag;
+    }
+
+    /**
+     * @param tag the tag to set
+     */
+    public void setTag(Object tag) {
+        this.tag = tag;
     }
 }

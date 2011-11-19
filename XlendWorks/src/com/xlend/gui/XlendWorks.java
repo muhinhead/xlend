@@ -145,7 +145,9 @@ public class XlendWorks {
         JComponent[] edits = new JComponent[]{addressField, portSpinner};
         new ConfigEditor(title, edits);
         if (addressField.getText().trim().length() > 0) {
-            return addressField.getText() + ":" + portSpinner.getValue();
+            String addr = addressField.getText() + ":" + portSpinner.getValue();
+            DashBoard.getProperties().setProperty("ServerAddress", addr);
+            return addr;
         } else {
             return null;
         }

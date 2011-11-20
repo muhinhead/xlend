@@ -19,6 +19,11 @@ public class Selects {
             + "clientcode \"Client Code\", companyname \"Company name\", "
             + "contactname \"Contact Name\", phonenumber \"Tel Nr.\", vatnumber \"Vat Nr.\" "
             + "from xclient order by upper(clientcode)";
+    
+    public static final String SELECT_CLIENTS4LOOKUP = "Select xclient_id \"Id\","
+            + "clientcode \"Client Code\", companyname \"Company name\" "
+            + "from xclient order by upper(clientcode)";
+
     public static final String SELECT_FROM_CONTRACTS = 
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "

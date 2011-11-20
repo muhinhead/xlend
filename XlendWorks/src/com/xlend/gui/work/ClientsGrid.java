@@ -32,6 +32,10 @@ public class ClientsGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_CLIENTS, maxWidths);
     }
 
+    public ClientsGrid(IMessageSender exchanger, String slct) throws RemoteException {
+        super(exchanger, slct, maxWidths);
+    }
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add client") {

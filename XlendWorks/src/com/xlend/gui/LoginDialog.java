@@ -199,6 +199,19 @@ public class LoginDialog extends PopupDialog {
                 }
             }
         });
+//        ch.randelshofer.quaqua.QuaquaLookAndFeel
+        it = m.add(new JMenuItem("Quaqua"));
+        it.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
         it = m.add(new JMenuItem("Nimbus"));
         it.addActionListener(new ActionListener() {
 

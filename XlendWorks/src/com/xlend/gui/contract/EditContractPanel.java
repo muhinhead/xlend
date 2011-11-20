@@ -137,8 +137,9 @@ public class EditContractPanel extends RecordEditPanel {
 
     private void showClientLookup() {
         try {
-            GeneralGridPanel clientGrid = new ClientsGrid(DashBoard.getExchanger(),Selects.SELECT_CLIENTS4LOOKUP);
-            LookupDialog ld = new LookupDialog("Clients", contractorBox, clientGrid);
+            LookupDialog ld = new LookupDialog("Client Lookup", contractorBox, 
+                    new ClientsGrid(DashBoard.getExchanger(),Selects.SELECT_CLIENTS4LOOKUP),
+                    new String[]{"clientcode","companyname"});
             Integer ld_id = ld.getChoosed();
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

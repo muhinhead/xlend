@@ -48,6 +48,7 @@ public class DashBoard extends JFrame {
     public static IMessageSender getExchanger() {
         return exchanger;
     }
+
     public static void setExchanger(IMessageSender exch) {
         exchanger = exch;
     }
@@ -62,6 +63,7 @@ public class DashBoard extends JFrame {
     private FleetFrame fleetFrame = null;
     private AdminFrame adminFrame = null;
     private ToolBarButton adminButton = null;
+
     private class WinListener extends WindowAdapter {
 
         public WinListener(JFrame frame) {
@@ -219,7 +221,7 @@ public class DashBoard extends JFrame {
         main.add(userLogin);
 
 //        centerWindow(this);
-        setLocation(10,10);
+        setLocation(10, 10);
 //        setResizable(false);
         setVisible(true);
     }
@@ -258,7 +260,9 @@ public class DashBoard extends JFrame {
 
     public static void saveProps() {
         if (props != null) {
-            props.setProperty(LASTLOGIN, XlendWorks.getCurrentUser().getLogin());
+            if (XlendWorks.getCurrentUser() != null) {
+                props.setProperty(LASTLOGIN, XlendWorks.getCurrentUser().getLogin());
+            }
             props.setProperty("ServerAddress", props.getProperty("ServerAddress", "localhost:1099"));
         }
         Preferences userPref = Preferences.userRoot();

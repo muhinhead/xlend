@@ -231,7 +231,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         doc.setBody(exchanger.getTableBody(select));
         view.getController().updateExcept(null);
         row = row < view.getRowCount() ? row : row - 1;
-        if (row >= 0) {
+        if (row >= 0 && row < view.getRowCount()) {
             view.setRowSelectionInterval(row, row);
         }
     }
@@ -285,7 +285,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //        }
 //        return contractsPanel;
 //    }
-
     protected DbTableGridPanel createAndRegisterGrid(String select,
             AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
         DbTableGridPanel panel = createGridPanel(exchanger, select, add, edit, del, maxWidths);

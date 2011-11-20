@@ -7,12 +7,22 @@ import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -24,10 +34,12 @@ public class LookupDialog extends PopupDialog {
     private JButton okBtn, cancelBtn;
     private AbstractAction okAction, cancelAction;
     private GeneralGridPanel grid;
+    private String[] filteredColumns;
     private JComboBox comboBox;
+    private JTextField filterField;
 
-    public LookupDialog(String title, JComboBox cb, GeneralGridPanel grid) {
-        super(null, title, new Object[]{cb, grid});
+    public LookupDialog(String title, JComboBox cb, GeneralGridPanel grid, String[] filteredColumns) {
+        super(null, title, new Object[]{cb, grid, filteredColumns});
     }
 
     protected void fillContent() {
@@ -37,9 +49,51 @@ public class LookupDialog extends PopupDialog {
         choosedID = ((ComboItem) comboBox.getSelectedItem()).getId();
         grid = (GeneralGridPanel) params[1];
         grid.selectRowOnId(choosedID);
+        this.filteredColumns = (String[]) params[2];
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        getContentPane().add(new JScrollPane(grid), BorderLayout.CENTER);
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+
+        JPanel upCenterPanel = new JPanel(new FlowLayout());
+        upCenterPanel.add(new JLabel("Filter:"));
+        upCenterPanel.add(filterField = new JTextField(40));
+        centerPanel.add(upCenterPanel, BorderLayout.NORTH);
+        centerPanel.add(new JScrollPane(grid), BorderLayout.CENTER);
+        getContentPane().add(centerPanel, BorderLayout.CENTER);
+
+        filterField.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (filteredColumns != null && filteredColumns.length > 0) {
+                    String select = grid.getSelect();
+                    int w = select.toLowerCase().indexOf(" where");
+                    int o = select.toLowerCase().indexOf(" order by");
+                    StringBuffer addWhereCond = new StringBuffer();
+                    for (String col : filteredColumns) {
+                        addWhereCond.append(addWhereCond.length() > 0 ? " or " : "")
+                                .append("upper(" + col + ") like '%" + filterField.getText().toUpperCase() + "%'");
+                    }
+                    if (w < 0 && o < 0) {
+                        select += (" where " + addWhereCond.toString());
+                    } else if (w > 0 && o < 0) {
+                        select = select.substring(0, w + 7) + addWhereCond.toString();
+                    } else if (w < 0 && o > 0) {
+                        select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
+                    } else {
+                        select = select.substring(0, w + 7) + addWhereCond.toString() + select.substring(o);
+                    }
+                    grid.setSelect(select);
+                    try {
+                        GeneralFrame.updateGrid(DashBoard.getExchanger(),
+                                grid.getTableView(), grid.getTableDoc(), grid.getSelect());
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            }
+        });
 
         okBtn = new JButton(okAction = selectionAction());
         cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
@@ -53,6 +107,16 @@ public class LookupDialog extends PopupDialog {
         buttonPanel.add(okBtn);
         buttonPanel.add(cancelBtn);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+        
+        grid.getTableView().removeMouseListener(grid.getDoubleClickAdapter());
+        grid.getTableView().addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    okAction.actionPerformed(null);
+                }
+            }
+        });
     }
 
     private AbstractAction selectionAction() {

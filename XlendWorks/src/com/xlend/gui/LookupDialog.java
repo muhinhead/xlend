@@ -1,20 +1,15 @@
 package com.xlend.gui;
 
 import com.xlend.orm.dbobject.ComboItem;
-import com.xlend.remote.IMessageSender;
-//import com.xlend.util.ComboItem;
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -42,6 +37,7 @@ public class LookupDialog extends PopupDialog {
         super(null, title, new Object[]{cb, grid, filteredColumns});
     }
 
+    @Override
     protected void fillContent() {
         super.fillContent();
         XlendWorks.setWindowIcon(this, "Xcost.png");
@@ -71,10 +67,13 @@ public class LookupDialog extends PopupDialog {
                     String select = grid.getSelect();
                     int w = select.toLowerCase().indexOf(" where");
                     int o = select.toLowerCase().indexOf(" order by");
-                    StringBuffer addWhereCond = new StringBuffer();
+                    StringBuilder addWhereCond = new StringBuilder();
                     for (String col : filteredColumns) {
                         addWhereCond.append(addWhereCond.length() > 0 ? " or " : "")
-                                .append("upper(" + col + ") like '%" + filterField.getText().toUpperCase() + "%'");
+                                .append("upper(").append(col)
+                                .append(") like '%")
+                                .append(filterField.getText().toUpperCase())
+                                .append("%'");
                     }
                     if (w < 0 && o < 0) {
                         select += (" where " + addWhereCond.toString());

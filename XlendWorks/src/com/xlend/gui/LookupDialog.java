@@ -44,6 +44,7 @@ public class LookupDialog extends PopupDialog {
 
     protected void fillContent() {
         super.fillContent();
+        XlendWorks.setWindowIcon(this, "Xcost.png");
         Object[] params = (Object[]) getObject();
         comboBox = (JComboBox) params[0];
         choosedID = ((ComboItem) comboBox.getSelectedItem()).getId();

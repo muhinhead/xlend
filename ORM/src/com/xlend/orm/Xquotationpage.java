@@ -8,44 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xcontract extends DbObject  {
+public class Xquotationpage extends DbObject implements IPage {
     private static Triggers activeTriggers = null;
-    private Integer xcontractId = null;
-    private String contractref = null;
+    private Integer xquotationpageId = null;
+    private Integer xquotationId = null;
+    private Integer pagenum = null;
     private String description = null;
-    private Integer xclientId = null;
+    private Object pagescan = null;
 
-    public Xcontract(Connection connection) {
-        super(connection, "xcontract", "xcontract_id");
-        setColumnNames(new String[]{"xcontract_id", "contractref", "description", "xclient_id"});
+    public Xquotationpage(Connection connection) {
+        super(connection, "xquotationpage", "xquotationpage_id");
+        setColumnNames(new String[]{"xquotationpage_id", "xquotation_id", "pagenum", "description", "pagescan"});
     }
 
-    public Xcontract(Connection connection, Integer xcontractId, String contractref, String description, Integer xclientId) {
-        super(connection, "xcontract", "xcontract_id");
-        setNew(xcontractId.intValue() <= 0);
-//        if (xcontractId.intValue() != 0) {
-            this.xcontractId = xcontractId;
+    public Xquotationpage(Connection connection, Integer xquotationpageId, Integer xquotationId, Integer pagenum, String description, Object pagescan) {
+        super(connection, "xquotationpage", "xquotationpage_id");
+        setNew(xquotationpageId.intValue() <= 0);
+//        if (xquotationpageId.intValue() != 0) {
+            this.xquotationpageId = xquotationpageId;
 //        }
-        this.contractref = contractref;
+        this.xquotationId = xquotationId;
+        this.pagenum = pagenum;
         this.description = description;
-        this.xclientId = xclientId;
+        this.pagescan = pagescan;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xcontract xcontract = null;
+        Xquotationpage xquotationpage = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xcontract_id,contractref,description,xclient_id FROM xcontract WHERE xcontract_id=" + id;
+        String stmt = "SELECT xquotationpage_id,xquotation_id,pagenum,description,pagescan FROM xquotationpage WHERE xquotationpage_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xcontract = new Xcontract(getConnection());
-                xcontract.setXcontractId(new Integer(rs.getInt(1)));
-                xcontract.setContractref(rs.getString(2));
-                xcontract.setDescription(rs.getString(3));
-                xcontract.setXclientId(new Integer(rs.getInt(4)));
-                xcontract.setNew(false);
+                xquotationpage = new Xquotationpage(getConnection());
+                xquotationpage.setXquotationpageId(new Integer(rs.getInt(1)));
+                xquotationpage.setXquotationId(new Integer(rs.getInt(2)));
+                xquotationpage.setPagenum(new Integer(rs.getInt(3)));
+                xquotationpage.setDescription(rs.getString(4));
+                xquotationpage.setPagescan(rs.getObject(5));
+                xquotationpage.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +57,7 @@ public class Xcontract extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xcontract;
+        return xquotationpage;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +66,29 @@ public class Xcontract extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xcontract ("+(getXcontractId().intValue()!=0?"xcontract_id,":"")+"contractref,description,xclient_id) values("+(getXcontractId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xquotationpage ("+(getXquotationpageId().intValue()!=0?"xquotationpage_id,":"")+"xquotation_id,pagenum,description,pagescan) values("+(getXquotationpageId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXcontractId().intValue()!=0) {
-                 ps.setObject(++n, getXcontractId());
+             if (getXquotationpageId().intValue()!=0) {
+                 ps.setObject(++n, getXquotationpageId());
              }
-             ps.setObject(++n, getContractref());
+             ps.setObject(++n, getXquotationId());
+             ps.setObject(++n, getPagenum());
              ps.setObject(++n, getDescription());
-             ps.setObject(++n, getXclientId());
+             ps.setObject(++n, getPagescan());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXcontractId().intValue()==0) {
-             stmt = "SELECT max(xcontract_id) FROM xcontract";
+         if (getXquotationpageId().intValue()==0) {
+             stmt = "SELECT max(xquotationpage_id) FROM xquotationpage";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXcontractId(new Integer(rs.getInt(1)));
+                     setXquotationpageId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +114,15 @@ public class Xcontract extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xcontract " +
-                    "SET contractref = ?, description = ?, xclient_id = ?" + 
-                    " WHERE xcontract_id = " + getXcontractId();
+                    "UPDATE xquotationpage " +
+                    "SET xquotation_id = ?, pagenum = ?, description = ?, pagescan = ?" + 
+                    " WHERE xquotationpage_id = " + getXquotationpageId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getContractref());
-                ps.setObject(2, getDescription());
-                ps.setObject(3, getXclientId());
+                ps.setObject(1, getXquotationId());
+                ps.setObject(2, getPagenum());
+                ps.setObject(3, getDescription());
+                ps.setObject(4, getPagescan());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,44 +135,34 @@ public class Xcontract extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xorder.exists(getConnection(),"xcontract_id = " + getXcontractId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xorder_xcontract");
-        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from xcontractpage
-            Xcontractpage[] records = (Xcontractpage[])Xcontractpage.load(getConnection(),"xcontract_id = " + getXcontractId(),null);
-            for (int i = 0; i<records.length; i++) {
-                Xcontractpage xcontractpage = records[i];
-                xcontractpage.delete();
-            }
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xcontract " +
-                "WHERE xcontract_id = " + getXcontractId();
+                "DELETE FROM xquotationpage " +
+                "WHERE xquotationpage_id = " + getXquotationpageId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXcontractId(new Integer(-getXcontractId().intValue()));
+        setXquotationpageId(new Integer(-getXquotationpageId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXcontractId().intValue() < 0);
+        return (getXquotationpageId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xcontract_id,contractref,description,xclient_id FROM xcontract " +
+        String stmt = "SELECT xquotationpage_id,xquotation_id,pagenum,description,pagescan FROM xquotationpage " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -177,7 +172,7 @@ public class Xcontract extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xcontract(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3),new Integer(rs.getInt(4))));
+                lst.add(dbObj=new Xquotationpage(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),rs.getString(4),rs.getObject(5)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -187,10 +182,10 @@ public class Xcontract extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xcontract[] objects = new Xcontract[lst.size()];
+        Xquotationpage[] objects = new Xquotationpage[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xcontract xcontract = (Xcontract) lst.get(i);
-            objects[i] = xcontract;
+            Xquotationpage xquotationpage = (Xquotationpage) lst.get(i);
+            objects[i] = xquotationpage;
         }
         return objects;
     }
@@ -202,7 +197,7 @@ public class Xcontract extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xcontract_id FROM xcontract " +
+        String stmt = "SELECT xquotationpage_id FROM xquotationpage " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -220,26 +215,40 @@ public class Xcontract extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXcontractId() + getDelimiter();
+    //    return getXquotationpageId() + getDelimiter();
     //}
 
-    public Integer getXcontractId() {
-        return xcontractId;
+    public Integer getXquotationpageId() {
+        return xquotationpageId;
     }
 
-    public void setXcontractId(Integer xcontractId) throws ForeignKeyViolationException {
-        setWasChanged(this.xcontractId != null && this.xcontractId != xcontractId);
-        this.xcontractId = xcontractId;
-        setNew(xcontractId.intValue() == 0);
+    public void setXquotationpageId(Integer xquotationpageId) throws ForeignKeyViolationException {
+        setWasChanged(this.xquotationpageId != null && this.xquotationpageId != xquotationpageId);
+        this.xquotationpageId = xquotationpageId;
+        setNew(xquotationpageId.intValue() == 0);
     }
 
-    public String getContractref() {
-        return contractref;
+    public Integer getXquotationId() {
+        return xquotationId;
     }
 
-    public void setContractref(String contractref) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.contractref != null && !this.contractref.equals(contractref));
-        this.contractref = contractref;
+    public void setXquotationId(Integer xquotationId) throws SQLException, ForeignKeyViolationException {
+        if (xquotationId!=null && !Xquotation.exists(getConnection(),"xquotation_id = " + xquotationId)) {
+            throw new ForeignKeyViolationException("Can't set xquotation_id, foreign key violation: xquotationpage_xquotation_fk");
+        }
+        setWasChanged(this.xquotationId != null && !this.xquotationId.equals(xquotationId));
+        this.xquotationId = xquotationId;
+    }
+
+    public Integer getPagenum() {
+        return pagenum;
+    }
+
+    public void setPagenum(Integer pagenum) throws SQLException, ForeignKeyViolationException {
+        if (null != pagenum)
+            pagenum = pagenum == 0 ? null : pagenum;
+        setWasChanged(this.pagenum != null && !this.pagenum.equals(pagenum));
+        this.pagenum = pagenum;
     }
 
     public String getDescription() {
@@ -251,23 +260,21 @@ public class Xcontract extends DbObject  {
         this.description = description;
     }
 
-    public Integer getXclientId() {
-        return xclientId;
+    public Object getPagescan() {
+        return pagescan;
     }
 
-    public void setXclientId(Integer xclientId) throws SQLException, ForeignKeyViolationException {
-        if (xclientId!=null && !Xclient.exists(getConnection(),"xclient_id = " + xclientId)) {
-            throw new ForeignKeyViolationException("Can't set xclient_id, foreign key violation: xcontract_xclient_fk");
-        }
-        setWasChanged(this.xclientId != null && !this.xclientId.equals(xclientId));
-        this.xclientId = xclientId;
+    public void setPagescan(Object pagescan) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.pagescan != null && !this.pagescan.equals(pagescan));
+        this.pagescan = pagescan;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getXcontractId();
-        columnValues[1] = getContractref();
-        columnValues[2] = getDescription();
-        columnValues[3] = getXclientId();
+        Object[] columnValues = new Object[5];
+        columnValues[0] = getXquotationpageId();
+        columnValues[1] = getXquotationId();
+        columnValues[2] = getPagenum();
+        columnValues[3] = getDescription();
+        columnValues[4] = getPagescan();
         return columnValues;
     }
 
@@ -284,16 +291,21 @@ public class Xcontract extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXcontractId(Integer.parseInt(flds[0]));
+            setXquotationpageId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXcontractId(null);
+            setXquotationpageId(null);
         }
-        setContractref(flds[1]);
-        setDescription(flds[2]);
         try {
-            setXclientId(Integer.parseInt(flds[3]));
+            setXquotationId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setXclientId(null);
+            setXquotationId(null);
         }
+        try {
+            setPagenum(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setPagenum(null);
+        }
+        setDescription(flds[3]);
+        setPagescan(flds[4]);
     }
 }

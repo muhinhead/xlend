@@ -5,6 +5,8 @@ import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -30,6 +32,13 @@ public abstract class RecordEditPanel extends JPanel {
         upPanel.add(lblPanel, BorderLayout.WEST);
         upPanel.add(editPanel, BorderLayout.CENTER);
         upPanel.add(new JPanel(), BorderLayout.EAST);
+    }
+
+    protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
+        JPanel comboBoxPanel = new JPanel(new BorderLayout());
+        comboBoxPanel.add(cb);
+        comboBoxPanel.add(new JButton(lookupButtonAction), BorderLayout.EAST);
+        return comboBoxPanel;
     }
 
     protected static class EmptyValueException extends Exception {

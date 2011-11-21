@@ -37,6 +37,11 @@ public class Selects {
             + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
     
+    public static final String SELECT_FROM_QUOTATIONS =
+            "Select xquotation_id \"Id\", xclient.companyname \"Company\", "
+            + "rfcnumber \"RFC Nr\" "
+            + "from xquotation, xclient where xclient.xclient_id=xquotation.xclient_id";
+    
 //    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
 //            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","
 //            + "orderqty \"Order Quantity\",priceperunit \"Price per Unit\" from xcontractitem where xcontract_id = #";            

@@ -4,9 +4,9 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.orm.IPage;
 import com.xlend.orm.Xcontractpage;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.util.PopupListener;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
@@ -18,10 +18,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -45,10 +41,10 @@ import javax.swing.SwingConstants;
  */
 public class EditContractPagePanel extends RecordEditPanel {
 
-    private JTextField idField;
-    private JTextField pageNumField;
-    private JTextArea descriptionField;
-    private JScrollPane sp;
+    protected JTextField idField;
+    protected JTextField pageNumField;
+    protected JTextArea descriptionField;
+    protected JScrollPane sp;
     private JPanel picPanel;
     private JButton loadButton;
     private ImageIcon currentPicture;
@@ -193,15 +189,17 @@ public class EditContractPagePanel extends RecordEditPanel {
         int retVal = chooser.showOpenDialog(null);
 
         if (retVal == JFileChooser.APPROVE_OPTION) {
-            String name = chooser.getSelectedFile().getAbsolutePath();
-            byte[] imageData = Util.readFile(name);
-            Xcontractpage page = (Xcontractpage) getDbObject();
-            try {
-                page.setPagescan(imageData);
-                setPhoto(imageData);
-            } catch (Exception ex) {
-                XlendWorks.log(ex);
-            }
+            setImage(Util.readFile(chooser.getSelectedFile().getAbsolutePath()));
+        }
+    }
+
+    private void setImage(byte[] imageData) {
+        IPage page = (IPage) getDbObject();
+        try {
+            page.setPagescan(imageData);
+            setPhoto(imageData);
+        } catch (Exception ex) {
+            XlendWorks.log(ex);
         }
     }
 
@@ -226,7 +224,7 @@ public class EditContractPagePanel extends RecordEditPanel {
         currentPicture = null;
     }
 
-    private void setPhoto(byte[] imgData) {//ImageIcon img) {
+    protected void setPhoto(byte[] imgData) {
         String tmpImgFile = "$$$.img";
         currentPicture = new ImageIcon(imgData);
         Dimension d = picPanel.getSize();
@@ -283,14 +281,14 @@ public class EditContractPagePanel extends RecordEditPanel {
             picturePopMenu.add(new AbstractAction("Save image to file") {
 
                 public void actionPerformed(ActionEvent e) {
-                    Xcontractpage page = (Xcontractpage) getDbObject();
+                    IPage page = (IPage) getDbObject();
                     exportDocImage((byte[]) page.getPagescan());
                 }
             });
             picturePopMenu.add(new AbstractAction("Remove image from DB") {
 
                 public void actionPerformed(ActionEvent e) {
-                    Xcontractpage page = (Xcontractpage) getDbObject();
+                    IPage page = (IPage) getDbObject();
                     try {
                         page.setPagescan(null);
                         noImage();

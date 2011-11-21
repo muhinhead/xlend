@@ -1,8 +1,12 @@
 package com.xlend.gui.work;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.XlendWorks;
+import com.xlend.gui.order.EditOrderDialog;
 import com.xlend.remote.IMessageSender;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
@@ -17,9 +21,6 @@ public class OrdersGrid extends GeneralGridPanel {
 
     static {
         maxWidths.put(0, 40);
-        maxWidths.put(1, 100);
-        maxWidths.put(4, 200);
-        maxWidths.put(5, 200);
     }
 
     public OrdersGrid(IMessageSender exchanger) throws RemoteException {
@@ -33,8 +34,22 @@ public class OrdersGrid extends GeneralGridPanel {
     
     @Override
     protected AbstractAction addAction() {
-        //TODO: add order action
-        return null;
+        return new AbstractAction("New Order") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new EditOrderDialog("New Order", null);
+                    if (EditOrderDialog.okPressed) {
+                        GeneralFrame.updateGrid(exchanger, 
+                                getTableView(), getTableDoc(), getSelect());
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
     }
 
     @Override

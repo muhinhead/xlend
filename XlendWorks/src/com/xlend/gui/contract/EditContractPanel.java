@@ -4,7 +4,6 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
@@ -20,8 +19,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -47,14 +44,9 @@ public class EditContractPanel extends RecordEditPanel {
     private JTextField idField;
     private JTextField contractRefField;
     private JTextArea descriptionField;
-    private JComboBox contractorBox;
-//    private JTabbedPane detailsTab;
-//    private JPanel imagePanel;
+    private JComboBox clientRefBox;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
-//    private JPanel picPanel;
-//    private ImageIcon currentPicture;
-//    private JPopupMenu picturePopMenu;
     private JPanel pagesdPanel;
     private JScrollPane descrScroll;
 
@@ -75,7 +67,7 @@ public class EditContractPanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             contractRefField = new JTextField(),
-            contractorBox = new JComboBox(cbModel),
+            clientRefBox = new JComboBox(cbModel),
             descrScroll = new JScrollPane(descriptionField = new JTextArea(5, 55),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
@@ -106,17 +98,7 @@ public class EditContractPanel extends RecordEditPanel {
         }
         upedit.add(ided);
         upedit.add(edits[1]);
-        JPanel comboPanel = new JPanel(new BorderLayout());
-        comboPanel.add(edits[2], BorderLayout.CENTER);
-        comboPanel.add(new JButton(new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showClientLookup();
-            }
-        }), BorderLayout.EAST);
-
-        upedit.add(comboPanel);
+        upedit.add(comboPanelWithLookupBtn(clientRefBox, clientRefLookup()));
 
         form.add(upper, BorderLayout.NORTH);
 
@@ -137,10 +119,10 @@ public class EditContractPanel extends RecordEditPanel {
 
     private void showClientLookup() {
         try {
-            LookupDialog ld = new LookupDialog("Client Lookup", contractorBox, 
-                    new ClientsGrid(DashBoard.getExchanger(),Selects.SELECT_CLIENTS4LOOKUP),
-                    new String[]{"clientcode","companyname"});
-            Integer ld_id = ld.getChoosed();
+            LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
+                    new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
+                    new String[]{"clientcode", "companyname"});
+//            Integer ld_id = ld.getChoosed();
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
@@ -152,7 +134,7 @@ public class EditContractPanel extends RecordEditPanel {
         if (xcontract != null) {
             idField.setText(xcontract.getXcontractId().toString());
             contractRefField.setText(xcontract.getContractref());
-            selectComboItem(contractorBox, xcontract.getXclientId());
+            selectComboItem(clientRefBox, xcontract.getXclientId());
             descriptionField.setText(xcontract.getDescription());
         }
     }
@@ -168,7 +150,7 @@ public class EditContractPanel extends RecordEditPanel {
         }
         xcontract.setContractref(contractRefField.getText());
         xcontract.setDescription(descriptionField.getText());
-        ComboItem itm = (ComboItem) contractorBox.getSelectedItem();
+        ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
         if (itm.getValue().startsWith("--")) { // add new client
             EditClientDialog ecd = new EditClientDialog("New Client", null);
             if (EditClientDialog.okPressed) {
@@ -176,7 +158,7 @@ public class EditContractPanel extends RecordEditPanel {
                 if (cl != null) {
                     ComboItem ci = new ComboItem(cl.getXclientId(), cl.getCompanyname());
                     cbModel.addElement(ci);
-                    contractorBox.setSelectedItem(ci);
+                    clientRefBox.setSelectedItem(ci);
                 }
             }
         } else {
@@ -200,7 +182,7 @@ public class EditContractPanel extends RecordEditPanel {
             Xcontract xcontract = (Xcontract) getDbObject();
             if (xcontract != null) {
                 int contract_id = xcontract.getXcontractId();
-                pagesdPanel = new PagesPanel(DashBoard.getExchanger(), contract_id);
+                pagesdPanel = new ContractPagesPanel(DashBoard.getExchanger(), contract_id);
             }
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
@@ -246,5 +228,15 @@ public class EditContractPanel extends RecordEditPanel {
             }
             Util.writeFile(fout, imageData);
         }
+    }
+
+    private AbstractAction clientRefLookup() {
+        return new AbstractAction("...") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showClientLookup();
+            }
+        };
     }
 }

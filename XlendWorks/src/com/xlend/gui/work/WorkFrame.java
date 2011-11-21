@@ -27,6 +27,7 @@ public class WorkFrame extends GeneralFrame {
     private GeneralGridPanel sitesPanel = null;
     private GeneralGridPanel clientsPanel = null;
     private GeneralGridPanel ordersPanel = null;
+    private GeneralGridPanel quotasPanel;
 
     public WorkFrame(IMessageSender exch) {
         super("Work", exch);
@@ -37,7 +38,7 @@ public class WorkFrame extends GeneralFrame {
         JTabbedPane workTab = new JTabbedPane();
         workTab.add(getContractsPanel(), "Contracts");
         //TODO: Quotas panel
-        workTab.add(new JPanel(), "Quotas");
+        workTab.add(getQuotasPanel(), "Quotas");
         //TODO: Orders panel
         workTab.add(getOrdersPanel(), "Orders");
         workTab.add(getSitesPanel(), "Sites");
@@ -91,5 +92,17 @@ public class WorkFrame extends GeneralFrame {
             }
         }
         return ordersPanel;
+    }
+
+    private Component getQuotasPanel() {
+        if (quotasPanel == null) {
+            try {
+                registerGrid(quotasPanel = new QuotationsGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return quotasPanel;
     }
 }

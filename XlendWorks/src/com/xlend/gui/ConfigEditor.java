@@ -5,12 +5,7 @@ import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -63,7 +58,7 @@ public class ConfigEditor extends PopupDialog {
         upperPanel.add(new JPanel(), BorderLayout.EAST);
         
         JPanel btnPanel = new JPanel();
-        btnPanel.add(testBtn = new JButton(testAction = new AbstractAction("Test connection"){
+        btnPanel.add(testBtn = new JButton(testAction = new AbstractAction("Test connection") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -28,10 +28,15 @@ public class Selects {
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
-    public static final String SELECT_FROM_CONTRACTPAGE = //"select * from xcontractpage ";
+    public static final String SELECT_FROM_CONTRACTPAGE = 
             "Select xcontractpage_id \"Id\", pagenum \"Ind.No\", description \"Notes\" "
             + "from xcontractpage where xcontract_id = # order by pagenum";
-            
+    
+    public static final String SELECT_FROM_ORDERS = 
+            "Select xorder_id \"Id\", xclient.companyname \"Company\", vatnumber \"Vat.number\", "
+            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
+    
 //    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
 //            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","
 //            + "orderqty \"Order Quantity\",priceperunit \"Price per Unit\" from xcontractitem where xcontract_id = #";            

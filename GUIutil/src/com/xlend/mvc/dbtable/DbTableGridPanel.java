@@ -31,6 +31,7 @@ public class DbTableGridPanel extends JPanel {
     private JButton addButton = null;
     private JButton editButton = null;
     private JButton delButton = null;
+    private MouseAdapter doubleClickAdapter;
 
     public DbTableGridPanel(
             AbstractAction addAction,
@@ -68,13 +69,19 @@ public class DbTableGridPanel extends JPanel {
         new Controller(getTableDoc(), getTableView());
         JPanel btnPanel = new JPanel(new GridLayout(4, 1, 5, 5));
         JPanel leftPanel = new JPanel(new BorderLayout());
-        btnPanel.add(addButton = new JButton(addAction));
-        btnPanel.add(editButton = new JButton(editAction));
-        btnPanel.add(delButton = new JButton(delAction));
+        if (addAction != null) {
+            btnPanel.add(addButton = new JButton(addAction));
+        }
+        if (editAction != null) {
+            btnPanel.add(editButton = new JButton(editAction));
+        }
+        if (delAction != null) {
+            btnPanel.add(delButton = new JButton(delAction));
+        }
         leftPanel.add(btnPanel, BorderLayout.NORTH);
         add(sp = new JScrollPane(getTableView()), BorderLayout.CENTER);
         add(leftPanel, BorderLayout.EAST);
-        tableView.addMouseListener(new MouseAdapter() {
+        tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && editAction != null) {
@@ -97,6 +104,19 @@ public class DbTableGridPanel extends JPanel {
         sp.addMouseListener(new PopupListener(pop));
     }
 
+    public void selectRowOnId(int id) {
+        for (int row = 0; row < tableView.getRowData().size(); row++) {
+            Vector line = (Vector) tableView.getRowData().get(row);
+            try {
+                if (Integer.parseInt(line.get(0).toString()) == id) {
+                    tableView.setSelectedRow(row);
+                    break;
+                }
+            } catch (NumberFormatException ne) {
+            }
+        }
+    }
+
     public int getSelectedID() {
         int row = tableView.getSelectedRow();
         if (row >= 0) {//&& row < tableView.getSelectedRow()) {
@@ -104,6 +124,15 @@ public class DbTableGridPanel extends JPanel {
             return Integer.parseInt((String) line.get(0));
         }
         return 0;
+    }
+    
+    public String getSelectedRowCeil(int col) {
+        int row = tableView.getSelectedRow();
+        if (row >= 0) {//&& row < tableView.getSelectedRow()) {
+            Vector line = (Vector) tableView.getRowData().get(row);
+            return (String) line.get(col);
+        }
+        return "";
     }
 
     /**
@@ -160,5 +189,12 @@ public class DbTableGridPanel extends JPanel {
      */
     public JButton getDelButton() {
         return delButton;
+    }
+
+    /**
+     * @return the doubleClickAdapter
+     */
+    public MouseAdapter getDoubleClickAdapter() {
+        return doubleClickAdapter;
     }
 }

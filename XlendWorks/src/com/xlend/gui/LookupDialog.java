@@ -95,7 +95,8 @@ public class LookupDialog extends PopupDialog {
             }
         });
 
-        okBtn = new JButton(okAction = selectionAction());
+        okBtn = new JButton(okAction = selectionAction("Pick up"));
+        getRootPane().setDefaultButton(okBtn);
         cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
 
             @Override
@@ -119,8 +120,8 @@ public class LookupDialog extends PopupDialog {
         });
     }
 
-    private AbstractAction selectionAction() {
-        return new AbstractAction("Ok") {
+    private AbstractAction selectionAction(String title) {
+        return new AbstractAction(title) {
 
             @Override
             public void actionPerformed(ActionEvent e) {

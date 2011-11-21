@@ -8,47 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xsite extends DbObject  {
+public class Xorderpage extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xsiteId = null;
-    private String name = null;
+    private Integer xorderpageId = null;
+    private Integer xorderId = null;
+    private Integer pagenum = null;
     private String description = null;
-    private Integer dieselsponsor = null;
-    private String sitetype = null;
+    private Object pagescan = null;
 
-    public Xsite(Connection connection) {
-        super(connection, "xsite", "xsite_id");
-        setColumnNames(new String[]{"xsite_id", "name", "description", "dieselsponsor", "sitetype"});
+    public Xorderpage(Connection connection) {
+        super(connection, "xorderpage", "xorderpage_id");
+        setColumnNames(new String[]{"xorderpage_id", "xorder_id", "pagenum", "description", "pagescan"});
     }
 
-    public Xsite(Connection connection, Integer xsiteId, String name, String description, Integer dieselsponsor, String sitetype) {
-        super(connection, "xsite", "xsite_id");
-        setNew(xsiteId.intValue() <= 0);
-//        if (xsiteId.intValue() != 0) {
-            this.xsiteId = xsiteId;
+    public Xorderpage(Connection connection, Integer xorderpageId, Integer xorderId, Integer pagenum, String description, Object pagescan) {
+        super(connection, "xorderpage", "xorderpage_id");
+        setNew(xorderpageId.intValue() <= 0);
+//        if (xorderpageId.intValue() != 0) {
+            this.xorderpageId = xorderpageId;
 //        }
-        this.name = name;
+        this.xorderId = xorderId;
+        this.pagenum = pagenum;
         this.description = description;
-        this.dieselsponsor = dieselsponsor;
-        this.sitetype = sitetype;
+        this.pagescan = pagescan;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xsite xsite = null;
+        Xorderpage xorderpage = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id,name,description,dieselsponsor,sitetype FROM xsite WHERE xsite_id=" + id;
+        String stmt = "SELECT xorderpage_id,xorder_id,pagenum,description,pagescan FROM xorderpage WHERE xorderpage_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xsite = new Xsite(getConnection());
-                xsite.setXsiteId(new Integer(rs.getInt(1)));
-                xsite.setName(rs.getString(2));
-                xsite.setDescription(rs.getString(3));
-                xsite.setDieselsponsor(new Integer(rs.getInt(4)));
-                xsite.setSitetype(rs.getString(5));
-                xsite.setNew(false);
+                xorderpage = new Xorderpage(getConnection());
+                xorderpage.setXorderpageId(new Integer(rs.getInt(1)));
+                xorderpage.setXorderId(new Integer(rs.getInt(2)));
+                xorderpage.setPagenum(new Integer(rs.getInt(3)));
+                xorderpage.setDescription(rs.getString(4));
+                xorderpage.setPagescan(rs.getObject(5));
+                xorderpage.setNew(false);
             }
         } finally {
             try {
@@ -57,7 +57,7 @@ public class Xsite extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xsite;
+        return xorderpage;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -66,29 +66,29 @@ public class Xsite extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xsite ("+(getXsiteId().intValue()!=0?"xsite_id,":"")+"name,description,dieselsponsor,sitetype) values("+(getXsiteId().intValue()!=0?"?,":"")+"?,?,?,?)";
+                "INSERT INTO xorderpage ("+(getXorderpageId().intValue()!=0?"xorderpage_id,":"")+"xorder_id,pagenum,description,pagescan) values("+(getXorderpageId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXsiteId().intValue()!=0) {
-                 ps.setObject(++n, getXsiteId());
+             if (getXorderpageId().intValue()!=0) {
+                 ps.setObject(++n, getXorderpageId());
              }
-             ps.setObject(++n, getName());
+             ps.setObject(++n, getXorderId());
+             ps.setObject(++n, getPagenum());
              ps.setObject(++n, getDescription());
-             ps.setObject(++n, getDieselsponsor());
-             ps.setObject(++n, getSitetype());
+             ps.setObject(++n, getPagescan());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXsiteId().intValue()==0) {
-             stmt = "SELECT max(xsite_id) FROM xsite";
+         if (getXorderpageId().intValue()==0) {
+             stmt = "SELECT max(xorderpage_id) FROM xorderpage";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXsiteId(new Integer(rs.getInt(1)));
+                     setXorderpageId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -114,15 +114,15 @@ public class Xsite extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xsite " +
-                    "SET name = ?, description = ?, dieselsponsor = ?, sitetype = ?" + 
-                    " WHERE xsite_id = " + getXsiteId();
+                    "UPDATE xorderpage " +
+                    "SET xorder_id = ?, pagenum = ?, description = ?, pagescan = ?" + 
+                    " WHERE xorderpage_id = " + getXorderpageId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getName());
-                ps.setObject(2, getDescription());
-                ps.setObject(3, getDieselsponsor());
-                ps.setObject(4, getSitetype());
+                ps.setObject(1, getXorderId());
+                ps.setObject(2, getPagenum());
+                ps.setObject(3, getDescription());
+                ps.setObject(4, getPagescan());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -135,31 +135,34 @@ public class Xsite extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (getTriggers() != null) {
+            getTriggers().beforeDelete(this);
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xsite " +
-                "WHERE xsite_id = " + getXsiteId();
+                "DELETE FROM xorderpage " +
+                "WHERE xorderpage_id = " + getXorderpageId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXsiteId(new Integer(-getXsiteId().intValue()));
+        setXorderpageId(new Integer(-getXorderpageId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXsiteId().intValue() < 0);
+        return (getXorderpageId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id,name,description,dieselsponsor,sitetype FROM xsite " +
+        String stmt = "SELECT xorderpage_id,xorder_id,pagenum,description,pagescan FROM xorderpage " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -169,7 +172,7 @@ public class Xsite extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xsite(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3),new Integer(rs.getInt(4)),rs.getString(5)));
+                lst.add(dbObj=new Xorderpage(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),rs.getString(4),rs.getObject(5)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -179,10 +182,10 @@ public class Xsite extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xsite[] objects = new Xsite[lst.size()];
+        Xorderpage[] objects = new Xorderpage[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xsite xsite = (Xsite) lst.get(i);
-            objects[i] = xsite;
+            Xorderpage xorderpage = (Xorderpage) lst.get(i);
+            objects[i] = xorderpage;
         }
         return objects;
     }
@@ -194,7 +197,7 @@ public class Xsite extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsite_id FROM xsite " +
+        String stmt = "SELECT xorderpage_id FROM xorderpage " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -212,26 +215,40 @@ public class Xsite extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXsiteId() + getDelimiter();
+    //    return getXorderpageId() + getDelimiter();
     //}
 
-    public Integer getXsiteId() {
-        return xsiteId;
+    public Integer getXorderpageId() {
+        return xorderpageId;
     }
 
-    public void setXsiteId(Integer xsiteId) throws ForeignKeyViolationException {
-        setWasChanged(this.xsiteId != null && this.xsiteId != xsiteId);
-        this.xsiteId = xsiteId;
-        setNew(xsiteId.intValue() == 0);
+    public void setXorderpageId(Integer xorderpageId) throws ForeignKeyViolationException {
+        setWasChanged(this.xorderpageId != null && this.xorderpageId != xorderpageId);
+        this.xorderpageId = xorderpageId;
+        setNew(xorderpageId.intValue() == 0);
     }
 
-    public String getName() {
-        return name;
+    public Integer getXorderId() {
+        return xorderId;
     }
 
-    public void setName(String name) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.name != null && !this.name.equals(name));
-        this.name = name;
+    public void setXorderId(Integer xorderId) throws SQLException, ForeignKeyViolationException {
+        if (xorderId!=null && !Xorder.exists(getConnection(),"xorder_id = " + xorderId)) {
+            throw new ForeignKeyViolationException("Can't set xorder_id, foreign key violation: xorderpage_xorder_fk");
+        }
+        setWasChanged(this.xorderId != null && !this.xorderId.equals(xorderId));
+        this.xorderId = xorderId;
+    }
+
+    public Integer getPagenum() {
+        return pagenum;
+    }
+
+    public void setPagenum(Integer pagenum) throws SQLException, ForeignKeyViolationException {
+        if (null != pagenum)
+            pagenum = pagenum == 0 ? null : pagenum;
+        setWasChanged(this.pagenum != null && !this.pagenum.equals(pagenum));
+        this.pagenum = pagenum;
     }
 
     public String getDescription() {
@@ -243,30 +260,21 @@ public class Xsite extends DbObject  {
         this.description = description;
     }
 
-    public Integer getDieselsponsor() {
-        return dieselsponsor;
+    public Object getPagescan() {
+        return pagescan;
     }
 
-    public void setDieselsponsor(Integer dieselsponsor) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.dieselsponsor != null && !this.dieselsponsor.equals(dieselsponsor));
-        this.dieselsponsor = dieselsponsor;
-    }
-
-    public String getSitetype() {
-        return sitetype;
-    }
-
-    public void setSitetype(String sitetype) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.sitetype != null && !this.sitetype.equals(sitetype));
-        this.sitetype = sitetype;
+    public void setPagescan(Object pagescan) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.pagescan != null && !this.pagescan.equals(pagescan));
+        this.pagescan = pagescan;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[5];
-        columnValues[0] = getXsiteId();
-        columnValues[1] = getName();
-        columnValues[2] = getDescription();
-        columnValues[3] = getDieselsponsor();
-        columnValues[4] = getSitetype();
+        columnValues[0] = getXorderpageId();
+        columnValues[1] = getXorderId();
+        columnValues[2] = getPagenum();
+        columnValues[3] = getDescription();
+        columnValues[4] = getPagescan();
         return columnValues;
     }
 
@@ -283,17 +291,21 @@ public class Xsite extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXsiteId(Integer.parseInt(flds[0]));
+            setXorderpageId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXsiteId(null);
+            setXorderpageId(null);
         }
-        setName(flds[1]);
-        setDescription(flds[2]);
         try {
-            setDieselsponsor(Integer.parseInt(flds[3]));
+            setXorderId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setDieselsponsor(null);
+            setXorderId(null);
         }
-        setSitetype(flds[4]);
+        try {
+            setPagenum(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setPagenum(null);
+        }
+        setDescription(flds[3]);
+        setPagescan(flds[4]);
     }
 }

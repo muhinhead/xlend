@@ -28,6 +28,12 @@ public class Selects {
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
+    public static final String SELECT_CONTRACTS4LOOKUP = 
+            "Select xcontract_id \"Id\", "
+            + "contractref \"Ref.Nr\", description \"Description\" "
+            + "from xcontract where xclient_id = #";
+
+    
     public static final String SELECT_FROM_CONTRACTPAGE = 
             "Select xcontractpage_id \"Id\", pagenum \"Ind.No\", description \"Notes\" "
             + "from xcontractpage where xcontract_id = # order by pagenum";
@@ -41,6 +47,10 @@ public class Selects {
             "Select xquotation_id \"Id\", xclient.companyname \"Company\", "
             + "rfcnumber \"RFC Nr\" "
             + "from xquotation, xclient where xclient.xclient_id=xquotation.xclient_id";
+    public static final String SELECT_QUOTATIONS4LOOKUP =
+            "Select xquotation_id \"Id\", "
+            + "rfcnumber \"RFC Nr\" "
+            + "from xquotation where xclient_id = #";
     
 //    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
 //            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","

@@ -10,22 +10,31 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
+import com.xlend.gui.work.ContractsGrid;
+import com.xlend.gui.work.QuotationsGrid;
+import com.xlend.orm.Xclient;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.sql.Date;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
@@ -36,9 +45,10 @@ import javax.swing.SwingConstants;
  */
 class EditOrderPanel extends RecordEditPanel {
 
+    private static final String nocontract = "-- No contract yet --";
     private DefaultComboBoxModel clienCBModel;
     private DefaultComboBoxModel contractCBModel;
-    private DefaultComboBoxModel rfcRefCBModel;
+    private DefaultComboBoxModel rfqRefCBModel;
     private JTextField idField;
     private JComboBox contractRefBox;
     private JComboBox rfcRefBox;
@@ -47,9 +57,9 @@ class EditOrderPanel extends RecordEditPanel {
     private JTextField regNumber;
     private JTextField ordNumber;
     private JSpinner ordDate;
-    private JTextField contactNameFiels;
-    private JTextField contactPhoneFiels;
-    private JTextField contactFaxFiels;
+    private JTextField contactName;
+    private JTextField contactPhone;
+    private JTextField contactFax;
     private JTextField deliveryAddress;
     private JTextField invoiceAddress;
 
@@ -61,10 +71,11 @@ class EditOrderPanel extends RecordEditPanel {
     protected void fillContent() {
         String[] labels = new String[]{
             "ID:",
-            "Client:", "Contract Ref:", "RFC:",
+            "Client:", "Contract Ref:", "RFQ:",
             "Vat Nr:",//"Registration No.:",
             "PO Number:", //"PO Date:", 
-            "Contact Person:", "Contact Phone:", "Contact Fax:",
+            "Contact Person:",
+            "Contact Phone:", //"Contact Fax:",
             "Delivery address:", "Invoice Address:"
         };
         clienCBModel = new DefaultComboBoxModel();
@@ -72,22 +83,24 @@ class EditOrderPanel extends RecordEditPanel {
             clienCBModel.addElement(ci);
         }
         contractCBModel = new DefaultComboBoxModel();
-        rfcRefCBModel = new DefaultComboBoxModel();
+        rfqRefCBModel = new DefaultComboBoxModel();
+
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             clientRefBox = new JComboBox(clienCBModel),
             contractRefBox = new JComboBox(contractCBModel),
-            rfcRefBox = new JComboBox(rfcRefCBModel),
+            rfcRefBox = new JComboBox(rfqRefCBModel),
             vatNumber = new JTextField(),
             regNumber = new JTextField(),
             ordNumber = new JTextField(),
             ordDate = new JSpinner(new SpinnerDateModel()),
-            contactNameFiels = new JTextField(),
-            contactPhoneFiels = new JTextField(),
-            contactFaxFiels = new JTextField(),
+            contactName = new JTextField(),
+            contactPhone = new JTextField(),
+            contactFax = new JTextField(),
             deliveryAddress = new JTextField(30),
             invoiceAddress = new JTextField(30)
         };
+        clientRefBox.addActionListener(getClientRefChangedAction());
         ordDate.setEditor(new JSpinner.DateEditor(ordDate, "dd/MM/yyyy"));
         organizePanels(labels, edits);
     }
@@ -116,37 +129,101 @@ class EditOrderPanel extends RecordEditPanel {
         upedit.add(comboPanelWithLookupBtn(clientRefBox, clientRefLookup()));
         upedit.add(comboPanelWithLookupBtn(contractRefBox, contractRefLookup()));
         upedit.add(comboPanelWithLookupBtn(rfcRefBox, rfcRefRefLookup()));
-        
+
         JPanel vatregPanel = new JPanel(new GridLayout(1, 3));
         vatregPanel.add(edits[4]);
-        vatregPanel.add(new JLabel(" Registration Nr:",SwingConstants.RIGHT));
+        vatregPanel.add(new JLabel(" Registration Nr:", SwingConstants.RIGHT));
         vatregPanel.add(edits[5]);
         upedit.add(vatregPanel);
-        
+
         JPanel poPanel = new JPanel(new GridLayout(1, 3));
         poPanel.add(edits[6]);
-        poPanel.add(new JLabel(" PO Date:",SwingConstants.RIGHT));
+        poPanel.add(new JLabel(" PO Date:", SwingConstants.RIGHT));
         poPanel.add(edits[7]);
         upedit.add(poPanel);
-        
-        for (int i = 8; i < edits.length; i++) {
-            upedit.add(edits[i]);
-        }
+
+        upedit.add(edits[8]);
+
+        JPanel phoneFaxPanel = new JPanel(new GridLayout(1, 3));
+        phoneFaxPanel.add(edits[9]);
+        phoneFaxPanel.add(new JLabel(" Contact Fax:", SwingConstants.RIGHT));
+        phoneFaxPanel.add(edits[10]);
+        upedit.add(phoneFaxPanel);
+
+        upedit.add(edits[11]);
+        upedit.add(edits[12]);
 
         form.add(upper, BorderLayout.NORTH);
+        form.add(getTabbedPanel(), BorderLayout.CENTER);
         add(form);
     }
 
     @Override
     public void loadData() {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        //TODO: loadData()
+        Xorder xorder = (Xorder) getDbObject();
+        if (xorder != null) {
+            idField.setText(xorder.getXorderId().toString());
+            selectComboItem(clientRefBox, xorder.getXclientId());
+            selectComboItem(contractRefBox, xorder.getXcontractId());
+            selectComboItem(rfcRefBox, xorder.getXquotationId());
+            vatNumber.setText(xorder.getVatnumber());
+            regNumber.setText(xorder.getRegnumber());
+            ordNumber.setText(xorder.getOrdernumber());
+            Date sqlDt = xorder.getOrderdate();
+            ordDate.setValue(new java.util.Date(sqlDt.getTime()));//?
+            contactName.setText(xorder.getContactname());
+            contactPhone.setText(xorder.getContactphone());
+            contactFax.setText(xorder.getContactfax());
+            deliveryAddress.setText(xorder.getDeliveryaddress());
+            invoiceAddress.setText(xorder.getInvoiceaddress());
+
+        }
     }
 
     @Override
     public boolean save() throws Exception {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        //TODO: saveData()
+        Xorder xorder = (Xorder) getDbObject();
+        boolean isNew = false;
+        if (xorder == null) {
+            xorder = new Xorder(null);
+            xorder.setXorderId(0);
+            isNew = true;
+        }
+        ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+        if (itm.getValue().startsWith("--")) { // add new client
+            EditClientDialog ecd = new EditClientDialog("New Client", null);
+            if (EditClientDialog.okPressed) {
+                Xclient cl = (Xclient) ecd.getEditPanel().getDbObject();
+                if (cl != null) {
+                    ComboItem ci = new ComboItem(cl.getXclientId(), cl.getCompanyname());
+                    clienCBModel.addElement(ci);
+                    clientRefBox.setSelectedItem(ci);
+                }
+            }
+        } else {
+            try {
+                xorder.setXclientId(itm.getId());
+                xorder.setNew(isNew);
+                itm = (ComboItem) contractRefBox.getSelectedItem();
+                xorder.setXcontractId(itm.getId() > 0 ? itm.getId() : null);
+                itm = (ComboItem) rfcRefBox.getSelectedItem();
+                xorder.setXquotationId(itm.getId() > 0 ? itm.getId() : null);
+                xorder.setVatnumber(vatNumber.getText());
+                xorder.setRegnumber(regNumber.getText());
+                xorder.setOrdernumber(ordNumber.getText());
+                java.util.Date dt = (java.util.Date) ordDate.getValue();
+                xorder.setOrderdate(new Date(dt.getTime()));
+                xorder.setContactname(contactName.getText());
+                xorder.setContactfax(contactFax.getText());
+                xorder.setDeliveryaddress(deliveryAddress.getText());
+                xorder.setInvoiceaddress(invoiceAddress.getText());
+                DbObject saved = DashBoard.getExchanger().saveDbObject(xorder);
+                setDbObject(saved);
+                return true;
+            } catch (Exception ex) {
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+            }
+        }
         return false;
     }
 
@@ -156,9 +233,13 @@ class EditOrderPanel extends RecordEditPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
-                            new String[]{"clientcode", "companyname"});
+                    if (clientRefBox.getSelectedItem() != null) {
+                        LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
+                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
+                                new String[]{"clientcode", "companyname"});
+                    } else {
+                        GeneralFrame.errMessageBox("Warning:", "Choose client first");
+                    }
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
@@ -171,7 +252,19 @@ class EditOrderPanel extends RecordEditPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                try {
+                    ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+                    String select = Selects.SELECT_CONTRACTS4LOOKUP.replace("#", "" + itm.getId());
+                    if (contractRefBox.getSelectedItem() != null) {
+                        LookupDialog ld = new LookupDialog("Contract Lookup", contractRefBox,
+                                new ContractsGrid(DashBoard.getExchanger(), select),
+                                new String[]{"contractref", "description"});
+                    } else {
+                        GeneralFrame.errMessageBox("Warning", "Choose client first");
+                    }
+                } catch (RemoteException ex) {
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
             }
         };
     }
@@ -181,8 +274,47 @@ class EditOrderPanel extends RecordEditPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                try {
+                    ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+                    String select = Selects.SELECT_QUOTATIONS4LOOKUP.replace("#", "" + itm.getId());
+                    if (rfcRefBox.getSelectedItem() != null) {
+                        LookupDialog ld = new LookupDialog("Quotation Lookup", rfcRefBox,
+                                new QuotationsGrid(DashBoard.getExchanger(), select),
+                                new String[]{"rfcnumber"});
+                    } else {
+                        GeneralFrame.errMessageBox("Warning", "Choose client first");
+                    }
+                } catch (RemoteException ex) {
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
             }
         };
+    }
+
+    private ActionListener getClientRefChangedAction() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+                contractCBModel.removeAllElements();
+                for (ComboItem ci : XlendWorks.loadAllContracts(DashBoard.getExchanger(), itm.getId())) {
+                    contractCBModel.addElement(ci);
+                }
+                rfqRefCBModel.removeAllElements();
+                for (ComboItem ci : XlendWorks.loadAllRFQs(DashBoard.getExchanger(), itm.getId())) {
+                    rfqRefCBModel.addElement(ci);
+                }
+            }
+        };
+
+    }
+
+    private JTabbedPane getTabbedPanel() {
+        JTabbedPane tp = new JTabbedPane();
+        JScrollPane sp;
+        tp.add(sp = new JScrollPane(new JPanel()),"Order Items");
+        sp.setPreferredSize(new Dimension(600, 200));
+        return tp;
     }
 }

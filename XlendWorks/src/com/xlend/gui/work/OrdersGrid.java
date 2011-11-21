@@ -5,11 +5,13 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.order.EditOrderDialog;
+import com.xlend.orm.Xorder;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,11 +26,11 @@ public class OrdersGrid extends GeneralGridPanel {
     }
 
     public OrdersGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_ORDERS, maxWidths);
+        super(exchanger, Selects.SELECT_FROM_ORDERS, maxWidths, false);
     }
 
     public OrdersGrid(IMessageSender exchanger, String slct) throws RemoteException {
-        super(exchanger, slct, maxWidths);
+        super(exchanger, slct, maxWidths, true);
     }
 
     
@@ -54,14 +56,50 @@ public class OrdersGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        //TODO: edit order action
-        return null;
+        return new AbstractAction("Edit Client") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
+                        new EditOrderDialog("Edit Order", xorder);
+                        if (EditOrderDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(),
+                                    getTableDoc(), getSelect());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
+
     }
 
     @Override
     protected AbstractAction delAction() {
-        //TODO: del order action
-        return null;
+        return new AbstractAction("Delete Client") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                try {
+                    Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
+                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete order [" 
+                            + xorder.getRegnumber() + "]?")== JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xorder);
+                        GeneralFrame.updateGrid(exchanger, getTableView(),
+                                getTableDoc(), getSelect());
+                    }
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
     }
     
 }

@@ -29,11 +29,11 @@ public class ClientsGrid extends GeneralGridPanel {
     }
 
     public ClientsGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_CLIENTS, maxWidths);
+        super(exchanger, Selects.SELECT_FROM_CLIENTS, maxWidths, false);
     }
 
     public ClientsGrid(IMessageSender exchanger, String slct) throws RemoteException {
-        super(exchanger, slct, maxWidths);
+        super(exchanger, slct, maxWidths, true);
     }
 
     @Override

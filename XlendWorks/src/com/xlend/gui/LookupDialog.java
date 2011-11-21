@@ -32,6 +32,7 @@ public class LookupDialog extends PopupDialog {
     private String[] filteredColumns;
     private JComboBox comboBox;
     private JTextField filterField;
+    private String originalSelect;
 
     public LookupDialog(String title, JComboBox cb, GeneralGridPanel grid, String[] filteredColumns) {
         super(null, title, new Object[]{cb, grid, filteredColumns});
@@ -47,6 +48,7 @@ public class LookupDialog extends PopupDialog {
         grid = (GeneralGridPanel) params[1];
         grid.selectRowOnId(choosedID);
         this.filteredColumns = (String[]) params[2];
+        originalSelect = grid.getSelect();
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
@@ -63,34 +65,32 @@ public class LookupDialog extends PopupDialog {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                if (filteredColumns != null && filteredColumns.length > 0) {
-                    String select = grid.getSelect();
-                    int w = select.toLowerCase().indexOf(" where");
-                    int o = select.toLowerCase().indexOf(" order by");
-                    StringBuilder addWhereCond = new StringBuilder();
-                    for (String col : filteredColumns) {
-                        addWhereCond.append(addWhereCond.length() > 0 ? " or " : "")
-                                .append("upper(").append(col)
-                                .append(") like '%")
-                                .append(filterField.getText().toUpperCase())
-                                .append("%'");
-                    }
-                    if (w < 0 && o < 0) {
-                        select += (" where " + addWhereCond.toString());
-                    } else if (w > 0 && o < 0) {
-                        select = select.substring(0, w + 7) + addWhereCond.toString();
-                    } else if (w < 0 && o > 0) {
-                        select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
-                    } else {
-                        select = select.substring(0, w + 7) + addWhereCond.toString() + select.substring(o);
-                    }
-                    grid.setSelect(select);
-                    try {
-                        GeneralFrame.updateGrid(DashBoard.getExchanger(),
-                                grid.getTableView(), grid.getTableDoc(), grid.getSelect());
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                    }
+                String select = originalSelect;
+                int w = select.toLowerCase().indexOf(" where");
+                int o = select.toLowerCase().indexOf(" order by");
+                StringBuilder addWhereCond = new StringBuilder();
+                for (String col : filteredColumns) {
+                    addWhereCond.append(addWhereCond.length() > 0 ? " or " : "(").append("upper(").append(col).append(") like '%").append(filterField.getText().toUpperCase()).append("%'");
+                }
+                if (addWhereCond.length() > 0) {
+                    addWhereCond.append(")");
+                }
+
+                if (w < 0 && o < 0) {
+                    select += (" where " + addWhereCond.toString());
+                } else if (w > 0 && o < 0) {
+                    select = select.substring(0, w + 7) + addWhereCond.toString() + " aNd " + select.substring(w + 7);
+                } else if (w < 0 && o > 0) {
+                    select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
+                } else {
+                    select = select.substring(0, w + 7) + addWhereCond.toString() + select.substring(o);
+                }
+                grid.setSelect(select);
+                try {
+                    GeneralFrame.updateGrid(DashBoard.getExchanger(),
+                            grid.getTableView(), grid.getTableDoc(), grid.getSelect());
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
                 }
             }
         });
@@ -108,7 +108,7 @@ public class LookupDialog extends PopupDialog {
         buttonPanel.add(okBtn);
         buttonPanel.add(cancelBtn);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-        
+
         grid.getTableView().removeMouseListener(grid.getDoubleClickAdapter());
         grid.getTableView().addMouseListener(new MouseAdapter() {
 

@@ -26,7 +26,11 @@ public class ContractsGrid extends GeneralGridPanel {
     }
     
     public ContractsGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_CONTRACTS, maxWidths);
+        super(exchanger, Selects.SELECT_FROM_CONTRACTS, maxWidths, false);
+    }
+
+    public ContractsGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, maxWidths, true);
     }
 
     @Override

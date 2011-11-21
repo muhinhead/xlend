@@ -30,7 +30,7 @@ public class SitesGrid extends GeneralGridPanel {
     }
 
     public SitesGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_SITES, maxWidths);
+        super(exchanger, Selects.SELECT_FROM_SITES, maxWidths, false);
     }
 
     @Override

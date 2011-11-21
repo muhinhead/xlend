@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
  *
  * @author nick
  */
-class QuotationsGrid extends GeneralGridPanel {
+public class QuotationsGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
@@ -30,8 +30,13 @@ class QuotationsGrid extends GeneralGridPanel {
     }
 
     public QuotationsGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_QUOTATIONS, maxWidths);
+        super(exchanger, Selects.SELECT_FROM_QUOTATIONS, maxWidths, false);
     }
+    
+    public QuotationsGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, maxWidths, true);
+    }
+    
 
     @Override
     protected AbstractAction addAction() {

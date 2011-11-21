@@ -2,6 +2,8 @@ package com.xlend.gui;
 
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
+import com.xlend.orm.Xcontract;
+import com.xlend.orm.Xquotation;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -154,6 +156,40 @@ public class XlendWorks {
         }
     }
 
+    public static ComboItem[] loadAllContracts(IMessageSender exchanger, int client_id) {
+        try {
+            DbObject[] clients = exchanger.getDbObjects(Xcontract.class, "xclient_id="+client_id, "contractref");
+            ComboItem[] itms = new ComboItem[clients.length + 1];
+            itms[0] = new ComboItem(0, "--No contract yet--");
+            int i = 1;
+            for (DbObject o : clients) {
+                Xcontract xcontract = (Xcontract) o;
+                itms[i++] = new ComboItem(xcontract.getXcontractId(), xcontract.getContractref());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
+    public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
+        try {
+            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id="+client_id, "rfcnumber");
+            ComboItem[] itms = new ComboItem[rfqs.length + 1];
+            itms[0] = new ComboItem(0, "--No requests for quotation yet--");
+            int i = 1;
+            for (DbObject o : rfqs) {
+                Xquotation xquotation = (Xquotation) o;
+                itms[i++] = new ComboItem(xquotation.getXquotationId(), xquotation.getRfcnumber());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
     public static ComboItem[] loadAllClients(IMessageSender exchanger) {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");

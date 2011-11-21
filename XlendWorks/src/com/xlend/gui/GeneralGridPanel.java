@@ -16,11 +16,13 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
     protected IMessageSender exchanger;
 
     public GeneralGridPanel(IMessageSender exchanger, String select,
-            HashMap<Integer, Integer> maxWidths) throws RemoteException {
+            HashMap<Integer, Integer> maxWidths, boolean readOnly) throws RemoteException {
         super();
         this.select = select;
         this.exchanger = exchanger;
-        init(addAction(), editAction(), delAction(), exchanger.getTableBody(select), null);
+        init(readOnly?null:addAction(), 
+                readOnly?null:editAction(), 
+                readOnly?null:delAction(), exchanger.getTableBody(select), null);
     }
 
     protected abstract AbstractAction addAction();

@@ -91,8 +91,8 @@ public abstract class RecordEditPanel extends JPanel {
         two.setPreferredSize(new Dimension(width,b.height));
     }
     
-    protected static void selectComboItem(JComboBox cb, int id) {
-        for (int i=0; i<cb.getItemCount(); i++) {
+    protected static void selectComboItem(JComboBox cb, Integer id) {
+        for (int i=0; id!=null && i<cb.getItemCount(); i++) {
             ComboItem itm = (ComboItem) cb.getItemAt(i);
             if (itm.getId()==id) {
                 cb.setSelectedIndex(i);

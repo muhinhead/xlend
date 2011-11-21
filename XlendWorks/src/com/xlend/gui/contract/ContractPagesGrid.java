@@ -31,7 +31,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
     private final int contract_id;
 
     public ContractPagesGrid(IMessageSender exchanger, int contract_id) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_CONTRACTPAGE.replace("#", "" + contract_id), maxWidths);
+        super(exchanger, Selects.SELECT_FROM_CONTRACTPAGE.replace("#", "" + contract_id), maxWidths, false);
         this.contract_id = contract_id;
     }
 

@@ -91,8 +91,8 @@ public class QuotationPagePanel extends PagesPanel {
             Xquotationpage quotationpage = new Xquotationpage(null);
             quotationpage.setXquotationpageId(0);
             quotationpage.setXquotationId(parent_id);
-            quotationpage.setPagenum(n++);
             quotationpage.setDescription("Page " + n);
+            quotationpage.setPagenum(n++);
             quotationpage.setPagescan(Util.readFile(f.getAbsolutePath()));
             quotationpage.setNew(true);
             DbObject saved = DashBoard.getExchanger().saveDbObject(quotationpage);

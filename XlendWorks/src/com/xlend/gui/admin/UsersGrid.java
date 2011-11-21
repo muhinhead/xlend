@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class UsersGrid extends GeneralGridPanel {
 
     public UsersGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_USERS, null);
+        super(exchanger, Selects.SELECT_FROM_USERS, null, false);
     }
 
     protected AbstractAction addAction() {

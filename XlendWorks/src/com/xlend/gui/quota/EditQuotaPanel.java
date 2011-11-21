@@ -76,8 +76,9 @@ class EditQuotaPanel extends RecordEditPanel {
             lblPanel.add(new JLabel(lbl, SwingConstants.RIGHT));
         }
         for (int i = 0; i < 2; i++) {
-            JPanel halfPanel = new JPanel(new GridLayout(1, 2));
+            JPanel halfPanel = new JPanel(new GridLayout(1, 3));
             halfPanel.add(edits[i]);
+            halfPanel.add(new JPanel());
             halfPanel.add(new JPanel());
             editPanel.add(halfPanel);
         }
@@ -165,7 +166,7 @@ class EditQuotaPanel extends RecordEditPanel {
         }
         JScrollPane sp;
         tp.add(sp = new JScrollPane(pagesdPanel), "Scanned papers");
-        sp.setPreferredSize(new Dimension(400, 250));
+        sp.setPreferredSize(new Dimension(500, 150));
 
         return tp;
     }

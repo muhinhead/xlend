@@ -53,18 +53,12 @@ public abstract class ProfileDialog extends PopupDialog {
             additionalProfile = recs[1];
         }
         JPanel mainPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-//        getContentPane().setLayout(new BorderLayout(10,10));
         mainPanel.add(profileEditPanel = new EditProfilePanel(profile));
         mainPanel.add(additionalEditPanel = getAdditionalPanel());
         if (profile != null) {
             additionalEditPanel.setProfile_id(profile.getProfileId());
         }
-//        JPanel headerPanel = new JPanel();
-//        headerPanel.setBackground(new Color(255, 203, 0));
-//        JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
-//        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
-//        headerPanel.add(lbl);
-//        getContentPane().add(headerPanel, BorderLayout.NORTH);
+
         getContentPane().add(new JPanel(), BorderLayout.WEST);
         getContentPane().add(new JPanel(), BorderLayout.EAST);
         getContentPane().add(mainPanel, BorderLayout.CENTER);
@@ -73,7 +67,7 @@ public abstract class ProfileDialog extends PopupDialog {
 
             private final String TRANSNAME = "CLIENTPROFILESAVE";
 
-//            @Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     startTransaction(TRANSNAME);
@@ -101,7 +95,7 @@ public abstract class ProfileDialog extends PopupDialog {
         }));
         btnPanel.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
 
-//            @Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }

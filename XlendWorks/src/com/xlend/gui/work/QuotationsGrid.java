@@ -84,7 +84,7 @@ public class QuotationsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Contract") {
+        return new AbstractAction("Delete Quotation") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

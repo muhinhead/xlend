@@ -5,6 +5,7 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.PagesPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
@@ -47,7 +48,7 @@ public class EditContractPanel extends RecordEditPanel {
     private JComboBox clientRefBox;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
-    private JPanel pagesdPanel;
+    private PagesPanel pagesdPanel;
     private JScrollPane descrScroll;
 
     public EditContractPanel(DbObject dbObject) {
@@ -120,9 +121,8 @@ public class EditContractPanel extends RecordEditPanel {
     private void showClientLookup() {
         try {
             LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                    new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
+                    new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                     new String[]{"clientcode", "companyname"});
-//            Integer ld_id = ld.getChoosed();
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
@@ -167,6 +167,7 @@ public class EditContractPanel extends RecordEditPanel {
                 xcontract.setNew(isNew);
                 DbObject saved = DashBoard.getExchanger().saveDbObject(xcontract);
                 setDbObject(saved);
+                pagesdPanel.saveNewPages(((Xcontract)saved).getXcontractId());
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -180,10 +181,8 @@ public class EditContractPanel extends RecordEditPanel {
         JTabbedPane tp = new JTabbedPane();
         try {
             Xcontract xcontract = (Xcontract) getDbObject();
-            if (xcontract != null) {
-                int contract_id = xcontract.getXcontractId();
-                pagesdPanel = new ContractPagesPanel(DashBoard.getExchanger(), contract_id);
-            }
+            int contract_id = xcontract == null ? 0 : xcontract.getXcontractId();
+            pagesdPanel = new ContractPagesPanel(DashBoard.getExchanger(), contract_id);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

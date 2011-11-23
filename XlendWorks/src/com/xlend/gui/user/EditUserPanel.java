@@ -43,7 +43,7 @@ public class EditUserPanel extends ProfilePanel {
         String[] labels = new String[]{
             "",
             "Login:", "Password:", "Fax:", "Web Address:", "Office Hours:",
-            "Manager:", "Operator:"};
+            "Manager:", "Admin Clerk:"};
         JComponent[] edits = new JComponent[]{
             new JPanel(),
             loginField = new JTextField(),

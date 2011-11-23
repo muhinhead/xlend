@@ -8,7 +8,7 @@ public class Selects {
     public static final String SELECT_FROM_USERS =
             "Select profile_id \"Id\","
             + "first_name \"First Name\",last_name \"Last Name\","
-            + "city  \"City\", state  \"Distrikte\", email \"E-mail\" "
+            + "city  \"City\", state  \"Province\", email \"E-mail\" "
             + " from v_userprofile";
     public static final String SELECT_FROM_SITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "

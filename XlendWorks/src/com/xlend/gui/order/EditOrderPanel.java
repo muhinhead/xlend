@@ -19,7 +19,6 @@ import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -235,7 +234,7 @@ class EditOrderPanel extends RecordEditPanel {
                 try {
                     if (clientRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
+                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP,false),
                                 new String[]{"clientcode", "companyname"});
                     } else {
                         GeneralFrame.errMessageBox("Warning:", "Choose client first");

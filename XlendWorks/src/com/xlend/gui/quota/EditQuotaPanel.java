@@ -8,6 +8,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.PagesPanel;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
@@ -45,7 +46,7 @@ class EditQuotaPanel extends RecordEditPanel {
     private JTextField idField;
     private JTextField rfcNumField;
     private JComboBox clientRefBox;
-    private JPanel pagesdPanel;
+    private PagesPanel pagesdPanel;
 
     public EditQuotaPanel(DbObject dbObject) {
         super(dbObject);
@@ -127,6 +128,7 @@ class EditQuotaPanel extends RecordEditPanel {
                 xq.setNew(isNew);
                 DbObject saved = DashBoard.getExchanger().saveDbObject(xq);
                 setDbObject(saved);
+                pagesdPanel.saveNewPages(((Xquotation) saved).getXquotationId());
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -142,7 +144,7 @@ class EditQuotaPanel extends RecordEditPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP),
+                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP,false),
                             new String[]{"clientcode", "companyname"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -156,11 +158,8 @@ class EditQuotaPanel extends RecordEditPanel {
 
         try {
             Xquotation q = (Xquotation) getDbObject();
-            if (q != null) {
-                int xquotation_id = q.getXquotationId();
-                //TODO: QuotaPagesPanel
-                pagesdPanel = new QuotationPagePanel(DashBoard.getExchanger(), xquotation_id);
-            }
+            int xquotation_id = (q == null ? 0 : q.getXquotationId());
+            pagesdPanel = new QuotationPagePanel(DashBoard.getExchanger(), xquotation_id);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

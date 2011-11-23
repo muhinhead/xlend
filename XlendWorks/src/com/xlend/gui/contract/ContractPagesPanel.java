@@ -16,8 +16,11 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
@@ -42,15 +45,28 @@ public class ContractPagesPanel extends PagesPanel {
             contractPage.setPagenum(n++);
             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
             contractPage.setNew(true);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
+            if (parent_id == 0) {
+                newPages.add(contractPage);
+            } else {
+                DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
+            }
         }
         reloadPages();
     }
 
     protected void reloadPages() throws RemoteException {
-        DbObject[] pages = exchanger.getDbObjects(Xcontractpage.class, "xcontract_id=" + parent_id, "pagenum");
+        DbObject[] pages = new DbObject[newPages.size()];
+        if (parent_id == 0) {
+            int i = 0;
+            for (DbObject p : newPages) {
+                pages[i++] = p;
+            }
+        } else {
+            pages = exchanger.getDbObjects(Xcontractpage.class, "xcontract_id=" + parent_id, "pagenum");
+        }
         setVisible(false);
         removeAll();
+        super.reloadPages();
         for (DbObject o : pages) {
             NoFrameButton btn;
             final Xcontractpage contractPage = (Xcontractpage) o;
@@ -95,6 +111,13 @@ public class ContractPagesPanel extends PagesPanel {
             btn.addMouseListener(new PopupListener(pm));
             btns.add(btn);
         }
+
         setVisible(true);
+    }
+
+    @Override
+    protected void setParentId(DbObject ob, int newParent_id) throws SQLException, ForeignKeyViolationException {
+        Xcontractpage contractPage = (Xcontractpage) ob;
+        contractPage.setXcontractId(newParent_id);
     }
 }

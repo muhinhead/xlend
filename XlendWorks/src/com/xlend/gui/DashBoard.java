@@ -222,7 +222,7 @@ public class DashBoard extends JFrame {
 
 //        centerWindow(this);
         setLocation(10, 10);
-//        setResizable(false);
+        setResizable(false);
         setVisible(true);
     }
 

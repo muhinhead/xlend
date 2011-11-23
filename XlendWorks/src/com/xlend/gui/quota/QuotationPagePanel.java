@@ -30,12 +30,22 @@ public class QuotationPagePanel extends PagesPanel {
     public QuotationPagePanel(IMessageSender exchanger, final int xquotation_id) throws RemoteException {
         super(exchanger, xquotation_id);
     }
-    
+
     @Override
     protected void reloadPages() throws RemoteException {
-        DbObject[] pages = exchanger.getDbObjects(Xquotationpage.class, "xquotation_id=" + parent_id, "pagenum");
+        DbObject[] pages = new DbObject[newPages.size()];
+        if (parent_id == 0) {
+            int i = 0;
+            for (DbObject p : newPages) {
+                pages[i++] = p;
+            }
+        } else {
+            pages = exchanger.getDbObjects(Xquotationpage.class, "xquotation_id=" + parent_id, "pagenum");
+        }
+
         setVisible(false);
         removeAll();
+        super.reloadPages();
         for (DbObject o : pages) {
             NoFrameButton btn;
             final Xquotationpage quotationPage = (Xquotationpage) o;
@@ -80,6 +90,7 @@ public class QuotationPagePanel extends PagesPanel {
             btn.addMouseListener(new PopupListener(pm));
             btns.add(btn);
         }
+        
         setVisible(true);
     }
 
@@ -95,9 +106,18 @@ public class QuotationPagePanel extends PagesPanel {
             quotationpage.setPagenum(n++);
             quotationpage.setPagescan(Util.readFile(f.getAbsolutePath()));
             quotationpage.setNew(true);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(quotationpage);
+            if (parent_id == 0) {
+                newPages.add(quotationpage);
+            } else {
+                DbObject saved = DashBoard.getExchanger().saveDbObject(quotationpage);
+            }
         }
         reloadPages();
     }
-    
+
+    @Override
+    protected void setParentId(DbObject ob, int newParent_id) throws SQLException, ForeignKeyViolationException {
+        Xquotationpage quotationpage = (Xquotationpage) ob;
+        quotationpage.setXquotationId(newParent_id);
+    }
 }

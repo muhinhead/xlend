@@ -1,19 +1,11 @@
 package com.xlend.gui.work;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.contract.EditContractDialog;
-import com.xlend.mvc.dbtable.DbTableGridPanel;
-import com.xlend.orm.Xcontract;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -38,7 +30,7 @@ public class WorkFrame extends GeneralFrame {
         JTabbedPane workTab = new JTabbedPane();
         workTab.add(getContractsPanel(), "Contracts");
         //TODO: Quotas panel
-        workTab.add(getQuotasPanel(), "Quotas");
+        workTab.add(getQuotasPanel(), "RFQ/Quotes");
         //TODO: Orders panel
         workTab.add(getOrdersPanel(), "Orders");
         workTab.add(getSitesPanel(), "Sites");

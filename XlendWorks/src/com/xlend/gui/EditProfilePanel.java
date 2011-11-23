@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.gui;
 
-//import com.csa.dbutil.ComboItem;
-//import com.csa.formutil.RecordEditPanel;
-//import com.csa.orm.Profile;
-//import com.csa.orm.dbobject.DbObject;
 import com.xlend.orm.Profile;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
@@ -46,21 +38,11 @@ class EditProfilePanel extends RecordEditPanel {
     }
 
     private Object[] distinctStates() {
-        Vector statesVector = null;
-        String[] states = null;
-        try {
-            statesVector = DashBoard.getExchanger().getTableBody(
-                    "Select distinct state from profile order by state")[1];
-            states = new String[statesVector.size()];
-            int i = 0;
-            for (Object ob : statesVector) {
-                Vector line = (Vector) ob;
-                states[i++] = (String) line.get(0);
-            }
-        } catch (RemoteException ex) {
-            Logger.getLogger(EditProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return states;
+        return new String[]{
+            "Gauteng","Freestate","North-West",
+            "Limpopo","Mpumalanga","Kwazulu-Natal","Northern Cape",
+            "Eastern Cape","Western Cape"
+        };
     }
 
     @Override
@@ -68,7 +50,7 @@ class EditProfilePanel extends RecordEditPanel {
         final int c = 2;
         String[] labels = new String[]{"ID:",  
             "First Name:","Last Name:", "Address (line1):", "Address (line2):", "City:",
-            "Distrikte:", "Zip Code:", "Phone:", "Cell Phone:", "E-mail:"};
+            "Province:", "Zip Code:", "Phone:", "Cell Phone:", "E-mail:"};
         JComponent[] edits = new JComponent[]{idField = new JTextField(),
             firstNameField = new JTextField(),
             lastNameField = new JTextField(), address1Field = new JTextField(),
@@ -76,7 +58,7 @@ class EditProfilePanel extends RecordEditPanel {
             stateBox = new JComboBox(distinctStates()), zipCodeField = new JTextField(),
             phoneField = new JTextField(), cellPhoneField = new JTextField(),
             emailField = new JTextField()};
-        stateBox.setEditable(true);
+        stateBox.setEditable(false);
 
         setLayout(new BorderLayout());
         JPanel lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));

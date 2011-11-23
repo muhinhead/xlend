@@ -16,11 +16,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
@@ -41,7 +38,13 @@ public class ContractPagesPanel extends PagesPanel {
             Xcontractpage contractPage = new Xcontractpage(null);
             contractPage.setXcontractpageId(0);
             contractPage.setXcontractId(parent_id);
-            contractPage.setDescription("Page " + n);
+            if (f.getName().toUpperCase().endsWith(".DOC")
+                    || f.getName().toUpperCase().endsWith(".XLS")
+                    || f.getName().toUpperCase().endsWith(".TXT")) {
+                contractPage.setDescription(f.getName());
+            } else {
+                contractPage.setDescription("Page " + n);
+            }
             contractPage.setPagenum(n++);
             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
             contractPage.setNew(true);

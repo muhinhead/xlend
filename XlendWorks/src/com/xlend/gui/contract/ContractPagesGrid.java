@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.PagesPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xcontractpage;
 import com.xlend.orm.dbobject.DbObject;
@@ -45,33 +46,19 @@ public class ContractPagesGrid extends GeneralGridPanel {
                     JFileChooser chooser =
                             new JFileChooser(DashBoard.readProperty("imagedir", "./"));
                     chooser.setMultiSelectionEnabled(true);
-                    chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-                        public boolean accept(File f) {
-                            boolean ok = f.isDirectory()
-                                    || f.getName().toLowerCase().endsWith("jpg")
-                                    || f.getName().toLowerCase().endsWith("png")
-                                    || f.getName().toLowerCase().endsWith("jpeg")
-                                    || f.getName().toLowerCase().endsWith("gif");
-                            return ok;
-                        }
-
-                        public String getDescription() {
-                            return "*.JPG ; *.GIF; *.PNG";
-                        }
-                    });
-                    chooser.setDialogTitle("Load Pictures");
+                    chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
+                    chooser.setDialogTitle("Load External Documents");
                     chooser.setApproveButtonText("Load");
                     int retVal = chooser.showOpenDialog(null);
 
                     if (retVal == JFileChooser.APPROVE_OPTION) {
                         File[] files = chooser.getSelectedFiles();
-                        int n=DashBoard.getExchanger().getDbObjects(Xcontractpage.class, "xcontract_id="+contract_id, null).length+1;
+                        int n = DashBoard.getExchanger().getDbObjects(Xcontractpage.class, "xcontract_id=" + contract_id, null).length + 1;
                         for (File f : files) {
                             Xcontractpage contractPage = new Xcontractpage(null);
                             contractPage.setXcontractpageId(0);
                             contractPage.setXcontractId(contract_id);
-                            contractPage.setDescription("Page "+n);
+                            contractPage.setDescription("Page " + n);
                             contractPage.setPagenum(n++);
                             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
                             contractPage.setNew(true);

@@ -42,16 +42,16 @@ import javax.swing.SwingConstants;
  *
  * @author nick
  */
-class EditOrderPanel extends RecordEditPanel {
+public class EditOrderPanel extends RecordEditPanel {
 
     private static final String nocontract = "-- No contract yet --";
     private DefaultComboBoxModel clienCBModel;
     private DefaultComboBoxModel contractCBModel;
     private DefaultComboBoxModel rfqRefCBModel;
     private JTextField idField;
-    private JComboBox contractRefBox;
+    protected JComboBox contractRefBox;
+    protected JComboBox clientRefBox;
     private JComboBox rfcRefBox;
-    private JComboBox clientRefBox;
     private JTextField vatNumber;
     private JTextField regNumber;
     private JTextField ordNumber;
@@ -226,7 +226,7 @@ class EditOrderPanel extends RecordEditPanel {
         return false;
     }
 
-    private AbstractAction clientRefLookup() {
+    protected AbstractAction clientRefLookup() {
         return new AbstractAction("...") {
 
             @Override
@@ -234,7 +234,7 @@ class EditOrderPanel extends RecordEditPanel {
                 try {
                     if (clientRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP,false),
+                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                                 new String[]{"clientcode", "companyname"});
                     } else {
                         GeneralFrame.errMessageBox("Warning:", "Choose client first");
@@ -246,7 +246,7 @@ class EditOrderPanel extends RecordEditPanel {
         };
     }
 
-    private AbstractAction contractRefLookup() {
+    protected AbstractAction contractRefLookup() {
         return new AbstractAction("...") {
 
             @Override
@@ -295,24 +295,28 @@ class EditOrderPanel extends RecordEditPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
-                contractCBModel.removeAllElements();
-                for (ComboItem ci : XlendWorks.loadAllContracts(DashBoard.getExchanger(), itm.getId())) {
-                    contractCBModel.addElement(ci);
-                }
-                rfqRefCBModel.removeAllElements();
-                for (ComboItem ci : XlendWorks.loadAllRFQs(DashBoard.getExchanger(), itm.getId())) {
-                    rfqRefCBModel.addElement(ci);
-                }
+                syncCombos();
             }
         };
 
     }
 
+    protected void syncCombos() {
+        ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+        contractCBModel.removeAllElements();
+        for (ComboItem ci : XlendWorks.loadAllContracts(DashBoard.getExchanger(), itm.getId())) {
+            contractCBModel.addElement(ci);
+        }
+        rfqRefCBModel.removeAllElements();
+        for (ComboItem ci : XlendWorks.loadAllRFQs(DashBoard.getExchanger(), itm.getId())) {
+            rfqRefCBModel.addElement(ci);
+        }
+    }
+
     private JTabbedPane getTabbedPanel() {
         JTabbedPane tp = new JTabbedPane();
         JScrollPane sp;
-        tp.add(sp = new JScrollPane(new JPanel()),"Order Items");
+        tp.add(sp = new JScrollPane(new JPanel()), "Order Items");
         sp.setPreferredSize(new Dimension(600, 200));
         return tp;
     }

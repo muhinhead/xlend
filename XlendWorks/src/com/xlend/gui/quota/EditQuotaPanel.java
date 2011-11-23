@@ -164,7 +164,7 @@ class EditQuotaPanel extends RecordEditPanel {
             XlendWorks.log(ex);
         }
         JScrollPane sp;
-        tp.add(sp = new JScrollPane(pagesdPanel), "Scanned papers");
+        tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
         sp.setPreferredSize(new Dimension(500, 150));
 
         return tp;

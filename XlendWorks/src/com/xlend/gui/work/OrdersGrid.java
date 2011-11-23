@@ -4,7 +4,9 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.contract.EditContractOrderDialog;
 import com.xlend.gui.order.EditOrderDialog;
+import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xorder;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
@@ -20,6 +22,7 @@ import javax.swing.JOptionPane;
 public class OrdersGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+    private Xcontract xcontract = null;
 
     static {
         maxWidths.put(0, 40);
@@ -29,11 +32,15 @@ public class OrdersGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_ORDERS, maxWidths, false);
     }
 
-    public OrdersGrid(IMessageSender exchanger, String slct) throws RemoteException {
-        super(exchanger, slct, maxWidths, true);
+    public OrdersGrid(IMessageSender exchanger, String slct, boolean readOnly) throws RemoteException {
+        super(exchanger, slct, maxWidths, readOnly);
+        int p = Selects.SELECT_ORDERS4CONTRACTS.indexOf("xcontract_id = #");
+        if (getSelect().startsWith(Selects.SELECT_ORDERS4CONTRACTS.substring(0,p))) {
+            xcontract = (Xcontract) exchanger.loadDbObjectOnID(
+                    Xcontract.class, Integer.parseInt(getSelect().substring(p + 15)));
+        }
     }
 
-    
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Order") {
@@ -41,10 +48,19 @@ public class OrdersGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditOrderDialog("New Order", null);
-                    if (EditOrderDialog.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, 
-                                getTableView(), getTableDoc(), getSelect());
+                    if (getXcontract() != null) {
+                        EditContractOrderDialog.xcontract = getXcontract();
+                        EditContractOrderDialog od = new EditContractOrderDialog("New Order on contract", null);
+                        if (EditContractOrderDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger,
+                                    getTableView(), getTableDoc(), getSelect());
+                        }
+                    } else {
+                        new EditOrderDialog("New Order", null);
+                        if (EditOrderDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger,
+                                    getTableView(), getTableDoc(), getSelect());
+                        }
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,7 +72,7 @@ public class OrdersGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Client") {
+        return new AbstractAction("Edit Order") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,10 +80,19 @@ public class OrdersGrid extends GeneralGridPanel {
                 if (id > 0) {
                     try {
                         Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
-                        new EditOrderDialog("Edit Order", xorder);
-                        if (EditOrderDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect());
+                        if (getXcontract() != null) {
+                            EditContractOrderDialog.xcontract = getXcontract();
+                            EditContractOrderDialog od = new EditContractOrderDialog("Edit Order on contract", xorder);
+                            if (EditContractOrderDialog.okPressed) {
+                                GeneralFrame.updateGrid(exchanger,
+                                        getTableView(), getTableDoc(), getSelect());
+                            }
+                        } else {
+                            new EditOrderDialog("Edit Order", xorder);
+                            if (EditOrderDialog.okPressed) {
+                                GeneralFrame.updateGrid(exchanger, getTableView(),
+                                        getTableDoc(), getSelect());
+                            }
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -81,15 +106,15 @@ public class OrdersGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Client") {
+        return new AbstractAction("Delete Order") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete order [" 
-                            + xorder.getRegnumber() + "]?")== JOptionPane.YES_OPTION) {
+                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete order ["
+                            + xorder.getRegnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xorder);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
                                 getTableDoc(), getSelect());
@@ -101,5 +126,11 @@ public class OrdersGrid extends GeneralGridPanel {
             }
         };
     }
-    
+
+    /**
+     * @return the xcontract
+     */
+    public Xcontract getXcontract() {
+        return xcontract;
+    }
 }

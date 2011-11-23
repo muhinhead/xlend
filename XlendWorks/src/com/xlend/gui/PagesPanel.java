@@ -36,6 +36,23 @@ public abstract class PagesPanel extends JPanel {
     protected ArrayList<NoFrameButton> btns = new ArrayList<NoFrameButton>();
     protected ArrayList<DbObject> newPages = new ArrayList<DbObject>();
 
+    public static class PagesDocFileFilter extends javax.swing.filechooser.FileFilter {
+        public boolean accept(File f) {
+            boolean ok = f.isDirectory()
+                    || f.getName().toLowerCase().endsWith("jpg")
+                    || f.getName().toLowerCase().endsWith("png")
+                    || f.getName().toLowerCase().endsWith("jpeg")
+                    || f.getName().toLowerCase().endsWith("gif")
+                    || f.getName().toLowerCase().endsWith("doc")
+                    || f.getName().toLowerCase().endsWith("xls");
+            return ok;
+        }
+
+        public String getDescription() {
+            return "*.JPG ; *.GIF; *.PNG; *.DOC; *.XLS";
+        }
+    }
+
     public PagesPanel(IMessageSender exchanger, final int papa_id) throws RemoteException {
         super(new FlowLayout(FlowLayout.CENTER, 20, 20));
         this.exchanger = exchanger;
@@ -56,36 +73,22 @@ public abstract class PagesPanel extends JPanel {
 
         reloadPages();
     }
-    
-    protected abstract void setParentId(DbObject ob, int newParent_id) throws SQLException, ForeignKeyViolationException ;
+
+    protected abstract void setParentId(DbObject ob, int newParent_id) throws SQLException, ForeignKeyViolationException;
 
     public void saveNewPages(int newParent_id) throws RemoteException, SQLException, ForeignKeyViolationException {
-        for(DbObject page : newPages) {
+        for (DbObject page : newPages) {
             setParentId(page, newParent_id);
             DbObject saved = DashBoard.getExchanger().saveDbObject(page);
         }
     }
-    
+
     protected void chooseFiles() throws SQLException, RemoteException, ForeignKeyViolationException {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));
         chooser.setMultiSelectionEnabled(true);
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-            public boolean accept(File f) {
-                boolean ok = f.isDirectory()
-                        || f.getName().toLowerCase().endsWith("jpg")
-                        || f.getName().toLowerCase().endsWith("png")
-                        || f.getName().toLowerCase().endsWith("jpeg")
-                        || f.getName().toLowerCase().endsWith("gif");
-                return ok;
-            }
-
-            public String getDescription() {
-                return "*.JPG ; *.GIF; *.PNG";
-            }
-        });
-        chooser.setDialogTitle("Load Pictures");
+        chooser.setFileFilter(new PagesDocFileFilter());
+        chooser.setDialogTitle("Load External Documents");
         chooser.setApproveButtonText("Load");
         int retVal = chooser.showOpenDialog(null);
 

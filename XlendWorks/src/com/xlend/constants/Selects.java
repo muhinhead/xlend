@@ -42,6 +42,10 @@ public class Selects {
             "Select xorder_id \"Id\", xclient.companyname \"Company\", vatnumber \"Vat.number\", "
             + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
+    public static final String SELECT_ORDERS4CONTRACTS = 
+            "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
+            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            + "from xorder where xcontract_id = #";
     
     public static final String SELECT_FROM_QUOTATIONS =
             "Select xquotation_id \"Id\", xclient.companyname \"Company\", "

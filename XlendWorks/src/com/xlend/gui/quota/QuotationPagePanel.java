@@ -102,7 +102,13 @@ public class QuotationPagePanel extends PagesPanel {
             Xquotationpage quotationpage = new Xquotationpage(null);
             quotationpage.setXquotationpageId(0);
             quotationpage.setXquotationId(parent_id);
-            quotationpage.setDescription("Page " + n);
+            if (f.getName().toUpperCase().endsWith(".DOC") || 
+                    f.getName().toUpperCase().endsWith(".XLS") || 
+                    f.getName().toUpperCase().endsWith(".TXT")) {
+                quotationpage.setDescription(f.getName());
+            } else {
+                quotationpage.setDescription("Page " + n);
+            }
             quotationpage.setPagenum(n++);
             quotationpage.setPagescan(Util.readFile(f.getAbsolutePath()));
             quotationpage.setNew(true);

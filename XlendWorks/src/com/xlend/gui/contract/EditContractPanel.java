@@ -9,6 +9,7 @@ import com.xlend.gui.PagesPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
+import com.xlend.gui.work.OrdersGrid;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.dbobject.ComboItem;
@@ -20,6 +21,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -167,7 +170,7 @@ public class EditContractPanel extends RecordEditPanel {
                 xcontract.setNew(isNew);
                 DbObject saved = DashBoard.getExchanger().saveDbObject(xcontract);
                 setDbObject(saved);
-                pagesdPanel.saveNewPages(((Xcontract)saved).getXcontractId());
+                pagesdPanel.saveNewPages(((Xcontract) saved).getXcontractId());
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -179,18 +182,24 @@ public class EditContractPanel extends RecordEditPanel {
 
     private JTabbedPane getDetailsPanel() {
         JTabbedPane tp = new JTabbedPane();
+        OrdersGrid ordGrid = null;
+        Xcontract xcontract = (Xcontract) getDbObject();
+        int contract_id = xcontract == null ? 0 : xcontract.getXcontractId();
         try {
-            Xcontract xcontract = (Xcontract) getDbObject();
-            int contract_id = xcontract == null ? 0 : xcontract.getXcontractId();
             pagesdPanel = new ContractPagesPanel(DashBoard.getExchanger(), contract_id);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
         JScrollPane sp;
-        tp.add(sp = new JScrollPane(pagesdPanel), "Scanned papers");
+        tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
         sp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 150));
-        //TODO: add orders for contract grid
-        tp.add(new JPanel(), "Orders");
+        try {
+            ordGrid = new OrdersGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id),false);
+            tp.add(new JScrollPane(ordGrid), "Orders");
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
         return tp;
     }
 

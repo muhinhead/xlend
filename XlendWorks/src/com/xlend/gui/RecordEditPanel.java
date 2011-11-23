@@ -37,7 +37,9 @@ public abstract class RecordEditPanel extends JPanel {
     protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
         JPanel comboBoxPanel = new JPanel(new BorderLayout());
         comboBoxPanel.add(cb);
-        comboBoxPanel.add(new JButton(lookupButtonAction), BorderLayout.EAST);
+        if (lookupButtonAction != null) {
+            comboBoxPanel.add(new JButton(lookupButtonAction), BorderLayout.EAST);
+        }
         return comboBoxPanel;
     }
 
@@ -87,14 +89,14 @@ public abstract class RecordEditPanel extends JPanel {
         Dimension a = one.getPreferredSize();
         Dimension b = two.getPreferredSize();
         int width = a.width > b.width ? a.width : b.width;
-        one.setPreferredSize(new Dimension(width,a.height));
-        two.setPreferredSize(new Dimension(width,b.height));
+        one.setPreferredSize(new Dimension(width, a.height));
+        two.setPreferredSize(new Dimension(width, b.height));
     }
-    
+
     protected static void selectComboItem(JComboBox cb, Integer id) {
-        for (int i=0; id!=null && i<cb.getItemCount(); i++) {
+        for (int i = 0; id != null && i < cb.getItemCount(); i++) {
             ComboItem itm = (ComboItem) cb.getItemAt(i);
-            if (itm.getId()==id) {
+            if (itm.getId() == id) {
                 cb.setSelectedIndex(i);
                 return;
             }

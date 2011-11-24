@@ -8,7 +8,7 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xorderpage extends DbObject  {
+public class Xorderpage extends DbObject implements IPage {
     private static Triggers activeTriggers = null;
     private Integer xorderpageId = null;
     private Integer xorderId = null;

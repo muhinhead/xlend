@@ -8,7 +8,7 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xquotationpage extends DbObject  {
+public class Xquotationpage extends DbObject implements IPage {
     private static Triggers activeTriggers = null;
     private Integer xquotationpageId = null;
     private Integer xquotationId = null;

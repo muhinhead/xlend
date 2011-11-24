@@ -1,9 +1,13 @@
 package com.xlend.gui.order;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xorder;
+import com.xlend.orm.Xorderitem;
 import com.xlend.remote.IMessageSender;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
@@ -13,6 +17,7 @@ import javax.swing.AbstractAction;
  * @author Nick Mukhin
  */
 class OrderItemsGrid extends GeneralGridPanel {
+
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
     private Xorder xorder = null;
     private static final String whereId = "xorder_id = #";
@@ -24,23 +29,55 @@ class OrderItemsGrid extends GeneralGridPanel {
     public OrderItemsGrid(IMessageSender exchanger, String slct) throws RemoteException {
         super(exchanger, slct, maxWidths, false);
         int p = Selects.SELECTORDERITEMS.indexOf(whereId);
-        if (getSelect().startsWith(Selects.SELECTORDERITEMS.substring(0,p))) {
+        if (getSelect().startsWith(Selects.SELECTORDERITEMS.substring(0, p))) {
             xorder = (Xorder) exchanger.loadDbObjectOnID(
-                    Xorder.class, Integer.parseInt(getSelect().substring(p + whereId.length()-1)));
+                    Xorder.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
         }
-        
+
     }
 
     @Override
     protected AbstractAction addAction() {
-        //TODO: add orderItem
-        return null;
+        return new AbstractAction("Add Item") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    EditOrderItemDialog.xorder = getXorder();
+                    new EditOrderItemDialog("New Order Item", null);
+                    if (EditOrderItemDialog.okPressed) {
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
     }
 
     @Override
     protected AbstractAction editAction() {
-        //TODO: edit orderItem
-        return null;
+        return new AbstractAction("Edit Item") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xorderitem itm = (Xorderitem) exchanger.loadDbObjectOnID(Xorderitem.class, id);
+                        EditOrderItemDialog.xorder = getXorder();
+                        new EditOrderItemDialog("Edit Order Item", itm);
+                        if (EditOrderItemDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -55,5 +92,4 @@ class OrderItemsGrid extends GeneralGridPanel {
     public Xorder getXorder() {
         return xorder;
     }
-    
 }

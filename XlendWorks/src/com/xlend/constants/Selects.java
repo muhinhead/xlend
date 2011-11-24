@@ -1,10 +1,16 @@
 package com.xlend.constants;
 
+import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
+import java.rmi.RemoteException;
+import java.util.Vector;
+
 /**
  *
  * @author Nick Mukhin
  */
 public class Selects {
+
     public static final String SELECT_FROM_USERS =
             "Select profile_id \"Id\","
             + "first_name \"First Name\",last_name \"Last Name\","
@@ -19,34 +25,28 @@ public class Selects {
             + "clientcode \"Client Code\", companyname \"Company name\", "
             + "contactname \"Contact Name\", phonenumber \"Tel Nr.\", vatnumber \"Vat Nr.\" "
             + "from xclient order by upper(clientcode)";
-    
     public static final String SELECT_CLIENTS4LOOKUP = "Select xclient_id \"Id\","
             + "clientcode \"Client Code\", companyname \"Company name\" "
             + "from xclient order by upper(clientcode)";
-
-    public static final String SELECT_FROM_CONTRACTS = 
+    public static final String SELECT_FROM_CONTRACTS =
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
-    public static final String SELECT_CONTRACTS4LOOKUP = 
+    public static final String SELECT_CONTRACTS4LOOKUP =
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", description \"Description\" "
             + "from xcontract where xclient_id = #";
-
-    
-    public static final String SELECT_FROM_CONTRACTPAGE = 
+    public static final String SELECT_FROM_CONTRACTPAGE =
             "Select xcontractpage_id \"Id\", pagenum \"Ind.No\", description \"Notes\" "
             + "from xcontractpage where xcontract_id = # order by pagenum";
-    
-    public static final String SELECT_FROM_ORDERS = 
+    public static final String SELECT_FROM_ORDERS =
             "Select xorder_id \"Id\", xclient.companyname \"Company\", vatnumber \"Vat.number\", "
             + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
-    public static final String SELECT_ORDERS4CONTRACTS = 
+    public static final String SELECT_ORDERS4CONTRACTS =
             "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
             + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder where xcontract_id = #";
-    
     public static final String SELECT_FROM_QUOTATIONS =
             "Select xquotation_id \"Id\", xclient.companyname \"Company\", "
             + "rfcnumber \"RFC Nr\" "
@@ -55,11 +55,31 @@ public class Selects {
             "Select xquotation_id \"Id\", "
             + "rfcnumber \"RFC Nr\" "
             + "from xquotation where xclient_id = #";
-    
-    public static final String SELECTORDERITEMS = 
+    public static final String SELECTORDERITEMS =
             "Select xorderitem_id \"Id\", itemnumber \"Item\", "
             + "materialnumber \"Material Nr.\", machinetype \"Machine Type\","
             + "deliveryreq \"Required\" "
             + "from xorderitem where xorder_id = #";
+    public static String DISTINCT_MACHINETYPES =
+            "Select distinct machinetype from xorderitem";
+    public static String DISTINCT_MEASUREITEMS =
+            "Select distinct measureitem from xorderitem";
 
+    public static String[] getStringArray(String select) {
+        try {
+            Vector[] body = DashBoard.getExchanger().getTableBody(select);
+            Vector lines = body[1];
+            String[] answer = new String[lines.size()];
+            int n = 0;
+            for (Object o : lines) {
+                Vector itm = (Vector) o;
+                answer[n++] = itm.get(0).toString();
+            }
+            return answer;
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+            GeneralFrame.errMessageBox("Error:", ex.getMessage());
+        }
+        return null;
+    }
 }

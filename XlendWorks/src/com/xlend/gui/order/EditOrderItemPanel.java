@@ -1,5 +1,6 @@
 package com.xlend.gui.order;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
@@ -8,7 +9,11 @@ import com.xlend.orm.Xorderitem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.rmi.RemoteException;
 import java.sql.Date;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -55,14 +60,14 @@ public class EditOrderItemPanel extends RecordEditPanel {
             idField = new JTextField(),
             itemNumberField = new JTextField(),
             materialNumberField = new JTextField(),
-            machineTypeCB = new JComboBox(),
+            machineTypeCB = new JComboBox(distinctMachineTypes()),
             new JScrollPane(descriptionField = new JTextArea(4, 20),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
             requiredDateSpin = new JSpinner(new SpinnerDateModel()),
             deliverDateSpin = new JSpinner(new SpinnerDateModel()),
             quantitySpin = new JSpinner(new SpinnerNumberModel()),
-            measureItemCB = new JComboBox(),
+            measureItemCB = new JComboBox(distinctMeasureItems()),
             priceOneSpin = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1000000.00, 1.11))
         };
         machineTypeCB.setEditable(true);
@@ -130,7 +135,23 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
-        //TODO: load order item to form
+        Xorderitem xorditem = (Xorderitem) getDbObject();
+        if (xorditem != null) {
+            idField.setText(xorditem.getXorderitemId().toString());
+            itemNumberField.setText(xorditem.getItemnumber());
+            descriptionField.setText(xorditem.getDescription());
+            materialNumberField.setText(xorditem.getMaterialnumber());
+            machineTypeCB.setSelectedItem(xorditem.getMachinetype());
+            if (xorditem.getDeliveryreq() != null) {
+                requiredDateSpin.setValue(new java.sql.Date(xorditem.getDeliveryreq().getTime()));
+            }
+            if (xorditem.getDelivery() != null) {
+                deliverDateSpin.setValue(new java.sql.Date(xorditem.getDelivery().getTime()));
+            }
+            quantitySpin.setValue(xorditem.getQuantity());
+            measureItemCB.setSelectedItem(xorditem.getMeasureitem());
+            priceOneSpin.setValue(xorditem.getPriceperone());
+        }
     }
 
     @Override
@@ -147,16 +168,16 @@ public class EditOrderItemPanel extends RecordEditPanel {
             xorditem.setXorderId(xorder.getXorderId());
             xorditem.setItemnumber(itemNumberField.getText());
             xorditem.setMaterialnumber(materialNumberField.getText());
-            xorditem.setMachinetype((String)machineTypeCB.getSelectedItem());
+            xorditem.setMachinetype((String) machineTypeCB.getSelectedItem());
             xorditem.setDescription(descriptionField.getText());
             java.util.Date dut = (java.util.Date) requiredDateSpin.getValue();
             xorditem.setDeliveryreq(dut == null ? null : new Date(dut.getTime()));
             dut = (java.util.Date) deliverDateSpin.getValue();
             xorditem.setDelivery(dut == null ? null : new Date(dut.getTime()));
-            xorditem.setQuantity((Integer)quantitySpin.getValue());
-            xorditem.setMeasureitem((String)measureItemCB.getSelectedItem());
-            xorditem.setPriceperone((Double)priceOneSpin.getValue());
-            
+            xorditem.setQuantity((Integer) quantitySpin.getValue());
+            xorditem.setMeasureitem((String) measureItemCB.getSelectedItem());
+            xorditem.setPriceperone((Double) priceOneSpin.getValue());
+
             DbObject saved = DashBoard.getExchanger().saveDbObject(xorditem);
             setDbObject(saved);
             return true;
@@ -167,7 +188,15 @@ public class EditOrderItemPanel extends RecordEditPanel {
         return false;
     }
 
-    void setXorder(Xorder xorder) {
+    protected void setXorder(Xorder xorder) {
         this.xorder = xorder;
+    }
+
+    private String[] distinctMachineTypes() {
+        return Selects.getStringArray(Selects.DISTINCT_MACHINETYPES);
+    }
+    
+    private String[] distinctMeasureItems() {
+        return Selects.getStringArray(Selects.DISTINCT_MEASUREITEMS);
     }
 }

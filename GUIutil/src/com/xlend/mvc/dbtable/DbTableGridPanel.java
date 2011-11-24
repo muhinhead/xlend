@@ -25,9 +25,9 @@ public class DbTableGridPanel extends JPanel {
     private DbTableView tableView = null;
     private DbTableDocument tableDoc = null;
     private JScrollPane sp = null;
-    protected AbstractAction addAction = null;
-    protected AbstractAction editAction = null;
-    protected AbstractAction delAction = null;
+    private AbstractAction addAction = null;
+    private AbstractAction editAction = null;
+    private AbstractAction delAction = null;
     private JButton addButton = null;
     private JButton editButton = null;
     private JButton delButton = null;
@@ -56,9 +56,9 @@ public class DbTableGridPanel extends JPanel {
 
     protected void init(AbstractAction add, AbstractAction edit,
             AbstractAction del, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
-        this.addAction = add;
-        this.editAction = edit;
-        this.delAction = del;
+        this.setAddAction(add);
+        this.setEditAction(edit);
+        this.setDelAction(del);
         tableView = new DbTableView();
         if (maxWidths != null) {
             tableView.setMaxColWidths(maxWidths);
@@ -119,7 +119,7 @@ public class DbTableGridPanel extends JPanel {
 
     public int getSelectedID() {
         int row = tableView.getSelectedRow();
-        if (row >= 0) {//&& row < tableView.getSelectedRow()) {
+        if (row >= 0 && row < tableView.getRowCount()) {//&& row < tableView.getSelectedRow()) {
             Vector line = (Vector) tableView.getRowData().get(row);
             return Integer.parseInt((String) line.get(0));
         }
@@ -196,5 +196,26 @@ public class DbTableGridPanel extends JPanel {
      */
     public MouseAdapter getDoubleClickAdapter() {
         return doubleClickAdapter;
+    }
+
+    /**
+     * @param addAction the addAction to set
+     */
+    public void setAddAction(AbstractAction addAction) {
+        this.addAction = addAction;
+    }
+
+    /**
+     * @param editAction the editAction to set
+     */
+    public void setEditAction(AbstractAction editAction) {
+        this.editAction = editAction;
+    }
+
+    /**
+     * @param delAction the delAction to set
+     */
+    public void setDelAction(AbstractAction delAction) {
+        this.delAction = delAction;
     }
 }

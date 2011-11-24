@@ -56,7 +56,10 @@ public class Selects {
             + "rfcnumber \"RFC Nr\" "
             + "from xquotation where xclient_id = #";
     
-//    public static final String SELECT_FROM_CONTRACTITEMS = "Select xcontractitem_id \"Id\","
-//            + "materialnumber \"Material Nr\",description \"Description\", deliverydate \"Delivery Date\","
-//            + "orderqty \"Order Quantity\",priceperunit \"Price per Unit\" from xcontractitem where xcontract_id = #";            
+    public static final String SELECTORDERITEMS = 
+            "Select xorderitem_id \"Id\", itemnumber \"Item\", "
+            + "materialnumber \"Material Nr.\", machinetype \"Machine Type\","
+            + "deliveryreq \"Required\" "
+            + "from xorderitem where xorder_id = #";
+
 }

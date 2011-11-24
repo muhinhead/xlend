@@ -23,6 +23,7 @@ public class OrdersGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
     private Xcontract xcontract = null;
+    private static final String whereId = "xcontract_id = #";
 
     static {
         maxWidths.put(0, 40);
@@ -34,10 +35,10 @@ public class OrdersGrid extends GeneralGridPanel {
 
     public OrdersGrid(IMessageSender exchanger, String slct, boolean readOnly) throws RemoteException {
         super(exchanger, slct, maxWidths, readOnly);
-        int p = Selects.SELECT_ORDERS4CONTRACTS.indexOf("xcontract_id = #");
+        int p = Selects.SELECT_ORDERS4CONTRACTS.indexOf(whereId);
         if (getSelect().startsWith(Selects.SELECT_ORDERS4CONTRACTS.substring(0,p))) {
             xcontract = (Xcontract) exchanger.loadDbObjectOnID(
-                    Xcontract.class, Integer.parseInt(getSelect().substring(p + 15)));
+                    Xcontract.class, Integer.parseInt(getSelect().substring(p + whereId.length()-1)));
         }
     }
 

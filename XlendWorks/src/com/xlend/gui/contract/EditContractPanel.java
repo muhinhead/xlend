@@ -196,7 +196,8 @@ public class EditContractPanel extends RecordEditPanel {
         try {
             ordGrid = new OrdersGrid(DashBoard.getExchanger(),
                     Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id),false);
-            tp.add(new JScrollPane(ordGrid), "Orders");
+//            tp.add(new JScrollPane(ordGrid), "Orders");
+            tp.add(ordGrid, "Orders");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

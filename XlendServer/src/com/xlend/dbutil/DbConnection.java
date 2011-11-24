@@ -116,7 +116,8 @@ public class DbConnection {
         //version 0.5->0.6
         "alter table xorderitem add machinetype varchar(64)",
         "alter table xorderitem add deliveryreq date",
-        "alter table xorderitem add delivery date"
+        "alter table xorderitem add delivery date",
+        "alter table xorderitem modify measureitem varchar(16),"
     };
 
     public static Connection getConnection() throws RemoteException {

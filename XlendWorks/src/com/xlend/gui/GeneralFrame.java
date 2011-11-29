@@ -40,9 +40,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private JPanel statusPanel = new JPanel();
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
-//    private DbTableGridPanel contractsPanel = null;
-//    private DbTableGridPanel sitesPanel = null;
-//    private DbTableGridPanel clientsPanel = null;
     private JTabbedPane mainPanel;
     private ToolBarButton aboutButton;
     private ToolBarButton exitButton;
@@ -138,7 +135,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {
-                updateGrid(exchanger, grid.getTableView(), grid.getTableDoc(), grids.get(grid));
+                updateGrid(exchanger, grid.getTableView(), grid.getTableDoc(), grids.get(grid),null);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -225,14 +222,19 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         });
     }
 
-    public static void updateGrid(IMessageSender exchanger, DbTableView view, DbTableDocument doc, String select)
+    public static void updateGrid(IMessageSender exchanger,
+            DbTableView view, DbTableDocument doc, String select, Integer id)
             throws RemoteException {
         int row = view.getSelectedRow();
         doc.setBody(exchanger.getTableBody(select));
         view.getController().updateExcept(null);
-        row = row < view.getRowCount() ? row : row - 1;
-        if (row >= 0 && row < view.getRowCount()) {
-            view.setRowSelectionInterval(row, row);
+        if (id != null) {
+            DbTableGridPanel.selectRowOnId(view, id);
+        } else {
+            row = row < view.getRowCount() ? row : row - 1;
+            if (row >= 0 && row < view.getRowCount()) {
+                view.setRowSelectionInterval(row, row);
+            }
         }
     }
 

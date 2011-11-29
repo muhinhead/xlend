@@ -64,7 +64,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                             contractPage.setNew(true);
                             DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
                         }
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
 
                 } catch (Exception ex) {
@@ -87,7 +87,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                         Xcontractpage contractPage = (Xcontractpage) exchanger.loadDbObjectOnID(Xcontractpage.class, id);
                         new EditContractPageDialog("Edit Contract Page", contractPage);
                         if (EditContractPageDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -107,10 +107,10 @@ public class ContractPagesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xcontractpage contractPage = (Xcontractpage) exchanger.loadDbObjectOnID(Xcontractpage.class, id);
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete contract page No_"
+                    if (contractPage != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract page No_"
                             + contractPage.getPagenum() + "?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(contractPage);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

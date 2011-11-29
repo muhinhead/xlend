@@ -14,6 +14,7 @@ import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
 import com.xlend.gui.work.ContractsGrid;
 import com.xlend.gui.work.QuotationsGrid;
+import com.xlend.gui.work.SitesGrid;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
@@ -317,17 +318,22 @@ public class EditOrderPanel extends RecordEditPanel {
     private JTabbedPane getTabbedPanel() {
         JTabbedPane tp = new JTabbedPane();
         OrderItemsGrid ordItemGrid = null;
-//        JScrollPane sp = null;
+        OrderSitesGrid ordSitesGrid = null;
         Xorder xorder = (Xorder) getDbObject();
         int order_id = xorder == null ? 0 : xorder.getXorderId();
         try {
             ordItemGrid = new OrderItemsGrid(DashBoard.getExchanger(),
                     Selects.SELECTORDERITEMS.replace("#", "" + order_id));
             tp.add(ordItemGrid, "Order Items");
+            ordSitesGrid = new OrderSitesGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_ORDERISITES.replace("#", "" + order_id));
+            tp.add(ordSitesGrid, "Order Sites");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
-        ordItemGrid.setPreferredSize(new Dimension(600, 200));
+        Dimension pref = new Dimension(600, 200);
+        ordItemGrid.setPreferredSize(pref);
+        ordSitesGrid.setPreferredSize(pref);
         return tp;
     }
 }

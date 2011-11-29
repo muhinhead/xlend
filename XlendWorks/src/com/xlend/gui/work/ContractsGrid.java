@@ -40,10 +40,11 @@ public class ContractsGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditContractDialog("New Contract", null);
+                    EditContractDialog ed = new EditContractDialog("New Contract", null);
                     if (EditContractDialog.okPressed) {
+                        Xcontract xcontract = (Xcontract) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, 
-                                getTableView(), getTableDoc(), getSelect());
+                                getTableView(), getTableDoc(), getSelect(), xcontract.getXcontractId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -66,7 +67,7 @@ public class ContractsGrid extends GeneralGridPanel {
                         new EditContractDialog("Edit Contract", xcontract);
                         if (EditContractDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect());
+                                    getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -86,10 +87,10 @@ public class ContractsGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete contract  [" 
+                    if (xcontract!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  [" 
                             + xcontract.getContractref() + "]?")== JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xcontract);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

@@ -266,7 +266,6 @@ public class DashBoard extends JFrame {
             props.setProperty("ServerAddress", props.getProperty("ServerAddress", "localhost:1099"));
         }
         Preferences userPref = Preferences.userRoot();
-//        userPref.put(PWDMD5, XlendWorks.getCurrentUser().getPwdmd5());
         saveProperties();
     }
 
@@ -285,7 +284,6 @@ public class DashBoard extends JFrame {
                     String curPath = propFile.getAbsolutePath();
                     curPath = curPath.substring(0,
                             curPath.indexOf(PROPERTYFILENAME)).replace('\\', '/');
-                    propFile.createNewFile();
                     props.setProperty("user", "admin");
                     props.setProperty("userPassword", "admin");
                     propFile.createNewFile();

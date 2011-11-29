@@ -1,12 +1,12 @@
 package com.xlend.gui.order;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.site.EditSiteDialog;
 import com.xlend.orm.Xorder;
-import com.xlend.orm.Xorderitem;
+import com.xlend.orm.Xsite;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-class OrderItemsGrid extends GeneralGridPanel {
+public class OrderSitesGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
     private Xorder xorder = null;
@@ -28,10 +28,10 @@ class OrderItemsGrid extends GeneralGridPanel {
         maxWidths.put(0, 40);
     }
 
-    public OrderItemsGrid(IMessageSender exchanger, String slct) throws RemoteException {
+    public OrderSitesGrid(IMessageSender exchanger, String slct) throws RemoteException {
         super(exchanger, slct, maxWidths, false);
-        int p = Selects.SELECTORDERITEMS.indexOf(whereId);
-        if (getSelect().startsWith(Selects.SELECTORDERITEMS.substring(0, p))) {
+        int p = Selects.SELECT_ORDERISITES.indexOf(whereId);
+        if (getSelect().startsWith(Selects.SELECT_ORDERISITES.substring(0, p))) {
             xorder = (Xorder) exchanger.loadDbObjectOnID(
                     Xorder.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
         }
@@ -39,21 +39,16 @@ class OrderItemsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add Item") {
+        return new AbstractAction("Add Site") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditOrderItemDialog ed;
                 try {
-                    EditOrderItemDialog.xorder = getXorder();
-                    if (getXorder() != null) {
-                        ed = new EditOrderItemDialog("New Order Item", null);
-                        if (EditOrderItemDialog.okPressed) {
-                            Xorderitem xitm = (Xorderitem) ed.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xitm.getXorderitemId());
-                        }
-                    } else {
-                        GeneralFrame.infoMessageBox("Attention!", "Save order please before adding items");
+                    EditSiteDialog.xorder = getXorder();
+                    EditSiteDialog esd = new EditSiteDialog("Add Site", null);
+                    if (esd.okPressed) {
+                        Xsite xsite = (Xsite) esd.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xsite.getXsiteId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -65,17 +60,17 @@ class OrderItemsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Item") {
+        return new AbstractAction("Edit Site") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xorderitem itm = (Xorderitem) exchanger.loadDbObjectOnID(Xorderitem.class, id);
-                        EditOrderItemDialog.xorder = getXorder();
-                        new EditOrderItemDialog("Edit Order Item", itm);
-                        if (EditOrderItemDialog.okPressed) {
+                        Xsite itm = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
+                        EditSiteDialog.xorder = getXorder();
+                        EditSiteDialog esd = new EditSiteDialog("Edit Site", itm);
+                        if (esd.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
@@ -89,15 +84,15 @@ class OrderItemsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Item") {
+        return new AbstractAction("Delete Site") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xorderitem itm = (Xorderitem) exchanger.loadDbObjectOnID(Xorderitem.class, id);
-                    if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete order item["
-                            + itm.getItemnumber() + "]?") == JOptionPane.YES_OPTION) {
+                    Xsite itm = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
+                    if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete site ["
+                            + itm.getName() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
                                 getTableDoc(), getSelect(), null);

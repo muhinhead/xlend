@@ -30,9 +30,9 @@ public class UsersGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditUserDialog("New User", null);
+                    EditUserDialog ed = new EditUserDialog("New User", null);
                     if (EditUserDialog.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -55,7 +55,7 @@ public class UsersGrid extends GeneralGridPanel {
                         DbObject[] recs = new DbObject[]{pf, up};
                         new EditUserDialog("Edit User", recs);
                         if (EditUserDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -75,11 +75,11 @@ public class UsersGrid extends GeneralGridPanel {
                 if (id > 1) {
                     try {
                         Profile pf = (Profile) exchanger.loadDbObjectOnID(Profile.class, id);
-                        if (GeneralFrame.yesNo("Attention!",
+                        if (pf != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete user [" + pf.getFirstName()
                                 + " " + pf.getLastName() + "]?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(pf);
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);

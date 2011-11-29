@@ -24,6 +24,7 @@ public class OrdersGrid extends GeneralGridPanel {
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
     private Xcontract xcontract = null;
     private static final String whereId = "xcontract_id = #";
+    private boolean inContract = false;
 
     static {
         maxWidths.put(0, 40);
@@ -39,6 +40,7 @@ public class OrdersGrid extends GeneralGridPanel {
         if (getSelect().startsWith(Selects.SELECT_ORDERS4CONTRACTS.substring(0,p))) {
             xcontract = (Xcontract) exchanger.loadDbObjectOnID(
                     Xcontract.class, Integer.parseInt(getSelect().substring(p + whereId.length()-1)));
+            inContract = true;
         }
     }
 
@@ -49,18 +51,23 @@ public class OrdersGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    EditOrderDialog ed;
                     if (getXcontract() != null) {
                         EditContractOrderDialog.xcontract = getXcontract();
-                        EditContractOrderDialog od = new EditContractOrderDialog("New Order on contract", null);
+                        ed = new EditContractOrderDialog("New Order on contract", null);
                         if (EditContractOrderDialog.okPressed) {
+                            Xorder xorder = (Xorder) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect());
+                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId());
                         }
+                    } else if (inContract) {
+                        GeneralFrame.infoMessageBox("Attention!", "Save contract please before adding orders");
                     } else {
-                        new EditOrderDialog("New Order", null);
+                        ed = new EditOrderDialog("New Order", null);
                         if (EditOrderDialog.okPressed) {
+                            Xorder xorder = (Xorder) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect());
+                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId());
                         }
                     }
                 } catch (RemoteException ex) {
@@ -86,13 +93,13 @@ public class OrdersGrid extends GeneralGridPanel {
                             EditContractOrderDialog od = new EditContractOrderDialog("Edit Order on contract", xorder);
                             if (EditContractOrderDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger,
-                                        getTableView(), getTableDoc(), getSelect());
+                                        getTableView(), getTableDoc(), getSelect(), id);
                             }
                         } else {
                             new EditOrderDialog("Edit Order", xorder);
                             if (EditOrderDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger, getTableView(),
-                                        getTableDoc(), getSelect());
+                                        getTableDoc(), getSelect(),id);
                             }
                         }
                     } catch (RemoteException ex) {
@@ -114,11 +121,11 @@ public class OrdersGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete order ["
+                    if (xorder!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete order ["
                             + xorder.getRegnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xorder);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect());
+                                getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

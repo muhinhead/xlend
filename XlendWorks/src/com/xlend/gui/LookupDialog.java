@@ -88,7 +88,7 @@ public class LookupDialog extends PopupDialog {
                 grid.setSelect(select);
                 try {
                     GeneralFrame.updateGrid(DashBoard.getExchanger(),
-                            grid.getTableView(), grid.getTableDoc(), grid.getSelect());
+                            grid.getTableView(), grid.getTableDoc(), grid.getSelect(), null);
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
                 }

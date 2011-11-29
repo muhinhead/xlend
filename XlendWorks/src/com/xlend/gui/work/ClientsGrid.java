@@ -43,9 +43,11 @@ public class ClientsGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new EditClientDialog("New Client", null);
+                    EditClientDialog ed = new EditClientDialog("New Client", null);
                     if (EditClientDialog.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect());
+                        Xclient xclient = (Xclient) ed.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
+                                xclient.getXclientId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -68,7 +70,7 @@ public class ClientsGrid extends GeneralGridPanel {
                         new EditClientDialog("Edit Client", xclient);
                         if (EditClientDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect());
+                                    getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,11 +90,11 @@ public class ClientsGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xclient xclient = (Xclient) exchanger.loadDbObjectOnID(Xclient.class, id);
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete client [" 
-                            + xclient.getCompanyname() + "]?")== JOptionPane.YES_OPTION) {
+                    if (xclient != null && GeneralFrame.yesNo("Attention!", "Do you want to delete client ["
+                            + xclient.getCompanyname() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xclient);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect());
+                                getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

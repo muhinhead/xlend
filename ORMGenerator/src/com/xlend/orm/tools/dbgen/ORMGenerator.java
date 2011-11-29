@@ -5,10 +5,8 @@
 package com.xlend.orm.tools.dbgen;
 
 import com.xlend.orm.tools.dbgen.dbstructure.Column;
-import com.xlend.orm.tools.dbgen.dbstructure.ForeignKey;
 import com.xlend.orm.tools.dbgen.dbstructure.NotForeignKeyDescribingLineException;
 import com.xlend.orm.tools.dbgen.dbstructure.NotTableDescribingLineException;
-import com.xlend.orm.tools.dbgen.dbstructure.Table;
 import com.xlend.orm.tools.dbgen.dbstructure.Type;
 import com.xlend.orm.tools.dbgen.dbstructure.ForeignKey;
 import com.xlend.orm.tools.dbgen.dbstructure.Table;

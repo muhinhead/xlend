@@ -159,6 +159,9 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     public static void notImplementedYet() {
         errMessageBox("Sorry!", "Not implemented yet");
     }
+    public static void notImplementedYet(String msg) {
+        errMessageBox("Sorry!", "Not implemented yet "+msg);
+    }
 
     public void setStatusLabel1Text(String lbl) {
         statusLabel1.setText(lbl);

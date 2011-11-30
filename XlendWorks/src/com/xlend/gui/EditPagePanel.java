@@ -139,15 +139,17 @@ public abstract class EditPagePanel extends RecordEditPanel {
         int retVal = chooser.showOpenDialog(null);
 
         if (retVal == JFileChooser.APPROVE_OPTION) {
-
-            setImage(Util.readFile(chooser.getSelectedFile().getAbsolutePath()));
+            File f = chooser.getSelectedFile();
+            setImage(Util.readFile(f.getAbsolutePath()),
+                    f.getName().substring(f.getName().lastIndexOf(".") + 1));
         }
     }
 
-    private void setImage(byte[] imageData) {
+    private void setImage(byte[] imageData, String ext) {
         IPage page = (IPage) getDbObject();
         try {
             page.setPagescan(imageData);
+            page.setFileextension(ext);
             setPhoto(imageData, page.getFileextension());
         } catch (Exception ex) {
             XlendWorks.log(ex);
@@ -178,7 +180,12 @@ public abstract class EditPagePanel extends RecordEditPanel {
     protected void setPhoto(byte[] imgData, String fileExtension) {
         picPanel.setVisible(false);
         picPanel.removeAll();
-        if ("jpg jpeg png gif".indexOf(fileExtension.toLowerCase()) > 0) {
+
+        if (fileExtension.toLowerCase().equals("txt")) {
+            JTextArea ta = new JTextArea(new String(imgData));
+            ta.setEditable(false);
+            picPanel.add(sp = new JScrollPane(ta), BorderLayout.CENTER);
+        } else {
             String tmpImgFile = "$$$.img";
             currentPicture = new ImageIcon(imgData);
             Dimension d = picPanel.getSize();
@@ -202,31 +209,29 @@ public abstract class EditPagePanel extends RecordEditPanel {
             JEditorPane ed = new JEditorPane("text/html", html.toString());
             ed.setEditable(false);
             picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
-            ed.addMouseListener(new MouseAdapter() {
+            if ("jpg jpeg png gif".indexOf(fileExtension.toLowerCase()) > 0) {
+                ed.addMouseListener(new MouseAdapter() {
 
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        viewDocumentImage();
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            viewDocumentImage();
+                        }
                     }
-                }
-            });
+                });
+            }
             ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
             new File(tmpImgFile).deleteOnExit();
-        } else if (fileExtension.toLowerCase().equals("txt")) {
-            JTextArea ta = new JTextArea(new String(imgData));
-            ta.setEditable(false);
-            picPanel.add(sp = new JScrollPane(ta), BorderLayout.CENTER);
-        } else {
-            IPage page = (IPage) getDbObject();
-            File tmpDoc = new File("tmp."+page.getFileextension());
-            Util.writeFile(tmpDoc, (byte[]) page.getPagescan());
-            try {
-                //Runtime.getRuntime().exec("./tmp."+page.getFileextension());
-                Desktop desktop = Desktop.getDesktop();
-                desktop.open(tmpDoc);
-            } catch (Exception ex) {
-                GeneralFrame.errMessageBox("Error:", ex.getMessage());
-            }
+//        } else {
+//            IPage page = (IPage) getDbObject();
+//            File tmpDoc = new File("tmp." + page.getFileextension());
+//            Util.writeFile(tmpDoc, (byte[]) page.getPagescan());
+//            try {
+//                //Runtime.getRuntime().exec("./tmp."+page.getFileextension());
+//                Desktop desktop = Desktop.getDesktop();
+//                desktop.open(tmpDoc);
+//            } catch (Exception ex) {
+//                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//            }
         }
         picPanel.setVisible(true);
     }
@@ -234,10 +239,16 @@ public abstract class EditPagePanel extends RecordEditPanel {
     private JPopupMenu getPhotoPopupMenu() {
         if (null == picturePopMenu) {
             picturePopMenu = new JPopupMenu();
+            IPage page = (IPage) getDbObject();
+            final boolean isPicture = ("jpg jpeg gif png".indexOf(page.getFileextension().toLowerCase()) > 0);
             picturePopMenu.add(new AbstractAction("Open in window") {
 
                 public void actionPerformed(ActionEvent e) {
-                    viewDocumentImage();
+                    if (isPicture) {
+                        viewDocumentImage();
+                    } else {
+                        GeneralFrame.notImplementedYet("for this document type");
+                    }
                 }
             });
             picturePopMenu.add(new AbstractAction("Replace attachment") {
@@ -273,12 +284,11 @@ public abstract class EditPagePanel extends RecordEditPanel {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));
         chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
-        chooser.setDialogTitle("Save image to file");
+        chooser.setDialogTitle("Save attachment to file");
         chooser.setApproveButtonText("Save");
         int retVal = chooser.showOpenDialog(null);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             String name = chooser.getSelectedFile().getAbsolutePath();
-//            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
             File fout = new File(name);
             if (fout.exists()) {
                 if (GeneralFrame.yesNo("Attention",

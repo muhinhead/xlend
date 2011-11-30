@@ -178,7 +178,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
     protected void setPhoto(byte[] imgData, String fileExtension) {
         picPanel.setVisible(false);
         picPanel.removeAll();
-        if ("jpg jpeg png gif".indexOf(fileExtension) > 0) {
+        if ("jpg jpeg png gif".indexOf(fileExtension.toLowerCase()) > 0) {
             String tmpImgFile = "$$$.img";
             currentPicture = new ImageIcon(imgData);
             Dimension d = picPanel.getSize();
@@ -212,7 +212,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
             });
             ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
             new File(tmpImgFile).deleteOnExit();
-        } else if (fileExtension.equals("txt")) {
+        } else if (fileExtension.toLowerCase().equals("txt")) {
             JTextArea ta = new JTextArea(new String(imgData));
             ta.setEditable(false);
             picPanel.add(sp = new JScrollPane(ta), BorderLayout.CENTER);

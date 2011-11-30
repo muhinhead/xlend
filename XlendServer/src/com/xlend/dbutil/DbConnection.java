@@ -23,8 +23,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 6;
-    public static final String DB_VERSION = "0.06";
+    private static final int DB_VERSION_ID = 7;
+    public static final String DB_VERSION = "0.07";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -117,7 +117,12 @@ public class DbConnection {
         "alter table xorderitem add machinetype varchar(64)",
         "alter table xorderitem add deliveryreq date",
         "alter table xorderitem add delivery date",
-        "alter table xorderitem modify measureitem varchar(16),"
+        //version 0.6->0.7
+        "alter table xsite add xorder_id int",
+        "alter table xsite add constraint xsite_xorder_fk foreign key (xorder_id) references xorder on delete cascade",
+        "alter table xcontractpage add fileextension varchar(8)",
+        "alter table xorderpage add fileextension varchar(8)",
+        "alter table xquotationpage add fileextension varchar(8)"
     };
 
     public static Connection getConnection() throws RemoteException {

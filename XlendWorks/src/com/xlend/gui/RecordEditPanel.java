@@ -22,6 +22,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected JPanel lblPanel;
     protected JPanel editPanel;
     protected JPanel upPanel;
+    protected PagesPanel pagesdPanel;
 
     protected void organizePanels(String[] labels, JComponent[] edits) {
         setLayout(new BorderLayout());

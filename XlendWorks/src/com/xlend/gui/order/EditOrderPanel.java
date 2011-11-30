@@ -63,7 +63,6 @@ public class EditOrderPanel extends RecordEditPanel {
     private JTextField contactFax;
     private JTextField deliveryAddress;
     private JTextField invoiceAddress;
-    private PagesPanel pagesdPanel;
 
     public EditOrderPanel(DbObject dbObject) {
         super(dbObject);

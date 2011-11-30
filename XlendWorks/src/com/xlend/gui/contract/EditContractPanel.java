@@ -49,7 +49,7 @@ public class EditContractPanel extends RecordEditPanel {
     private JComboBox clientRefBox;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
-    private PagesPanel pagesdPanel;
+//    private PagesPanel pagesdPanel;
     private JScrollPane descrScroll;
 
     public EditContractPanel(DbObject dbObject) {

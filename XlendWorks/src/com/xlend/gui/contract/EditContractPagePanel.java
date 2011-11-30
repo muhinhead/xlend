@@ -24,7 +24,7 @@ public class EditContractPagePanel extends EditPagePanel {
             pageNumField.setText(contrpage.getPagenum().toString());
             descriptionField.setText(contrpage.getDescription());
             if (contrpage.getPagescan() != null) {
-                setPhoto((byte[]) contrpage.getPagescan());
+                setPhoto((byte[]) contrpage.getPagescan(), contrpage.getFileextension());
             }
         }
     }

@@ -201,40 +201,26 @@ public class EditContractPanel extends RecordEditPanel {
         return tp;
     }
 
-    public static void exportDocImage(byte[] imageData) {
-        JFileChooser chooser =
-                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-            public boolean accept(File f) {
-                boolean ok = f.isDirectory()
-                        || f.getName().toLowerCase().endsWith("jpg")
-                        || f.getName().toLowerCase().endsWith("jpeg")
-                        || f.getName().toLowerCase().endsWith("gif");
-
-                return ok;
-            }
-
-            public String getDescription() {
-                return "*.JPG ; *.GIF";
-            }
-        });
-        chooser.setDialogTitle("Save image to file");
-        chooser.setApproveButtonText("Save");
-        int retVal = chooser.showOpenDialog(null);
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            String name = chooser.getSelectedFile().getAbsolutePath();
-            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
-            File fout = new File(name);
-            if (fout.exists()) {
-                if (GeneralFrame.yesNo("Attention",
-                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-            Util.writeFile(fout, imageData);
-        }
-    }
+//    public static void exportDocImage(byte[] imageData) {
+//        JFileChooser chooser =
+//                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+//        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
+//        chooser.setDialogTitle("Save image to file");
+//        chooser.setApproveButtonText("Save");
+//        int retVal = chooser.showOpenDialog(null);
+//        if (retVal == JFileChooser.APPROVE_OPTION) {
+//            String name = chooser.getSelectedFile().getAbsolutePath();
+//            //name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
+//            File fout = new File(name);
+//            if (fout.exists()) {
+//                if (GeneralFrame.yesNo("Attention",
+//                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
+//                    return;
+//                }
+//            }
+//            Util.writeFile(fout, imageData);
+//        }
+//    }
 
     private AbstractAction clientRefLookup() {
         return new AbstractAction("...") {

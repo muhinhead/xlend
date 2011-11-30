@@ -46,7 +46,6 @@ class EditQuotaPanel extends RecordEditPanel {
     private JTextField idField;
     private JTextField rfcNumField;
     private JComboBox clientRefBox;
-//    private PagesPanel pagesdPanel;
 
     public EditQuotaPanel(DbObject dbObject) {
         super(dbObject);

@@ -25,7 +25,7 @@ class EditQuotaPagePanel extends EditPagePanel {
             pageNumField.setText(qpage.getPagenum().toString());
             descriptionField.setText(qpage.getDescription());
             if (qpage.getPagescan() != null) {
-                setPhoto((byte[]) qpage.getPagescan());
+                setPhoto((byte[]) qpage.getPagescan(), qpage.getFileextension());
             }
         }
     }

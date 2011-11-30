@@ -117,7 +117,7 @@ public abstract class PagesPanel extends JPanel {
         Image ic = XlendWorks.loadImage("newdoc.png", DashBoard.ourInstance);
         NoFrameButton btn = new NoFrameButton(new ImageIcon(ic));
         btn.setText("Add");
-        btn.setToolTipText("Add scanned document(s)");
+        btn.setToolTipText("Attach document(s)");
         btn.addActionListener(addAction);
         add(btn);
     }

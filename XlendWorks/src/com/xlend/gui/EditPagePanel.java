@@ -5,6 +5,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.PopupListener;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -85,7 +89,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
         upedit.add(ided);
         upedit.add(pageNumField);
 
-        JPanel half = new JPanel(new GridLayout(1,2));
+        JPanel half = new JPanel(new GridLayout(1, 2));
         half.add(upper);
         half.add(new JPanel());
         form.add(half, BorderLayout.NORTH);
@@ -104,40 +108,6 @@ public abstract class EditPagePanel extends RecordEditPanel {
 
         add(form);
     }
-
-//    @Override
-//    public void loadData() {
-//        Xcontractpage contrpage = (Xcontractpage) getDbObject();
-//        if (contrpage.getXcontractpageId() != null) {
-//            idField.setText(contrpage.getXcontractId().toString());
-//            pageNumField.setText(contrpage.getPagenum().toString());
-//            descriptionField.setText(contrpage.getDescription());
-//            if (contrpage.getPagescan() != null) {
-//                setPhoto((byte[]) contrpage.getPagescan());
-//            }
-//        }
-//    }
-
-//    @Override
-//    public boolean save() throws Exception {
-//        Xcontractpage contrpage = (Xcontractpage) getDbObject();
-//        boolean isNew = false;
-//        if (contrpage.getXcontractpageId() == null) {
-//            contrpage.setXcontractpageId(0);
-//            isNew = true;
-//        }
-//        contrpage.setPagenum(Integer.parseInt(pageNumField.getText()));
-//        contrpage.setDescription(descriptionField.getText());
-//        try {
-//            contrpage.setNew(isNew);
-//            DbObject saved = DashBoard.getExchanger().saveDbObject(contrpage);
-//            setDbObject(saved);
-//            return true;
-//        } catch (Exception ex) {
-//            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-//        }
-//        return false;
-//    }
 
     private JComponent getPicturesPanel() {
         picPanel = new JPanel();
@@ -163,26 +133,13 @@ public abstract class EditPagePanel extends RecordEditPanel {
     private void loadDocImageFromFile() {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-            public boolean accept(File f) {
-                boolean ok = f.isDirectory()
-                        || f.getName().toLowerCase().endsWith("jpg")
-                        || f.getName().toLowerCase().endsWith("png")
-                        || f.getName().toLowerCase().endsWith("jpeg")
-                        || f.getName().toLowerCase().endsWith("gif");
-                return ok;
-            }
-
-            public String getDescription() {
-                return "*.JPG ; *.GIF; *.PNG";
-            }
-        });
-        chooser.setDialogTitle("Import Picture");
+        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
+        chooser.setDialogTitle("Import File");
         chooser.setApproveButtonText("Import");
         int retVal = chooser.showOpenDialog(null);
 
         if (retVal == JFileChooser.APPROVE_OPTION) {
+
             setImage(Util.readFile(chooser.getSelectedFile().getAbsolutePath()));
         }
     }
@@ -191,7 +148,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
         IPage page = (IPage) getDbObject();
         try {
             page.setPagescan(imageData);
-            setPhoto(imageData);
+            setPhoto(imageData, page.getFileextension());
         } catch (Exception ex) {
             XlendWorks.log(ex);
         }
@@ -218,43 +175,60 @@ public abstract class EditPagePanel extends RecordEditPanel {
         currentPicture = null;
     }
 
-    protected void setPhoto(byte[] imgData) {
-        String tmpImgFile = "$$$.img";
-        currentPicture = new ImageIcon(imgData);
-        Dimension d = picPanel.getSize();
+    protected void setPhoto(byte[] imgData, String fileExtension) {
         picPanel.setVisible(false);
         picPanel.removeAll();
-        JScrollPane sp = null;
-        int height = 1;
-        int wscale = 1;
-        int hscale = 1;
-        int width = 0;
-        Util.writeFile(new File(tmpImgFile), imgData);
-        width = currentPicture.getImage().getWidth(null);
-        height = currentPicture.getImage().getHeight(null);
-        wscale = width / (d.width - 70);
-        hscale = height / (d.height - 70);
-        wscale = wscale <= 0 ? 1 : wscale;
-        hscale = hscale <= 0 ? 1 : hscale;
-        int scale = wscale < hscale ? wscale : hscale;
-        StringBuffer html = new StringBuffer("<html>");
-        html.append("<img margin=20 src='file:" + tmpImgFile + "' "
-                + "width=" + width / scale + " height=" + height / scale
-                + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
-        picPanel.setVisible(true);
-        ed.addMouseListener(new MouseAdapter() {
+        if ("jpg jpeg png gif".indexOf(fileExtension) > 0) {
+            String tmpImgFile = "$$$.img";
+            currentPicture = new ImageIcon(imgData);
+            Dimension d = picPanel.getSize();
+            JScrollPane sp = null;
+            int height = 1;
+            int wscale = 1;
+            int hscale = 1;
+            int width = 0;
+            Util.writeFile(new File(tmpImgFile), imgData);
+            width = currentPicture.getImage().getWidth(null);
+            height = currentPicture.getImage().getHeight(null);
+            wscale = width / (d.width - 70);
+            hscale = height / (d.height - 70);
+            wscale = wscale <= 0 ? 1 : wscale;
+            hscale = hscale <= 0 ? 1 : hscale;
+            int scale = wscale < hscale ? wscale : hscale;
+            StringBuffer html = new StringBuffer("<html>");
+            html.append("<img margin=20 src='file:" + tmpImgFile + "' "
+                    + "width=" + width / scale + " height=" + height / scale
+                    + "></img>");
+            JEditorPane ed = new JEditorPane("text/html", html.toString());
+            ed.setEditable(false);
+            picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+            ed.addMouseListener(new MouseAdapter() {
 
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    viewDocumentImage();
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        viewDocumentImage();
+                    }
                 }
+            });
+            ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+            new File(tmpImgFile).deleteOnExit();
+        } else if (fileExtension.equals("txt")) {
+            JTextArea ta = new JTextArea(new String(imgData));
+            ta.setEditable(false);
+            picPanel.add(sp = new JScrollPane(ta), BorderLayout.CENTER);
+        } else {
+            IPage page = (IPage) getDbObject();
+            File tmpDoc = new File("tmp."+page.getFileextension());
+            Util.writeFile(tmpDoc, (byte[]) page.getPagescan());
+            try {
+                //Runtime.getRuntime().exec("./tmp."+page.getFileextension());
+                Desktop desktop = Desktop.getDesktop();
+                desktop.open(tmpDoc);
+            } catch (IOException ex) {
+                Logger.getLogger(EditPagePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-        });
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
-        new File(tmpImgFile).deleteOnExit();
+        }
+        picPanel.setVisible(true);
     }
 
     private JPopupMenu getPhotoPopupMenu() {
@@ -279,7 +253,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
                     exportDocImage((byte[]) page.getPagescan());
                 }
             });
-            picturePopMenu.add(new AbstractAction("Remove image from DB") {
+            picturePopMenu.add(new AbstractAction("Remove attachment from DB") {
 
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
@@ -329,5 +303,4 @@ public abstract class EditPagePanel extends RecordEditPanel {
             Util.writeFile(fout, imageData);
         }
     }
-    
 }

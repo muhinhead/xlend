@@ -25,7 +25,7 @@ class EditOrderPagePanel extends EditPagePanel {
             pageNumField.setText(opage.getPagenum().toString());
             descriptionField.setText(opage.getDescription());
             if (opage.getPagescan() != null) {
-                setPhoto((byte[]) opage.getPagescan());
+                setPhoto((byte[]) opage.getPagescan(), opage.getFileextension());
             }
         }
     }

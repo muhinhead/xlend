@@ -53,6 +53,7 @@ public class Util {
         try {
             FileOutputStream fout = new FileOutputStream(file);
             fout.write(imageData);
+            fout.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -8,6 +8,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.PagesPanel;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
@@ -62,6 +63,7 @@ public class EditOrderPanel extends RecordEditPanel {
     private JTextField contactFax;
     private JTextField deliveryAddress;
     private JTextField invoiceAddress;
+    private PagesPanel pagesdPanel;
 
     public EditOrderPanel(DbObject dbObject) {
         super(dbObject);
@@ -325,6 +327,9 @@ public class EditOrderPanel extends RecordEditPanel {
             ordItemGrid = new OrderItemsGrid(DashBoard.getExchanger(),
                     Selects.SELECTORDERITEMS.replace("#", "" + order_id));
             tp.add(ordItemGrid, "Order Items");
+            pagesdPanel = new OrderPagesPanel(DashBoard.getExchanger(), order_id);
+            JScrollPane sp;
+            tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
             ordSitesGrid = new OrderSitesGrid(DashBoard.getExchanger(),
                     Selects.SELECT_ORDERISITES.replace("#", "" + order_id));
             tp.add(ordSitesGrid, "Order Sites");

@@ -4,6 +4,7 @@
  */
 package com.xlend.gui;
 
+import com.xlend.orm.IPage;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.remote.IMessageSender;
@@ -16,9 +17,9 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -35,8 +36,21 @@ public abstract class PagesPanel extends JPanel {
     protected final AbstractAction addAction;
     protected ArrayList<NoFrameButton> btns = new ArrayList<NoFrameButton>();
     protected ArrayList<DbObject> newPages = new ArrayList<DbObject>();
+    private static HashMap<String, String> imagemap = new HashMap<String, String>();
+
+    static {
+        imagemap.put("jpg", "page_img.png");
+        imagemap.put("jpeg", "page_img.png");
+        imagemap.put("png", "page_img.png");
+        imagemap.put("gif", "page_img.png");
+        imagemap.put("doc", "page_txt.png");
+        imagemap.put("xls", "page_xls.png");
+        imagemap.put("ppt", "page_pps.png");
+        imagemap.put("txt", "page.png");
+    }
 
     public static class PagesDocFileFilter extends javax.swing.filechooser.FileFilter {
+
         public boolean accept(File f) {
             boolean ok = f.isDirectory()
                     || f.getName().toLowerCase().endsWith("jpg")
@@ -44,12 +58,14 @@ public abstract class PagesPanel extends JPanel {
                     || f.getName().toLowerCase().endsWith("jpeg")
                     || f.getName().toLowerCase().endsWith("gif")
                     || f.getName().toLowerCase().endsWith("doc")
+                    || f.getName().toLowerCase().endsWith("txt")
+                    || f.getName().toLowerCase().endsWith("ppt")
                     || f.getName().toLowerCase().endsWith("xls");
             return ok;
         }
 
         public String getDescription() {
-            return "*.JPG ; *.GIF; *.PNG; *.DOC; *.XLS";
+            return "*.JPG ; *.GIF; *.PNG; *.TXT; *.DOC; *.XLS; *.PPT";
         }
     }
 
@@ -104,6 +120,12 @@ public abstract class PagesPanel extends JPanel {
         btn.setToolTipText("Add scanned document(s)");
         btn.addActionListener(addAction);
         add(btn);
+    }
+
+    protected static Image getImageOnExtension(IPage page) {
+        String extension = page.getFileextension() == null ? "" : page.getFileextension().toLowerCase();
+        String iconFile = imagemap.get(extension);
+        return XlendWorks.loadImage(iconFile == null ? "page.png" : iconFile, DashBoard.ourInstance);
     }
 
     protected abstract void processFiles(File[] files)

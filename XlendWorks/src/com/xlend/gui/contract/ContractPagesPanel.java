@@ -45,6 +45,8 @@ public class ContractPagesPanel extends PagesPanel {
             } else {
                 contractPage.setDescription("Page " + n);
             }
+            String extension = f.getName().substring(f.getName().lastIndexOf(".") + 1);
+            contractPage.setFileextension(extension);
             contractPage.setPagenum(n++);
             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
             contractPage.setNew(true);
@@ -73,7 +75,7 @@ public class ContractPagesPanel extends PagesPanel {
         for (DbObject o : pages) {
             NoFrameButton btn;
             final Xcontractpage contractPage = (Xcontractpage) o;
-            Image ic = XlendWorks.loadImage("page.png", DashBoard.ourInstance);
+            Image ic = PagesPanel.getImageOnExtension(contractPage);
             add(btn = new NoFrameButton(new ImageIcon(ic)));
             String lbl = contractPage.getDescription() == null ? "" : contractPage.getDescription().trim();
             btn.setText(lbl);

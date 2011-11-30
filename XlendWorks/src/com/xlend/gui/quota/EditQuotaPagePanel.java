@@ -1,6 +1,7 @@
 package com.xlend.gui.quota;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.EditPagePanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.contract.EditContractPagePanel;
 import com.xlend.orm.Xquotationpage;
@@ -10,10 +11,10 @@ import com.xlend.orm.dbobject.DbObject;
  *
  * @author Nick Mukhin
  */
-class EditQuotaPagePanel extends EditContractPagePanel {
+class EditQuotaPagePanel extends EditPagePanel {
 
-    public EditQuotaPagePanel(DbObject dbObject) {
-        super(dbObject);
+    public EditQuotaPagePanel(Xquotationpage qpage) {
+        super(qpage);
     }
 
     @Override
@@ -49,5 +50,4 @@ class EditQuotaPagePanel extends EditContractPagePanel {
         }
         return false;
     }
-    
 }

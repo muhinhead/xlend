@@ -21,8 +21,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -196,7 +194,6 @@ public class EditContractPanel extends RecordEditPanel {
         try {
             ordGrid = new OrdersGrid(DashBoard.getExchanger(),
                     Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id),false);
-//            tp.add(new JScrollPane(ordGrid), "Orders");
             tp.add(ordGrid, "Orders");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);

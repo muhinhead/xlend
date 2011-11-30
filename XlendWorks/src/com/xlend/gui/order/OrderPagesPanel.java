@@ -1,10 +1,10 @@
-package com.xlend.gui.quota;
+package com.xlend.gui.order;
 
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.PagesPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xquotationpage;
+import com.xlend.orm.Xorderpage;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.remote.IMessageSender;
@@ -25,9 +25,9 @@ import javax.swing.JPopupMenu;
  *
  * @author Nick Mukhin
  */
-public class QuotationPagePanel extends PagesPanel {
+public class OrderPagesPanel extends PagesPanel {
 
-    public QuotationPagePanel(IMessageSender exchanger, final int xquotation_id) throws RemoteException {
+    public OrderPagesPanel(IMessageSender exchanger, final int xquotation_id) throws RemoteException {
         super(exchanger, xquotation_id);
     }
 
@@ -40,7 +40,7 @@ public class QuotationPagePanel extends PagesPanel {
                 pages[i++] = p;
             }
         } else {
-            pages = exchanger.getDbObjects(Xquotationpage.class, "xquotation_id=" + parent_id, "pagenum");
+            pages = exchanger.getDbObjects(Xorderpage.class, "xorder_id=" + parent_id, "pagenum");
         }
 
         setVisible(false);
@@ -48,19 +48,19 @@ public class QuotationPagePanel extends PagesPanel {
         super.reloadPages();
         for (DbObject o : pages) {
             NoFrameButton btn;
-            final Xquotationpage quotationPage = (Xquotationpage) o;
-            Image ic = PagesPanel.getImageOnExtension(quotationPage);
+            final Xorderpage xorderPage = (Xorderpage) o;
+            Image ic = PagesPanel.getImageOnExtension(xorderPage);
             add(btn = new NoFrameButton(new ImageIcon(ic)));
-            String lbl = quotationPage.getDescription() == null ? "" : quotationPage.getDescription().trim();
+            String lbl = xorderPage.getDescription() == null ? "" : xorderPage.getDescription().trim();
             btn.setText(lbl);
             btn.setToolTipText(lbl);
-            btn.setTag(quotationPage);
+            btn.setTag(xorderPage);
             AbstractAction editAction = new AbstractAction("Edit page") {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        new EditQuotaPageDialog("Edit RFC page", quotationPage);
+                        new EditOrderPageDialog("Edit order page", xorderPage);
                         reloadPages();
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -75,10 +75,10 @@ public class QuotationPagePanel extends PagesPanel {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete RFC page No_"
-                            + quotationPage.getPagenum() + "?") == JOptionPane.YES_OPTION) {
+                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete order page No_"
+                            + xorderPage.getPagenum() + "?") == JOptionPane.YES_OPTION) {
                         try {
-                            exchanger.deleteObject(quotationPage);
+                            exchanger.deleteObject(xorderPage);
                             reloadPages();
                         } catch (RemoteException ex) {
                             XlendWorks.log(ex);
@@ -96,28 +96,28 @@ public class QuotationPagePanel extends PagesPanel {
 
     @Override
     protected void processFiles(File[] files) throws SQLException, RemoteException, ForeignKeyViolationException {
-        int n = DashBoard.getExchanger().getDbObjects(Xquotationpage.class,
-                "xquotation_id=" + parent_id, null).length + 1;
+        int n = DashBoard.getExchanger().getDbObjects(Xorderpage.class,
+                "xorder_id=" + parent_id, null).length + 1;
         for (File f : files) {
-            Xquotationpage quotationpage = new Xquotationpage(null);
-            quotationpage.setXquotationpageId(0);
-            quotationpage.setXquotationId(parent_id);
+            Xorderpage orderPage = new Xorderpage(null);
+            orderPage.setXorderpageId(0);
+            orderPage.setXorderId(parent_id);
             if (f.getName().toUpperCase().endsWith(".DOC")
                     || f.getName().toUpperCase().endsWith(".XLS")
                     || f.getName().toUpperCase().endsWith(".TXT")) {
-                quotationpage.setDescription(f.getName());
+                orderPage.setDescription(f.getName());
             } else {
-                quotationpage.setDescription("Page " + n);
+                orderPage.setDescription("Page " + n);
             }
             String extension = f.getName().substring(f.getName().lastIndexOf(".") + 1);
-            quotationpage.setFileextension(extension);
-            quotationpage.setPagenum(n++);
-            quotationpage.setPagescan(Util.readFile(f.getAbsolutePath()));
-            quotationpage.setNew(true);
+            orderPage.setFileextension(extension);
+            orderPage.setPagenum(n++);
+            orderPage.setPagescan(Util.readFile(f.getAbsolutePath()));
+            orderPage.setNew(true);
             if (parent_id == 0) {
-                newPages.add(quotationpage);
+                newPages.add(orderPage);
             } else {
-                DbObject saved = DashBoard.getExchanger().saveDbObject(quotationpage);
+                DbObject saved = DashBoard.getExchanger().saveDbObject(orderPage);
             }
         }
         reloadPages();
@@ -125,7 +125,7 @@ public class QuotationPagePanel extends PagesPanel {
 
     @Override
     protected void setParentId(DbObject ob, int newParent_id) throws SQLException, ForeignKeyViolationException {
-        Xquotationpage quotationpage = (Xquotationpage) ob;
-        quotationpage.setXquotationId(newParent_id);
+        Xorderpage orderPage = (Xorderpage) ob;
+        orderPage.setXorderId(newParent_id);
     }
 }

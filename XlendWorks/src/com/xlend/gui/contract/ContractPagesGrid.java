@@ -60,6 +60,8 @@ public class ContractPagesGrid extends GeneralGridPanel {
                             contractPage.setXcontractId(contract_id);
                             contractPage.setDescription("Page " + n);
                             contractPage.setPagenum(n++);
+                            String extension = f.getName().substring(f.getName().lastIndexOf(".")+1);
+                            contractPage.setFileextension(extension);
                             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
                             contractPage.setNew(true);
                             DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);

@@ -105,17 +105,31 @@ public class DbTableGridPanel extends JPanel {
     }
 
     public void selectRowOnId(int id) {
-        for (int row = 0; row < tableView.getRowData().size(); row++) {
-            Vector line = (Vector) tableView.getRowData().get(row);
+        selectRowOnId(tableView, id);
+    }
+    
+    public static void selectRowOnId(DbTableView view, int id) {
+        for (int row = 0; row < view.getRowData().size(); row++) {
+            Vector line = (Vector) view.getRowData().get(row);
             try {
                 if (Integer.parseInt(line.get(0).toString()) == id) {
-                    tableView.setSelectedRow(row);
+                    view.setSelectedRow(row);
                     break;
                 }
             } catch (NumberFormatException ne) {
             }
         }
     }
+    
+//    public int getRowOnId(int id) {
+//        for (int r=0; r<tableView.getRowCount(); r++) {
+//            Vector line = (Vector) tableView.getRowData().get(r);
+//            Integer iid = Integer.parseInt((String) line.get(0));
+//            if (iid.intValue()==id)
+//                return r;
+//        }
+//        return -1;
+//    }
 
     public int getSelectedID() {
         int row = tableView.getSelectedRow();

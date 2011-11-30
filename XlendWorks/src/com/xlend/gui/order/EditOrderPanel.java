@@ -63,6 +63,8 @@ public class EditOrderPanel extends RecordEditPanel {
     private JTextField contactFax;
     private JTextField deliveryAddress;
     private JTextField invoiceAddress;
+    private Xclient xclint;
+    private AbstractAction clientLookupAction;
 
     public EditOrderPanel(DbObject dbObject) {
         super(dbObject);
@@ -127,7 +129,7 @@ public class EditOrderPanel extends RecordEditPanel {
         }
         upedit.add(ided);
 
-        upedit.add(comboPanelWithLookupBtn(clientRefBox, clientRefLookup()));
+        upedit.add(comboPanelWithLookupBtn(clientRefBox, clientLookupAction = clientRefLookup()));
         upedit.add(comboPanelWithLookupBtn(contractRefBox, contractRefLookup()));
         upedit.add(comboPanelWithLookupBtn(rfcRefBox, rfcRefRefLookup()));
 
@@ -339,5 +341,14 @@ public class EditOrderPanel extends RecordEditPanel {
         ordItemGrid.setPreferredSize(pref);
         ordSitesGrid.setPreferredSize(pref);
         return tp;
+    }
+
+    public void setXclient(Xclient xclient) {
+        this.xclint = xclient;
+        if (xclint != null) {
+            clientLookupAction.setEnabled(false);
+            selectComboItem(clientRefBox, xclient.getXclientId());
+            clientRefBox.setEnabled(false);
+        }
     }
 }

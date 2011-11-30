@@ -1,16 +1,23 @@
 package com.xlend.gui.client;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.GeneralFrame;
+import com.xlend.gui.GeneralGridPanel;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -29,6 +36,9 @@ public class EditClientPanel extends RecordEditPanel {
     private JTextField telNoField;
     private JTextField vatNoField;
     private JTextField addressField;
+    private GeneralGridPanel clientsGrid;
+    private GeneralGridPanel ordersGrid;
+    private GeneralGridPanel rfqsGrid;
 
     public EditClientPanel(DbObject dbObject) {
         super(dbObject);
@@ -111,8 +121,29 @@ public class EditClientPanel extends RecordEditPanel {
         alignPanelOnWidth(leftpanel, downlabel);
         alignPanelOnWidth(uplabel, downlabel);
 
-        add(form);
+        add(form, BorderLayout.NORTH);
+        add(getTabbedPanel());
+    }
 
+    private JComponent getTabbedPanel() {
+        JTabbedPane tp = new JTabbedPane();
+        try {
+            Xclient xclient = (Xclient) getDbObject();
+            int client_id = xclient == null ? 0 : xclient.getXclientId();
+            tp.add(clientsGrid = new ClientContractsGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_CONTRACTS4CLIENT.replace("#", "" + client_id)), "Contracts");
+            tp.add(rfqsGrid = new ClientQuotationsGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_QUOTATIONS4CLIENTS.replace("#", "" + client_id)), "RFQs");
+            tp.add(ordersGrid = new ClientOrdersGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_ORDERS4CLIENT.replace("#", "" + client_id)), "Orders");
+            Dimension prefDimension = new Dimension(500,200);
+            clientsGrid.setPreferredSize(prefDimension);
+            ordersGrid.setPreferredSize(prefDimension);
+            rfqsGrid.setPreferredSize(prefDimension);
+        } catch (RemoteException ex) {
+            Logger.getLogger(EditClientPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tp;
     }
 
     @Override

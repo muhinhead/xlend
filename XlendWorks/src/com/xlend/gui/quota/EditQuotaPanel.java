@@ -46,6 +46,8 @@ class EditQuotaPanel extends RecordEditPanel {
     private JTextField idField;
     private JTextField rfcNumField;
     private JComboBox clientRefBox;
+    private Xclient xclint;
+    private AbstractAction clientLookupAction;
 
     public EditQuotaPanel(DbObject dbObject) {
         super(dbObject);
@@ -82,7 +84,7 @@ class EditQuotaPanel extends RecordEditPanel {
             halfPanel.add(new JPanel());
             editPanel.add(halfPanel);
         }
-        editPanel.add(comboPanelWithLookupBtn(clientRefBox, clientRefLookup()));
+        editPanel.add(comboPanelWithLookupBtn(clientRefBox, clientLookupAction = clientRefLookup()));
         try {
             add(getTabbedPanel(), BorderLayout.CENTER);
         } catch (RemoteException ex) {
@@ -143,7 +145,7 @@ class EditQuotaPanel extends RecordEditPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP,false),
+                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                             new String[]{"clientcode", "companyname"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -167,5 +169,14 @@ class EditQuotaPanel extends RecordEditPanel {
         sp.setPreferredSize(new Dimension(500, 150));
 
         return tp;
+    }
+
+    void setXclient(Xclient xclient) {
+        this.xclint = xclient;
+        if (xclint != null) {
+            clientLookupAction.setEnabled(false);
+            selectComboItem(clientRefBox, xclient.getXclientId());
+            clientRefBox.setEnabled(false);
+        }
     }
 }

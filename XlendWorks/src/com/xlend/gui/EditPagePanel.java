@@ -32,6 +32,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -185,6 +186,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
             JTextArea ta = new JTextArea(new String(imgData));
             ta.setEditable(false);
             picPanel.add(sp = new JScrollPane(ta), BorderLayout.CENTER);
+            ta.addMouseListener(new PopupListener(getPhotoPopupMenu()));
         } else {
             String tmpImgFile = "$$$.img";
             currentPicture = new ImageIcon(imgData);
@@ -239,13 +241,15 @@ public abstract class EditPagePanel extends RecordEditPanel {
     private JPopupMenu getPhotoPopupMenu() {
         if (null == picturePopMenu) {
             picturePopMenu = new JPopupMenu();
-            IPage page = (IPage) getDbObject();
-            final boolean isPicture = ("jpg jpeg gif png".indexOf(page.getFileextension().toLowerCase()) > 0);
             picturePopMenu.add(new AbstractAction("Open in window") {
 
                 public void actionPerformed(ActionEvent e) {
-                    if (isPicture) {
+                    IPage page = (IPage) getDbObject();
+//                    setEnabled(true);
+                    if ("jpg jpeg gif png".indexOf(page.getFileextension().toLowerCase()) > 0) {
                         viewDocumentImage();
+//                    } else if (page.getFileextension().toLowerCase().equals("txt")) {
+//                        setEnabled(false);
                     } else {
                         GeneralFrame.notImplementedYet("for this document type");
                     }
@@ -261,7 +265,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
 
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
-                    exportDocImage((byte[]) page.getPagescan());
+                    exportDocImage((byte[]) page.getPagescan(), page.getFileextension());
                 }
             });
             picturePopMenu.add(new AbstractAction("Remove attachment from DB") {
@@ -280,10 +284,11 @@ public abstract class EditPagePanel extends RecordEditPanel {
         return picturePopMenu;
     }
 
-    public static void exportDocImage(byte[] imageData) {
+    public static void exportDocImage(byte[] imageData, String extension) {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
+
+        chooser.setFileFilter(new FileFilterOnExtension(extension));
         chooser.setDialogTitle("Save attachment to file");
         chooser.setApproveButtonText("Save");
         int retVal = chooser.showOpenDialog(null);
@@ -297,6 +302,28 @@ public abstract class EditPagePanel extends RecordEditPanel {
                 }
             }
             Util.writeFile(fout, imageData);
+        }
+    }
+
+    private static class FileFilterOnExtension extends FileFilter {
+
+        String extension;
+
+        public FileFilterOnExtension(String extension) {
+            super();
+            this.extension = extension;
+        }
+
+        @Override
+        public boolean accept(File f) {
+            boolean ok = f.isDirectory()
+                    || f.getName().toLowerCase().endsWith(extension);
+            return ok;
+        }
+
+        @Override
+        public String getDescription() {
+            return "*." + extension;
         }
     }
 }

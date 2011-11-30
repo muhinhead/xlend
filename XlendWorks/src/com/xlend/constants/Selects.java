@@ -37,6 +37,10 @@ public class Selects {
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", xcontract.description \"Description\", xclient.companyname \"Company\" "
             + "from xcontract, xclient where xclient.xclient_id=xcontract.xclient_id";
+    public static final String SELECT_CONTRACTS4CLIENT =
+            "Select xcontract_id \"Id\", "
+            + "contractref \"Ref.Nr\", description \"Description\" "
+            + "from xcontract where xclient_id = #";
     public static final String SELECT_CONTRACTS4LOOKUP =
             "Select xcontract_id \"Id\", "
             + "contractref \"Ref.Nr\", description \"Description\" "
@@ -56,10 +60,17 @@ public class Selects {
             "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
             + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder where xcontract_id = #";
+    public static final String SELECT_ORDERS4CLIENT =
+            "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
+            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            + "from xorder where xclient_id = #";
     public static final String SELECT_FROM_QUOTATIONS =
             "Select xquotation_id \"Id\", xclient.companyname \"Company\", "
             + "rfcnumber \"RFC Nr\" "
             + "from xquotation, xclient where xclient.xclient_id=xquotation.xclient_id";
+    public static final String SELECT_QUOTATIONS4CLIENTS =
+            "Select xquotation_id \"Id\", rfcnumber \"RFC Nr\" "
+            + "from xquotation where xclient_id = #";
     public static final String SELECT_QUOTATIONS4LOOKUP =
             "Select xquotation_id \"Id\", "
             + "rfcnumber \"RFC Nr\" "

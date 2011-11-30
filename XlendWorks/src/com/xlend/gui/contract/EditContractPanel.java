@@ -49,8 +49,9 @@ public class EditContractPanel extends RecordEditPanel {
     private JComboBox clientRefBox;
     private DefaultComboBoxModel cbModel;
     private JButton loadButton;
-//    private PagesPanel pagesdPanel;
     private JScrollPane descrScroll;
+    private Xclient xclint;
+    private AbstractAction clientLookupAction;
 
     public EditContractPanel(DbObject dbObject) {
         super(dbObject);
@@ -100,7 +101,7 @@ public class EditContractPanel extends RecordEditPanel {
         }
         upedit.add(ided);
         upedit.add(edits[1]);
-        upedit.add(comboPanelWithLookupBtn(clientRefBox, clientRefLookup()));
+        upedit.add(comboPanelWithLookupBtn(clientRefBox, clientLookupAction = clientRefLookup()));
 
         form.add(upper, BorderLayout.NORTH);
 
@@ -230,5 +231,14 @@ public class EditContractPanel extends RecordEditPanel {
                 showClientLookup();
             }
         };
+    }
+
+    void setXclient(Xclient xclient) {
+        this.xclint = xclient;
+        if (xclint != null) {
+            clientLookupAction.setEnabled(false);
+            selectComboItem(clientRefBox, xclient.getXclientId());
+            clientRefBox.setEnabled(false);
+        }
     }
 }

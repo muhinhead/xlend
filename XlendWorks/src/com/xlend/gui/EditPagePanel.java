@@ -224,8 +224,8 @@ public abstract class EditPagePanel extends RecordEditPanel {
                 //Runtime.getRuntime().exec("./tmp."+page.getFileextension());
                 Desktop desktop = Desktop.getDesktop();
                 desktop.open(tmpDoc);
-            } catch (IOException ex) {
-                Logger.getLogger(EditPagePanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
         }
         picPanel.setVisible(true);
@@ -240,13 +240,13 @@ public abstract class EditPagePanel extends RecordEditPanel {
                     viewDocumentImage();
                 }
             });
-            picturePopMenu.add(new AbstractAction("Replace image") {
+            picturePopMenu.add(new AbstractAction("Replace attachment") {
 
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile();
                 }
             });
-            picturePopMenu.add(new AbstractAction("Save image to file") {
+            picturePopMenu.add(new AbstractAction("Save attachment to file") {
 
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
@@ -272,27 +272,13 @@ public abstract class EditPagePanel extends RecordEditPanel {
     public static void exportDocImage(byte[] imageData) {
         JFileChooser chooser =
                 new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
-            public boolean accept(File f) {
-                boolean ok = f.isDirectory()
-                        || f.getName().toLowerCase().endsWith("jpg")
-                        || f.getName().toLowerCase().endsWith("jpeg")
-                        || f.getName().toLowerCase().endsWith("gif");
-
-                return ok;
-            }
-
-            public String getDescription() {
-                return "*.JPG ; *.GIF";
-            }
-        });
+        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
         chooser.setDialogTitle("Save image to file");
         chooser.setApproveButtonText("Save");
         int retVal = chooser.showOpenDialog(null);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             String name = chooser.getSelectedFile().getAbsolutePath();
-            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
+//            name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
             File fout = new File(name);
             if (fout.exists()) {
                 if (GeneralFrame.yesNo("Attention",

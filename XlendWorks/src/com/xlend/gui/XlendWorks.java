@@ -4,6 +4,7 @@ import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xorder;
+import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -200,6 +201,23 @@ public class XlendWorks {
             for (DbObject o : orders) {
                 Xorder xorder = (Xorder) o;
                 itms[i++] = new ComboItem(xorder.getXorderId(), "Reg Nr:"+xorder.getRegnumber()+" Order Nr:"+xorder.getOrdernumber());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
+    public static ComboItem[] loadAllPositions(IMessageSender exchanger) {
+        try {
+            DbObject[] clients = exchanger.getDbObjects(Xposition.class, null, "pos");
+            ComboItem[] itms = new ComboItem[clients.length + 1];
+            itms[0] = new ComboItem(0, "--Add new position--");
+            int i = 1;
+            for (DbObject o : clients) {
+                Xposition pos = (Xposition) o;
+                itms[i++] = new ComboItem(pos.getXpositionId(), pos.getPos());
             }
             return itms;
         } catch (RemoteException ex) {

@@ -84,6 +84,9 @@ public class Selects {
             "Select distinct machinetype from xorderitem";
     public static String DISTINCT_MEASUREITEMS =
             "Select distinct measureitem from xorderitem";
+    public static String SELECT_FROM_OPERATORS = 
+            "Select xoperator_id \"Id\",full_name \"Full Name\", last_name \"Surename\", "
+            + "id_num \"ID Number\", clock_num \"Clock Number\" from xoperator";
 
     public static String[] getStringArray(String select) {
         try {

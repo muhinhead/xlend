@@ -22,7 +22,7 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         this.exchanger = exchanger;
         init(readOnly?null:addAction(), 
                 readOnly?null:editAction(), 
-                readOnly?null:delAction(), exchanger.getTableBody(select), null);
+                readOnly?null:delAction(), exchanger.getTableBody(select), maxWidths);
     }
 
     protected abstract AbstractAction addAction();

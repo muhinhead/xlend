@@ -8,41 +8,38 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Dbversion extends DbObject  {
+public class Xposition extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer dbversionId = null;
-    private Integer versionId = null;
-    private String version = null;
+    private Integer xpositionId = null;
+    private String pos = null;
 
-    public Dbversion(Connection connection) {
-        super(connection, "dbversion", "dbversion_id");
-        setColumnNames(new String[]{"dbversion_id", "version_id", "version"});
+    public Xposition(Connection connection) {
+        super(connection, "xposition", "xposition_id");
+        setColumnNames(new String[]{"xposition_id", "pos"});
     }
 
-    public Dbversion(Connection connection, Integer dbversionId, Integer versionId, String version) {
-        super(connection, "dbversion", "dbversion_id");
-        setNew(dbversionId.intValue() <= 0);
-//        if (dbversionId.intValue() != 0) {
-            this.dbversionId = dbversionId;
+    public Xposition(Connection connection, Integer xpositionId, String pos) {
+        super(connection, "xposition", "xposition_id");
+        setNew(xpositionId.intValue() <= 0);
+//        if (xpositionId.intValue() != 0) {
+            this.xpositionId = xpositionId;
 //        }
-        this.versionId = versionId;
-        this.version = version;
+        this.pos = pos;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Dbversion dbversion = null;
+        Xposition xposition = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT dbversion_id,version_id,version FROM dbversion WHERE dbversion_id=" + id;
+        String stmt = "SELECT xposition_id,pos FROM xposition WHERE xposition_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                dbversion = new Dbversion(getConnection());
-                dbversion.setDbversionId(new Integer(rs.getInt(1)));
-                dbversion.setVersionId(new Integer(rs.getInt(2)));
-                dbversion.setVersion(rs.getString(3));
-                dbversion.setNew(false);
+                xposition = new Xposition(getConnection());
+                xposition.setXpositionId(new Integer(rs.getInt(1)));
+                xposition.setPos(rs.getString(2));
+                xposition.setNew(false);
             }
         } finally {
             try {
@@ -51,7 +48,7 @@ public class Dbversion extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return dbversion;
+        return xposition;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -60,27 +57,26 @@ public class Dbversion extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO dbversion ("+(getDbversionId().intValue()!=0?"dbversion_id,":"")+"version_id,version) values("+(getDbversionId().intValue()!=0?"?,":"")+"?,?)";
+                "INSERT INTO xposition ("+(getXpositionId().intValue()!=0?"xposition_id,":"")+"pos) values("+(getXpositionId().intValue()!=0?"?,":"")+"?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getDbversionId().intValue()!=0) {
-                 ps.setObject(++n, getDbversionId());
+             if (getXpositionId().intValue()!=0) {
+                 ps.setObject(++n, getXpositionId());
              }
-             ps.setObject(++n, getVersionId());
-             ps.setObject(++n, getVersion());
+             ps.setObject(++n, getPos());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getDbversionId().intValue()==0) {
-             stmt = "SELECT max(dbversion_id) FROM dbversion";
+         if (getXpositionId().intValue()==0) {
+             stmt = "SELECT max(xposition_id) FROM xposition";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setDbversionId(new Integer(rs.getInt(1)));
+                     setXpositionId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -106,13 +102,12 @@ public class Dbversion extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE dbversion " +
-                    "SET version_id = ?, version = ?" + 
-                    " WHERE dbversion_id = " + getDbversionId();
+                    "UPDATE xposition " +
+                    "SET pos = ?" + 
+                    " WHERE xposition_id = " + getXpositionId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getVersionId());
-                ps.setObject(2, getVersion());
+                ps.setObject(1, getPos());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -125,31 +120,37 @@ public class Dbversion extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (Xoperator.exists(getConnection(),"xposition_id = " + getXpositionId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xoperator_xposition_fk");
+        }
+        if (getTriggers() != null) {
+            getTriggers().beforeDelete(this);
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM dbversion " +
-                "WHERE dbversion_id = " + getDbversionId();
+                "DELETE FROM xposition " +
+                "WHERE xposition_id = " + getXpositionId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setDbversionId(new Integer(-getDbversionId().intValue()));
+        setXpositionId(new Integer(-getXpositionId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getDbversionId().intValue() < 0);
+        return (getXpositionId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT dbversion_id,version_id,version FROM dbversion " +
+        String stmt = "SELECT xposition_id,pos FROM xposition " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -159,7 +160,7 @@ public class Dbversion extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Dbversion(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getString(3)));
+                lst.add(dbObj=new Xposition(con,new Integer(rs.getInt(1)),rs.getString(2)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -169,10 +170,10 @@ public class Dbversion extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Dbversion[] objects = new Dbversion[lst.size()];
+        Xposition[] objects = new Xposition[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Dbversion dbversion = (Dbversion) lst.get(i);
-            objects[i] = dbversion;
+            Xposition xposition = (Xposition) lst.get(i);
+            objects[i] = xposition;
         }
         return objects;
     }
@@ -184,7 +185,7 @@ public class Dbversion extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT dbversion_id FROM dbversion " +
+        String stmt = "SELECT xposition_id FROM xposition " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -202,41 +203,31 @@ public class Dbversion extends DbObject  {
     }
 
     //public String toString() {
-    //    return getDbversionId() + getDelimiter();
+    //    return getXpositionId() + getDelimiter();
     //}
 
-    public Integer getDbversionId() {
-        return dbversionId;
+    public Integer getXpositionId() {
+        return xpositionId;
     }
 
-    public void setDbversionId(Integer dbversionId) throws ForeignKeyViolationException {
-        setWasChanged(this.dbversionId != null && this.dbversionId != dbversionId);
-        this.dbversionId = dbversionId;
-        setNew(dbversionId.intValue() == 0);
+    public void setXpositionId(Integer xpositionId) throws ForeignKeyViolationException {
+        setWasChanged(this.xpositionId != null && this.xpositionId != xpositionId);
+        this.xpositionId = xpositionId;
+        setNew(xpositionId.intValue() == 0);
     }
 
-    public Integer getVersionId() {
-        return versionId;
+    public String getPos() {
+        return pos;
     }
 
-    public void setVersionId(Integer versionId) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.versionId != null && !this.versionId.equals(versionId));
-        this.versionId = versionId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.version != null && !this.version.equals(version));
-        this.version = version;
+    public void setPos(String pos) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.pos != null && !this.pos.equals(pos));
+        this.pos = pos;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[3];
-        columnValues[0] = getDbversionId();
-        columnValues[1] = getVersionId();
-        columnValues[2] = getVersion();
+        Object[] columnValues = new Object[2];
+        columnValues[0] = getXpositionId();
+        columnValues[1] = getPos();
         return columnValues;
     }
 
@@ -253,15 +244,10 @@ public class Dbversion extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setDbversionId(Integer.parseInt(flds[0]));
+            setXpositionId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setDbversionId(null);
+            setXpositionId(null);
         }
-        try {
-            setVersionId(Integer.parseInt(flds[1]));
-        } catch(NumberFormatException ne) {
-            setVersionId(null);
-        }
-        setVersion(flds[2]);
+        setPos(flds[1]);
     }
 }

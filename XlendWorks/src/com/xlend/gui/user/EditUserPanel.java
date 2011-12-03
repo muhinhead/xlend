@@ -56,7 +56,7 @@ public class EditUserPanel extends ProfilePanel {
         ButtonGroup bg = new ButtonGroup();
         bg.add(managerRB);
         bg.add(salerRB);
-        organizePanels(labels, edits);
+        organizePanels(labels.length, edits.length);
         for (int i = 0; i < labels.length; i++) {
             editPanel.add(edits[i]);
             lblPanel.add(new JLabel(labels[i], SwingConstants.RIGHT));

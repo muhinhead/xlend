@@ -25,17 +25,29 @@ public abstract class RecordEditPanel extends JPanel {
     protected JPanel upPanel;
     protected PagesPanel pagesdPanel;
 
-    protected void organizePanels(String[] labels, JComponent[] edits) {
+//    protected void organizePanels(String[] labels, JComponent[] edits) {
+//        setLayout(new BorderLayout());
+//        lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
+//        editPanel = new JPanel(new GridLayout(edits.length, 1, 5, 5));
+//        upPanel = new JPanel(new BorderLayout());
+//        add(upPanel, BorderLayout.NORTH);
+//        upPanel.add(lblPanel, BorderLayout.WEST);
+//        upPanel.add(editPanel, BorderLayout.CENTER);
+//        upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
+//    }
+
+    protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
-        lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
-        editPanel = new JPanel(new GridLayout(edits.length, 1, 5, 5));
+        lblPanel = new JPanel(new GridLayout(labelLength, 1, 5, 5));
+        editPanel = new JPanel(new GridLayout(editsLen, 1, 5, 5));
         upPanel = new JPanel(new BorderLayout());
         add(upPanel, BorderLayout.NORTH);
         upPanel.add(lblPanel, BorderLayout.WEST);
         upPanel.add(editPanel, BorderLayout.CENTER);
         upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
     }
-
+    
+    
     protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
         JPanel comboBoxPanel = new JPanel(new BorderLayout());
         comboBoxPanel.add(cb);

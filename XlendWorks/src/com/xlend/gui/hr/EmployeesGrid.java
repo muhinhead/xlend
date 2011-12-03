@@ -4,8 +4,8 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.employee.EditOperatorDialog;
-import com.xlend.orm.Xoperator;
+import com.xlend.gui.employee.EditEmployeeDialog;
+import com.xlend.orm.Xemployee;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class OperatorsGrid extends GeneralGridPanel {
+public class EmployeesGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
@@ -25,11 +25,11 @@ public class OperatorsGrid extends GeneralGridPanel {
         maxWidths.put(0, 40);
     }
 
-    public OperatorsGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_OPERATORS, maxWidths, false);
+    public EmployeesGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_EMPLOYEE, maxWidths, false);
     }
 
-    public OperatorsGrid(IMessageSender exchanger, String select) throws RemoteException {
+    public EmployeesGrid(IMessageSender exchanger, String select) throws RemoteException {
         super(exchanger, select, maxWidths, true);
     }
 
@@ -40,11 +40,11 @@ public class OperatorsGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditOperatorDialog ed = new EditOperatorDialog("New Employee", null);
-                    if (EditOperatorDialog.okPressed) {
-                        Xoperator xoperator = (Xoperator) ed.getEditPanel().getDbObject();
+                    EditEmployeeDialog ed = new EditEmployeeDialog("New Employee", null);
+                    if (EditEmployeeDialog.okPressed) {
+                        Xemployee emp = (Xemployee) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xoperator.getXoperatorId());
+                                getTableView(), getTableDoc(), getSelect(), emp.getXemployeeId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -63,9 +63,9 @@ public class OperatorsGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xoperator xoperator = (Xoperator) exchanger.loadDbObjectOnID(Xoperator.class, id);
-                        new EditOperatorDialog("Edit Employee", xoperator);
-                        if (EditOperatorDialog.okPressed) {
+                        Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
+                        new EditEmployeeDialog("Edit Employee", emp);
+                        if (EditEmployeeDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id);
                         }
@@ -80,16 +80,16 @@ public class OperatorsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Contract") {
+        return new AbstractAction("Delete Employee") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xoperator xoperator = (Xoperator) exchanger.loadDbObjectOnID(Xoperator.class, id);
-                    if (xoperator != null && GeneralFrame.yesNo("Attention!", "Do you want to delete employee  ["
-                            + xoperator.getFullName() + "]?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(xoperator);
+                    Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
+                    if (emp != null && GeneralFrame.yesNo("Attention!", "Do you want to delete employee  ["
+                            + emp.getFirstName()+" "+emp.getSurName() + "]?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(emp);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {

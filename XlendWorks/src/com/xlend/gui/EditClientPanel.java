@@ -65,7 +65,7 @@ public class EditClientPanel extends ProfilePanel {
 //        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spouseBirthDaySpinner, "yyyy/MM/dd");
 //        spouseBirthDaySpinner.setEditor(de2);
 
-        organizePanels(labels, edits);
+        organizePanels(labels.length, edits.length);
         for (int i = 0; i < labels.length; i++) {
             if (edits[i] instanceof JSpinner || (edits[i] instanceof JComboBox && edits[i] != salesPersonBox)) {
                 JPanel edp = new JPanel(new GridLayout(1, 3));

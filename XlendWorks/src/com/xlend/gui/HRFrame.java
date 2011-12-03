@@ -1,6 +1,6 @@
 package com.xlend.gui;
 
-import com.xlend.gui.hr.OperatorsGrid;
+import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import java.util.Properties;
@@ -13,7 +13,7 @@ import javax.swing.JTabbedPane;
  */
 public class HRFrame extends GeneralFrame {
 
-    private OperatorsGrid operatorsPanel;
+    private EmployeesGrid operatorsPanel;
 
     public HRFrame(IMessageSender exch) {
         super("HR", exch);
@@ -32,7 +32,7 @@ public class HRFrame extends GeneralFrame {
     private JPanel getOperatorsPanel() {
         if (operatorsPanel == null) {
             try {
-                registerGrid(operatorsPanel = new OperatorsGrid(exchanger));
+                registerGrid(operatorsPanel = new EmployeesGrid(exchanger));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

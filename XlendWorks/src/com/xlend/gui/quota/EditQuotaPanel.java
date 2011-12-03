@@ -69,10 +69,9 @@ class EditQuotaPanel extends RecordEditPanel {
         idField.setEditable(false);
         organizePanels(labels, edits);
     }
-
-    @Override
+    
     protected void organizePanels(String[] labels, JComponent[] edits) {
-        super.organizePanels(labels, edits);
+        super.organizePanels(labels.length, edits.length);
         for (String lbl : labels) {
             lblPanel.add(new JLabel(lbl, SwingConstants.RIGHT));
         }

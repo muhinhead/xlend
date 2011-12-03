@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.orm.IPage;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.FileFilterOnExtension;
 import com.xlend.util.PopupListener;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
@@ -302,28 +303,6 @@ public abstract class EditPagePanel extends RecordEditPanel {
                 }
             }
             Util.writeFile(fout, imageData);
-        }
-    }
-
-    private static class FileFilterOnExtension extends FileFilter {
-
-        String extension;
-
-        public FileFilterOnExtension(String extension) {
-            super();
-            this.extension = extension;
-        }
-
-        @Override
-        public boolean accept(File f) {
-            boolean ok = f.isDirectory()
-                    || f.getName().toLowerCase().endsWith(extension);
-            return ok;
-        }
-
-        @Override
-        public String getDescription() {
-            return "*." + extension;
         }
     }
 }

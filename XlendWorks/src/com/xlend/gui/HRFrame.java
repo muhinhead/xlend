@@ -3,9 +3,7 @@ package com.xlend.gui;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.remote.IMessageSender;
-import java.awt.Component;
 import java.rmi.RemoteException;
-import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -25,7 +23,7 @@ public class HRFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         JTabbedPane hrTab = new JTabbedPane();
         hrTab.add(getOperatorsPanel(), "Employee Files");
-        hrTab.add(getWeeklyWagesPanel(), "Wages");
+        hrTab.add(getWeeklyWagesPanel(), "Time Sheets");
         hrTab.add(new JPanel(), "Salaries");
         hrTab.add(new JPanel(), "Diciplinary Actions");
         hrTab.add(new JPanel(), "Rewards Program");

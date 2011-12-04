@@ -4,22 +4,30 @@
  */
 package com.xlend.gui.employee;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.EditPanelWithPhoto;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import java.util.Date;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
@@ -76,8 +84,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             new ComboItem(3, "3 month"),
             new ComboItem(6, "6 month"),
             new ComboItem(12, "1 year"),
-            new ComboItem(0, "Permanent"),
-        };
+            new ComboItem(0, "Permanent"),};
         edits = new JComponent[]{
             idField = new JTextField(),
             clockNumField = new JTextField(),
@@ -148,6 +155,25 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 setEndDateVisible(citm.getId() > 0);
             }
         });
+
+        add(getDetailsPanel(), BorderLayout.CENTER);
+    }
+
+    private JTabbedPane getDetailsPanel() {
+        JTabbedPane tp = new JTabbedPane();
+        tp.setPreferredSize(new Dimension(tp.getPreferredSize().width, 300));
+
+        try {
+            Xemployee emp = (Xemployee) getDbObject();
+            int employee_id = emp == null ? 0 : emp.getXemployeeId();
+            TimeSheetsGrid tsSheet = new TimeSheetsGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_TIMESHEETS4EMPLOYEE.replace("#", "" + employee_id), false);
+            tp.add(tsSheet, "Time Sheeets");
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
+
+        return tp;
     }
 
     private void setEndDateVisible(boolean visible) {
@@ -210,7 +236,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             emp.setNew(isNew);
             emp.setAddress(addressField.getText());
             emp.setClockNum(clockNumField.getText());
-            emp.setContractLen(((ComboItem)contractLenCB.getSelectedItem()).getId());
+            emp.setContractLen(((ComboItem) contractLenCB.getSelectedItem()).getId());
             if (emp.getContractLen() > 0) {
                 emp.setContractEnd(new java.sql.Date(((java.util.Date) contractEndSP.getValue()).getTime()));
             } else {
@@ -228,11 +254,11 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             emp.setPhone0Num(phone0NumField.getText());
             emp.setPhone1Num(phone1NumField.getText());
             emp.setPhone2Num(phone2NumField.getText());
-            emp.setRate((Integer)rateSP.getValue());
+            emp.setRate((Integer) rateSP.getValue());
             emp.setRelation1(relation1Field.getText());
             emp.setRelation2(relation2Field.getText());
             itm = (ComboItem) positionCB.getSelectedItem();
-            if (itm.getId()>0) {
+            if (itm.getId() > 0) {
                 emp.setXpositionId(itm.getId());
             } else {
                 emp.setXpositionId(null);

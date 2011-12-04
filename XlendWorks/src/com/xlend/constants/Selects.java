@@ -95,6 +95,15 @@ public class Selects {
             + "from xtimesheet t,xemployee e, xsite s, xclient c "
             + "where t.xemployee_id=e.xemployee_id "
             + "and t.xsite_id=s.xsite_id and t.xclient_id=c.xclient_id";
+    public static String SELECT_TIMESHEETS4EMPLOYEE =
+            "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
+            + "s.name \"Site\", c.companyname \"Customer\" "
+            + "from xtimesheet t, xsite s, xclient c "
+            + "where t.xsite_id=s.xsite_id and t.xclient_id=c.xclient_id and t.xemployee_id = #";
+    public static String SELECT_WAGE4TIMESHEET =
+            "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
+            + "overtime \"Over Time\", doubletime \"Double Time\", stoppeddetails \"Details\" "
+            + "from xwage where xtimesheet_id = #";
 
     public static String[] getStringArray(String select) {
         try {

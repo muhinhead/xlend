@@ -220,8 +220,8 @@ public class DashBoard extends JFrame {
         userLogin.setBounds(10, 30, 50, userLogin.getPreferredSize().height);
         main.add(userLogin);
 
-//        centerWindow(this);
-        setLocation(10, 10);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(screenSize.width-getWidth()-10, 10);
         setResizable(false);
         setVisible(true);
     }

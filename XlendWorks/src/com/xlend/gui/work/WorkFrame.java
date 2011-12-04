@@ -29,9 +29,7 @@ public class WorkFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
         workTab.add(getContractsPanel(), "Contracts");
-        //TODO: Quotas panel
         workTab.add(getQuotasPanel(), "RFQ/Quotes");
-        //TODO: Orders panel
         workTab.add(getOrdersPanel(), "Orders");
         workTab.add(getSitesPanel(), "Sites");
         workTab.add(getClientsPanel(), "Clients");

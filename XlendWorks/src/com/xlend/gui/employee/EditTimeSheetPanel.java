@@ -8,16 +8,20 @@ import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.hr.EmployeesGrid;
+import com.xlend.gui.hr.WagesGrid;
 import com.xlend.gui.work.ClientsGrid;
 import com.xlend.orm.Xclient;
+import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xtimesheet;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -47,6 +51,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private JCheckBox clockSheetChB;
     private AbstractAction clientLookupAction;
     private AbstractAction employeeLookup;
+    private Xemployee xemployee;
 
     public EditTimeSheetPanel(DbObject dbObject) {
         super(dbObject);
@@ -77,7 +82,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             clockSheetChB = new JCheckBox()
         };
         idField.setEditable(false);
-        organizePanels(labels.length+2, labels.length+2);
+        organizePanels(labels.length + 2, labels.length + 2);
         for (int i = 0; i < labels.length; i++) {
             lblPanel.add(labels[i]);
             if (i == 0) {
@@ -139,20 +144,26 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 }
             }
         } else {
-            try {
-                Integer id = ((ComboItem) clientRefBox.getSelectedItem()).getId();
-                ts.setXclientId(id != null && id > 0 ? id : null);
-                id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
-                ts.setXemployeeId(id != null && id > 0 ? id : null);
-                id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
-                ts.setXsiteId(id != null && id > 0 ? id : null);
-                ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
-                ts.setWeekend(new java.sql.Date(((Date)weekendSp.getValue()).getTime()));
-                ts.setImage(imageData);
-                setDbObject(DashBoard.getExchanger().saveDbObject(ts));
-                return true;
-            } catch (Exception ex) {
-                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+            Date weekend = (Date) weekendSp.getValue();
+
+            if (weekend.getDay() != 0) {
+                GeneralFrame.errMessageBox("Error:", "Date entered is not Sunday!");
+            } else {
+                try {
+                    Integer id = ((ComboItem) clientRefBox.getSelectedItem()).getId();
+                    ts.setXclientId(id != null && id > 0 ? id : null);
+                    id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
+                    ts.setXemployeeId(id != null && id > 0 ? id : null);
+                    id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
+                    ts.setXsiteId(id != null && id > 0 ? id : null);
+                    ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
+                    ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
+                    ts.setImage(imageData);
+                    setDbObject(DashBoard.getExchanger().saveDbObject(ts));
+                    return true;
+                } catch (Exception ex) {
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
             }
         }
         return false;
@@ -198,7 +209,18 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
     private JComponent getTabbedPanel() {
         JTabbedPane tp = new JTabbedPane();
-        tp.add(new JPanel(), "Days of week");
+        WagesGrid wagesGrid = null;
+        Xtimesheet ts = (Xtimesheet) getDbObject();
+        int timesheet_id = ts.getXtimesheetId();
+        try {
+            wagesGrid = new WagesGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_WAGE4TIMESHEET.replace("#", "" + timesheet_id), false);
+            tp.add(wagesGrid, "Days of week");
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
+        Dimension pref = new Dimension(600, 200);
+        wagesGrid.setPreferredSize(pref);
         return tp;
     }
 
@@ -219,5 +241,13 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             siteCbModel.addElement(ci);
         }
         siteRefBox.setModel(siteCbModel);
+    }
+
+    public void setXemployee(Xemployee xemployee) {
+        this.xemployee = xemployee;
+        if (xemployee != null) {
+            selectComboItem(employeeRefBox, xemployee.getXemployeeId());
+            employeeRefBox.setEnabled(false);
+        }
     }
 }

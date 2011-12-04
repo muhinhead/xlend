@@ -5,7 +5,6 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
-import com.xlend.gui.PagesPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
@@ -14,21 +13,17 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -201,27 +196,6 @@ public class EditContractPanel extends RecordEditPanel {
         }
         return tp;
     }
-
-//    public static void exportDocImage(byte[] imageData) {
-//        JFileChooser chooser =
-//                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-//        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
-//        chooser.setDialogTitle("Save image to file");
-//        chooser.setApproveButtonText("Save");
-//        int retVal = chooser.showOpenDialog(null);
-//        if (retVal == JFileChooser.APPROVE_OPTION) {
-//            String name = chooser.getSelectedFile().getAbsolutePath();
-//            //name = (name.toLowerCase().endsWith(".jpg") ? name : name + ".jpg");
-//            File fout = new File(name);
-//            if (fout.exists()) {
-//                if (GeneralFrame.yesNo("Attention",
-//                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
-//                    return;
-//                }
-//            }
-//            Util.writeFile(fout, imageData);
-//        }
-//    }
 
     private AbstractAction clientRefLookup() {
         return new AbstractAction("...") {

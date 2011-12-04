@@ -88,6 +88,13 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee";
+    public static String SELECT_FROM_TIMESHEET = 
+            "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
+            + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
+            + "e.sur_name \"Surename\", s.name \"Site\", c.companyname \"Customer\" "
+            + "from xtimesheet t,xemployee e, xsite s, xclient c "
+            + "where t.xemployee_id=e.xemployee_id "
+            + "and t.xsite_id=s.xsite_id and t.xclient_id=c.xclient_id";
 
     public static String[] getStringArray(String select) {
         try {

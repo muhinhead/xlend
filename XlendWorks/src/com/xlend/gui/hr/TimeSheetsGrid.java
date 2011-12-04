@@ -4,8 +4,8 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.employee.EditEmployeeDialog;
-import com.xlend.orm.Xemployee;
+import com.xlend.gui.employee.EditTimeSheetDialog;
+import com.xlend.orm.Xtimesheet;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -17,34 +17,37 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class EmployeesGrid extends GeneralGridPanel {
+public class TimeSheetsGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
         maxWidths.put(0, 40);
+        maxWidths.put(1, 250);
+        maxWidths.put(2, 250);
     }
 
-    public EmployeesGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_EMPLOYEE, maxWidths, false);
+    public TimeSheetsGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_TIMESHEET, maxWidths, false);
     }
 
-    public EmployeesGrid(IMessageSender exchanger, String select, boolean readOnly) throws RemoteException {
-        super(exchanger, select, maxWidths, readOnly);
+    public TimeSheetsGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, maxWidths, true);
     }
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("New Employee") {
+        return new AbstractAction("New Timesheet") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 try {
-                    EditEmployeeDialog ed = new EditEmployeeDialog("New Employee", null);
-                    if (EditEmployeeDialog.okPressed) {
-                        Xemployee emp = (Xemployee) ed.getEditPanel().getDbObject();
+                    EditTimeSheetDialog ed = new EditTimeSheetDialog("New Timesheet", null);
+                    if (EditTimeSheetDialog.okPressed) {
+                        Xtimesheet ts = (Xtimesheet) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), emp.getXemployeeId());
+                                getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -63,9 +66,9 @@ public class EmployeesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
-                        new EditEmployeeDialog("Edit Employee", emp);
-                        if (EditEmployeeDialog.okPressed) {
+                        Xtimesheet ts = (Xtimesheet) exchanger.loadDbObjectOnID(Xtimesheet.class, id);
+                        new EditTimeSheetDialog("Edit Timesheet", ts);
+                        if (EditTimeSheetDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id);
                         }
@@ -86,10 +89,10 @@ public class EmployeesGrid extends GeneralGridPanel {
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
-                    if (emp != null && GeneralFrame.yesNo("Attention!", "Do you want to delete employee  ["
-                            + emp.getFirstName()+" "+emp.getSurName() + "]?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(emp);
+                    Xtimesheet ts = (Xtimesheet) exchanger.loadDbObjectOnID(Xtimesheet.class, id);
+                    if (ts != null && GeneralFrame.yesNo("Attention!", 
+                            "Do you want to delete timesheet?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(ts);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {

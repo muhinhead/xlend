@@ -61,7 +61,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Site") {
+        return new AbstractAction("Edit Order") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

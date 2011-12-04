@@ -3,22 +3,20 @@ package com.xlend.gui;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
+import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
+import com.xlend.orm.Xsite;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
 import java.awt.Window;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +25,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -160,13 +156,30 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllContracts(IMessageSender exchanger, int client_id) {
         try {
-            DbObject[] clients = exchanger.getDbObjects(Xcontract.class, "xclient_id="+client_id, "contractref");
-            ComboItem[] itms = new ComboItem[clients.length + 1];
+            DbObject[] contracts = exchanger.getDbObjects(Xcontract.class, "xclient_id="+client_id, "contractref");
+            ComboItem[] itms = new ComboItem[contracts.length + 1];
             itms[0] = new ComboItem(0, "--No contract yet--");
             int i = 1;
-            for (DbObject o : clients) {
+            for (DbObject o : contracts) {
                 Xcontract xcontract = (Xcontract) o;
                 itms[i++] = new ComboItem(xcontract.getXcontractId(), xcontract.getContractref());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
+    public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
+        try {
+            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, null, "sur_name");
+            ComboItem[] itms = new ComboItem[employees.length + 1];
+            int i = 0;
+            for (DbObject o : employees) {
+                Xemployee emp = (Xemployee) o;
+                itms[i++] = new ComboItem(emp.getXemployeeId(), emp.getClockNum()
+                        +" ("+emp.getFirstName().substring(0,1)+"."+emp.getSurName()+")");
             }
             return itms;
         } catch (RemoteException ex) {
@@ -184,6 +197,24 @@ public class XlendWorks {
             for (DbObject o : rfqs) {
                 Xquotation xquotation = (Xquotation) o;
                 itms[i++] = new ComboItem(xquotation.getXquotationId(), xquotation.getRfcnumber());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
+    public static ComboItem[] loadAllClientSites(IMessageSender exchanger, int client_id) {
+        try {
+            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class, 
+                    "xorder_id  in (select xorder_id from xorder where xclient_id="+client_id+")", "name");
+            ComboItem[] itms = new ComboItem[rfqs.length + 1];
+            itms[0] = new ComboItem(0, "--No requests for clients yet--");
+            int i = 1;
+            for (DbObject o : rfqs) {
+                Xsite xsite = (Xsite) o;
+                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
             }
             return itms;
         } catch (RemoteException ex) {
@@ -283,4 +314,5 @@ public class XlendWorks {
     public static void setWindowIcon(Window w, String iconName) {
         w.setIconImage(loadImage(iconName, w));
     }
+
 }

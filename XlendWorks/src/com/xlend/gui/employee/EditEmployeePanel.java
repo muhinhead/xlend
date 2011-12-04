@@ -4,53 +4,31 @@
  */
 package com.xlend.gui.employee;
 
+import com.xlend.gui.EditPanelWithPhoto;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.PagesPanel;
-import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.FileFilterOnExtension;
-import com.xlend.util.PopupListener;
-import com.xlend.util.Util;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
 import java.util.Date;
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
 /**
  *
  * @author nick
  */
-class EditEmployeePanel extends RecordEditPanel {
+class EditEmployeePanel extends EditPanelWithPhoto {
 
     private DefaultComboBoxModel cbModel;
     private JTextField idField;
@@ -70,13 +48,6 @@ class EditEmployeePanel extends RecordEditPanel {
     private JSpinner contractEndSP;
     private JSpinner rateSP;
     private JComboBox positionCB;
-    private JPanel picPanel;
-    private ImageIcon currentPicture;
-    private JPopupMenu picturePopMenu;
-    private byte[] imageData;
-//    private String[] labels;
-    private JComponent[] edits;
-    private JLabel[] labels;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -98,18 +69,15 @@ class EditEmployeePanel extends RecordEditPanel {
             "Contract Duration:", "Contract Start Date:", "Contract End Date:",
             "Rate of Pay:"
         };
-        labels = new JLabel[titles.length];
-        int n = 0;
-        for (String t : titles) {
-            labels[n++] = new JLabel(t, SwingConstants.RIGHT);
-        }
+        labels = createLabelsArray(titles);
         ComboItem[] durations = new ComboItem[]{
             new ComboItem(1, "1 month"),
             new ComboItem(2, "2 month"),
             new ComboItem(3, "3 month"),
             new ComboItem(6, "6 month"),
             new ComboItem(12, "1 year"),
-            new ComboItem(0, "Permanent"),};
+            new ComboItem(0, "Permanent"),
+        };
         edits = new JComponent[]{
             idField = new JTextField(),
             clockNumField = new JTextField(),
@@ -185,70 +153,6 @@ class EditEmployeePanel extends RecordEditPanel {
     private void setEndDateVisible(boolean visible) {
         contractEndSP.setVisible(visible);
         labels[15].setVisible(visible);
-    }
-
-    protected JComponent getRightUpperPanel() {
-        JPanel rightPanel = new JPanel(new BorderLayout());
-        if (picPanel == null) {
-            picPanel = new JPanel(new BorderLayout());
-            picPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Photo"));
-            picPanel.setPreferredSize(new Dimension(400, 250));
-            noImage();
-            rightPanel.add(picPanel, BorderLayout.CENTER);
-        }
-        return rightPanel;
-    }
-
-    private JButton getLoadPictureButton() {
-        JButton loadButton = new JButton("Choose picture...");
-        loadButton.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                loadDocImageFromFile();
-            }
-        });
-        return loadButton;
-    }
-
-    private void loadDocImageFromFile() {
-        JFileChooser chooser =
-                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
-        chooser.setDialogTitle("Import File");
-        chooser.setApproveButtonText("Import");
-        int retVal = chooser.showOpenDialog(null);
-
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            File f = chooser.getSelectedFile();
-            setImage(Util.readFile(f.getAbsolutePath()));
-        }
-    }
-
-    private void setImage(byte[] imageData) {
-        this.imageData = imageData;
-        setPhoto();
-    }
-
-    private void viewDocumentImage() {
-        JDialog dlg = new JDialog();
-        dlg.setModal(true);
-        JPanel pane = new JPanel(new BorderLayout());
-        pane.add(new JScrollPane(new JLabel(currentPicture)),
-                BorderLayout.CENTER);
-        dlg.setContentPane(pane);
-        dlg.pack();
-        dlg.setVisible(true);
-    }
-
-    private void noImage() {
-        imageData = null;
-        picPanel.setVisible(false);
-        picPanel.removeAll();
-        JPanel insPanel = new JPanel();
-        insPanel.add(getLoadPictureButton());
-        picPanel.add(insPanel);
-        picPanel.setVisible(true);
-        currentPicture = null;
     }
 
     @Override
@@ -339,103 +243,6 @@ class EditEmployeePanel extends RecordEditPanel {
         } catch (Exception ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
-        //emp.setPhoto(imageData);
         return false;
-    }
-
-    private void setPhoto() {
-        picPanel.setVisible(false);
-        picPanel.removeAll();
-
-        String tmpImgFile = "$$$.img";
-        currentPicture = new ImageIcon(imageData);
-        Dimension d = picPanel.getSize();
-        JScrollPane sp = null;
-        int height = 1;
-        int wscale = 1;
-        int hscale = 1;
-        int width = 0;
-        Util.writeFile(new File(tmpImgFile), imageData);
-        width = currentPicture.getImage().getWidth(null);
-        height = currentPicture.getImage().getHeight(null);
-        wscale = width / (d.width - 70);
-        hscale = height / (d.height - 70);
-        wscale = wscale <= 0 ? 1 : wscale;
-        hscale = hscale <= 0 ? 1 : hscale;
-        int scale = wscale < hscale ? wscale : hscale;
-        StringBuffer html = new StringBuffer("<html>");
-        html.append("<img margin=20 src='file:" + tmpImgFile + "' "
-                + "width=" + width / scale + " height=" + height / scale
-                + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
-        sp.setPreferredSize(new Dimension(300, 250));
-
-        ed.addMouseListener(new MouseAdapter() {
-
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    viewDocumentImage();
-                }
-            }
-        });
-
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
-        new File(tmpImgFile).deleteOnExit();
-        picPanel.setVisible(true);
-    }
-
-    private JPopupMenu getPhotoPopupMenu() {
-        if (null == picturePopMenu) {
-            picturePopMenu = new JPopupMenu();
-            picturePopMenu.add(new AbstractAction("Open in window") {
-
-                public void actionPerformed(ActionEvent e) {
-                    viewDocumentImage();
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Replace photo") {
-
-                public void actionPerformed(ActionEvent e) {
-                    loadDocImageFromFile();
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Save photo to file") {
-
-                public void actionPerformed(ActionEvent e) {
-                    Xemployee emp = (Xemployee) getDbObject();
-                    exportDocImage((byte[]) emp.getPhoto());
-                }
-            });
-            picturePopMenu.add(new AbstractAction("Remove photo from DB") {
-
-                public void actionPerformed(ActionEvent e) {
-                    noImage();
-                }
-            });
-        }
-        return picturePopMenu;
-    }
-
-    public static void exportDocImage(byte[] imageData) {
-        JFileChooser chooser =
-                new JFileChooser(DashBoard.readProperty("imagedir", "./"));
-
-        chooser.setFileFilter(new FileFilterOnExtension("jpg"));
-        chooser.setDialogTitle("Save photo to file");
-        chooser.setApproveButtonText("Save");
-        int retVal = chooser.showOpenDialog(null);
-        if (retVal == JFileChooser.APPROVE_OPTION) {
-            String name = chooser.getSelectedFile().getAbsolutePath();
-            File fout = new File(name);
-            if (fout.exists()) {
-                if (GeneralFrame.yesNo("Attention",
-                        "File " + name + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-            Util.writeFile(fout, imageData);
-        }
     }
 }

@@ -10,7 +10,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -19,22 +21,22 @@ import javax.swing.text.JTextComponent;
  */
 public abstract class RecordEditPanel extends JPanel {
 
+    protected static JLabel[] createLabelsArray(String[] titles) {
+        JLabel[] lblArray = new JLabel[titles.length];
+        int n = 0;
+        for (String t : titles) {
+            lblArray[n++] = new JLabel(t, SwingConstants.RIGHT);
+        }
+        return lblArray;
+    }
+
     private DbObject dbObject;
     protected JPanel lblPanel;
     protected JPanel editPanel;
     protected JPanel upPanel;
     protected PagesPanel pagesdPanel;
-
-//    protected void organizePanels(String[] labels, JComponent[] edits) {
-//        setLayout(new BorderLayout());
-//        lblPanel = new JPanel(new GridLayout(labels.length, 1, 5, 5));
-//        editPanel = new JPanel(new GridLayout(edits.length, 1, 5, 5));
-//        upPanel = new JPanel(new BorderLayout());
-//        add(upPanel, BorderLayout.NORTH);
-//        upPanel.add(lblPanel, BorderLayout.WEST);
-//        upPanel.add(editPanel, BorderLayout.CENTER);
-//        upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
-//    }
+    protected JComponent[] edits;
+    protected JLabel[] labels;
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -46,7 +48,6 @@ public abstract class RecordEditPanel extends JPanel {
         upPanel.add(editPanel, BorderLayout.CENTER);
         upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
     }
-    
     
     protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
         JPanel comboBoxPanel = new JPanel(new BorderLayout());

@@ -151,8 +151,8 @@ public class DbConnection {
         + "    rate            int not null,"
         + "    xposition_id    int,"
         + "    photo          other,"
-        + "    constraint xoperator_pk primary key (xoperator_id),"
-        + "    constraint xoperator_xposition_fk foreign key (xposition_id) references xposition"
+        + "    constraint xemployee_pk primary key (xemployee_id),"
+        + "    constraint xemployeer_xposition_fk foreign key (xposition_id) references xposition"
         + ")",
         "create cached table xtimesheet"
         + "("

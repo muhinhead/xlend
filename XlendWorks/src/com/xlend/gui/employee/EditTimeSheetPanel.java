@@ -211,7 +211,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         JTabbedPane tp = new JTabbedPane();
         WagesGrid wagesGrid = null;
         Xtimesheet ts = (Xtimesheet) getDbObject();
-        int timesheet_id = ts.getXtimesheetId();
+        int timesheet_id = ts == null ? 0 : ts.getXtimesheetId();
         try {
             wagesGrid = new WagesGrid(DashBoard.getExchanger(),
                     Selects.SELECT_WAGE4TIMESHEET.replace("#", "" + timesheet_id), false);

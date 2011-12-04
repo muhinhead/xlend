@@ -34,14 +34,14 @@ public class EditContractOrderPanel extends EditOrderPanel {
     }
 
     /**
-     * @return the parent
+     * @return the parent xcontract
      */
     public Xcontract getXcontract() {
         return xcontract;
     }
 
     /**
-     * @param parent the parent to set
+     * @param xcontract the parent to set
      */
     public void setXcontract(Xcontract xcontract) {
         this.xcontract = xcontract;

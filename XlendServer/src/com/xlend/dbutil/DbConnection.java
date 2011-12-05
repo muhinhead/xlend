@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.dbutil;
 
 import com.xlend.XlendServer;
@@ -179,7 +175,15 @@ public class DbConnection {
         + "    stoppeddetails varchar(128),"
         + "    constraint xwage_pk primary key (xwage_id),"
         + "    constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet on delete cascade"
-        + ")"
+        + ")",
+        //versiob 0.8->0.9
+        "alter table xquotation add received date",
+        "alter table xquotation add deadline date",
+        "alter table xquotation add responded date",
+        "alter table xquotation add responsedby varchar(12)",
+        "alter table xquotation add responsecmnt varchar(128)",
+        "alter table xquotation add responsedoc other"
+        
     };
 
     public static Connection getConnection() throws RemoteException {

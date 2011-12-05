@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
@@ -139,15 +140,17 @@ public class XlendWorks {
     public static String serverSetup(String title) {
         String address = DashBoard.readProperty("ServerAddress", "localhost");
         String[] vals = address.split(":");
+        JTextField imageDirField = new JTextField(DashBoard.getProperties().getProperty("imagedir"));
         JTextField addressField = new JTextField(16);
         addressField.setText(vals[0]);
         JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
-        JComponent[] edits = new JComponent[]{addressField, portSpinner};
+        JComponent[] edits = new JComponent[]{imageDirField, addressField, portSpinner};
         new ConfigEditor(title, edits);
         if (addressField.getText().trim().length() > 0) {
             String addr = addressField.getText() + ":" + portSpinner.getValue();
             DashBoard.getProperties().setProperty("ServerAddress", addr);
+            DashBoard.getProperties().setProperty("imagedir", imageDirField.getText());
             return addr;
         } else {
             return null;
@@ -249,6 +252,24 @@ public class XlendWorks {
             for (DbObject o : clients) {
                 Xposition pos = (Xposition) o;
                 itms[i++] = new ComboItem(pos.getXpositionId(), pos.getPos());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
+    public static ComboItem[] loadAllUsers(IMessageSender exchanger) {
+        try {
+            DbObject[] users = exchanger.getDbObjects(Profile.class, "profile_id in (select profile_id from userprofile)", "last_name");
+            ComboItem[] itms = new ComboItem[users.length + 1];
+            //itms[0] = new ComboItem(0, "--Add new client--");
+            int i = 0;
+            for (DbObject o : users) {
+                Profile user = (Profile) o;
+                itms[i++] = new ComboItem(user.getProfileId(), 
+                        user.getFirstName().substring(0,1)+"."+user.getLastName());
             }
             return itms;
         } catch (RemoteException ex) {

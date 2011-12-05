@@ -5,13 +5,16 @@ import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.rmi.Naming;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -22,6 +25,7 @@ import javax.swing.SwingConstants;
  */
 public class ConfigEditor extends PopupDialog {
 
+    private JTextField imageDirField;
     private JTextField addressField;
     private JSpinner portSpinner;
     private JButton testBtn;
@@ -30,7 +34,9 @@ public class ConfigEditor extends PopupDialog {
     private AbstractAction testAction;
     private AbstractAction okAction;
     private AbstractAction cancelAction;
-    
+    private JButton chooseFldrBtn;
+    private AbstractAction chooseFldrAct;
+
     public ConfigEditor(String title, Object obj) {
         super(null, title, obj);
     }
@@ -39,36 +45,48 @@ public class ConfigEditor extends PopupDialog {
         super.fillContent();
         XlendWorks.setWindowIcon(this, "Xcost.png");
         JComponent[] comps = (JComponent[]) getObject();
-        addressField = (JTextField) comps[0];
-        portSpinner = (JSpinner) comps[1];
-        
-        JPanel upperPanel = new JPanel(new BorderLayout(5,5));
-        JPanel labelPanel = new JPanel(new GridLayout(2,1,5,5));
-        JPanel editPanel = new JPanel(new GridLayout(2,1,5,5));
-        
-        labelPanel.add(new JLabel("    Server's IP or name:", SwingConstants.RIGHT));
-        labelPanel.add(new JLabel("    Server's port:", SwingConstants.RIGHT));
+        imageDirField = (JTextField) comps[0];
+        addressField = (JTextField) comps[1];
+        portSpinner = (JSpinner) comps[2];
+
+        JPanel upperPanel = new JPanel(new BorderLayout(5, 5));
+        JPanel labelPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel editPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+
+        labelPanel.add(new JLabel(" Default document's folder:", SwingConstants.RIGHT));
+        labelPanel.add(new JLabel("Server's IP or name:", SwingConstants.RIGHT));
+        labelPanel.add(new JLabel("Server's port:", SwingConstants.RIGHT));
+
+        JPanel imageFolderPanel = new JPanel(new BorderLayout(5, 5));
+        imageFolderPanel.add(imageDirField, BorderLayout.CENTER);
+        imageFolderPanel.add(chooseFldrBtn = new JButton(chooseFldrAct = new AbstractAction("...") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chooseFolder();
+            }
+        }), BorderLayout.EAST);
+        editPanel.add(imageFolderPanel);
         editPanel.add(addressField);
         JPanel portPanel = new JPanel(new BorderLayout());
         portPanel.add(portSpinner, BorderLayout.WEST);
         editPanel.add(portPanel);
-        
+
         upperPanel.add(editPanel, BorderLayout.CENTER);
         upperPanel.add(labelPanel, BorderLayout.WEST);
         upperPanel.add(new JPanel(), BorderLayout.EAST);
-        
+
         JPanel btnPanel = new JPanel();
         btnPanel.add(testBtn = new JButton(testAction = new AbstractAction("Test connection") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: test connection
-                String serverIP = addressField.getText()+":"+portSpinner.getValue();
+                String serverIP = addressField.getText() + ":" + portSpinner.getValue();
                 try {
                     IMessageSender exch = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
-                    JOptionPane.showMessageDialog(null, "Connection successful","Ok!", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Connection successful", "Ok!", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Connection refused","Error:", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Connection refused", "Error:", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }));
@@ -78,8 +96,9 @@ public class ConfigEditor extends PopupDialog {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
-        }){});
-        btnPanel.add(cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel"){
+        }) {
+        });
+        btnPanel.add(cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,14 +107,42 @@ public class ConfigEditor extends PopupDialog {
                 dispose();
             }
         }));
-        
+
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(upperPanel, BorderLayout.NORTH);
         getContentPane().add(centerPanel, BorderLayout.CENTER);
         getContentPane().add(btnPanel, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(okBtn);
+        //addressField.setMaximumSize(imageDirField.getPreferredSize());
     }
-    
+
+    private void chooseFolder() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "*.*";
+            }
+        });
+
+        chooser.setDialogTitle("Choose folder to take attachment from");
+        chooser.setApproveButtonText("Choose");
+        int retVal = chooser.showOpenDialog(null);
+
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            imageDirField.setText(chooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
     @Override
     public void freeResources() {
         testBtn.removeActionListener(testAction);
@@ -104,6 +151,7 @@ public class ConfigEditor extends PopupDialog {
         okAction = null;
         cancelBtn.removeActionListener(cancelAction);
         cancelAction = null;
+        chooseFldrBtn.removeActionListener(chooseFldrAct);
+        chooseFldrAct = null;
     }
-    
 }

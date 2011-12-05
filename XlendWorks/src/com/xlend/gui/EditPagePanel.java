@@ -247,7 +247,7 @@ public abstract class EditPagePanel extends RecordEditPanel {
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
 //                    setEnabled(true);
-                    if ("jpg jpeg gif png".indexOf(page.getFileextension().toLowerCase()) > 0) {
+                    if ("jpg jpeg gif png".indexOf(page.getFileextension().toLowerCase()) >= 0) {
                         viewDocumentImage();
 //                    } else if (page.getFileextension().toLowerCase().equals("txt")) {
 //                        setEnabled(false);

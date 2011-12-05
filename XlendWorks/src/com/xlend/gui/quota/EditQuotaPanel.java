@@ -19,20 +19,26 @@ import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -44,9 +50,18 @@ class EditQuotaPanel extends RecordEditPanel {
     private DefaultComboBoxModel cbModel;
     private JTextField idField;
     private JTextField rfcNumField;
+    private JSpinner receivedSp;
+    private JSpinner deadlineSp;
+    private JRadioButton respYes;
+    private JRadioButton respNo;
+    private JSpinner responseDateSp;
     private JComboBox clientRefBox;
     private Xclient xclint;
     private AbstractAction clientLookupAction;
+    private JComboBox userRespondedCB;
+    private JComboBox userRespondedByCB;
+    private JTextField respCommentsField;
+    private AbstractAction showHideRFaction;
 
     public EditQuotaPanel(DbObject dbObject) {
         super(dbObject);
@@ -54,39 +69,101 @@ class EditQuotaPanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
-        String[] labels = new String[]{
-            "ID:", "RFC Nr:", "Client:"
+        showHideRFaction = new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHideResponseFields();
+            }
         };
+        String[] titles = new String[]{
+            "ID:", "RFQ Nr:",
+            "RFQ Date Received:",
+            "RFQ Deadline:",
+            "Client:",
+            "Responded:",
+            "Response Date:",
+            "User Responded:",
+            "Response Sent by:",
+            "Comments:"
+        };
+        labels = createLabelsArray(titles);
         cbModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllClients(DashBoard.getExchanger())) {
             cbModel.addElement(ci);
         }
-        JComponent[] edits = new JComponent[]{
+        edits = new JComponent[]{
             idField = new JTextField(),
             rfcNumField = new JTextField(),
-            clientRefBox = new JComboBox(cbModel)
+            receivedSp = new JSpinner(new SpinnerDateModel()),
+            deadlineSp = new JSpinner(new SpinnerDateModel()),
+            clientRefBox = new JComboBox(cbModel),
+            respYes = new JRadioButton("Yes"),
+            respNo = new JRadioButton("No", true),
+            responseDateSp = new JSpinner(new SpinnerDateModel()),
+            userRespondedCB = new JComboBox(XlendWorks.loadAllUsers(DashBoard.getExchanger())),
+            userRespondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
+            respCommentsField = new JTextField()
         };
         idField.setEditable(false);
-        organizePanels(labels, edits);
+        organizePanels();
     }
-    
-    protected void organizePanels(String[] labels, JComponent[] edits) {
-        super.organizePanels(labels.length, edits.length);
-        for (String lbl : labels) {
-            lblPanel.add(new JLabel(lbl, SwingConstants.RIGHT));
-        }
+
+    protected void organizePanels() {
+        super.organizePanels(6, 6);
         for (int i = 0; i < 2; i++) {
+            lblPanel.add(labels[i]);
             JPanel halfPanel = new JPanel(new GridLayout(1, 3));
             halfPanel.add(edits[i]);
-            halfPanel.add(new JPanel());
-            halfPanel.add(new JPanel());
+            halfPanel.add(labels[i + 2]);
+            halfPanel.add(edits[i + 2]);
             editPanel.add(halfPanel);
         }
+        lblPanel.add(labels[4]);
+        lblPanel.add(labels[5]);
         editPanel.add(comboPanelWithLookupBtn(clientRefBox, clientLookupAction = clientRefLookup()));
+        JPanel respPanel = new JPanel(new GridLayout(1, 3));
+        JPanel yesNoPanel = new JPanel(new GridLayout(1, 2));
+        yesNoPanel.add(respNo);
+        yesNoPanel.add(respYes);
+
+        respYes.addActionListener(showHideRFaction);
+        respNo.addActionListener(showHideRFaction);
+
+        respPanel.add(yesNoPanel);
+        respPanel.add(labels[6]);
+        ButtonGroup group = new ButtonGroup();
+        group.add(respNo);
+        group.add(respYes);
+        respPanel.add(responseDateSp);
+        editPanel.add(respPanel);
+
+        lblPanel.add(labels[7]);
+
+        JPanel userRespPanel = new JPanel(new GridLayout(1, 3));
+        userRespPanel.add(userRespondedCB);
+        userRespPanel.add(labels[8]);
+        userRespPanel.add(userRespondedByCB);
+        editPanel.add(userRespPanel);
+
+        lblPanel.add(labels[9]);
+        editPanel.add(respCommentsField);
+
         try {
             add(getTabbedPanel(), BorderLayout.CENTER);
         } catch (RemoteException ex) {
             Logger.getLogger(EditQuotaPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void showHideResponseFields() {
+        boolean show = respYes.isSelected();
+        responseDateSp.setVisible(show);
+        userRespondedCB.setVisible(show);
+        userRespondedByCB.setVisible(show);
+        respCommentsField.setVisible(show);
+        for (int i = 6; i < 10; i++) {
+            labels[i].setVisible(show);
         }
     }
 
@@ -97,6 +174,10 @@ class EditQuotaPanel extends RecordEditPanel {
             idField.setText(xq.getXquotationId().toString());
             rfcNumField.setText(xq.getRfcnumber());
             selectComboItem(clientRefBox, xq.getXclientId());
+            
+            respYes.setSelected(xq.getResponded()!=null);
+//            respYes.setSelected(xq.getResponded()==null);
+            showHideResponseFields();
         }
     }
 

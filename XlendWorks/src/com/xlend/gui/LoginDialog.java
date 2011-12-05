@@ -159,7 +159,7 @@ public class LoginDialog extends PopupDialog {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newAddress = XlendWorks.serverSetup("Server's location");
+                String newAddress = XlendWorks.serverSetup("Options");
                 if (newAddress != null) {
                     DashBoard.getProperties().setProperty("ServerAddress", newAddress);
                     try {

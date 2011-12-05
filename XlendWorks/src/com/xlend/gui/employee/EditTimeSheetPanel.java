@@ -15,6 +15,8 @@ import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xtimesheet;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -76,11 +78,14 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
-            weekendSp = new JSpinner(new SpinnerDateModel()),
+            weekendSp = new SelectedDateSpinner(),
             clientRefBox = new JComboBox(clientCbModel),
             siteRefBox = new JComboBox(siteCbModel),
             clockSheetChB = new JCheckBox()
         };
+        weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(weekendSp);
+        
         idField.setEditable(false);
         organizePanels(labels.length + 2, labels.length + 2);
         for (int i = 0; i < labels.length; i++) {
@@ -101,7 +106,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             }
         }
         clientRefBox.addActionListener(getClientRefChangedAction());
-        weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
+//        weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
         add(getTabbedPanel(), BorderLayout.CENTER);
     }
 

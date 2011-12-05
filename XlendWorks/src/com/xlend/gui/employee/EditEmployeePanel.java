@@ -13,6 +13,8 @@ import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -100,10 +102,17 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             addressField = new JTextField(),
             positionCB = new JComboBox(cbModel),
             contractLenCB = new JComboBox(durations),
-            contractStartSP = new JSpinner(new SpinnerDateModel()),
-            contractEndSP = new JSpinner(new SpinnerDateModel()),
+            contractStartSP = new SelectedDateSpinner(),
+            contractEndSP = new SelectedDateSpinner(),
             rateSP = new JSpinner(new SpinnerNumberModel(0, 0, 10000, 10))
         };
+        
+        contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "yyyy/MM/dd"));
+        Util.addFocusSelectAllAction(contractStartSP);
+        
+        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "yyyy/MM/dd"));
+        Util.addFocusSelectAllAction(contractEndSP);
+        
         setEndDateVisible(true);
 
         idField.setEditable(false);

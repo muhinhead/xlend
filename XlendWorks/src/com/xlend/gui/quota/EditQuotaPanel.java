@@ -16,6 +16,8 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -23,6 +25,9 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +36,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -40,6 +46,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -95,16 +103,24 @@ class EditQuotaPanel extends RecordEditPanel {
         edits = new JComponent[]{
             idField = new JTextField(),
             rfcNumField = new JTextField(),
-            receivedSp = new JSpinner(new SpinnerDateModel()),
-            deadlineSp = new JSpinner(new SpinnerDateModel()),
+            receivedSp = new SelectedDateSpinner(),
+            deadlineSp = new SelectedDateSpinner(),
             clientRefBox = new JComboBox(cbModel),
             respYes = new JRadioButton("Yes"),
             respNo = new JRadioButton("No", true),
-            responseDateSp = new JSpinner(new SpinnerDateModel()),
+            responseDateSp = new SelectedDateSpinner(),
             userRespondedCB = new JComboBox(XlendWorks.loadAllUsers(DashBoard.getExchanger())),
             userRespondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
             respCommentsField = new JTextField()
         };
+        receivedSp.setEditor(new JSpinner.DateEditor(receivedSp, "yyyy/MM/dd"));
+        deadlineSp.setEditor(new JSpinner.DateEditor(deadlineSp, "yyyy/MM/dd HH:mm"));
+        responseDateSp.setEditor(new JSpinner.DateEditor(responseDateSp, "yyyy/MM/dd"));
+        
+        Util.addFocusSelectAllAction(receivedSp);
+        Util.addFocusSelectAllAction(deadlineSp);
+        Util.addFocusSelectAllAction(responseDateSp);
+                
         idField.setEditable(false);
         organizePanels();
     }
@@ -176,9 +192,9 @@ class EditQuotaPanel extends RecordEditPanel {
             selectComboItem(clientRefBox, xq.getXclientId());
             
             respYes.setSelected(xq.getResponded()!=null);
-//            respYes.setSelected(xq.getResponded()==null);
             showHideResponseFields();
         }
+        showHideResponseFields();
     }
 
     @Override

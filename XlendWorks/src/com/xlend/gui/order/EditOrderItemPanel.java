@@ -7,6 +7,8 @@ import com.xlend.gui.RecordEditPanel;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xorderitem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.rmi.RemoteException;
@@ -64,16 +66,20 @@ public class EditOrderItemPanel extends RecordEditPanel {
             new JScrollPane(descriptionField = new JTextArea(4, 20),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
-            requiredDateSpin = new JSpinner(new SpinnerDateModel()),
-            deliverDateSpin = new JSpinner(new SpinnerDateModel()),
+            requiredDateSpin = new SelectedDateSpinner(),
+            deliverDateSpin = new SelectedDateSpinner(),
             quantitySpin = new JSpinner(new SpinnerNumberModel()),
             measureItemCB = new JComboBox(distinctMeasureItems()),
             priceOneSpin = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1000000.00, 1.11))
         };
+        
         machineTypeCB.setEditable(true);
         measureItemCB.setEditable(true);
         requiredDateSpin.setEditor(new JSpinner.DateEditor(requiredDateSpin, "dd/MM/yyyy"));
         deliverDateSpin.setEditor(new JSpinner.DateEditor(deliverDateSpin, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(requiredDateSpin);
+        Util.addFocusSelectAllAction(deliverDateSpin);
+        
         descriptionField.setWrapStyleWord(true);
         descriptionField.setLineWrap(true);
         organizePanels(labels, edits);

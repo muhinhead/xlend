@@ -20,6 +20,8 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -96,7 +98,7 @@ public class EditOrderPanel extends RecordEditPanel {
             vatNumber = new JTextField(),
             regNumber = new JTextField(),
             ordNumber = new JTextField(),
-            ordDate = new JSpinner(new SpinnerDateModel()),
+            ordDate = new SelectedDateSpinner(),
             contactName = new JTextField(),
             contactPhone = new JTextField(),
             contactFax = new JTextField(),
@@ -105,6 +107,7 @@ public class EditOrderPanel extends RecordEditPanel {
         };
         clientRefBox.addActionListener(getClientRefChangedAction());
         ordDate.setEditor(new JSpinner.DateEditor(ordDate, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(ordDate);
         organizePanels(labels, edits);
     }
 

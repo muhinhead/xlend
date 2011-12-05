@@ -3,6 +3,8 @@ package com.xlend.gui;
 import com.xlend.orm.Clientprofile;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.GridLayout;
 import java.util.Date;
 import javax.swing.JComboBox;
@@ -48,22 +50,16 @@ public class EditClientPanel extends ProfilePanel {
 
         JComponent[] edits = new JComponent[]{
             new JPanel(),
-//            clientGroupBox = new JComboBox(clientGroups = getClientGroups()),
-            birthDaySpinner = new JSpinner(new SpinnerDateModel()),
-//            spouseFirstNameField = new JTextField(),
-//            spouseLastNameField = new JTextField(),
-//            spouseBirthDaySpinner = new JSpinner(new SpinnerDateModel()),
-//            spouseEmailField = new JTextField(),
+            birthDaySpinner = new SelectedDateSpinner(),
             sourceTypeBox = new JComboBox(new String[]{"Phonebook", "Referral", "Location", "Others"}),
             sourceDescrField = new JTextField(),
             salesPotentialSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 100)),
             new JPanel(),
             salesPersonBox = new JComboBox(salesPersons = getSalesPersons())
         };
-        JSpinner.DateEditor de1 = new JSpinner.DateEditor(birthDaySpinner, "yyyy/MM/dd");
-        birthDaySpinner.setEditor(de1);
-//        JSpinner.DateEditor de2 = new JSpinner.DateEditor(spouseBirthDaySpinner, "yyyy/MM/dd");
-//        spouseBirthDaySpinner.setEditor(de2);
+        
+        birthDaySpinner.setEditor(new JSpinner.DateEditor(birthDaySpinner, "yyyy/MM/dd"));
+        Util.addFocusSelectAllAction(birthDaySpinner);
 
         organizePanels(labels.length, edits.length);
         for (int i = 0; i < labels.length; i++) {

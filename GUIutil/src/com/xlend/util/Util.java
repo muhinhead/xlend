@@ -1,6 +1,8 @@
 package com.xlend.util;
 
 import java.awt.Image;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JSpinner;
+import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -59,5 +64,20 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void addFocusSelectAllAction(JSpinner spinner) {
+        ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusGained(final FocusEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        ((JTextComponent) e.getSource()).selectAll();
+                    }
+                });
+            }
+        });
     }
 }

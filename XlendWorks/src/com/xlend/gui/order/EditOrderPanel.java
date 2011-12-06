@@ -56,8 +56,8 @@ public class EditOrderPanel extends RecordEditPanel {
     protected JComboBox contractRefBox;
     protected JComboBox clientRefBox;
     protected JComboBox rfcRefBox;
-    private JTextField vatNumber;
-    private JTextField regNumber;
+//    private JTextField vatNumber;
+//    private JTextField regNumber;
     private JTextField ordNumber;
     private JSpinner ordDate;
     private JTextField contactName;
@@ -77,7 +77,8 @@ public class EditOrderPanel extends RecordEditPanel {
         String[] labels = new String[]{
             "ID:",
             "Client:", "Contract Ref:", "RFQ:",
-            "Vat Nr:",//"Registration No.:",
+            //            "Vat Nr:",//"Registration No.:",
+            //            "",
             "PO Number:", //"PO Date:", 
             "Contact Person:",
             "Contact Phone:", //"Contact Fax:",
@@ -95,8 +96,8 @@ public class EditOrderPanel extends RecordEditPanel {
             clientRefBox = new JComboBox(clienCBModel),
             contractRefBox = new JComboBox(contractCBModel),
             rfcRefBox = new JComboBox(rfqRefCBModel),
-            vatNumber = new JTextField(),
-            regNumber = new JTextField(),
+            //            vatNumber = new JTextField(),
+            //            regNumber = new JTextField(),
             ordNumber = new JTextField(),
             ordDate = new SelectedDateSpinner(),
             contactName = new JTextField(),
@@ -136,28 +137,22 @@ public class EditOrderPanel extends RecordEditPanel {
         upedit.add(comboPanelWithLookupBtn(contractRefBox, contractRefLookup()));
         upedit.add(comboPanelWithLookupBtn(rfcRefBox, rfcRefRefLookup()));
 
-        JPanel vatregPanel = new JPanel(new GridLayout(1, 3));
-        vatregPanel.add(edits[4]);
-        vatregPanel.add(new JLabel(" Registration Nr:", SwingConstants.RIGHT));
-        vatregPanel.add(edits[5]);
-        upedit.add(vatregPanel);
-
         JPanel poPanel = new JPanel(new GridLayout(1, 3));
-        poPanel.add(edits[6]);
+        poPanel.add(edits[4]);
         poPanel.add(new JLabel(" PO Date:", SwingConstants.RIGHT));
-        poPanel.add(edits[7]);
+        poPanel.add(edits[5]);
         upedit.add(poPanel);
 
-        upedit.add(edits[8]);
+        upedit.add(edits[6]);
 
         JPanel phoneFaxPanel = new JPanel(new GridLayout(1, 3));
-        phoneFaxPanel.add(edits[9]);
+        phoneFaxPanel.add(edits[7]);
         phoneFaxPanel.add(new JLabel(" Contact Fax:", SwingConstants.RIGHT));
-        phoneFaxPanel.add(edits[10]);
+        phoneFaxPanel.add(edits[8]);
         upedit.add(phoneFaxPanel);
 
-        upedit.add(edits[11]);
-        upedit.add(edits[12]);
+        upedit.add(edits[9]);
+        upedit.add(edits[10]);
 
         form.add(upper, BorderLayout.NORTH);
         form.add(getTabbedPanel(), BorderLayout.CENTER);
@@ -173,8 +168,6 @@ public class EditOrderPanel extends RecordEditPanel {
             syncCombos();
             selectComboItem(contractRefBox, xorder.getXcontractId());
             selectComboItem(rfcRefBox, xorder.getXquotationId());
-            vatNumber.setText(xorder.getVatnumber());
-            regNumber.setText(xorder.getRegnumber());
             ordNumber.setText(xorder.getOrdernumber());
             Date sqlDt = xorder.getOrderdate();
             ordDate.setValue(new java.util.Date(sqlDt.getTime()));//?
@@ -215,8 +208,8 @@ public class EditOrderPanel extends RecordEditPanel {
                 xorder.setXcontractId(itm.getId() > 0 ? itm.getId() : null);
                 itm = (ComboItem) rfcRefBox.getSelectedItem();
                 xorder.setXquotationId(itm.getId() > 0 ? itm.getId() : null);
-                xorder.setVatnumber(vatNumber.getText());
-                xorder.setRegnumber(regNumber.getText());
+//                xorder.setVatnumber(vatNumber.getText());
+//                xorder.setRegnumber(regNumber.getText());
                 xorder.setOrdernumber(ordNumber.getText());
                 java.util.Date dt = (java.util.Date) ordDate.getValue();
                 xorder.setOrderdate(new Date(dt.getTime()));

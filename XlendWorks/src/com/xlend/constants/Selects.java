@@ -49,20 +49,28 @@ public class Selects {
             "Select xcontractpage_id \"Id\", pagenum \"Ind.No\", description \"Notes\" "
             + "from xcontractpage where xcontract_id = # order by pagenum";
     public static final String SELECT_FROM_ORDERS =
-            "Select xorder_id \"Id\", xclient.companyname \"Company\", vatnumber \"Vat.number\", "
-            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            "Select xorder_id \"Id\", xclient.companyname \"Company\", "
+//            + "vatnumber \"Vat.number\", "
+//            + "regnumber \"Registration No\", "
+            + "ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
     public static final String SELECT_ORDERS4LOOKUP =
-            "Select xorder_id \"Id\", xclient.companyname \"Company\", vatnumber \"Vat.number\", "
-            + "regnumber \"Registration No\", ordernumber \"Order No\" "
+            "Select xorder_id \"Id\", xclient.companyname \"Company\", "
+//            + "vatnumber \"Vat.number\", "
+//            + "regnumber \"Registration No\", "
+            + "ordernumber \"Order No\" "
             + "from xorder, xclient where xclient.xclient_id=xorder.xclient_id";
     public static final String SELECT_ORDERS4CONTRACTS =
-            "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
-            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            "Select xorder_id \"Id\", "
+//            + "vatnumber \"Vat.number\", "
+//            + "regnumber \"Registration No\", "
+            + "ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder where xcontract_id = #";
     public static final String SELECT_ORDERS4CLIENT =
-            "Select xorder_id \"Id\", vatnumber \"Vat.number\", "
-            + "regnumber \"Registration No\", ordernumber \"Order No\", orderdate \"Order date\" "
+            "Select xorder_id \"Id\", "
+//            + "vatnumber \"Vat.number\", "
+//            + "regnumber \"Registration No\", "
+            + "ordernumber \"Order No\", orderdate \"Order date\" "
             + "from xorder where xclient_id = #";
     public static final String SELECT_FROM_QUOTATIONS =
             "Select xquotation_id \"Id\", xclient.companyname \"Company\", "
@@ -91,15 +99,15 @@ public class Selects {
     public static String SELECT_FROM_TIMESHEET = 
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
-            + "e.sur_name \"Surename\", s.name \"Site\", c.companyname \"Customer\" "
-            + "from xtimesheet t,xemployee e, xsite s, xclient c "
+            + "e.sur_name \"Surename\", s.name \"Site\", o.ordernumber \"Order Nr\" "
+            + "from xtimesheet t,xemployee e, xsite s, xorder o "
             + "where t.xemployee_id=e.xemployee_id "
-            + "and t.xsite_id=s.xsite_id and t.xclient_id=c.xclient_id";
+            + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id";
     public static String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
-            + "s.name \"Site\", c.companyname \"Customer\" "
-            + "from xtimesheet t, xsite s, xclient c "
-            + "where t.xsite_id=s.xsite_id and t.xclient_id=c.xclient_id and t.xemployee_id = #";
+            + "s.name \"Site\", o.ordernumber \"Order Nr\" "
+            + "from xtimesheet t, xsite s, xorder o "
+            + "where t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id and t.xemployee_id = #";
     public static String SELECT_WAGE4TIMESHEET =
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
             + "overtime \"Over Time\", doubletime \"Double Time\", stoppeddetails \"Details\" "

@@ -6,12 +6,14 @@ package com.xlend.gui.quota;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.EditPanelWithPhoto;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
+import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.dbobject.ComboItem;
@@ -21,13 +23,8 @@ import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,24 +33,18 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author nick
  */
-class EditQuotaPanel extends RecordEditPanel {
+class EditQuotaPanel extends EditPanelWithPhoto {
 
     private DefaultComboBoxModel cbModel;
     private JTextField idField;
@@ -67,9 +58,10 @@ class EditQuotaPanel extends RecordEditPanel {
     private Xclient xclint;
     private AbstractAction clientLookupAction;
     private JComboBox userRespondedCB;
-    private JComboBox userRespondedByCB;
+    private JComboBox respondedByCB;
     private JTextField respCommentsField;
     private AbstractAction showHideRFaction;
+    private JTabbedPane tabbedPane;
 
     public EditQuotaPanel(DbObject dbObject) {
         super(dbObject);
@@ -110,17 +102,17 @@ class EditQuotaPanel extends RecordEditPanel {
             respNo = new JRadioButton("No", true),
             responseDateSp = new SelectedDateSpinner(),
             userRespondedCB = new JComboBox(XlendWorks.loadAllUsers(DashBoard.getExchanger())),
-            userRespondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
+            respondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
             respCommentsField = new JTextField()
         };
         receivedSp.setEditor(new JSpinner.DateEditor(receivedSp, "yyyy/MM/dd"));
         deadlineSp.setEditor(new JSpinner.DateEditor(deadlineSp, "yyyy/MM/dd HH:mm"));
         responseDateSp.setEditor(new JSpinner.DateEditor(responseDateSp, "yyyy/MM/dd"));
-        
+
         Util.addFocusSelectAllAction(receivedSp);
         Util.addFocusSelectAllAction(deadlineSp);
         Util.addFocusSelectAllAction(responseDateSp);
-                
+
         idField.setEditable(false);
         organizePanels();
     }
@@ -159,7 +151,7 @@ class EditQuotaPanel extends RecordEditPanel {
         JPanel userRespPanel = new JPanel(new GridLayout(1, 3));
         userRespPanel.add(userRespondedCB);
         userRespPanel.add(labels[8]);
-        userRespPanel.add(userRespondedByCB);
+        userRespPanel.add(respondedByCB);
         editPanel.add(userRespPanel);
 
         lblPanel.add(labels[9]);
@@ -172,15 +164,23 @@ class EditQuotaPanel extends RecordEditPanel {
         }
     }
 
+    @Override
+    protected JComponent getRightUpperPanel() {
+        return new JPanel();
+    }
+
     private void showHideResponseFields() {
         boolean show = respYes.isSelected();
         responseDateSp.setVisible(show);
         userRespondedCB.setVisible(show);
-        userRespondedByCB.setVisible(show);
+        respondedByCB.setVisible(show);
         respCommentsField.setVisible(show);
         for (int i = 6; i < 10; i++) {
             labels[i].setVisible(show);
         }
+//        if (tabbedPane != null && tabbedPane.getTabComponentAt(1) != null) {
+//            tabbedPane.getTabComponentAt(1).setVisible(show);
+//        }
     }
 
     @Override
@@ -190,9 +190,30 @@ class EditQuotaPanel extends RecordEditPanel {
             idField.setText(xq.getXquotationId().toString());
             rfcNumField.setText(xq.getRfcnumber());
             selectComboItem(clientRefBox, xq.getXclientId());
-            
-            respYes.setSelected(xq.getResponded()!=null);
-            showHideResponseFields();
+            if (xq.getReceived() != null) {
+                receivedSp.setValue(new java.util.Date(xq.getReceived().getTime()));
+            }
+            if (xq.getDeadline() != null) {
+                deadlineSp.setValue(new java.util.Date(xq.getDeadline().getTime()));
+            }
+            if (xq.getResponded() != null) {
+                responseDateSp.setValue(new java.util.Date(xq.getResponded().getTime()));
+            }
+            if (xq.getResponderId() != null) {
+                selectComboItem(userRespondedCB, xq.getResponderId());
+            } else {
+                Userprofile curuser = XlendWorks.getCurrentUser();
+                selectComboItem(userRespondedCB, curuser.getProfileId());
+            }
+            if (xq.getResponsedby() != null) {
+                respondedByCB.setSelectedItem(xq.getResponsedby());
+            }
+            if (xq.getResponsecmnt() != null) {
+                respCommentsField.setText(xq.getResponsecmnt());
+            }
+            respYes.setSelected(xq.getResponded() != null);
+            imageData = (byte[]) xq.getResponsedoc();
+            setImage(imageData);
         }
         showHideResponseFields();
     }
@@ -206,7 +227,7 @@ class EditQuotaPanel extends RecordEditPanel {
             xq.setXquotationId(0);
             isNew = true;
         }
-        xq.setRfcnumber(rfcNumField.getText());
+
         ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
         if (itm.getValue().startsWith("--")) { // add new client
             EditClientDialog ecd = new EditClientDialog("New Client", null);
@@ -222,6 +243,31 @@ class EditQuotaPanel extends RecordEditPanel {
             try {
                 xq.setXclientId(itm.getId());
                 xq.setNew(isNew);
+                xq.setRfcnumber(rfcNumField.getText());
+
+                java.util.Date dt = (java.util.Date) receivedSp.getValue();
+                xq.setReceived(dt != null ? new java.sql.Date(dt.getTime()) : null);
+
+                dt = (java.util.Date) deadlineSp.getValue();
+                xq.setDeadline(dt != null ? new java.sql.Date(dt.getTime()) : null);
+
+                if (respYes.isSelected()) {
+                    dt = (java.util.Date) responseDateSp.getValue();
+                    xq.setResponded(dt != null ? new java.sql.Date(dt.getTime()) : null);
+
+                    itm = (ComboItem) userRespondedCB.getSelectedItem();
+                    xq.setResponderId(itm.getId());
+
+                    xq.setResponsedby((String) respondedByCB.getSelectedItem());
+                    xq.setResponsedoc(imageData);
+                } else {
+                    xq.setResponded(null);
+                    xq.setResponderId(null);
+                    xq.setResponsedby(null);
+                    xq.setResponsedoc(null);
+                }
+                xq.setResponsecmnt(respCommentsField.getText());
+
                 DbObject saved = DashBoard.getExchanger().saveDbObject(xq);
                 setDbObject(saved);
                 pagesdPanel.saveNewPages(((Xquotation) saved).getXquotationId());
@@ -250,7 +296,7 @@ class EditQuotaPanel extends RecordEditPanel {
     }
 
     private Component getTabbedPanel() throws RemoteException {
-        JTabbedPane tp = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
 
         try {
             Xquotation q = (Xquotation) getDbObject();
@@ -260,10 +306,11 @@ class EditQuotaPanel extends RecordEditPanel {
             XlendWorks.log(ex);
         }
         JScrollPane sp;
-        tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
+        tabbedPane.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
         sp.setPreferredSize(new Dimension(500, 150));
+        tabbedPane.add(getPicPanel(), "Response Document");
 
-        return tp;
+        return tabbedPane;
     }
 
     void setXclient(Xclient xclient) {

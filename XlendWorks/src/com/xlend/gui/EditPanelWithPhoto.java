@@ -98,13 +98,20 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
     protected JComponent getRightUpperPanel() {
         JPanel rightPanel = new JPanel(new BorderLayout());
         if (picPanel == null) {
-            picPanel = new JPanel(new BorderLayout());
-            picPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), getImagePanelLabel()));
+            rightPanel.add(getPicPanel(), BorderLayout.CENTER);
+            picPanel.setBorder(BorderFactory.createTitledBorder(
+                    BorderFactory.createEtchedBorder(), getImagePanelLabel()));
             picPanel.setPreferredSize(new Dimension(500, picPanel.getPreferredSize().height));
-            noImage();
-            rightPanel.add(picPanel, BorderLayout.CENTER);
         }
         return rightPanel;
+    }
+    
+    public JPanel getPicPanel() {
+        if (picPanel == null) {
+            picPanel = new JPanel(new BorderLayout());
+            noImage();
+        }
+        return picPanel;
     }
 
     private JButton getLoadPictureButton() {

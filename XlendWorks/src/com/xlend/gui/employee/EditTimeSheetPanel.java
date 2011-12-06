@@ -10,6 +10,7 @@ import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.gui.hr.WagesGrid;
 import com.xlend.gui.work.ClientsGrid;
+import com.xlend.gui.work.OrdersGrid;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xtimesheet;
@@ -23,7 +24,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
 
 /**
  *
@@ -43,15 +42,15 @@ import javax.swing.SpinnerDateModel;
 public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
     private DefaultComboBoxModel employeeCbModel = new DefaultComboBoxModel();
-    private DefaultComboBoxModel clientCbModel = new DefaultComboBoxModel();
+    private DefaultComboBoxModel orderCbModel = new DefaultComboBoxModel();
     private DefaultComboBoxModel siteCbModel = new DefaultComboBoxModel();
     private JTextField idField;
     private JSpinner weekendSp;
     private JComboBox employeeRefBox;
-    private JComboBox clientRefBox;
+    private JComboBox orderRefBox;
     private JComboBox siteRefBox;
     private JCheckBox clockSheetChB;
-    private AbstractAction clientLookupAction;
+    private AbstractAction ordLookupAction;
     private AbstractAction employeeLookup;
     private Xemployee xemployee;
 
@@ -62,30 +61,30 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         employeeCbModel = new DefaultComboBoxModel();
-        clientCbModel = new DefaultComboBoxModel();
+        orderCbModel = new DefaultComboBoxModel();
         siteCbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             employeeCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadAllClients(DashBoard.getExchanger())) {
-            clientCbModel.addElement(itm);
+        for (ComboItem itm : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
+            orderCbModel.addElement(itm);
         }
         siteCbModel.addElement(new ComboItem(0, "-- unknown --"));
         String[] titles = new String[]{
-            "ID:", "Operator:", "Week Ending:", "Customer:", "Site:", "Clock Sheet:"
+            "ID:", "Operator:", "Week Ending:", "Order:", "Site:", "Clock Sheet:"
         };
         labels = createLabelsArray(titles);
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
             weekendSp = new SelectedDateSpinner(),
-            clientRefBox = new JComboBox(clientCbModel),
+            orderRefBox = new JComboBox(orderCbModel),
             siteRefBox = new JComboBox(siteCbModel),
             clockSheetChB = new JCheckBox()
         };
         weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(weekendSp);
-        
+
         idField.setEditable(false);
         organizePanels(labels.length + 2, labels.length + 2);
         for (int i = 0; i < labels.length; i++) {
@@ -100,13 +99,12 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             } else if (i == 1) {
                 editPanel.add(comboPanelWithLookupBtn(employeeRefBox, employeeLookup = employeeLookup()));
             } else if (i == 3) {
-                editPanel.add(comboPanelWithLookupBtn(clientRefBox, clientLookupAction = clientRefLookup()));
+                editPanel.add(comboPanelWithLookupBtn(orderRefBox, ordLookupAction = orderLookup()));
             } else {
                 editPanel.add(edits[i]);
             }
         }
-        clientRefBox.addActionListener(getClientRefChangedAction());
-//        weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
+        orderRefBox.addActionListener(getClientRefChangedAction());
         add(getTabbedPanel(), BorderLayout.CENTER);
     }
 
@@ -117,7 +115,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             Date dt;
             idField.setText(ts.getXtimesheetId().toString());
             selectComboItem(employeeRefBox, ts.getXemployeeId());
-            selectComboItem(clientRefBox, ts.getXclientId());
+            selectComboItem(orderRefBox, ts.getXorderId());
             selectComboItem(siteRefBox, ts.getXsiteId());
             clockSheetChB.setSelected(ts.getClocksheet() != null && ts.getClocksheet() == 1);
             if (ts.getWeekend() != null) {
@@ -137,15 +135,15 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             ts.setXtimesheetId(0);
             isNew = true;
         }
-        ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+        ComboItem itm = (ComboItem) orderRefBox.getSelectedItem();
         if (itm.getId() == 0) { // add new client
             EditClientDialog ecd = new EditClientDialog("New Client", null);
             if (EditClientDialog.okPressed) {
                 Xclient cl = (Xclient) ecd.getEditPanel().getDbObject();
                 if (cl != null) {
                     ComboItem ci = new ComboItem(cl.getXclientId(), cl.getCompanyname());
-                    clientCbModel.addElement(ci);
-                    clientRefBox.setSelectedItem(ci);
+                    orderCbModel.addElement(ci);
+                    orderRefBox.setSelectedItem(ci);
                 }
             }
         } else {
@@ -155,8 +153,8 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 GeneralFrame.errMessageBox("Error:", "Date entered is not Sunday!");
             } else {
                 try {
-                    Integer id = ((ComboItem) clientRefBox.getSelectedItem()).getId();
-                    ts.setXclientId(id != null && id > 0 ? id : null);
+                    Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
+                    ts.setXorderId(id != null && id > 0 ? id : null);
                     id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
                     ts.setXemployeeId(id != null && id > 0 ? id : null);
                     id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
@@ -178,22 +176,22 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         return "Scanned Timesheet";
     }
 
-    private AbstractAction clientRefLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
-                            new String[]{"clientcode", "companyname"});
-                } catch (RemoteException ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-
-            }
-        };
-    }
+//    private AbstractAction clientRefLookup() {
+//        return new AbstractAction("...") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    LookupDialog ld = new LookupDialog("Client Lookup", orderRefBox,
+//                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
+//                            new String[]{"clientcode", "companyname"});
+//                } catch (RemoteException ex) {
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//
+//            }
+//        };
+//    }
 
     private AbstractAction employeeLookup() {
         return new AbstractAction("...") {
@@ -240,9 +238,9 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     }
 
     private void syncCombos() {
-        ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
+        ComboItem itm = (ComboItem) orderRefBox.getSelectedItem();
         siteCbModel.removeAllElements();
-        for (ComboItem ci : XlendWorks.loadAllClientSites(DashBoard.getExchanger(), itm.getId())) {
+        for (ComboItem ci : XlendWorks.loadAllOrderSites(DashBoard.getExchanger(), itm.getId())) {
             siteCbModel.addElement(ci);
         }
         siteRefBox.setModel(siteCbModel);
@@ -254,5 +252,22 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             selectComboItem(employeeRefBox, xemployee.getXemployeeId());
             employeeRefBox.setEnabled(false);
         }
+    }
+
+    private AbstractAction orderLookup() {
+        return new AbstractAction("...") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    LookupDialog ld = new LookupDialog("Order Lookup", orderRefBox,
+                            new OrdersGrid(DashBoard.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
+                            new String[]{"companyname", 
+                                "ordernumber"});
+                } catch (RemoteException ex) {
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
     }
 }

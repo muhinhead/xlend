@@ -92,8 +92,8 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xorder itm = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
-                    if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract [RegNr_"
-                            + itm.getRegnumber() + "]?") == JOptionPane.YES_OPTION) {
+                    if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete order [Nr_"
+                            + itm.getOrdernumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
                                 getTableDoc(), getSelect(), null);

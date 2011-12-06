@@ -208,10 +208,10 @@ public class XlendWorks {
         return null;
     }
     
-    public static ComboItem[] loadAllClientSites(IMessageSender exchanger, int client_id) {
+    public static ComboItem[] loadAllOrderSites(IMessageSender exchanger, int order_id) {
         try {
             DbObject[] rfqs = exchanger.getDbObjects(Xsite.class, 
-                    "xorder_id  in (select xorder_id from xorder where xclient_id="+client_id+")", "name");
+                    "xorder_id="+order_id, "name");
             ComboItem[] itms = new ComboItem[rfqs.length + 1];
             itms[0] = new ComboItem(0, "--No requests for clients yet--");
             int i = 1;
@@ -228,13 +228,13 @@ public class XlendWorks {
     
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {
         try {
-            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "regnumber");
+            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
             ComboItem[] itms = new ComboItem[orders.length + 1];
             itms[0] = new ComboItem(0, "--Add new order --");
             int i = 1;
             for (DbObject o : orders) {
                 Xorder xorder = (Xorder) o;
-                itms[i++] = new ComboItem(xorder.getXorderId(), "Reg Nr:"+xorder.getRegnumber()+" Order Nr:"+xorder.getOrdernumber());
+                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:"+xorder.getOrdernumber());
             }
             return itms;
         } catch (RemoteException ex) {
@@ -277,7 +277,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static ComboItem[] loadAllClients(IMessageSender exchanger) {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");

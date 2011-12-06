@@ -161,7 +161,7 @@ public class EditSitePanel extends RecordEditPanel {
             if (eod.okPressed) {
                 Xorder xorder = (Xorder) eod.getEditPanel().getDbObject();
                 if (xorder != null) {
-                    itm = new ComboItem(xorder.getXorderId(), "Reg Nr:" + xorder.getRegnumber() + " Order Nr:" + xorder.getOrdernumber());
+                    itm = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
                     orderCBModel.addElement(itm);
                     orderBox.setSelectedItem(itm);
                 }
@@ -187,7 +187,8 @@ public class EditSitePanel extends RecordEditPanel {
                 try {
                     LookupDialog ld = new LookupDialog("Order Lookup", orderBox,
                             new OrdersGrid(DashBoard.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
-                            new String[]{"companyname", "vatnumber", "regnumber", "ordernumber"});
+                            new String[]{"companyname", //"vatnumber", "regnumber", 
+                                "ordernumber"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }

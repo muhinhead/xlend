@@ -121,8 +121,8 @@ public class OrdersGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xorder xorder = (Xorder) exchanger.loadDbObjectOnID(Xorder.class, id);
-                    if (xorder!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete order ["
-                            + xorder.getRegnumber() + "]?") == JOptionPane.YES_OPTION) {
+                    if (xorder!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete order [Nr "
+                            + xorder.getOrdernumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xorder);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
                                 getTableDoc(), getSelect(), null);

@@ -26,7 +26,6 @@ public class EditTimeSheetDialog extends EditRecordDialog {
     protected void fillContent() {
         super.fillContent(new EditTimeSheetPanel((Xtimesheet) getObject()));
         setXemployee();
-
     }
 
     @Override

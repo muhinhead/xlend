@@ -66,7 +66,7 @@ public class EditContractPanel extends RecordEditPanel {
             idField = new JTextField(),
             contractRefField = new JTextField(),
             clientRefBox = new JComboBox(cbModel),
-            descrScroll = new JScrollPane(descriptionField = new JTextArea(5, 55),
+            descrScroll = new JScrollPane(descriptionField = new JTextArea(4, 45),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
         };
@@ -186,7 +186,7 @@ public class EditContractPanel extends RecordEditPanel {
         }
         JScrollPane sp;
         tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
-        sp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 150));
+        tp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 250));
         try {
             ordGrid = new OrdersGrid(DashBoard.getExchanger(),
                     Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id),false);

@@ -94,11 +94,10 @@ class EditWageDayPanel extends RecordEditPanel {
     @Override
     public boolean save() throws Exception {
         Xwage wage = (Xwage) getDbObject();
-        boolean isNew = false;
-        if (wage == null) {
+        boolean isNew = (wage == null);
+        if (isNew) {
             wage = new Xwage(null);
             wage.setXwageId(0);
-            isNew = true;
         }
         try {
             Date wend = xtimesheet.getWeekend();

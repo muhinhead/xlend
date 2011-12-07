@@ -11,6 +11,7 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xemployee;
+import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
@@ -22,16 +23,13 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.Date;
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -40,7 +38,7 @@ import javax.swing.SpinnerNumberModel;
  */
 class EditEmployeePanel extends EditPanelWithPhoto {
 
-    private DefaultComboBoxModel cbModel;
+    private DefaultComboBoxModel positionCbModel;
     private JTextField idField;
     private JTextField clockNumField;
     private JTextField firstNameField;
@@ -65,9 +63,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     @Override
     protected void fillContent() {
-        cbModel = new DefaultComboBoxModel();
+        positionCbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllPositions(DashBoard.getExchanger())) {
-            cbModel.addElement(itm);
+            positionCbModel.addElement(itm);
         }
         String[] titles = new String[]{
             "ID:", "Clock Number:", "Name:", "Surname:",
@@ -100,19 +98,19 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             phone2NumField = new JTextField(),
             relation2Field = new JTextField(),
             addressField = new JTextField(),
-            positionCB = new JComboBox(cbModel),
+            positionCB = new JComboBox(positionCbModel),
             contractLenCB = new JComboBox(durations),
             contractStartSP = new SelectedDateSpinner(),
             contractEndSP = new SelectedDateSpinner(),
             rateSP = new JSpinner(new SpinnerNumberModel(0, 0, 10000, 10))
         };
-        
+
         contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "yyyy/MM/dd"));
         Util.addFocusSelectAllAction(contractStartSP);
-        
+
         contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "yyyy/MM/dd"));
         Util.addFocusSelectAllAction(contractEndSP);
-        
+
         setEndDateVisible(true);
 
         idField.setEditable(false);
@@ -240,43 +238,55 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             isNew = true;
         }
         ComboItem itm = (ComboItem) positionCB.getSelectedItem();
-        try {
-            emp.setXpositionId(itm.getId());
-            emp.setNew(isNew);
-            emp.setAddress(addressField.getText());
-            emp.setClockNum(clockNumField.getText());
-            emp.setContractLen(((ComboItem) contractLenCB.getSelectedItem()).getId());
-            if (emp.getContractLen() > 0) {
-                emp.setContractEnd(new java.sql.Date(((java.util.Date) contractEndSP.getValue()).getTime()));
-            } else {
-                emp.setContractEnd(null);
+        if (itm.getId() == 0) { // add new position
+            EditPositionDialog ep = new EditPositionDialog("New Position", null);
+            if (EditPositionDialog.okPressed) {
+                Xposition pos = (Xposition) ep.getEditPanel().getDbObject();
+                if (pos!=null) {
+                    itm = new ComboItem(pos.getXpositionId(), pos.getPos());
+                    positionCbModel.addElement(itm);
+                    positionCB.setSelectedItem(itm);
+                }
             }
-            if (contractStartSP.getValue() != null) {
-                emp.setContractStart(new java.sql.Date(((java.util.Date) contractStartSP.getValue()).getTime()));
-            } else {
-                emp.setContractStart(null);
-            }
-            emp.setFirstName(firstNameField.getText());
-            emp.setIdNum(idNumField.getText());
-            emp.setNickName(nickNameField.getText());
-            emp.setSurName(surNameField.getText());
-            emp.setPhone0Num(phone0NumField.getText());
-            emp.setPhone1Num(phone1NumField.getText());
-            emp.setPhone2Num(phone2NumField.getText());
-            emp.setRate((Integer) rateSP.getValue());
-            emp.setRelation1(relation1Field.getText());
-            emp.setRelation2(relation2Field.getText());
-            itm = (ComboItem) positionCB.getSelectedItem();
-            if (itm.getId() > 0) {
+        } else {
+            try {
                 emp.setXpositionId(itm.getId());
-            } else {
-                emp.setXpositionId(null);
+                emp.setNew(isNew);
+                emp.setAddress(addressField.getText());
+                emp.setClockNum(clockNumField.getText());
+                emp.setContractLen(((ComboItem) contractLenCB.getSelectedItem()).getId());
+                if (emp.getContractLen() > 0) {
+                    emp.setContractEnd(new java.sql.Date(((java.util.Date) contractEndSP.getValue()).getTime()));
+                } else {
+                    emp.setContractEnd(null);
+                }
+                if (contractStartSP.getValue() != null) {
+                    emp.setContractStart(new java.sql.Date(((java.util.Date) contractStartSP.getValue()).getTime()));
+                } else {
+                    emp.setContractStart(null);
+                }
+                emp.setFirstName(firstNameField.getText());
+                emp.setIdNum(idNumField.getText());
+                emp.setNickName(nickNameField.getText());
+                emp.setSurName(surNameField.getText());
+                emp.setPhone0Num(phone0NumField.getText());
+                emp.setPhone1Num(phone1NumField.getText());
+                emp.setPhone2Num(phone2NumField.getText());
+                emp.setRate((Integer) rateSP.getValue());
+                emp.setRelation1(relation1Field.getText());
+                emp.setRelation2(relation2Field.getText());
+                itm = (ComboItem) positionCB.getSelectedItem();
+                if (itm.getId() > 0) {
+                    emp.setXpositionId(itm.getId());
+                } else {
+                    emp.setXpositionId(null);
+                }
+                emp.setPhoto(imageData);
+                setDbObject(DashBoard.getExchanger().saveDbObject(emp));
+                return true;
+            } catch (Exception ex) {
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
-            emp.setPhoto(imageData);
-            setDbObject(DashBoard.getExchanger().saveDbObject(emp));
-            return true;
-        } catch (Exception ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
     }

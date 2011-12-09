@@ -159,7 +159,7 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllContracts(IMessageSender exchanger, int client_id) {
         try {
-            DbObject[] contracts = exchanger.getDbObjects(Xcontract.class, "xclient_id="+client_id, "contractref");
+            DbObject[] contracts = exchanger.getDbObjects(Xcontract.class, "xclient_id=" + client_id, "contractref");
             ComboItem[] itms = new ComboItem[contracts.length + 1];
             itms[0] = new ComboItem(0, "--No contract yet--");
             int i = 1;
@@ -173,7 +173,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
         try {
             DbObject[] employees = exchanger.getDbObjects(Xemployee.class, null, "sur_name");
@@ -182,7 +182,7 @@ public class XlendWorks {
             for (DbObject o : employees) {
                 Xemployee emp = (Xemployee) o;
                 itms[i++] = new ComboItem(emp.getXemployeeId(), emp.getClockNum()
-                        +" ("+emp.getFirstName().substring(0,1)+"."+emp.getSurName()+")");
+                        + " (" + emp.getFirstName().substring(0, 1) + "." + emp.getSurName() + ")");
             }
             return itms;
         } catch (RemoteException ex) {
@@ -190,10 +190,10 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
         try {
-            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id="+client_id, "rfcnumber");
+            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");
             ComboItem[] itms = new ComboItem[rfqs.length + 1];
             itms[0] = new ComboItem(0, "--No requests for quotation yet--");
             int i = 1;
@@ -207,11 +207,11 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static ComboItem[] loadAllOrderSites(IMessageSender exchanger, int order_id) {
         try {
-            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class, 
-                    "xorder_id="+order_id, "name");
+            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class,
+                    "xorder_id=" + order_id, "name");
             ComboItem[] itms = new ComboItem[rfqs.length + 1];
             itms[0] = new ComboItem(0, "--No requests for clients yet--");
             int i = 1;
@@ -225,7 +225,24 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
+    public static ComboItem[] loadAllSites(IMessageSender exchanger) {
+        try {
+            DbObject[] orders = exchanger.getDbObjects(Xsite.class, null, "name");
+            ComboItem[] itms = new ComboItem[orders.length + 1];
+            itms[0] = new ComboItem(0, "--Add new site --");
+            int i = 1;
+            for (DbObject o : orders) {
+                Xsite xsite = (Xsite) o;
+                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {
         try {
             DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
@@ -234,7 +251,7 @@ public class XlendWorks {
             int i = 1;
             for (DbObject o : orders) {
                 Xorder xorder = (Xorder) o;
-                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:"+xorder.getOrdernumber());
+                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
             }
             return itms;
         } catch (RemoteException ex) {
@@ -268,8 +285,8 @@ public class XlendWorks {
             int i = 0;
             for (DbObject o : users) {
                 Profile user = (Profile) o;
-                itms[i++] = new ComboItem(user.getProfileId(), 
-                        user.getFirstName().substring(0,1)+"."+user.getLastName());
+                itms[i++] = new ComboItem(user.getProfileId(),
+                        user.getFirstName().substring(0, 1) + "." + user.getLastName());
             }
             return itms;
         } catch (RemoteException ex) {
@@ -336,4 +353,15 @@ public class XlendWorks {
         w.setIconImage(loadImage(iconName, w));
     }
 
+    public static int getOrderIdOnSiteId(IMessageSender exchanger, int site_id) {
+        try {
+            Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, site_id);
+            if (xsite != null) {
+                return xsite.getXorderId();
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return 0;
+    }
 }

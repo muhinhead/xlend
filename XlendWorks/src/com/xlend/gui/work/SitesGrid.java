@@ -33,6 +33,10 @@ public class SitesGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_SITES, maxWidths, false);
     }
 
+    public SitesGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
+        super(exchanger, select, maxWidths, readonly);
+    }
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Site") {

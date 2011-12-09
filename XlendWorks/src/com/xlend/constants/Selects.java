@@ -112,6 +112,10 @@ public class Selects {
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
             + "overtime \"Over Time\", doubletime \"Double Time\", stoppeddetails \"Details\" "
             + "from xwage where xtimesheet_id = #";
+    public static String SELECT_SITES4LOOKUP = 
+            "Select xsite_id \"Id\", name \"Site Name\","
+            + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
+            + "from xsite order by upper(name)";
 
     public static String[] getStringArray(String select) {
         try {

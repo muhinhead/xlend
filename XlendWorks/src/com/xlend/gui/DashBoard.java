@@ -26,10 +26,12 @@ import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.UIManager;
 
 /**
@@ -122,7 +124,7 @@ public class DashBoard extends JFrame {
 
         img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
-        adminButton.setBounds(xShift, yShift+10, img.getWidth() + 3, img.getHeight() + 3);
+        adminButton.setBounds(xShift, yShift + 10, img.getWidth() + 3, img.getHeight() + 3);
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
@@ -134,36 +136,36 @@ public class DashBoard extends JFrame {
         logoutButton = new NoFrameButton("logoutsmall.png");
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
-        docsButton.setBounds(xShift, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        docsButton.setBounds(xShift, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
         docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(docsButton);
-        
+
         img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
-        sitesButton.setBounds((dashWidth-img.getWidth())/4  , dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        sitesButton.setBounds((dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
         sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(sitesButton);
-        
+
         img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
-        reportsButton.setBounds((dashWidth-img.getWidth())/2, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        reportsButton.setBounds((dashWidth - img.getWidth()) / 2, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
         reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(reportsButton);
 
         img = new ImagePanel(XlendWorks.loadImage("HR.png", this));
-        hrbutton.setBounds(3*(dashWidth-img.getWidth())/4, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        hrbutton.setBounds(3 * (dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
         hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(hrbutton);
-        
+
         img = new ImagePanel(XlendWorks.loadImage("Fleet.png", this));
-        fleetbutton.setBounds(dashWidth-img.getWidth()-xShift, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        fleetbutton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
         fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(fleetbutton);
-        
+
 //        fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
 //        main.add(fleetbutton);
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(dashWidth-img.getWidth()-xShift, yShift+10, img.getWidth() + 3, img.getHeight() + 3);
+        logoutButton.setBounds(dashWidth - img.getWidth() - xShift, yShift + 10, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
-        
+
         adminButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -212,14 +214,18 @@ public class DashBoard extends JFrame {
             }
         });
 
-        reportsButton.addActionListener(new AbstractAction(){
+        reportsButton.addActionListener(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                GeneralFrame.notImplementedYet();
+//                GeneralFrame.notImplementedYet();
+                JComboBox loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
+                loginField.setEditable(true);
+                JPasswordField pwdField = new JPasswordField(20);
+                new LoginImagedDialog(new Object[]{loginField, pwdField, exchanger});
             }
         });
-        
+
         hrbutton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {

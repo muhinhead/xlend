@@ -7,9 +7,11 @@ import com.xlend.util.ImagePanel;
 import com.xlend.util.TexturedPanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -35,7 +37,7 @@ public class DashBoard extends JFrame {
 
     public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
-    private static final String BACKGROUNDIMAGE = "gears-background+xcost.jpg";
+    private static final String BACKGROUNDIMAGE = "Background.png";//"gears-background+xcost.jpg";
     public final static String LASTLOGIN = "LastLogin";//    public final static String PWDMD5 = "PWDMD5";
     private static IMessageSender exchanger;
     private static Properties props;
@@ -52,7 +54,8 @@ public class DashBoard extends JFrame {
     public static void setExchanger(IMessageSender exch) {
         exchanger = exch;
     }
-    private final ToolBarButton workButton;
+    private final ToolBarButton docsButton;
+    private final ToolBarButton sitesButton;
     private final ToolBarButton hrbutton;
     private final ToolBarButton fleetbutton;
     private final ToolBarButton logoutButton;
@@ -63,6 +66,7 @@ public class DashBoard extends JFrame {
     private FleetFrame fleetFrame = null;
     private AdminFrame adminFrame = null;
     private ToolBarButton adminButton = null;
+    private final ToolBarButton reportsButton;
 
     private class WinListener extends WindowAdapter {
 
@@ -100,8 +104,13 @@ public class DashBoard extends JFrame {
         JPanel main = new TexturedPanel(BACKGROUNDIMAGE);
         controlsPanel.add(main, BorderLayout.CENTER);
         ImagePanel img = new ImagePanel(XlendWorks.loadImage(BACKGROUNDIMAGE, this));
-        this.setMinimumSize(new Dimension(img.getWidth(), img.getHeight()));
-//        controlsPanel.setPreferredSize(img.getPreferredSize());
+        addNotify();
+        Insets insets = getInsets();
+        int dashWidth = img.getWidth();
+        int dashHeight = img.getHeight();
+        int yShift = 20;
+        int xShift = 10;
+        this.setMinimumSize(new Dimension(dashWidth + insets.left + insets.right, dashHeight + insets.top + insets.bottom));
         layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
 
         getContentPane().add(layers, BorderLayout.CENTER);
@@ -109,24 +118,46 @@ public class DashBoard extends JFrame {
 
         img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
-        adminButton.setBounds(10, 30, img.getWidth() + 3, img.getHeight() + 3);
+        adminButton.setBounds(xShift, yShift+10, img.getWidth() + 3, img.getHeight() + 3);
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        workButton = new ToolBarButton("work.png");
-        hrbutton = new ToolBarButton("hr.png");
-        fleetbutton = new ToolBarButton("fleet.png");
+        docsButton = new ToolBarButton("Docs.png");
+        sitesButton = new ToolBarButton("Sites.png");
+        reportsButton = new ToolBarButton("Reports.png");
+        hrbutton = new ToolBarButton("HR.png");
+        fleetbutton = new ToolBarButton("Fleet.png");
         logoutButton = new ToolBarButton("logoutsmall.png");
 
-        img = new ImagePanel(XlendWorks.loadImage("work.png", this));
-        workButton.setBounds(32, 220, img.getWidth() + 3, img.getHeight() + 3);
-        main.add(workButton);
-        hrbutton.setBounds(153, 220, img.getWidth() + 3, img.getHeight() + 3);
+        img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
+        docsButton.setBounds(xShift, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(docsButton);
+        
+        img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
+        sitesButton.setBounds((dashWidth-img.getWidth())/4  , dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(sitesButton);
+        
+        img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
+        reportsButton.setBounds((dashWidth-img.getWidth())/2, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(reportsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("HR.png", this));
+        hrbutton.setBounds(3*(dashWidth-img.getWidth())/4, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(hrbutton);
-        fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
+        
+        img = new ImagePanel(XlendWorks.loadImage("Fleet.png", this));
+        fleetbutton.setBounds(dashWidth-img.getWidth()-xShift, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);
+        fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(fleetbutton);
+        
+//        fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
+//        main.add(fleetbutton);
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(310, 30, img.getWidth() + 3, img.getHeight() + 3);
+        logoutButton.setBounds(dashWidth-img.getWidth()-xShift, yShift+10, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {
@@ -145,7 +176,7 @@ public class DashBoard extends JFrame {
             }
         });
 
-        workButton.addActionListener(new AbstractAction() {
+        docsButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
@@ -221,7 +252,7 @@ public class DashBoard extends JFrame {
         main.add(userLogin);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(screenSize.width-getWidth()-10, 10);
+        setLocation(screenSize.width - getWidth() - 10, 10);
         setResizable(false);
         setVisible(true);
     }

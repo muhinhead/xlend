@@ -4,6 +4,7 @@ import com.xlend.orm.Clientprofile;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.GridLayout;
 import java.util.Date;
@@ -53,7 +54,8 @@ public class EditClientPanel extends ProfilePanel {
             birthDaySpinner = new SelectedDateSpinner(),
             sourceTypeBox = new JComboBox(new String[]{"Phonebook", "Referral", "Location", "Others"}),
             sourceDescrField = new JTextField(),
-            salesPotentialSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 100)),
+            salesPotentialSpinner = new SelectedNumberSpinner(0, 0, Integer.MAX_VALUE, 100),
+            //new SelectedNumberSpinner(0, 0, 12, 0.5),
             new JPanel(),
             salesPersonBox = new JComboBox(salesPersons = getSalesPersons())
         };

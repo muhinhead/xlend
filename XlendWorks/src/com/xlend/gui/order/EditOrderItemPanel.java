@@ -8,6 +8,7 @@ import com.xlend.orm.Xorder;
 import com.xlend.orm.Xorderitem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -70,7 +71,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             deliverDateSpin = new SelectedDateSpinner(),
             quantitySpin = new JSpinner(new SpinnerNumberModel()),
             measureItemCB = new JComboBox(distinctMeasureItems()),
-            priceOneSpin = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1000000.00, 1.11))
+            priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1)
         };
         
         machineTypeCB.setEditable(true);

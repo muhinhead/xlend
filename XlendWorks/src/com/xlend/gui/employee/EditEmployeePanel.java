@@ -15,6 +15,7 @@ import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -102,7 +103,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             contractLenCB = new JComboBox(durations),
             contractStartSP = new SelectedDateSpinner(),
             contractEndSP = new SelectedDateSpinner(),
-            rateSP = new JSpinner(new SpinnerNumberModel(0, 0, 10000, 10))
+            rateSP = new SelectedNumberSpinner(0, 0, 10000, 10)//new SelectedNumberSpinner(
         };
 
         contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "yyyy/MM/dd"));

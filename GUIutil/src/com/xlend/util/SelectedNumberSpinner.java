@@ -38,6 +38,7 @@ public class SelectedNumberSpinner extends JSpinner {
                 setColor();
             }
         });
+        setColor();
     }
 
     public void setValue(Object val) {

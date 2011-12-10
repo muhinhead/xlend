@@ -38,16 +38,20 @@ public class SelectedNumberSpinner extends JSpinner {
                 setColor();
             }
         });
-//        setColor();
     }
-    
+
     public void setValue(Object val) {
         super.setValue(val);
         setColor();
     }
 
     private void setColor() {
-        Color color = ((Double) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
+        Color color;
+        if (getValue() instanceof Double) {
+            color = ((Double) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
+        } else {
+            color = ((Integer) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
+        }
         ((JSpinner.DefaultEditor) getEditor()).getTextField().setForeground(color);
     }
 }

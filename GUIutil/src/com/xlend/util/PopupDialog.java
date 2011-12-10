@@ -89,7 +89,7 @@ public abstract class PopupDialog extends JDialog {
     @Override
     public void dispose() {
         freeResources();
-        removeComponents(getContentPane());
+//        removeComponents(getContentPane());
         super.dispose();
         Runtime.getRuntime().gc();
     }

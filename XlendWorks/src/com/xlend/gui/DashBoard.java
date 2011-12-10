@@ -4,6 +4,7 @@ import com.xlend.gui.admin.AdminFrame;
 import com.xlend.gui.work.WorkFrame;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
+import com.xlend.util.NoFrameButton;
 import com.xlend.util.TexturedPanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -54,11 +56,11 @@ public class DashBoard extends JFrame {
     public static void setExchanger(IMessageSender exch) {
         exchanger = exch;
     }
-    private final ToolBarButton docsButton;
-    private final ToolBarButton sitesButton;
-    private final ToolBarButton hrbutton;
-    private final ToolBarButton fleetbutton;
-    private final ToolBarButton logoutButton;
+    private final JButton docsButton;
+    private final JButton sitesButton;
+    private final JButton hrbutton;
+    private final JButton fleetbutton;
+    private final JButton logoutButton;
     private JPanel controlsPanel;
     private final JLabel userLogin;
     private GeneralFrame workFrame = null;
@@ -66,7 +68,7 @@ public class DashBoard extends JFrame {
     private FleetFrame fleetFrame = null;
     private AdminFrame adminFrame = null;
     private ToolBarButton adminButton = null;
-    private final ToolBarButton reportsButton;
+    private final JButton reportsButton;
 
     private class WinListener extends WindowAdapter {
 
@@ -122,12 +124,12 @@ public class DashBoard extends JFrame {
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        docsButton = new ToolBarButton("Docs.png");
-        sitesButton = new ToolBarButton("Sites.png");
-        reportsButton = new ToolBarButton("Reports.png");
-        hrbutton = new ToolBarButton("HR.png");
-        fleetbutton = new ToolBarButton("Fleet.png");
-        logoutButton = new ToolBarButton("logoutsmall.png");
+        docsButton = new NoFrameButton("Docs.png");
+        sitesButton = new NoFrameButton("Sites.png");
+        reportsButton = new NoFrameButton("Reports.png");
+        hrbutton = new NoFrameButton("HR.png");
+        fleetbutton = new NoFrameButton("Fleet.png");
+        logoutButton = new NoFrameButton("logoutsmall.png");
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
         docsButton.setBounds(xShift, dashHeight-img.getHeight()-yShift, img.getWidth() + 3, img.getHeight() + 3);

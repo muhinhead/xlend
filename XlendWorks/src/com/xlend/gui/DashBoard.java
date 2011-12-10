@@ -1,7 +1,8 @@
 package com.xlend.gui;
 
 import com.xlend.gui.admin.AdminFrame;
-import com.xlend.gui.work.WorkFrame;
+import com.xlend.gui.work.DocFrame;
+import com.xlend.gui.work.SitesFrame;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.NoFrameButton;
@@ -64,9 +65,10 @@ public class DashBoard extends JFrame {
     private JPanel controlsPanel;
     private final JLabel userLogin;
     private GeneralFrame workFrame = null;
-    private HRFrame hrFrame = null;
-    private FleetFrame fleetFrame = null;
-    private AdminFrame adminFrame = null;
+    private GeneralFrame sitesFrame = null;
+    private GeneralFrame hrFrame = null;
+    private GeneralFrame fleetFrame = null;
+    private GeneralFrame adminFrame = null;
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
 
@@ -161,7 +163,7 @@ public class DashBoard extends JFrame {
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
         logoutButton.setBounds(dashWidth-img.getWidth()-xShift, yShift+10, img.getWidth() + 3, img.getHeight() + 3);
         main.add(logoutButton);
-
+        
         adminButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -182,7 +184,7 @@ public class DashBoard extends JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
-                    workFrame = new WorkFrame(getExchanger());
+                    workFrame = new DocFrame(getExchanger());
                 } else {
                     try {
                         workFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -194,6 +196,30 @@ public class DashBoard extends JFrame {
             }
         });
 
+        sitesButton.addActionListener(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (sitesFrame == null) {
+                    sitesFrame = new SitesFrame(getExchanger());
+                } else {
+                    try {
+                        sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
+                                UIManager.getSystemLookAndFeelClassName()));
+                    } catch (Exception ex) {
+                    }
+                    sitesFrame.setVisible(true);
+                }
+            }
+        });
+
+        reportsButton.addActionListener(new AbstractAction(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GeneralFrame.notImplementedYet();
+            }
+        });
+        
         hrbutton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -267,6 +293,10 @@ public class DashBoard extends JFrame {
         if (workFrame != null) {
             workFrame.dispose();
             workFrame = null;
+        }
+        if (sitesFrame != null) {
+            sitesFrame.dispose();
+            sitesFrame = null;
         }
         if (hrFrame != null) {
             hrFrame.dispose();

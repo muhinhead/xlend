@@ -13,53 +13,28 @@ import javax.swing.JTabbedPane;
  *
  * @author Nick Mukhin
  */
-public class WorkFrame extends GeneralFrame {
+public class DocFrame extends GeneralFrame {
 
-    private GeneralGridPanel contractsPanel = null;
-    private GeneralGridPanel sitesPanel = null;
     private GeneralGridPanel clientsPanel = null;
     private GeneralGridPanel ordersPanel = null;
     private GeneralGridPanel quotasPanel;
 
-    public WorkFrame(IMessageSender exch) {
-        super("Work", exch);
+    public DocFrame(IMessageSender exch) {
+        super("Documents", exch);
     }
 
     @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
-        workTab.add(getContractsPanel(), "Contracts");
+//        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(getQuotasPanel(), "RFQ/Quotes");
         workTab.add(getOrdersPanel(), "Orders");
-        workTab.add(getSitesPanel(), "Sites");
+//        workTab.add(getSitesPanel(), "Sites");
         workTab.add(getClientsPanel(), "Clients");
         return workTab;
     }
 
-    private JPanel getContractsPanel() {
-        if (contractsPanel == null) {
-            try {
-                registerGrid(contractsPanel = new ContractsGrid(exchanger));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return contractsPanel;
-    }
-
-    private JPanel getSitesPanel() {
-        if (sitesPanel == null) {
-            try {
-                registerGrid(sitesPanel = new SitesGrid(exchanger));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return sitesPanel;
-    }
-
+   
     private Component getClientsPanel() {
         if (clientsPanel == null) {
             try {

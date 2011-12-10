@@ -20,6 +20,7 @@ public class NoFrameButton extends JButton {
 
     private final Cursor normalCursor;
     private Object tag;
+    private boolean containsCursor;
 
     public NoFrameButton(String iconName) {
         this(new ImageIcon(Util.loadImage(iconName)));
@@ -35,12 +36,14 @@ public class NoFrameButton extends JButton {
 
             public void mouseEntered(MouseEvent e) {
                 if (isEnabled()) {
+                    containsCursor = true;
                     setCursor(new Cursor(Cursor.HAND_CURSOR));
                 }
             }
 
             public void mouseExited(MouseEvent e) {
                 if (isEnabled()) {
+                    containsCursor = false;
                     setCursor(normalCursor);
                 }
             }
@@ -66,6 +69,14 @@ public class NoFrameButton extends JButton {
         g.drawString(getText(), getWidth() / 2 - labelWidth / 2, getHeight() - 5);
     }
 
+    @Override
+    protected void paintBorder(Graphics g) {
+        if (containsCursor) {
+            super.paintBorder(g);
+        }
+    }
+
+    
     /**
      * @return the tag
      */

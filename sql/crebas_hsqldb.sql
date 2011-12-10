@@ -239,6 +239,7 @@ create cached table xwage
     normaltime     double,
     overtime       double,
     doubletime     double,
+    deduction      double,
     stoppeddetails varchar(128),
     constraint xwage_pk primary key (xwage_id),
     constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet on delete cascade

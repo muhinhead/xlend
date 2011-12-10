@@ -36,11 +36,9 @@ public class LoginDialog extends PopupDialog {
     private static boolean okPressed;
     private AbstractAction okAction;
     private AbstractAction cancelAction;
-//    private JCheckBox savePwdCB;
     private JComboBox loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
-//    private static String currentLogin;
 
     public LoginDialog(Object[] params) {
         super(null, "Login", params);

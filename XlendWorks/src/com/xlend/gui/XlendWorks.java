@@ -24,9 +24,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
@@ -58,7 +56,6 @@ public class XlendWorks {
                     System.exit(1);
                 }
             } catch (Exception ex) {
-                //ex.printStackTrace();
                 logAndShowMessage(ex);
                 if ((serverIP = serverSetup("Check server settings")) == null) {
                     System.exit(1);
@@ -125,11 +122,11 @@ public class XlendWorks {
 
     public static boolean login(IMessageSender exchanger) {
         try {
-            JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
-            loginField.setEditable(true);
-            JPasswordField pwdField = new JPasswordField(20);
-            new LoginDialog(new Object[]{loginField, pwdField, exchanger});
-            return LoginDialog.isOkPressed();
+//            JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
+//            loginField.setEditable(true);
+//            JPasswordField pwdField = new JPasswordField(20);
+            new LoginImagedDialog(exchanger);//new Object[]{loginField, pwdField, exchanger});
+            return LoginImagedDialog.isOkPressed();
         } catch (Throwable ee) {
             GeneralFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
             log(ee);

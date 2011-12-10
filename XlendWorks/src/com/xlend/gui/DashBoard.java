@@ -218,11 +218,11 @@ public class DashBoard extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                GeneralFrame.notImplementedYet();
-                JComboBox loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
-                loginField.setEditable(true);
-                JPasswordField pwdField = new JPasswordField(20);
-                new LoginImagedDialog(new Object[]{loginField, pwdField, exchanger});
+                GeneralFrame.notImplementedYet();
+//                JComboBox loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
+//                loginField.setEditable(true);
+//                JPasswordField pwdField = new JPasswordField(20);
+//                new LoginImagedDialog(new Object[]{loginField, pwdField, exchanger});
             }
         });
 

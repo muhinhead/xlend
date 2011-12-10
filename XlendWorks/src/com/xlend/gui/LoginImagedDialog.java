@@ -1,5 +1,7 @@
 package com.xlend.gui;
 
+import com.xlend.orm.Userprofile;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.NoFrameButton;
@@ -12,6 +14,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +22,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
@@ -32,11 +36,17 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class LoginImagedDialog extends PopupDialog {
 
     private static final String BACKGROUNDIMAGE = "Login.png";
+
+    /**
+     * @return the okPressed
+     */
+    public static boolean isOkPressed() {
+        return okPressed;
+    }
     private JPanel controlsPanel;
     private JComboBox loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
-//    private JMenuBar bar;
     private static boolean okPressed;
 
     public LoginImagedDialog(Object obj) {
@@ -48,11 +58,23 @@ public class LoginImagedDialog extends PopupDialog {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         okPressed = false;
         buildMenu();
-//        new Object[]{loginField, pwdField, exchanger}
-        Object[] obs = (Object[]) getObject();
-        loginField = (JComboBox) obs[0];
-        pwdField = (JPasswordField) obs[1];
-        //loginField = new JComboBox(XlendWorks.loadAllLogins(DashBoard.getExchanger()));
+        try {
+            String theme = DashBoard.readProperty("LookAndFeel",
+                    "com.nilo.plaf.nimrod.NimRODLookAndFeel");
+            UIManager.setLookAndFeel(theme);
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (Exception e) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                SwingUtilities.updateComponentTreeUI(this);
+            } catch (Exception ie) {
+                XlendWorks.log(ie);
+            }
+        }
+        exchanger = (IMessageSender) getObject();
+        loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
+        loginField.setEditable(true);
+        pwdField = new JPasswordField(20);
         controlsPanel = new JPanel(new BorderLayout());
         JPanel main = new TexturedPanel(BACKGROUNDIMAGE);
         controlsPanel.add(main, BorderLayout.CENTER);
@@ -78,12 +100,19 @@ public class LoginImagedDialog extends PopupDialog {
         JButton okButton = new NoFrameButton("Lock.jpg");
         img = new ImagePanel(XlendWorks.loadImage("Lock.jpg", this));
 
-
-        okButton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift, 
+        okButton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift,
                 img.getWidth(), img.getHeight());
 
         main.add(okButton);
+        okButton.addActionListener(okButtonListener());
 
+        Preferences userPref = Preferences.userRoot();
+        String pwdmd5 = userPref.get("DEVPWD", "");
+        pwdField.setText(pwdmd5);
+        if (pwdmd5.trim().length() > 0) {
+            loginField.setSelectedItem(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
+        }
+        
         setResizable(false);
     }
 
@@ -215,6 +244,40 @@ public class LoginImagedDialog extends PopupDialog {
     @Override
     public void freeResources() {
 //        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private ActionListener okButtonListener() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String login = (String) loginField.getSelectedItem();
+                String pwd = new String(pwdField.getPassword());
+                try {
+                    //TODO: check MD5(pwd) instead of pwd
+                    DbObject[] users = exchanger.getDbObjects(Userprofile.class,
+                            "login='" + login + "' and pwdmd5='" + pwd + "'", null);
+                    okPressed = (users.length > 0);
+                    if (isOkPressed()) {
+                        Userprofile currentUser = (Userprofile) users[0];
+                        try {
+                            currentUser.setPwdmd5("");
+                        } catch (Exception ex) {
+                        }
+                        XlendWorks.setCurrentUser(currentUser);
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Access denied", "Oops!", JOptionPane.ERROR_MESSAGE);
+                        loginField.requestFocus();
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Server not respondind, sorry", "Error:", JOptionPane.ERROR_MESSAGE);
+                    XlendWorks.log(ex);
+                    dispose();
+                }
+
+            }
+        };
     }
 
     private class LayerPanel extends JLayeredPane {

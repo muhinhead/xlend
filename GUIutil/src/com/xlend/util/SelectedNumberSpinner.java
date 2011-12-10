@@ -1,10 +1,8 @@
 package com.xlend.util;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -49,7 +47,7 @@ public class SelectedNumberSpinner extends JSpinner {
     }
 
     private void setColor() {
-        Color color = ((Double) getValue() > 0 ? Color.BLUE : Color.RED);
+        Color color = ((Double) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
         ((JSpinner.DefaultEditor) getEditor()).getTextField().setForeground(color);
     }
 }

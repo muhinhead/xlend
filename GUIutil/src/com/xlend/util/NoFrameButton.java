@@ -21,6 +21,10 @@ public class NoFrameButton extends JButton {
     private final Cursor normalCursor;
     private Object tag;
 
+    public NoFrameButton(String iconName) {
+        this(new ImageIcon(Util.loadImage(iconName)));
+    }
+    
     public NoFrameButton(Icon icon) {
         super(icon);
         normalCursor = Cursor.getDefaultCursor();

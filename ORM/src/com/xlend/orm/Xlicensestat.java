@@ -8,38 +8,38 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Picture extends DbObject  {
+public class Xlicensestat extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer pictureId = null;
-    private Object picture = null;
+    private Integer xlicensestatId = null;
+    private String licstatus = null;
 
-    public Picture(Connection connection) {
-        super(connection, "picture", "picture_id");
-        setColumnNames(new String[]{"picture_id", "picture"});
+    public Xlicensestat(Connection connection) {
+        super(connection, "xlicensestat", "xlicensestat_id");
+        setColumnNames(new String[]{"xlicensestat_id", "licstatus"});
     }
 
-    public Picture(Connection connection, Integer pictureId, Object picture) {
-        super(connection, "picture", "picture_id");
-        setNew(pictureId.intValue() <= 0);
-//        if (pictureId.intValue() != 0) {
-            this.pictureId = pictureId;
+    public Xlicensestat(Connection connection, Integer xlicensestatId, String licstatus) {
+        super(connection, "xlicensestat", "xlicensestat_id");
+        setNew(xlicensestatId.intValue() <= 0);
+//        if (xlicensestatId.intValue() != 0) {
+            this.xlicensestatId = xlicensestatId;
 //        }
-        this.picture = picture;
+        this.licstatus = licstatus;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Picture picture = null;
+        Xlicensestat xlicensestat = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture WHERE picture_id=" + id;
+        String stmt = "SELECT xlicensestat_id,licstatus FROM xlicensestat WHERE xlicensestat_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                picture = new Picture(getConnection());
-                picture.setPictureId(new Integer(rs.getInt(1)));
-                picture.setPicture(rs.getObject(2));
-                picture.setNew(false);
+                xlicensestat = new Xlicensestat(getConnection());
+                xlicensestat.setXlicensestatId(new Integer(rs.getInt(1)));
+                xlicensestat.setLicstatus(rs.getString(2));
+                xlicensestat.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +48,7 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return picture;
+        return xlicensestat;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +57,26 @@ public class Picture extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO picture ("+(getPictureId().intValue()!=0?"picture_id,":"")+"picture) values("+(getPictureId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xlicensestat ("+(getXlicensestatId().intValue()!=0?"xlicensestat_id,":"")+"licstatus) values("+(getXlicensestatId().intValue()!=0?"?,":"")+"?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getPictureId().intValue()!=0) {
-                 ps.setObject(++n, getPictureId());
+             if (getXlicensestatId().intValue()!=0) {
+                 ps.setObject(++n, getXlicensestatId());
              }
-             ps.setObject(++n, getPicture());
+             ps.setObject(++n, getLicstatus());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getPictureId().intValue()==0) {
-             stmt = "SELECT max(picture_id) FROM picture";
+         if (getXlicensestatId().intValue()==0) {
+             stmt = "SELECT max(xlicensestat_id) FROM xlicensestat";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setPictureId(new Integer(rs.getInt(1)));
+                     setXlicensestatId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +102,12 @@ public class Picture extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE picture " +
-                    "SET picture = ?" + 
-                    " WHERE picture_id = " + getPictureId();
+                    "UPDATE xlicensestat " +
+                    "SET licstatus = ?" + 
+                    " WHERE xlicensestat_id = " + getXlicensestatId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPicture());
+                ps.setObject(1, getLicstatus());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,37 +120,37 @@ public class Picture extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Profile.exists(getConnection(),"picture_id = " + getPictureId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: profile_picture_fk");
+        if (Xmachine.exists(getConnection(),"xlicensestat_id = " + getXlicensestatId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xmachine_xlicensestat_fk");
         }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM picture " +
-                "WHERE picture_id = " + getPictureId();
+                "DELETE FROM xlicensestat " +
+                "WHERE xlicensestat_id = " + getXlicensestatId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setPictureId(new Integer(-getPictureId().intValue()));
+        setXlicensestatId(new Integer(-getXlicensestatId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getPictureId().intValue() < 0);
+        return (getXlicensestatId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture " +
+        String stmt = "SELECT xlicensestat_id,licstatus FROM xlicensestat " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -160,7 +160,7 @@ public class Picture extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Picture(con,new Integer(rs.getInt(1)),rs.getObject(2)));
+                lst.add(dbObj=new Xlicensestat(con,new Integer(rs.getInt(1)),rs.getString(2)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -170,10 +170,10 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Picture[] objects = new Picture[lst.size()];
+        Xlicensestat[] objects = new Xlicensestat[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Picture picture = (Picture) lst.get(i);
-            objects[i] = picture;
+            Xlicensestat xlicensestat = (Xlicensestat) lst.get(i);
+            objects[i] = xlicensestat;
         }
         return objects;
     }
@@ -185,7 +185,7 @@ public class Picture extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id FROM picture " +
+        String stmt = "SELECT xlicensestat_id FROM xlicensestat " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -203,31 +203,31 @@ public class Picture extends DbObject  {
     }
 
     //public String toString() {
-    //    return getPictureId() + getDelimiter();
+    //    return getXlicensestatId() + getDelimiter();
     //}
 
-    public Integer getPictureId() {
-        return pictureId;
+    public Integer getXlicensestatId() {
+        return xlicensestatId;
     }
 
-    public void setPictureId(Integer pictureId) throws ForeignKeyViolationException {
-        setWasChanged(this.pictureId != null && this.pictureId != pictureId);
-        this.pictureId = pictureId;
-        setNew(pictureId.intValue() == 0);
+    public void setXlicensestatId(Integer xlicensestatId) throws ForeignKeyViolationException {
+        setWasChanged(this.xlicensestatId != null && this.xlicensestatId != xlicensestatId);
+        this.xlicensestatId = xlicensestatId;
+        setNew(xlicensestatId.intValue() == 0);
     }
 
-    public Object getPicture() {
-        return picture;
+    public String getLicstatus() {
+        return licstatus;
     }
 
-    public void setPicture(Object picture) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.picture != null && !this.picture.equals(picture));
-        this.picture = picture;
+    public void setLicstatus(String licstatus) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.licstatus != null && !this.licstatus.equals(licstatus));
+        this.licstatus = licstatus;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[2];
-        columnValues[0] = getPictureId();
-        columnValues[1] = getPicture();
+        columnValues[0] = getXlicensestatId();
+        columnValues[1] = getLicstatus();
         return columnValues;
     }
 
@@ -244,10 +244,10 @@ public class Picture extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setPictureId(Integer.parseInt(flds[0]));
+            setXlicensestatId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setPictureId(null);
+            setXlicensestatId(null);
         }
-        setPicture(flds[1]);
+        setLicstatus(flds[1]);
     }
 }

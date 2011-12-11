@@ -8,38 +8,38 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Picture extends DbObject  {
+public class Xmachtype extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer pictureId = null;
-    private Object picture = null;
+    private Integer xmachtypeId = null;
+    private String machtype = null;
 
-    public Picture(Connection connection) {
-        super(connection, "picture", "picture_id");
-        setColumnNames(new String[]{"picture_id", "picture"});
+    public Xmachtype(Connection connection) {
+        super(connection, "xmachtype", "xmachtype_id");
+        setColumnNames(new String[]{"xmachtype_id", "machtype"});
     }
 
-    public Picture(Connection connection, Integer pictureId, Object picture) {
-        super(connection, "picture", "picture_id");
-        setNew(pictureId.intValue() <= 0);
-//        if (pictureId.intValue() != 0) {
-            this.pictureId = pictureId;
+    public Xmachtype(Connection connection, Integer xmachtypeId, String machtype) {
+        super(connection, "xmachtype", "xmachtype_id");
+        setNew(xmachtypeId.intValue() <= 0);
+//        if (xmachtypeId.intValue() != 0) {
+            this.xmachtypeId = xmachtypeId;
 //        }
-        this.picture = picture;
+        this.machtype = machtype;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Picture picture = null;
+        Xmachtype xmachtype = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture WHERE picture_id=" + id;
+        String stmt = "SELECT xmachtype_id,machtype FROM xmachtype WHERE xmachtype_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                picture = new Picture(getConnection());
-                picture.setPictureId(new Integer(rs.getInt(1)));
-                picture.setPicture(rs.getObject(2));
-                picture.setNew(false);
+                xmachtype = new Xmachtype(getConnection());
+                xmachtype.setXmachtypeId(new Integer(rs.getInt(1)));
+                xmachtype.setMachtype(rs.getString(2));
+                xmachtype.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +48,7 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return picture;
+        return xmachtype;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +57,26 @@ public class Picture extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO picture ("+(getPictureId().intValue()!=0?"picture_id,":"")+"picture) values("+(getPictureId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xmachtype ("+(getXmachtypeId().intValue()!=0?"xmachtype_id,":"")+"machtype) values("+(getXmachtypeId().intValue()!=0?"?,":"")+"?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getPictureId().intValue()!=0) {
-                 ps.setObject(++n, getPictureId());
+             if (getXmachtypeId().intValue()!=0) {
+                 ps.setObject(++n, getXmachtypeId());
              }
-             ps.setObject(++n, getPicture());
+             ps.setObject(++n, getMachtype());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getPictureId().intValue()==0) {
-             stmt = "SELECT max(picture_id) FROM picture";
+         if (getXmachtypeId().intValue()==0) {
+             stmt = "SELECT max(xmachtype_id) FROM xmachtype";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setPictureId(new Integer(rs.getInt(1)));
+                     setXmachtypeId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +102,12 @@ public class Picture extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE picture " +
-                    "SET picture = ?" + 
-                    " WHERE picture_id = " + getPictureId();
+                    "UPDATE xmachtype " +
+                    "SET machtype = ?" + 
+                    " WHERE xmachtype_id = " + getXmachtypeId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPicture());
+                ps.setObject(1, getMachtype());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,37 +120,37 @@ public class Picture extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Profile.exists(getConnection(),"picture_id = " + getPictureId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: profile_picture_fk");
+        if (Xmachine.exists(getConnection(),"xmachtype_id = " + getXmachtypeId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xmachine_xmachtype_fk");
         }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM picture " +
-                "WHERE picture_id = " + getPictureId();
+                "DELETE FROM xmachtype " +
+                "WHERE xmachtype_id = " + getXmachtypeId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setPictureId(new Integer(-getPictureId().intValue()));
+        setXmachtypeId(new Integer(-getXmachtypeId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getPictureId().intValue() < 0);
+        return (getXmachtypeId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture " +
+        String stmt = "SELECT xmachtype_id,machtype FROM xmachtype " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -160,7 +160,7 @@ public class Picture extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Picture(con,new Integer(rs.getInt(1)),rs.getObject(2)));
+                lst.add(dbObj=new Xmachtype(con,new Integer(rs.getInt(1)),rs.getString(2)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -170,10 +170,10 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Picture[] objects = new Picture[lst.size()];
+        Xmachtype[] objects = new Xmachtype[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Picture picture = (Picture) lst.get(i);
-            objects[i] = picture;
+            Xmachtype xmachtype = (Xmachtype) lst.get(i);
+            objects[i] = xmachtype;
         }
         return objects;
     }
@@ -185,7 +185,7 @@ public class Picture extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id FROM picture " +
+        String stmt = "SELECT xmachtype_id FROM xmachtype " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -203,31 +203,31 @@ public class Picture extends DbObject  {
     }
 
     //public String toString() {
-    //    return getPictureId() + getDelimiter();
+    //    return getXmachtypeId() + getDelimiter();
     //}
 
-    public Integer getPictureId() {
-        return pictureId;
+    public Integer getXmachtypeId() {
+        return xmachtypeId;
     }
 
-    public void setPictureId(Integer pictureId) throws ForeignKeyViolationException {
-        setWasChanged(this.pictureId != null && this.pictureId != pictureId);
-        this.pictureId = pictureId;
-        setNew(pictureId.intValue() == 0);
+    public void setXmachtypeId(Integer xmachtypeId) throws ForeignKeyViolationException {
+        setWasChanged(this.xmachtypeId != null && this.xmachtypeId != xmachtypeId);
+        this.xmachtypeId = xmachtypeId;
+        setNew(xmachtypeId.intValue() == 0);
     }
 
-    public Object getPicture() {
-        return picture;
+    public String getMachtype() {
+        return machtype;
     }
 
-    public void setPicture(Object picture) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.picture != null && !this.picture.equals(picture));
-        this.picture = picture;
+    public void setMachtype(String machtype) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.machtype != null && !this.machtype.equals(machtype));
+        this.machtype = machtype;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[2];
-        columnValues[0] = getPictureId();
-        columnValues[1] = getPicture();
+        columnValues[0] = getXmachtypeId();
+        columnValues[1] = getMachtype();
         return columnValues;
     }
 
@@ -244,10 +244,10 @@ public class Picture extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setPictureId(Integer.parseInt(flds[0]));
+            setXmachtypeId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setPictureId(null);
+            setXmachtypeId(null);
         }
-        setPicture(flds[1]);
+        setMachtype(flds[1]);
     }
 }

@@ -88,34 +88,41 @@ public class Selects {
             + "materialnumber \"Material Nr.\", machinetype \"Machine Type\","
             + "deliveryreq \"Required\" "
             + "from xorderitem where xorder_id = #";
-    public static String DISTINCT_MACHINETYPES =
+    public static final String DISTINCT_MACHINETYPES =
             "Select distinct machinetype from xorderitem";
-    public static String DISTINCT_MEASUREITEMS =
+    public static final String DISTINCT_MEASUREITEMS =
             "Select distinct measureitem from xorderitem";
-    public static String SELECT_FROM_EMPLOYEE = 
+    public static final String SELECT_FROM_EMPLOYEE = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee";
-    public static String SELECT_FROM_TIMESHEET = 
+    public static final String SELECT_FROM_TIMESHEET = 
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
             + "e.sur_name \"Surename\", s.name \"Site\", o.ordernumber \"Order Nr\" "
             + "from xtimesheet t,xemployee e, xsite s, xorder o "
             + "where t.xemployee_id=e.xemployee_id "
             + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id";
-    public static String SELECT_TIMESHEETS4EMPLOYEE =
+    public static final String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "s.name \"Site\", o.ordernumber \"Order Nr\" "
             + "from xtimesheet t, xsite s, xorder o "
             + "where t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id and t.xemployee_id = #";
-    public static String SELECT_WAGE4TIMESHEET =
+    public static final String SELECT_WAGE4TIMESHEET =
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
             + "overtime \"Over Time\", doubletime \"Double Time\", stoppeddetails \"Details\" "
             + "from xwage where xtimesheet_id = #";
-    public static String SELECT_SITES4LOOKUP = 
+    public static final String SELECT_SITES4LOOKUP = 
             "Select xsite_id \"Id\", name \"Site Name\","
             + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
             + "from xsite order by upper(name)";
+    public static final String SELECT_FROM_MACHINE =
+            "Select xmachine_id \"Id\", tmvnr, descr \"Description\", "
+            + "t.machtype \"Machine Type\", classify \"Classify\", reg_nr \"Reg.Nr\", "
+            + "licensedate \"License Date\", licstatus \"License Status\" "
+            + "from xmachine m, xmachtype t, xlicensestat ls "
+            + "where m.xmachtype_id=t.xmachtype_id "
+            + "and m.xlicensestat_id=ls.xlicensestat_id";
 
     public static String[] getStringArray(String select) {
         try {

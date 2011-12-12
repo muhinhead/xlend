@@ -181,7 +181,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
     private JComponent getTabbedPanel() {
         tabbedPane = new JTabbedPane();
         tabbedPane.add(getPicPanel(), "Photo");
-        tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 300));
+        tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 400));
         return tabbedPane;
     }
 }

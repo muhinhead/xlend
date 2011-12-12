@@ -53,13 +53,12 @@ public class MachineGrid extends GeneralGridPanel {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
-            
-        };        
+        };
     }
 
     @Override
     protected AbstractAction editAction() {
- return new AbstractAction("Edit Machine") {
+        return new AbstractAction("Edit Machine") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +82,7 @@ public class MachineGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-return new AbstractAction("Delete Machine") {
+        return new AbstractAction("Delete Machine") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

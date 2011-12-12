@@ -1,10 +1,13 @@
 package com.xlend.gui;
 
+import com.xlend.constants.Selects;
 import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xemployee;
+import com.xlend.orm.Xlicensestat;
+import com.xlend.orm.Xmachtype;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
@@ -18,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -249,6 +253,40 @@ public class XlendWorks {
             for (DbObject o : orders) {
                 Xorder xorder = (Xorder) o;
                 itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
+    public static ComboItem[] loadAllLicStatuses(IMessageSender exchanger) {
+        try {
+            DbObject[] clients = exchanger.getDbObjects(Xlicensestat.class, null, "licstatus");
+            ComboItem[] itms = new ComboItem[clients.length + 1];
+            itms[0] = new ComboItem(0, "--Add new status--");
+            int i = 1;
+            for (DbObject o : clients) {
+                Xlicensestat ls = (Xlicensestat) o;
+                itms[i++] = new ComboItem(ls.getXlicensestatId(), ls.getLicstatus());
+            }
+            return itms;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+    
+    public static ComboItem[] loadAllMachTypes(IMessageSender exchanger) {
+        try {
+            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, null, "machtype");
+            ComboItem[] itms = new ComboItem[clients.length + 1];
+            itms[0] = new ComboItem(0, "--Add new type--");
+            int i = 1;
+            for (DbObject o : clients) {
+                Xmachtype tp = (Xmachtype) o;
+                itms[i++] = new ComboItem(tp.getXmachtypeId(), tp.getMachtype());
             }
             return itms;
         } catch (RemoteException ex) {

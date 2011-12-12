@@ -90,6 +90,8 @@ public class Selects {
             + "from xorderitem where xorder_id = #";
     public static final String DISTINCT_MACHINETYPES =
             "Select distinct machinetype from xorderitem";
+    public static final String DISTINCT_INSURANCETYPES =
+            "Select distinct insurance_tp from xmachine";
     public static final String DISTINCT_MEASUREITEMS =
             "Select distinct measureitem from xorderitem";
     public static final String SELECT_FROM_EMPLOYEE = 
@@ -117,7 +119,7 @@ public class Selects {
             + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
             + "from xsite order by upper(name)";
     public static final String SELECT_FROM_MACHINE =
-            "Select xmachine_id \"Id\", tmvnr, descr \"Description\", "
+            "Select xmachine_id \"Id\", tmvnr \"TMVnr\", descr \"Description\", "
             + "t.machtype \"Machine Type\", classify \"Classify\", reg_nr \"Reg.Nr\", "
             + "licensedate \"License Date\", licstatus \"License Status\" "
             + "from xmachine m, xmachtype t, xlicensestat ls "

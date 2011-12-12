@@ -5,6 +5,9 @@ import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -28,7 +32,6 @@ public abstract class RecordEditPanel extends JPanel {
         }
         return lblArray;
     }
-
     private DbObject dbObject;
     protected JPanel lblPanel;
     protected JPanel editPanel;
@@ -47,7 +50,7 @@ public abstract class RecordEditPanel extends JPanel {
         upPanel.add(editPanel, BorderLayout.CENTER);
         upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
     }
-    
+
     protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
         JPanel comboBoxPanel = new JPanel(new BorderLayout());
         comboBoxPanel.add(cb);
@@ -119,5 +122,15 @@ public abstract class RecordEditPanel extends JPanel {
                 return;
             }
         }
+    }
+
+    protected static MaskFormatter createFormatter(String s) {
+        MaskFormatter formatter = null;
+        try {
+            formatter = new MaskFormatter(s);
+        } catch (ParseException ex) {
+            XlendWorks.log(ex);
+        }
+        return formatter;
     }
 }

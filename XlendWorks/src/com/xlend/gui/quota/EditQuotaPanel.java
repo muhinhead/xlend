@@ -295,7 +295,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
         };
     }
 
-    private Component getTabbedPanel() throws RemoteException {
+    private JComponent getTabbedPanel() throws RemoteException {
         tabbedPane = new JTabbedPane();
 
         try {

@@ -71,9 +71,9 @@ public class NoFrameButton extends JButton {
 
     @Override
     protected void paintBorder(Graphics g) {
-        if (containsCursor) {
-            super.paintBorder(g);
-        }
+//        if (containsCursor) {
+//            super.paintBorder(g);
+//        }
     }
 
     

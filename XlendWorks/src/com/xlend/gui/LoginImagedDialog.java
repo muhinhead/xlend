@@ -101,7 +101,7 @@ public class LoginImagedDialog extends PopupDialog {
         img = new ImagePanel(XlendWorks.loadImage("Lock.jpg", this));
 
         okButton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift,
-                img.getWidth(), img.getHeight());
+                img.getWidth(), img.getHeight()-1);
 
         main.add(okButton);
         okButton.addActionListener(okButtonListener());
@@ -112,7 +112,7 @@ public class LoginImagedDialog extends PopupDialog {
         if (pwdmd5.trim().length() > 0) {
             loginField.setSelectedItem(DashBoard.readProperty(DashBoard.LASTLOGIN, ""));
         }
-        
+        getRootPane().setDefaultButton(okButton);
         setResizable(false);
     }
 

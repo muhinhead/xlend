@@ -52,6 +52,18 @@ public class XlendWorks {
             try {
                 exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
                 if (login(exchanger)) {
+
+                    DbObject[] xtypes = exchanger.getDbObjects(Xmachtype.class, null, "xmachtype_id");
+                    for (DbObject o : xtypes) {
+//                        System.out.println(o.getAsRow());
+//                        Object[] ar = o.getAsRow();
+//                        for(Object a : ar) {
+//                            System.out.print(a+"|");
+//                        }
+                        Xmachtype mt = (Xmachtype) o;
+                        System.out.println(""+mt.getXmachtypeId()+"|"+mt.getMachtype()+"|"+mt.getParenttypeId()+"|"+mt.getClassify());
+                    }
+
                     new DashBoard(exchanger);
                     break;
                 } else {
@@ -276,7 +288,6 @@ public class XlendWorks {
 //        }
 //        return null;
 //    }
-    
     public static ComboItem[] loadRootMachTypes(IMessageSender exchanger) {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null", "machtype");

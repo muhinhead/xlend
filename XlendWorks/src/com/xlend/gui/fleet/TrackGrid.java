@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class MachineGrid extends GeneralGridPanel {
+public class TrackGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
@@ -24,24 +24,25 @@ public class MachineGrid extends GeneralGridPanel {
         maxWidths.put(0, 40);
     }
 
-    public MachineGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_MACHINE, maxWidths, false);
+    public TrackGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_MACHINE.replace(
+                "classify='M'", "classify='T'"), maxWidths, false);
     }
 
-    public MachineGrid(IMessageSender exchanger, String select, boolean readOnly) throws RemoteException {
+    public TrackGrid(IMessageSender exchanger, String select, 
+            boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, readOnly);
     }
 
     @Override
     protected AbstractAction addAction() {
-        //TODO: add machine
-        return new AbstractAction("New Machine") {
+        return new AbstractAction("New Track") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditMachineDialog ed = new EditMachineDialog("New Machine", null);
-                    if (EditMachineDialog.okPressed) {
+                    EditTrackDialog ed = new EditTrackDialog("New Track", null);
+                    if (EditTrackDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
                                 getTableView(), getTableDoc(), getSelect(), machine.getXmachineId());
@@ -56,7 +57,7 @@ public class MachineGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Machine") {
+        return new AbstractAction("Edit Track") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,8 +65,8 @@ public class MachineGrid extends GeneralGridPanel {
                 if (id > 0) {
                     try {
                         Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                        new EditMachineDialog("Edit Machine", machine);
-                        if (EditMachineDialog.okPressed) {
+                        new EditTrackDialog("Edit Track", machine);
+                        if (EditTrackDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id);
                         }
@@ -80,14 +81,14 @@ public class MachineGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Machine") {
+        return new AbstractAction("Delete Track") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete machine  [Reg.Nr "
+                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Track  [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
@@ -99,4 +100,5 @@ public class MachineGrid extends GeneralGridPanel {
             }
         };
     }
+    
 }

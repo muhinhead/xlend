@@ -4,7 +4,6 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.EditPanelWithPhoto;
 import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachine;
 import com.xlend.orm.Xmachtype;
@@ -25,8 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -36,11 +33,9 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SpinnerListModel;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -85,7 +80,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         machineTypeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(),getFleetNumberChar())) {
             machineTypeCbModel.addElement(itm);
         }
         licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
@@ -197,7 +192,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
         if (machine != null) {
             Date dt;
             idField.setText(machine.getXmachineId().toString());
-            labels[1].setText("Fleet Number:(" + machine.getChassisNr() == null ? "?" : machine.getChassisNr() + ")");
+            labels[1].setText("Fleet Number:(" + (machine.getClassify() == null ? "?" : machine.getClassify()) + ")");
             chassisNrField.setText(machine.getChassisNr());
             contractFeeSP.setValue(machine.getContractFee() == null ? 0 : machine.getContractFee());
             depositAmtSP.setValue(machine.getDepositAmt() == null ? 0 : machine.getDepositAmt());

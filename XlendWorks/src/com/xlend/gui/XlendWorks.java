@@ -53,16 +53,11 @@ public class XlendWorks {
                 exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
                 if (login(exchanger)) {
 
-                    DbObject[] xtypes = exchanger.getDbObjects(Xmachtype.class, null, "xmachtype_id");
-                    for (DbObject o : xtypes) {
-//                        System.out.println(o.getAsRow());
-//                        Object[] ar = o.getAsRow();
-//                        for(Object a : ar) {
-//                            System.out.print(a+"|");
-//                        }
-                        Xmachtype mt = (Xmachtype) o;
-                        System.out.println(""+mt.getXmachtypeId()+"|"+mt.getMachtype()+"|"+mt.getParenttypeId()+"|"+mt.getClassify());
-                    }
+//                    DbObject[] xtypes = exchanger.getDbObjects(Xmachtype.class, null, "xmachtype_id");
+//                    for (DbObject o : xtypes) {
+//                        Xmachtype mt = (Xmachtype) o;
+//                        System.out.println(""+mt.getXmachtypeId()+"|"+mt.getMachtype()+"|"+mt.getParenttypeId()+"|"+mt.getClassify());
+//                    }
 
                     new DashBoard(exchanger);
                     break;
@@ -288,9 +283,9 @@ public class XlendWorks {
 //        }
 //        return null;
 //    }
-    public static ComboItem[] loadRootMachTypes(IMessageSender exchanger) {
+    public static ComboItem[] loadRootMachTypes(IMessageSender exchanger,String classify) {
         try {
-            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null", "machtype");
+            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify='"+classify+"'", "xmachtype_id");
             ComboItem[] itms = new ComboItem[clients.length];
 //            itms[0] = new ComboItem(0, "--Add new type--");
             int i = 0;

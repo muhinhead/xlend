@@ -123,7 +123,8 @@ public class Selects {
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
             + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
             + "from xmachine m, xmachtype t1 "
-            + "where m.xmachtype_id=t1.xmachtype_id";
+            + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
+    
 
     public static String[] getStringArray(String select) {
         try {

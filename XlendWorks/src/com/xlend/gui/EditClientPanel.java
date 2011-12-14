@@ -60,7 +60,7 @@ public class EditClientPanel extends ProfilePanel {
             salesPersonBox = new JComboBox(salesPersons = getSalesPersons())
         };
         
-        birthDaySpinner.setEditor(new JSpinner.DateEditor(birthDaySpinner, "yyyy/MM/dd"));
+        birthDaySpinner.setEditor(new JSpinner.DateEditor(birthDaySpinner, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(birthDaySpinner);
 
         organizePanels(labels.length, edits.length);

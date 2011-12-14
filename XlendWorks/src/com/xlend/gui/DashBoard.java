@@ -124,46 +124,46 @@ public class DashBoard extends JFrame {
 
         img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
-        adminButton.setBounds(xShift, yShift + 10, img.getWidth() + 3, img.getHeight() + 3);
+        adminButton.setBounds(xShift, yShift + 10, img.getWidth(), img.getHeight());
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        docsButton = new NoFrameButton("Docs.png");
-        sitesButton = new NoFrameButton("Sites.png");
-        reportsButton = new NoFrameButton("Reports.png");
-        hrbutton = new NoFrameButton("HR.png");
-        fleetbutton = new NoFrameButton("Fleet.png");
-        logoutButton = new NoFrameButton("logoutsmall.png");
+        docsButton = new ToolBarButton("Docs.png");
+        sitesButton = new ToolBarButton("Sites.png");
+        reportsButton = new ToolBarButton("Reports.png");
+        hrbutton = new ToolBarButton("HR.png");
+        fleetbutton = new ToolBarButton("Fleet.png");
+        logoutButton = new ToolBarButton("logoutsmall.png");
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
-        docsButton.setBounds(xShift, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
+        docsButton.setBounds(xShift, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
         docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(docsButton);
 
         img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
-        sitesButton.setBounds((dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
+        sitesButton.setBounds((dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
         sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(sitesButton);
 
         img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
-        reportsButton.setBounds((dashWidth - img.getWidth()) / 2, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
+        reportsButton.setBounds((dashWidth - img.getWidth()) / 2, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
         reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(reportsButton);
 
         img = new ImagePanel(XlendWorks.loadImage("HR.png", this));
-        hrbutton.setBounds(3 * (dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
+        hrbutton.setBounds(3 * (dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
         hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(hrbutton);
 
         img = new ImagePanel(XlendWorks.loadImage("Fleet.png", this));
-        fleetbutton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift, img.getWidth() + 3, img.getHeight() + 3);
+        fleetbutton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
         fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(fleetbutton);
 
-//        fleetbutton.setBounds(270, 220, img.getWidth() + 3, img.getHeight() + 3);
+//        fleetbutton.setBounds(270, 220, img.getWidth(), img.getHeight());
 //        main.add(fleetbutton);
         img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(dashWidth - img.getWidth() - xShift, yShift + 10, img.getWidth() + 3, img.getHeight() + 3);
+        logoutButton.setBounds(dashWidth - img.getWidth() - xShift, yShift + 10, img.getWidth(), img.getHeight());
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {

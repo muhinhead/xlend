@@ -106,10 +106,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             rateSP = new SelectedNumberSpinner(0, 0, 10000, 10)//new SelectedNumberSpinner(
         };
 
-        contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "yyyy/MM/dd"));
+        contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(contractStartSP);
 
-        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "yyyy/MM/dd"));
+        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(contractEndSP);
 
         setEndDateVisible(true);

@@ -119,12 +119,11 @@ public class Selects {
             + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
             + "from xsite order by upper(name)";
     public static final String SELECT_FROM_MACHINE =
-            "Select xmachine_id \"Id\", tmvnr \"TMVnr\", descr \"Description\", "
-            + "t.machtype \"Machine Type\", classify \"Classify\", reg_nr \"Reg.Nr\", "
-            + "licensedate \"License Date\", licstatus \"License Status\" "
-            + "from xmachine m, xmachtype t, xlicensestat ls "
-            + "where m.xmachtype_id=t.xmachtype_id "
-            + "and m.xlicensestat_id=ls.xlicensestat_id";
+            "Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
+            + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
+            + "expdate \"License Exp.Date\", '***' \"License Status\" "
+            + "from xmachine m, xmachtype t1 "
+            + "where m.xmachtype_id=t1.xmachtype_id";
 
     public static String[] getStringArray(String select) {
         try {

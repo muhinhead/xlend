@@ -105,9 +105,9 @@ class EditQuotaPanel extends EditPanelWithPhoto {
             respondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
             respCommentsField = new JTextField()
         };
-        receivedSp.setEditor(new JSpinner.DateEditor(receivedSp, "yyyy/MM/dd"));
-        deadlineSp.setEditor(new JSpinner.DateEditor(deadlineSp, "yyyy/MM/dd HH:mm"));
-        responseDateSp.setEditor(new JSpinner.DateEditor(responseDateSp, "yyyy/MM/dd"));
+        receivedSp.setEditor(new JSpinner.DateEditor(receivedSp, "dd/MM/yyyy"));
+        deadlineSp.setEditor(new JSpinner.DateEditor(deadlineSp, "dd/MM/yyyy HH:mm"));
+        responseDateSp.setEditor(new JSpinner.DateEditor(responseDateSp, "dd/MM/yyyy"));
 
         Util.addFocusSelectAllAction(receivedSp);
         Util.addFocusSelectAllAction(deadlineSp);

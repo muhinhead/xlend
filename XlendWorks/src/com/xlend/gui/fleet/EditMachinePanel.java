@@ -6,6 +6,7 @@ import com.xlend.gui.EditPanelWithPhoto;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachine;
+import com.xlend.orm.Xmachtype;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
@@ -14,8 +15,14 @@ import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -34,13 +41,14 @@ import javax.swing.SpinnerListModel;
 class EditMachinePanel extends EditPanelWithPhoto {
 
     private JTextField idField;
-    private JFormattedTextField tmvnrTextField;
-    private JTextField descriptionField;
+    private JSpinner tmvnrTextSP;
+//    private JTextField descriptionField;
     private JComboBox machineTypeCB;
     private DefaultComboBoxModel machineTypeCbModel;
-    private JTextField type2Field;
+    private JComboBox machType2CB;
+    private DefaultComboBoxModel machineType2CbModel;
     private JTextField regNrField;
-    private JTextField oldRegNrField;
+//    private JTextField oldRegNrField;
     private SelectedDateSpinner licenseDateSP;
     private SelectedDateSpinner expDateSP;
     private JComboBox licenseStatusCB;
@@ -48,7 +56,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
     private JFormattedTextField vehicleNrField;
     private JTextField engineNrField;
     private JTextField chassisNrField;
-    private JSpinner classifySP;
+//    private JSpinner classifySP;
     private JTextField insuranceNrField;
     private JComboBox insuranceTypeCB;
     private JSpinner insurabceAmtSP;
@@ -66,18 +74,19 @@ class EditMachinePanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         machineTypeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllMachTypes(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger())) {
             machineTypeCbModel.addElement(itm);
         }
         licenseStatusCbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllLicStatuses(DashBoard.getExchanger())) {
             licenseStatusCbModel.addElement(itm);
         }
+        machineType2CbModel = new DefaultComboBoxModel();
         String[] titles = new String[]{
             "ID:",
-            "Classify:", "TMVnr:", "Description:",
+            "Fleet Number:(M)",
+            "Reg.Nr:", 
             "Type:", "Type2:",
-            "Reg.Nr:", "Old Reg.Nr:",
             "Lic.Date:", "Lic.Status:", "Exp.Date:",
             "VehicleDNr:", "Engine Nr:", "Chassis Nr:",
             "Insurance Nr:", "Insurance Type:", "Insurance Amt:",
@@ -86,29 +95,27 @@ class EditMachinePanel extends EditPanelWithPhoto {
         };
         labels = createLabelsArray(titles);
         edits = new JComponent[]{
-            idField = new JTextField(), //1
-            classifySP = new JSpinner(new SpinnerListModel(new String[]{"M", "T", "V", "Z"})), //2
-            tmvnrTextField = new JFormattedTextField(createFormatter("U##")), //2
-            descriptionField = new JTextField(40), //3
-            machineTypeCB = new JComboBox(machineTypeCbModel), //4
-            type2Field = new JTextField(), //4
-            regNrField = new JTextField(), //5
-            oldRegNrField = new JTextField(), //5
-            licenseDateSP = new SelectedDateSpinner(), //6
-            licenseStatusCB = new JComboBox(licenseStatusCbModel), //6
-            expDateSP = new SelectedDateSpinner(), //6
-            vehicleNrField = new JFormattedTextField(createFormatter("UUU###U")), //7
-            engineNrField = new JTextField(), //7
-            chassisNrField = new JTextField(), //7
-            insuranceNrField = new JTextField(), //8
-            insuranceTypeCB = new JComboBox(Selects.getStringArray(Selects.DISTINCT_INSURANCETYPES)), //8
-            insurabceAmtSP = new SelectedNumberSpinner(0, 0, 1000000, 10), //8
-            depositAmtSP = new SelectedNumberSpinner(0, 0, 1000000, 10), //9
-            contractFeeSP = new SelectedNumberSpinner(0, 0, 1000000, 10), //9
-            monthlyPaySP = new SelectedNumberSpinner(0, 0, 1000000, 10), //9
-            payStartDateSP = new SelectedDateSpinner(), //10
-            payEndDateSP = new SelectedDateSpinner() //10
+            idField = new JTextField(), 
+            tmvnrTextSP = new SelectedNumberSpinner(0, 0, 1000, 1),
+            machineTypeCB = new JComboBox(machineTypeCbModel), 
+            machType2CB = new JComboBox(machineType2CbModel), 
+            regNrField = new JTextField(), 
+            licenseDateSP = new SelectedDateSpinner(), 
+            licenseStatusCB = new JComboBox(licenseStatusCbModel), 
+            expDateSP = new SelectedDateSpinner(), 
+            vehicleNrField = new JFormattedTextField(createFormatter("UUU###U")), 
+            engineNrField = new JTextField(), 
+            chassisNrField = new JTextField(), 
+            insuranceNrField = new JTextField(), 
+            insuranceTypeCB = new JComboBox(Selects.getStringArray(Selects.DISTINCT_INSURANCETYPES)), 
+            insurabceAmtSP = new SelectedNumberSpinner(0, 0, 1000000, 10), 
+            depositAmtSP = new SelectedNumberSpinner(0, 0, 1000000, 10), 
+            contractFeeSP = new SelectedNumberSpinner(0, 0, 1000000, 10), 
+            monthlyPaySP = new SelectedNumberSpinner(0, 0, 1000000, 10), 
+            payStartDateSP = new SelectedDateSpinner(), 
+            payEndDateSP = new SelectedDateSpinner() 
         };
+        machineTypeCB.addActionListener(machType2CBreloadAction());
 //        Dimension prefs = licenseStatusCB.getEditor().getEditorComponent().getPreferredSize();
 //        licenseStatusCB.getEditor().getEditorComponent().setMaximumSize(new Dimension(100,prefs.height));
         insuranceTypeCB.setEditable(true);
@@ -120,19 +127,24 @@ class EditMachinePanel extends EditPanelWithPhoto {
         idField.setEditable(false);
 
         ArrayList<JComponent[]> componentRows = new ArrayList<JComponent[]>();
-        
-        componentRows.add(new JComponent[]{labels[0], idField, labels[1],
-                    new JPanel(), new JPanel(), new JPanel(), new JPanel(), new JPanel(), new JPanel()});
-        componentRows.add(new JComponent[]{labels[1], classifySP, labels[2], tmvnrTextField,
-                    labels[6], regNrField, labels[7], oldRegNrField});
-        componentRows.add(new JComponent[]{labels[3], descriptionField});
-        componentRows.add(new JComponent[]{labels[4], machineTypeCB, labels[5], type2Field, new JPanel(), new JPanel()});
-        componentRows.add(new JComponent[]{labels[8], licenseDateSP, labels[9], licenseStatusCB, labels[10], expDateSP});
-        componentRows.add(new JComponent[]{labels[11], vehicleNrField, labels[12], engineNrField, labels[13], chassisNrField});
-        componentRows.add(new JComponent[]{labels[14], insuranceNrField, labels[15], insuranceTypeCB, labels[16], insurabceAmtSP});
-        componentRows.add(new JComponent[]{labels[17], depositAmtSP, labels[18], contractFeeSP, new JPanel(), new JPanel()});
-        componentRows.add(new JComponent[]{labels[19], monthlyPaySP, labels[20], payStartDateSP, labels[21], payEndDateSP});
 
+        int idx = 0;
+        JPanel idPanel = new JPanel(new BorderLayout());
+        idPanel.add(idField, BorderLayout.WEST);
+        JPanel tmvnrPanel = new JPanel(new BorderLayout());
+        tmvnrPanel.add(tmvnrTextSP, BorderLayout.WEST);
+        JPanel regNrPanel = new JPanel(new BorderLayout());
+        regNrPanel.add(regNrField, BorderLayout.WEST);
+
+        componentRows.add(new JComponent[]{labels[idx++], idPanel, labels[idx++], tmvnrPanel, labels[idx++], regNrPanel});
+        componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], licenseDateSP, labels[idx++], licenseStatusCB, labels[idx++], expDateSP});
+        componentRows.add(new JComponent[]{labels[idx++], vehicleNrField, labels[idx++], engineNrField, labels[idx++], chassisNrField});
+        componentRows.add(new JComponent[]{labels[idx++], insuranceNrField, labels[idx++], insuranceTypeCB, labels[idx++], insurabceAmtSP});
+        componentRows.add(new JComponent[]{labels[idx++], depositAmtSP, labels[idx++], contractFeeSP, new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], monthlyPaySP, labels[idx++], payStartDateSP, labels[idx++], payEndDateSP});
+        idField.setPreferredSize(tmvnrTextSP.getPreferredSize());
+        regNrField.setPreferredSize(tmvnrTextSP.getPreferredSize());
         organizePanels(componentRows);
 
         add(getTabbedPanel(), BorderLayout.CENTER);
@@ -183,5 +195,30 @@ class EditMachinePanel extends EditPanelWithPhoto {
         tabbedPane.add(getPicPanel(), "Photo");
         tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 400));
         return tabbedPane;
+    }
+
+    private ActionListener machType2CBreloadAction() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboItem tp1 = (ComboItem) machineTypeCB.getSelectedItem();
+                machineType2CbModel.removeAllElements();
+                if (tp1!=null) {
+                    try {
+                        DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
+                                Xmachtype.class, "parenttype_id="+tp1.getId(), "machtype");
+                        for (DbObject tp2 : tp2list) {
+                            Xmachtype type2 = (Xmachtype) tp2;
+                            machineType2CbModel.addElement(
+                                    new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            }
+            
+        };
     }
 }

@@ -7,9 +7,11 @@ import com.xlend.util.ImagePanel;
 import com.xlend.util.NoFrameButton;
 import com.xlend.util.PopupDialog;
 import com.xlend.util.TexturedPanel;
+import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -83,7 +85,7 @@ public class LoginImagedDialog extends PopupDialog {
         Insets insets = getInsets();
         int dashWidth = img.getWidth();
         int dashHeight = img.getHeight();
-        int yShift = 15;
+        int yShift = 14;
         int xShift = 20;
 
         this.setMinimumSize(new Dimension(dashWidth + insets.left + insets.right,
@@ -97,11 +99,11 @@ public class LoginImagedDialog extends PopupDialog {
         pwdField.setBounds(250, 290, 180, 27);
         main.add(pwdField);
 
-        JButton okButton = new NoFrameButton("Lock.jpg");
-        img = new ImagePanel(XlendWorks.loadImage("Lock.jpg", this));
+        JButton okButton = new ToolBarButton("Lock.png");
+        img = new ImagePanel(XlendWorks.loadImage("Lock.png", this));
 
         okButton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift,
-                img.getWidth(), img.getHeight()-1);
+                img.getWidth(), img.getHeight());
 
         main.add(okButton);
         okButton.addActionListener(okButtonListener());

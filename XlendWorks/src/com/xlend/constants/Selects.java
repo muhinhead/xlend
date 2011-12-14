@@ -121,7 +121,7 @@ public class Selects {
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
-            + "expdate \"License Exp.Date\", '***' \"License Status\" "
+            + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
             + "from xmachine m, xmachtype t1 "
             + "where m.xmachtype_id=t1.xmachtype_id";
 

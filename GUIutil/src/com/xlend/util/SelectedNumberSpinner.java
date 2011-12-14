@@ -18,7 +18,30 @@ public class SelectedNumberSpinner extends JSpinner {
 
     public SelectedNumberSpinner(double initialval, double minval, double maxval, double step) {
         super(new SpinnerNumberModel(initialval, minval, maxval, step));
+        init();
+    }
 
+    public SelectedNumberSpinner(int initialval, int minval, int maxval, int step) {
+        super(new SpinnerNumberModel(initialval, minval, maxval, step));
+        init();
+    }
+
+    public void setValue(Object val) {
+        super.setValue(val);
+        setColor();
+    }
+
+    private void setColor() {
+        Color color;
+        if (getValue() instanceof Double) {
+            color = ((Double) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
+        } else {
+            color = ((Integer) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
+        }
+        ((JSpinner.DefaultEditor) getEditor()).getTextField().setForeground(color);
+    }
+
+    private void init() {
         ((JSpinner.DefaultEditor) getEditor()).getTextField().addFocusListener(new FocusAdapter() {
 
             @Override
@@ -39,20 +62,5 @@ public class SelectedNumberSpinner extends JSpinner {
             }
         });
         setColor();
-    }
-
-    public void setValue(Object val) {
-        super.setValue(val);
-        setColor();
-    }
-
-    private void setColor() {
-        Color color;
-        if (getValue() instanceof Double) {
-            color = ((Double) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
-        } else {
-            color = ((Integer) getValue() > 0 ? Color.BLUE : Color.LIGHT_GRAY);
-        }
-        ((JSpinner.DefaultEditor) getEditor()).getTextField().setForeground(color);
     }
 }

@@ -24,13 +24,14 @@ public class NoFrameButton extends JButton {
 
     public NoFrameButton(String iconName) {
         this(new ImageIcon(Util.loadImage(iconName)));
+        containsCursor = false;
     }
-    
+
     public NoFrameButton(Icon icon) {
         super(icon);
         normalCursor = Cursor.getDefaultCursor();
         Dimension d = getPreferredSize();
-        setPreferredSize(new Dimension(d.width, d.height+20));
+        setPreferredSize(new Dimension(d.width, d.height + 20));
 
         addMouseListener(new MouseAdapter() {
 
@@ -50,33 +51,31 @@ public class NoFrameButton extends JButton {
         });
     }
 
-    public void setText(String lbl) {
-        super.setText(lbl);
-        repaint();
-    }
-
-    protected void paintComponent(Graphics g) {
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(getForeground());
-        FontMetrics fm = g.getFontMetrics();
-        int labelWidth = fm.stringWidth(getText());
-        if (getIcon() != null) {
-            int w = getIcon().getIconWidth();
-            int h = getIcon().getIconHeight();
-            getIcon().paintIcon(this, g, getWidth() / 2 - w / 2, 1);
-        }
-        g.drawString(getText(), getWidth() / 2 - labelWidth / 2, getHeight() - 5);
-    }
-
+//    public void setText(String lbl) {
+//        super.setText(lbl);
+//        repaint();
+//    }
+//
+//    protected void paintComponent(Graphics g) {
+//        g.setColor(getBackground());
+//        g.fillRect(0, 0, getWidth(), getHeight());
+//        g.setColor(getForeground());
+//        FontMetrics fm = g.getFontMetrics();
+//        int labelWidth = fm.stringWidth(getText());
+//        if (getIcon() != null) {
+//            int w = getIcon().getIconWidth();
+//            int h = getIcon().getIconHeight();
+//            getIcon().paintIcon(this, g, getWidth() / 2 - w / 2, 1);
+//        }
+//        g.drawString(getText(), getWidth() / 2 - labelWidth / 2, getHeight() - 5);
+//    }
     @Override
     protected void paintBorder(Graphics g) {
-//        if (containsCursor) {
-//            super.paintBorder(g);
-//        }
+        if (containsCursor) {
+            super.paintBorder(g);
+        }
     }
 
-    
     /**
      * @return the tag
      */

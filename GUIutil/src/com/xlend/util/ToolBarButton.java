@@ -1,6 +1,7 @@
 package com.xlend.util;
 
 import java.awt.Cursor;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,6 +18,7 @@ import javax.swing.JButton;
 public class ToolBarButton extends JButton implements MouseListener {
 
     private static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
+    private boolean containsCursor = false;
 
     public ToolBarButton(Icon icon) {
         super(icon);
@@ -36,6 +38,13 @@ public class ToolBarButton extends JButton implements MouseListener {
         addMouseListener(this);
     }
 
+    @Override
+    protected void paintBorder(Graphics g) {
+        if (containsCursor) {
+            super.paintBorder(g);
+        }
+    }
+
     public void mouseClicked(MouseEvent e) {
 //        throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -49,10 +58,16 @@ public class ToolBarButton extends JButton implements MouseListener {
     }
 
     public void mouseEntered(MouseEvent e) {
-        setCursor(handCursor);
+        if (isEnabled()) {
+            containsCursor = true;
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+        }
     }
 
     public void mouseExited(MouseEvent e) {
-        setCursor(Cursor.getDefaultCursor().getDefaultCursor());
+        if (isEnabled()) {
+            containsCursor = false;
+            setCursor(Cursor.getDefaultCursor().getDefaultCursor());
+        }
     }
 }

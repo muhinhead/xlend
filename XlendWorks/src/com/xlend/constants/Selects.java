@@ -85,15 +85,16 @@ public class Selects {
             + "from xquotation where xclient_id = #";
     public static final String SELECTORDERITEMS =
             "Select xorderitem_id \"Id\", itemnumber \"Item\", "
-            + "materialnumber \"Material Nr.\", machinetype \"Machine Type\","
+//            + "materialnumber \"Material Nr.\", "
+            + "(select machtype from xmachtype where xmachtype_id=xorderitem.xmachtype_id) \"Machine Type\","
             + "deliveryreq \"Required\" "
-            + "from xorderitem where xorder_id = #";
-    public static final String DISTINCT_MACHINETYPES =
-            "Select distinct machinetype from xorderitem";
+            + "from xorderitem where xorderitem.xorder_id = #";
+//    public static final String DISTINCT_MACHINETYPES =
+//            "Select distinct machinetype from xorderitem";
     public static final String DISTINCT_INSURANCETYPES =
             "Select distinct insurance_tp from xmachine";
-    public static final String DISTINCT_MEASUREITEMS =
-            "Select distinct measureitem from xorderitem";
+//    public static final String DISTINCT_MEASUREITEMS =
+//            "Select distinct measureitem from xorderitem";
     public static final String SELECT_FROM_EMPLOYEE = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
@@ -124,6 +125,37 @@ public class Selects {
             + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
             + "from xmachine m, xmachtype t1 "
             + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
+    public static final String SELECTMACHINESONSITE =
+            "Select xmachineonsate_id \"Id\", "
+            + "classify+tmvnr \"Fleet Nr\", "
+            + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine\", "
+            + "(select machtype from xmachtype where xmachtype2_id=xmachine.xmachtype_id) \"Type\", xmachine.reg_nr \"Reg.Nr\", "
+            + "substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name \"Operator\", "
+            + "estdate \"Est.Date\", deestdate \"De-Est.Date\" "
+            + "from xmachineonsite,xmachine,xemployee "
+            + "where xmachine.xmachine_id=xmachineonsite.xmachine_id "
+            + "and xemployee.xemployee_id=xmachineonsite.xemployee_id "
+            + "and xsite_id = #";
+    public static final String MACHINETVMS = 
+            "Select xmachine_id,classify+tmvnr from xmachine where classify in ('M','T') order by classify+tmvnr";
+    public static final String FREEMACHINETVMS = 
+            "Select xmachine_id,classify+tmvnr \"TMVNR\" from xmachine "
+            + "where classify in ('M','T') "
+            + "and xmachine_id not in (select xmachine_id from xmachineonsite "
+            + "where deestdate is null or deestdate > CURDATE()) order by classify+tmvnr";
+    public static final String EMPLOYEES = 
+            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name from xemployee order by sur_name";
+    public static final String FREEEMPLOYEES = 
+            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name \"Operator\" "
+            + "from xemployee where xemployee_id not in (select xemployee_id from xmachineonsite "
+            + "where deestdate is null or deestdate > CURDATE()) order by sur_name";
+    public static String SELECT_MASCHINES4LOOKUP =
+            "Select xmachine_id \"Id\", classify+tmvnr \"Fleet Nr\", reg_nr \"Reg.Nr\", "
+            + "t1.machtype \"Machine\",t2.machtype \"Type\" "
+            + "from xmachine m, xmachtype t1, xmachtype t2 "
+            + "where m.xmachtype_id=t1.xmachtype_id "
+            + "and m.xmachtype2_id=t2.xmachtype_id "
+            + "and m.classify in ('M','T')";
     
 
     public static String[] getStringArray(String select) {

@@ -6,8 +6,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -132,5 +130,14 @@ public abstract class RecordEditPanel extends JPanel {
             XlendWorks.log(ex);
         }
         return formatter;
+    }
+
+    protected JComponent getGridPanel(JComponent comp, int ceils) {
+        JPanel ans = new JPanel(new GridLayout(1, ceils));
+        ans.add(comp);
+        for (int i = 1; i < ceils; i++) {
+            ans.add(new JPanel());
+        }
+        return ans;
     }
 }

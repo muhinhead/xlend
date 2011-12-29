@@ -14,7 +14,7 @@ public class EditOrderItemDialog extends EditRecordDialog {
     public static Xorder xorder;
 
     public EditOrderItemDialog(String title, Object obj) {
-        super(title+getItemId(obj), obj);
+        super(title, obj);
     }
     
     private void setXorder() {

@@ -1,31 +1,25 @@
 package com.xlend.gui.order;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xorderitem;
+import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.rmi.RemoteException;
 import java.sql.Date;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
@@ -37,14 +31,14 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     private JTextField idField;
     private JTextField itemNumberField;
-    private JTextArea descriptionField;
-    private JTextField materialNumberField;
     private JComboBox machineTypeCB;
+    private DefaultComboBoxModel machineTypeCbModel;
     private JSpinner requiredDateSpin;
     private JSpinner deliverDateSpin;
     private JSpinner quantitySpin;
     private JComboBox measureItemCB;
     private JSpinner priceOneSpin;
+    private JSpinner totalValSpin;
     private Xorder xorder;
 
     public EditOrderItemPanel(DbObject dbObject) {
@@ -53,91 +47,51 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
-        String[] labels = new String[]{
+        machineTypeCbModel = new DefaultComboBoxModel();
+        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(), "T','M")) {
+            machineTypeCbModel.addElement(itm);
+        }
+        String[] titles = new String[]{
             "ID:",
-            "Item Nr:", "Material Number:", "Machine Type:", "Description:",
+            "Item Nr:", //"Material Number:", 
+            "Machine Type:", //"Description:",
             "Required:", "Delivery Date:", "Order Quantity:",
-            "Measure Item", "Price per Unit:"
+            "Measure Item", "Price per Unit:","Total Value for item:"
         };
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             itemNumberField = new JTextField(),
-            materialNumberField = new JTextField(),
-            machineTypeCB = new JComboBox(distinctMachineTypes()),
-            new JScrollPane(descriptionField = new JTextArea(4, 20),
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
+            machineTypeCB = new JComboBox(machineTypeCbModel),
             requiredDateSpin = new SelectedDateSpinner(),
             deliverDateSpin = new SelectedDateSpinner(),
             quantitySpin = new JSpinner(new SpinnerNumberModel()),
-            measureItemCB = new JComboBox(distinctMeasureItems()),
-            priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1)
+            measureItemCB = new JComboBox(new String[] {"HRS","RANDS"}),
+            priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),
+            totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1)
         };
-        
-        machineTypeCB.setEditable(true);
-        measureItemCB.setEditable(true);
+
         requiredDateSpin.setEditor(new JSpinner.DateEditor(requiredDateSpin, "dd/MM/yyyy"));
         deliverDateSpin.setEditor(new JSpinner.DateEditor(deliverDateSpin, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(requiredDateSpin);
         Util.addFocusSelectAllAction(deliverDateSpin);
-        
-        descriptionField.setWrapStyleWord(true);
-        descriptionField.setLineWrap(true);
-        organizePanels(labels, edits);
+        organizePanels(titles, edits);
     }
 
-    protected void organizePanels(String[] labels, JComponent[] edits) {
-        setLayout(new BorderLayout());
-        setLayout(new BorderLayout());
-        JPanel form = new JPanel(new BorderLayout(5, 5));
-
-        idField.setEnabled(false);
-
-        JPanel upper = new JPanel(new BorderLayout(5, 5));
-        JPanel uplabel = new JPanel(new GridLayout(4, 1, 5, 5));
-        JPanel upedit = new JPanel(new GridLayout(4, 1, 5, 5));
-        upper.add(uplabel, BorderLayout.WEST);
-        upper.add(upedit, BorderLayout.CENTER);
-
-        for (int i = 0; i < 4; i++) {
-            uplabel.add(new JLabel(labels[i], SwingConstants.RIGHT));
+    protected void organizePanels(String[] titles, JComponent[] edits) {
+        super.organizePanels(titles.length, edits.length);
+        labels = createLabelsArray(titles);
+        for (int i = 0; i < labels.length; i++) {
+            lblPanel.add(labels[i]);
         }
-
-        JPanel ided = new JPanel(new GridLayout(1, 3, 5, 5));
-        ided.add(idField);
-        ided.add(new JPanel());
-        ided.add(new JPanel());
-
-        upedit.add(ided);
-        for (int i = 1; i < 4; i++) {
-            upedit.add(edits[i]);
+        JPanel idPanel = new JPanel(new GridLayout(1, 3));
+        idPanel.add(edits[0]);
+        edits[0].setEnabled(false);
+        idPanel.add(new JPanel());
+        idPanel.add(new JPanel());
+        editPanel.add(idPanel);
+        for (int i = 1; i < edits.length; i++) {
+            editPanel.add(edits[i]);
         }
-
-        form.add(upper, BorderLayout.NORTH);
-
-        JPanel leftpanel = new JPanel(new BorderLayout());
-        leftpanel.add(new JLabel(labels[4], SwingConstants.RIGHT), BorderLayout.NORTH);
-
-        form.add(leftpanel, BorderLayout.WEST);
-        form.add(edits[4]);
-
-        JPanel downper = new JPanel(new BorderLayout(5, 5));
-        JPanel downlabel = new JPanel(new GridLayout(5, 1, 5, 5));
-        JPanel downedit = new JPanel(new GridLayout(5, 1, 5, 5));
-        downper.add(downlabel, BorderLayout.WEST);
-        downper.add(downedit, BorderLayout.CENTER);
-
-        for (int i = 5; i < labels.length; i++) {
-            downlabel.add(new JLabel(labels[i], SwingConstants.RIGHT));
-            downedit.add(edits[i]);
-        }
-
-        form.add(downper, BorderLayout.SOUTH);
-
-        alignPanelOnWidth(uplabel, downlabel);
-        alignPanelOnWidth(leftpanel, downlabel);
-
-        add(form);
     }
 
     @Override
@@ -146,9 +100,11 @@ public class EditOrderItemPanel extends RecordEditPanel {
         if (xorditem != null) {
             idField.setText(xorditem.getXorderitemId().toString());
             itemNumberField.setText(xorditem.getItemnumber());
-            descriptionField.setText(xorditem.getDescription());
-            materialNumberField.setText(xorditem.getMaterialnumber());
-            machineTypeCB.setSelectedItem(xorditem.getMachinetype());
+//            descriptionField.setText(xorditem.getDescription());
+//            materialNumberField.setText(xorditem.getMaterialnumber());
+            if (xorditem.getXmachtypeId() != null) {
+                selectComboItem(machineTypeCB, xorditem.getXmachtypeId());
+            }
             if (xorditem.getDeliveryreq() != null) {
                 requiredDateSpin.setValue(new java.sql.Date(xorditem.getDeliveryreq().getTime()));
             }
@@ -158,6 +114,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             quantitySpin.setValue(xorditem.getQuantity());
             measureItemCB.setSelectedItem(xorditem.getMeasureitem());
             priceOneSpin.setValue(xorditem.getPriceperone());
+            totalValSpin.setValue(xorditem.getTotalvalue());
         }
     }
 
@@ -174,9 +131,11 @@ public class EditOrderItemPanel extends RecordEditPanel {
         try {
             xorditem.setXorderId(xorder.getXorderId());
             xorditem.setItemnumber(itemNumberField.getText());
-            xorditem.setMaterialnumber(materialNumberField.getText());
-            xorditem.setMachinetype((String) machineTypeCB.getSelectedItem());
-            xorditem.setDescription(descriptionField.getText());
+//            xorditem.setMaterialnumber(materialNumberField.getText());
+//            xorditem.setMachinetype((String) machineTypeCB.getSelectedItem());
+            ComboItem ci = (ComboItem) machineTypeCB.getSelectedItem();
+            xorditem.setXmachtypeId(ci == null ? null : ci.getId());
+//            xorditem.setDescription(descriptionField.getText());
             java.util.Date dut = (java.util.Date) requiredDateSpin.getValue();
             xorditem.setDeliveryreq(dut == null ? null : new Date(dut.getTime()));
             dut = (java.util.Date) deliverDateSpin.getValue();
@@ -184,6 +143,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             xorditem.setQuantity((Integer) quantitySpin.getValue());
             xorditem.setMeasureitem((String) measureItemCB.getSelectedItem());
             xorditem.setPriceperone((Double) priceOneSpin.getValue());
+            xorditem.setTotalvalue((Double)totalValSpin.getValue());
 
             DbObject saved = DashBoard.getExchanger().saveDbObject(xorditem);
             setDbObject(saved);
@@ -197,13 +157,5 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     protected void setXorder(Xorder xorder) {
         this.xorder = xorder;
-    }
-
-    private String[] distinctMachineTypes() {
-        return Selects.getStringArray(Selects.DISTINCT_MACHINETYPES);
-    }
-    
-    private String[] distinctMeasureItems() {
-        return Selects.getStringArray(Selects.DISTINCT_MEASUREITEMS);
     }
 }

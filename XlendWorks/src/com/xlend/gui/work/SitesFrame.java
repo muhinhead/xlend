@@ -14,7 +14,7 @@ import javax.swing.JTabbedPane;
  */
 public class SitesFrame extends GeneralFrame {
 
-    private GeneralGridPanel contractsPanel = null;
+//    private GeneralGridPanel contractsPanel = null;
     private GeneralGridPanel sitesPanel = null;
     
      public SitesFrame(IMessageSender exch) {
@@ -24,22 +24,23 @@ public class SitesFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
-        workTab.add(getContractsPanel(), "Contracts");
+//        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(getSitesPanel(), "Sites");
+        workTab.add(new JPanel(), "Fuel");
         return workTab;
     }
 
-    private JPanel getContractsPanel() {
-        if (contractsPanel == null) {
-            try {
-                registerGrid(contractsPanel = new ContractsGrid(exchanger));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return contractsPanel;
-    }
+//    private JPanel getContractsPanel() {
+//        if (contractsPanel == null) {
+//            try {
+//                registerGrid(contractsPanel = new ContractsGrid(exchanger));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return contractsPanel;
+//    }
 
     private JPanel getSitesPanel() {
         if (sitesPanel == null) {

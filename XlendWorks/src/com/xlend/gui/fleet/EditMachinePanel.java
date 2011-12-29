@@ -80,7 +80,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         machineTypeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(),getFleetNumberChar())) {
+        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(), getFleetNumberChar())) {
             machineTypeCbModel.addElement(itm);
         }
         licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
@@ -117,7 +117,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
             engineNrField = new JTextField(),
             chassisNrField = new JTextField(),
             insuranceNrField = new JTextField(),
-            insuranceTypeCB = new JComboBox(Selects.getStringArray(Selects.DISTINCT_INSURANCETYPES)),
+            insuranceTypeCB = new JComboBox(new String[]{
+                "None","3rd Party Only","3rd Party and Theft","Comprehensive"}),
             insurabceAmtSP,
             depositAmtSP,
             contractFeeSP,
@@ -133,7 +134,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
         machineTypeCB.addActionListener(machType2CBreloadAction());
 //        Dimension prefs = licenseStatusCB.getEditor().getEditorComponent().getPreferredSize();
 //        licenseStatusCB.getEditor().getEditorComponent().setMaximumSize(new Dimension(100,prefs.height));
-        insuranceTypeCB.setEditable(true);
+//        insuranceTypeCB.setEditable(true);
         for (SelectedDateSpinner sp : new SelectedDateSpinner[]{
                     expDateSP, payStartDateSP, payEndDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
@@ -222,7 +223,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
                 tmvnrTextSP.setValue(0);
             }
             vehicleNrField.setText(machine.getVehicleidNr());
-            machineTypeCB.setSelectedItem(labels);
+//            machineTypeCB.setSelectedItem(labels);
             if (machine.getXmachtypeId() != null) {
                 selectComboItem(machineTypeCB, machine.getXmachtypeId());
             }
@@ -233,6 +234,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             adjustLicenseFierlds();
             repaintLicFields();
         }
+        syncTypes();
     }
 
     protected String getFleetNumberChar() {
@@ -303,23 +305,42 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ComboItem tp1 = (ComboItem) machineTypeCB.getSelectedItem();
-                machineType2CbModel.removeAllElements();
-                if (tp1 != null) {
-                    try {
-                        DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
-                                Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype");
-                        for (DbObject tp2 : tp2list) {
-                            Xmachtype type2 = (Xmachtype) tp2;
-                            machineType2CbModel.addElement(
-                                    new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
-                        }
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                    }
-                }
+//                ComboItem tp1 = (ComboItem) machineTypeCB.getSelectedItem();
+//                machineType2CbModel.removeAllElements();
+//                if (tp1 != null) {
+//                    try {
+//                        DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
+//                                Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype");
+//                        for (DbObject tp2 : tp2list) {
+//                            Xmachtype type2 = (Xmachtype) tp2;
+//                            machineType2CbModel.addElement(
+//                                    new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
+//                        }
+//                    } catch (RemoteException ex) {
+//                        XlendWorks.log(ex);
+//                    }
+//                }
+                syncTypes();
             }
         };
+    }
+
+    private void syncTypes() {
+        ComboItem tp1 = (ComboItem) machineTypeCB.getSelectedItem();
+        machineType2CbModel.removeAllElements();
+        if (tp1 != null) {
+            try {
+                DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
+                        Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype");
+                for (DbObject tp2 : tp2list) {
+                    Xmachtype type2 = (Xmachtype) tp2;
+                    machineType2CbModel.addElement(
+                            new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
+                }
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+            }
+        }
     }
 
     private ActionListener licensedChBaction() {

@@ -36,12 +36,12 @@ public class TrackGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("New Track") {
+        return new AbstractAction("New Truck") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditTrackDialog ed = new EditTrackDialog("New Track", null);
+                    EditTrackDialog ed = new EditTrackDialog("New Truck", null);
                     if (EditTrackDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
@@ -57,7 +57,7 @@ public class TrackGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Track") {
+        return new AbstractAction("Edit Truck") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -65,7 +65,7 @@ public class TrackGrid extends GeneralGridPanel {
                 if (id > 0) {
                     try {
                         Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                        new EditTrackDialog("Edit Track", machine);
+                        new EditTrackDialog("Edit Truck", machine);
                         if (EditTrackDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id);
@@ -81,14 +81,14 @@ public class TrackGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Track") {
+        return new AbstractAction("Delete Truck") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Track  [Reg.Nr "
+                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Truck [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);

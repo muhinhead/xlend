@@ -15,6 +15,7 @@ import javax.swing.JTabbedPane;
  */
 public class DocFrame extends GeneralFrame {
 
+    private GeneralGridPanel contractsPanel = null;
     private GeneralGridPanel clientsPanel = null;
     private GeneralGridPanel ordersPanel = null;
     private GeneralGridPanel quotasPanel;
@@ -26,7 +27,7 @@ public class DocFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
-//        workTab.add(getContractsPanel(), "Contracts");
+        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(getQuotasPanel(), "RFQ/Quotes");
         workTab.add(getOrdersPanel(), "Orders");
 //        workTab.add(getSitesPanel(), "Sites");
@@ -34,6 +35,17 @@ public class DocFrame extends GeneralFrame {
         return workTab;
     }
 
+        private JPanel getContractsPanel() {
+        if (contractsPanel == null) {
+            try {
+                registerGrid(contractsPanel = new ContractsGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return contractsPanel;
+    }
    
     private Component getClientsPanel() {
         if (clientsPanel == null) {

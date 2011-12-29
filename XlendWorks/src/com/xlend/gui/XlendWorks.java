@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.constants.Selects;
 import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -283,9 +285,9 @@ public class XlendWorks {
 //        }
 //        return null;
 //    }
-    public static ComboItem[] loadRootMachTypes(IMessageSender exchanger,String classify) {
+    public static ComboItem[] loadRootMachTypes(IMessageSender exchanger, String classify) {
         try {
-            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify='"+classify+"'", "xmachtype_id");
+            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
             ComboItem[] itms = new ComboItem[clients.length];
 //            itms[0] = new ComboItem(0, "--Add new type--");
             int i = 0;
@@ -363,6 +365,42 @@ public class XlendWorks {
                 logins[i++] = up.getLogin();
             }
             return logins;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
+    public static ComboItem[] loadMachines(IMessageSender exchanger, boolean freeOnly) {
+        try {
+            Vector[] tab = exchanger.getTableBody(freeOnly ? Selects.FREEMACHINETVMS : Selects.MACHINETVMS);
+            Vector rows = tab[1];
+            ComboItem[] ans = new ComboItem[rows.size()];
+            for (int i = 0; i < rows.size(); i++) {
+                Vector line = (Vector) rows.get(i);
+                int id = Integer.parseInt(line.get(0).toString());
+                String tmvnr = line.get(1).toString();
+                ans[i] = new ComboItem(id, tmvnr);
+            }
+            return ans;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
+    public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {
+        try {
+            Vector[] tab = exchanger.getTableBody(freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES);
+            Vector rows = tab[1];
+            ComboItem[] ans = new ComboItem[rows.size()];
+            for (int i = 0; i < rows.size(); i++) {
+                Vector line = (Vector) rows.get(i);
+                int id = Integer.parseInt(line.get(0).toString());
+                String tmvnr = line.get(1).toString();
+                ans[i] = new ComboItem(id, tmvnr);
+            }
+            return ans;
         } catch (RemoteException ex) {
             log(ex);
         }

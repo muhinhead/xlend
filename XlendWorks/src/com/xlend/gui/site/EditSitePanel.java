@@ -13,17 +13,21 @@ import com.xlend.orm.Xsite;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -39,7 +43,8 @@ public class EditSitePanel extends RecordEditPanel {
     private JComboBox orderBox;
     private JTextArea descriptionField;
     private JComboBox typeBox;
-    private JCheckBox dieselSponsoredCB;
+    private JRadioButton clientSuppliedDieselRB;
+    private JRadioButton xlendSuppliedDieselRB;
     private DefaultComboBoxModel orderCBModel;
     private Xorder xorder;
     private AbstractAction ordLookupAction;
@@ -53,7 +58,10 @@ public class EditSitePanel extends RecordEditPanel {
         String[] labels = new String[]{
             "ID:",
             "Site Name:", "Purchase Order",
-            "Description:", "Diesel Sponsored:", "Type of Site:"
+            "Client Supplies Diesel – Dry Rate:",
+            "Xlend/T&F Supplies Diesel – Wet Rate:",
+            "Type of Site:",
+            "Description:"
         };
         orderCBModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
@@ -63,12 +71,17 @@ public class EditSitePanel extends RecordEditPanel {
             idField = new JTextField(),
             siteNameField = new JTextField(),
             orderBox = new JComboBox(orderCBModel),
+            clientSuppliedDieselRB = new JRadioButton(),
+            xlendSuppliedDieselRB = new JRadioButton(),
+            typeBox = new JComboBox(new String[]{"Work Site", "Additional"}),
             new JScrollPane(descriptionField = new JTextArea(6, 30),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
-            dieselSponsoredCB = new JCheckBox(),
-            typeBox = new JComboBox(new String[]{"Work Site", "Additional"})
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
         };
+        ButtonGroup group = new ButtonGroup();
+        group.add(clientSuppliedDieselRB);
+        group.add(xlendSuppliedDieselRB);
+
         descriptionField.setWrapStyleWord(true);
         descriptionField.setLineWrap(true);
         organizePanels(labels, edits);
@@ -81,12 +94,12 @@ public class EditSitePanel extends RecordEditPanel {
         idField.setEnabled(false);
 
         JPanel upper = new JPanel(new BorderLayout(5, 5));
-        JPanel uplabel = new JPanel(new GridLayout(3, 1, 5, 5));
-        JPanel upedit = new JPanel(new GridLayout(3, 1, 5, 5));
+        JPanel uplabel = new JPanel(new GridLayout(6, 1, 5, 5));
+        JPanel upedit = new JPanel(new GridLayout(6, 1, 5, 5));
         upper.add(uplabel, BorderLayout.WEST);
         upper.add(upedit, BorderLayout.CENTER);
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             uplabel.add(new JLabel(labels[i], SwingConstants.RIGHT));
         }
 
@@ -98,32 +111,37 @@ public class EditSitePanel extends RecordEditPanel {
         upedit.add(siteNameField);
         upedit.add(comboPanelWithLookupBtn(orderBox, ordLookupAction = orderLookup()));
 
+        upedit.add(clientSuppliedDieselRB);
+        upedit.add(xlendSuppliedDieselRB);
+        upedit.add(typeBox);
+
         form.add(upper, BorderLayout.NORTH);
 
         JPanel leftpanel = new JPanel(new BorderLayout());
-        leftpanel.add(new JLabel(labels[3], SwingConstants.RIGHT), BorderLayout.NORTH);
+        leftpanel.add(new JLabel(labels[6], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
         form.add(descriptionField);
-
-        JPanel downper = new JPanel(new BorderLayout(5, 5));
-        JPanel downlabel = new JPanel(new GridLayout(2, 1, 5, 5));
-        JPanel downedit = new JPanel(new GridLayout(2, 1, 5, 5));
-        downper.add(downlabel, BorderLayout.WEST);
-        downper.add(downedit, BorderLayout.CENTER);
-
-        downlabel.add(new JLabel(labels[4], SwingConstants.RIGHT));
-        downlabel.add(new JLabel(labels[5], SwingConstants.RIGHT));
-
-        downedit.add(dieselSponsoredCB);
-        downedit.add(typeBox);
-
-        form.add(downper, BorderLayout.SOUTH);
-
-        alignPanelOnWidth(uplabel, downlabel);
-        alignPanelOnWidth(leftpanel, downlabel);
+        form.add(getTabbedPanel(), BorderLayout.SOUTH);
 
         add(form);
+    }
+
+    private JComponent getTabbedPanel() {
+        JTabbedPane tp = new JTabbedPane();
+        MachinesOnSitesGrid msg = null;
+        Xsite xsite = (Xsite) getDbObject();
+        int xsite_id = xsite != null ? xsite.getXsiteId() : 0;
+        try {
+            msg = new MachinesOnSitesGrid(DashBoard.getExchanger(),
+                    Selects.SELECTMACHINESONSITE.replace("#", "" + xsite_id));
+            Dimension pref = new Dimension(600, 200);
+            msg.setPreferredSize(pref);
+            tp.add(msg, "Machines/Trucks on site");
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
+        return tp;
     }
 
     @Override
@@ -135,7 +153,8 @@ public class EditSitePanel extends RecordEditPanel {
             selectComboItem(orderBox, xsite.getXorderId());
             descriptionField.setText(xsite.getDescription());
             typeBox.setSelectedIndex(xsite.getSitetype().equals("W") ? 0 : 1);
-            dieselSponsoredCB.setSelected(xsite.getDieselsponsor() != null && xsite.getDieselsponsor() == 1);
+            clientSuppliedDieselRB.setSelected(xsite.getDieselsponsor() != null && xsite.getDieselsponsor() == 1);
+            xlendSuppliedDieselRB.setSelected(xsite.getDieselsponsor() == null || xsite.getDieselsponsor() == 0);
         }
     }
 
@@ -154,7 +173,7 @@ public class EditSitePanel extends RecordEditPanel {
         xsite.setDescription(descriptionField.getText());
         String tp = (String) typeBox.getSelectedItem();
         xsite.setSitetype(tp.substring(0, 1));
-        xsite.setDieselsponsor(dieselSponsoredCB.isSelected() ? 1 : 0);
+        xsite.setDieselsponsor(clientSuppliedDieselRB.isSelected() ? 1 : 0);
 
         if (itm.getValue().startsWith("--")) { // add new order
             EditOrderDialog eod = new EditOrderDialog("New Oredr", null);

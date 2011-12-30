@@ -18,7 +18,8 @@ public class DocFrame extends GeneralFrame {
     private GeneralGridPanel contractsPanel = null;
     private GeneralGridPanel clientsPanel = null;
     private GeneralGridPanel ordersPanel = null;
-    private GeneralGridPanel quotasPanel;
+    private GeneralGridPanel quotasPanel = null;
+    private GeneralGridPanel suppliersPanel = null;
 
     public DocFrame(IMessageSender exch) {
         super("Documents", exch);
@@ -32,6 +33,7 @@ public class DocFrame extends GeneralFrame {
         workTab.add(getOrdersPanel(), "Orders");
 //        workTab.add(getSitesPanel(), "Sites");
         workTab.add(getClientsPanel(), "Clients");
+        workTab.add(getSuppliersPanel(), "Suppliers");
         return workTab;
     }
 
@@ -82,4 +84,17 @@ public class DocFrame extends GeneralFrame {
         }
         return quotasPanel;
     }
+    
+    private JPanel getSuppliersPanel() {
+        if (suppliersPanel == null) {
+            try {
+                registerGrid(suppliersPanel = new SuppliersGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return suppliersPanel;
+    }
+    
 }

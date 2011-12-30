@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.orm.Profile;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.EmailFocusAdapter;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.rmi.RemoteException;
@@ -39,17 +40,17 @@ class EditProfilePanel extends RecordEditPanel {
 
     private Object[] distinctStates() {
         return new String[]{
-            "Gauteng","Freestate","North-West",
-            "Limpopo","Mpumalanga","Kwazulu-Natal","Northern Cape",
-            "Eastern Cape","Western Cape"
-        };
+                    "Gauteng", "Freestate", "North-West",
+                    "Limpopo", "Mpumalanga", "Kwazulu-Natal", "Northern Cape",
+                    "Eastern Cape", "Western Cape"
+                };
     }
 
     @Override
     protected void fillContent() {
         final int c = 2;
-        String[] labels = new String[]{"ID:",  
-            "First Name:","Last Name:", "Address (line1):", "Address (line2):", "City:",
+        String[] labels = new String[]{"ID:",
+            "First Name:", "Last Name:", "Address (line1):", "Address (line2):", "City:",
             "Province:", "Zip Code:", "Phone:", "Cell Phone:", "E-mail:"};
         JComponent[] edits = new JComponent[]{idField = new JTextField(),
             firstNameField = new JTextField(),
@@ -57,7 +58,8 @@ class EditProfilePanel extends RecordEditPanel {
             address2Field = new JTextField(), cityField = new JTextField(),
             stateBox = new JComboBox(distinctStates()), zipCodeField = new JTextField(),
             phoneField = new JTextField(), cellPhoneField = new JTextField(),
-            emailField = new JTextField()};
+            emailField = new JTextField()
+        };
         stateBox.setEditable(false);
 
         setLayout(new BorderLayout());
@@ -80,7 +82,11 @@ class EditProfilePanel extends RecordEditPanel {
             } else {
                 editPanel.add(edits[i]);
             }
-            lblPanel.add(new JLabel(labels[i], SwingConstants.RIGHT));
+            JLabel lbl = new JLabel(labels[i], SwingConstants.RIGHT);
+            lblPanel.add(lbl);
+            if (i == 10) {
+                emailField.addFocusListener(new EmailFocusAdapter(lbl, emailField));
+            }
         }
     }
 
@@ -116,7 +122,7 @@ class EditProfilePanel extends RecordEditPanel {
         profile.setAddress1(address1Field.getText());
         profile.setAddress2(address2Field.getText());
         profile.setCity(cityField.getText());
-        profile.setState((String)stateBox.getSelectedItem());
+        profile.setState((String) stateBox.getSelectedItem());
         profile.setZipCode(zipCodeField.getText());
         profile.setPhone(phoneField.getText());
         profile.setCellPhone(cellPhoneField.getText());

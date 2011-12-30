@@ -156,6 +156,11 @@ public class Selects {
             + "where m.xmachtype_id=t1.xmachtype_id "
             + "and m.xmachtype2_id=t2.xmachtype_id "
             + "and m.classify in ('M','T')";
+    public static String SELECT_FROM_SUPPLIERS =
+            "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
+            + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\", "
+            + "phone \"Tel Nr\", fax \"Fax Nr\", cell \"Cell Nr\", email \"Email\" "
+            + "from xsupplier order by companyname";
     
 
     public static String[] getStringArray(String select) {

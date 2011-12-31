@@ -3,6 +3,7 @@ package com.xlend.gui.work;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.site.DieselPurchaseGrid;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -14,10 +15,10 @@ import javax.swing.JTabbedPane;
  */
 public class SitesFrame extends GeneralFrame {
 
-//    private GeneralGridPanel contractsPanel = null;
     private GeneralGridPanel sitesPanel = null;
-    
-     public SitesFrame(IMessageSender exch) {
+    private GeneralGridPanel disprchsPanel = null;
+
+    public SitesFrame(IMessageSender exch) {
         super("Sites", exch);
     }
 
@@ -26,21 +27,10 @@ public class SitesFrame extends GeneralFrame {
         JTabbedPane workTab = new JTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(getSitesPanel(), "Sites");
+        workTab.add(getDieselPrchsPanel(), "Diesel Rurchases");
         workTab.add(new JPanel(), "Fuel");
         return workTab;
     }
-
-//    private JPanel getContractsPanel() {
-//        if (contractsPanel == null) {
-//            try {
-//                registerGrid(contractsPanel = new ContractsGrid(exchanger));
-//            } catch (RemoteException ex) {
-//                XlendWorks.log(ex);
-//                errMessageBox("Error:", ex.getMessage());
-//            }
-//        }
-//        return contractsPanel;
-//    }
 
     private JPanel getSitesPanel() {
         if (sitesPanel == null) {
@@ -52,5 +42,17 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return sitesPanel;
+    }
+
+    private JPanel getDieselPrchsPanel() {
+        if (disprchsPanel == null) {
+            try {
+                registerGrid(disprchsPanel = new DieselPurchaseGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return disprchsPanel;
     }
 }

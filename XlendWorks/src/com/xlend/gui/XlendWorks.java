@@ -268,28 +268,10 @@ public class XlendWorks {
         return null;
     }
 
-//    public static ComboItem[] loadAllLicStatuses(IMessageSender exchanger) {
-//        
-//        try {
-//            DbObject[] clients = exchanger.getDbObjects(Xlicensestat.class, null, "licstatus");
-//            ComboItem[] itms = new ComboItem[clients.length + 1];
-//            itms[0] = new ComboItem(0, "--Add new status--");
-//            int i = 1;
-//            for (DbObject o : clients) {
-//                Xlicensestat ls = (Xlicensestat) o;
-//                itms[i++] = new ComboItem(ls.getXlicensestatId(), ls.getLicstatus());
-//            }
-//            return itms;
-//        } catch (RemoteException ex) {
-//            log(ex);
-//        }
-//        return null;
-//    }
     public static ComboItem[] loadRootMachTypes(IMessageSender exchanger, String classify) {
         try {
             DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
             ComboItem[] itms = new ComboItem[clients.length];
-//            itms[0] = new ComboItem(0, "--Add new type--");
             int i = 0;
             for (DbObject o : clients) {
                 Xmachtype tp = (Xmachtype) o;
@@ -389,9 +371,9 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {
+    private static ComboItem[] loadOnSelect(IMessageSender exchanger, String select) {
         try {
-            Vector[] tab = exchanger.getTableBody(freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES);
+            Vector[] tab = exchanger.getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -406,7 +388,19 @@ public class XlendWorks {
         }
         return null;
     }
+    
+    public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {
+        return loadOnSelect(exchanger, freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES);
+    }
 
+    public static ComboItem[] loadAllSuppliers(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.SUPPLIERS);
+    }
+    
+    public static ComboItem[] loadPayMethods(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.PAYMETHODS);
+    }
+    
     public static Image loadImage(String iconName, Window w) {
         Image im = null;
         File f = new File("images/" + iconName);
@@ -442,4 +436,5 @@ public class XlendWorks {
         }
         return 0;
     }
+
 }

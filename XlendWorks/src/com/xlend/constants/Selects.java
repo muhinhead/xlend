@@ -144,24 +144,36 @@ public class Selects {
             + "and xmachine_id not in (select xmachine_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by classify+tmvnr";
     public static final String EMPLOYEES = 
-            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name from xemployee order by sur_name";
+            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
+            + "from xemployee order by sur_name";
     public static final String FREEEMPLOYEES = 
-            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name \"Operator\" "
+            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
             + "from xemployee where xemployee_id not in (select xemployee_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by sur_name";
-    public static String SELECT_MASCHINES4LOOKUP =
+    public static final String SELECT_MASCHINES4LOOKUP =
             "Select xmachine_id \"Id\", classify+tmvnr \"Fleet Nr\", reg_nr \"Reg.Nr\", "
             + "t1.machtype \"Machine\",t2.machtype \"Type\" "
             + "from xmachine m, xmachtype t1, xmachtype t2 "
             + "where m.xmachtype_id=t1.xmachtype_id "
             + "and m.xmachtype2_id=t2.xmachtype_id "
             + "and m.classify in ('M','T')";
-    public static String SELECT_FROM_SUPPLIERS =
+    public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
+            + "from xsupplier order by companyname";
+    public static final String SELECT_FROM_SUPPLIERS =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\", "
             + "phone \"Tel Nr\", fax \"Fax Nr\", cell \"Cell Nr\", email \"Email\" "
             + "from xsupplier order by companyname";
-    
+    public static final String SELECT_SUPPLIERS4LOOKUP =
+            "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
+            + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\" "
+            + "from xsupplier order by companyname";
+    public static final String SELECT_FROM_DIESELPCHS = 
+            "Select xdieselpchs_id \"Id\", companyname \"Supplier\", purchased \"Date\", "
+            + "amount_liters \"Amount(liters)\", amount_rands \"Amount(Rands)\" "
+            + "from xdieselpchs,xsupplier where xsupplier.xsupplier_id=xdieselpchs.xsupplier_id";
+    public static final String PAYMETHODS = 
+            "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
 
     public static String[] getStringArray(String select) {
         try {

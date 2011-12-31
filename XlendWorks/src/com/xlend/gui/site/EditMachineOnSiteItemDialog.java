@@ -17,7 +17,7 @@ public class EditMachineOnSiteItemDialog extends EditRecordDialog {
         super(title, obj);
     }
 
-    private void setXorder() {
+    private void setXsite() {
         EditMachineOnSiteItemPanel editPanel = (EditMachineOnSiteItemPanel) getEditPanel();
         editPanel.setXsite(xsite);
     }
@@ -25,7 +25,7 @@ public class EditMachineOnSiteItemDialog extends EditRecordDialog {
     @Override
     protected void fillContent() {
         super.fillContent(new EditMachineOnSiteItemPanel((Xmachineonsite) getObject()));
-        setXorder();
+        setXsite();
     }
 
     @Override
@@ -39,12 +39,12 @@ public class EditMachineOnSiteItemDialog extends EditRecordDialog {
         EditMachineOnSiteItemDialog.xsite = null;
     }
 
-    private static String getItemId(Object ob) {
-        Xmachineonsite itm = (Xmachineonsite) ob;
-        if (itm != null) {
-            return " " + itm.getXmachineonsateId();
-        } else {
-            return " null";
-        }
-    }
+//    private static String getItemId(Object ob) {
+//        Xmachineonsite itm = (Xmachineonsite) ob;
+//        if (itm != null) {
+//            return " " + itm.getXmachineonsateId();
+//        } else {
+//            return " null";
+//        }
+//    }
 }

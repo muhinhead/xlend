@@ -404,7 +404,7 @@ public class XlendWorks {
         } catch (RemoteException ex) {
             log(ex);
         }
-        return null;
+        return new ComboItem[]{new ComboItem(0,"")};
     }
     
     public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {

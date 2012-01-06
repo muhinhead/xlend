@@ -1,16 +1,12 @@
 package com.xlend.gui.site;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.hr.EmployeesGrid;
+import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.supplier.EditSupplierDialog;
-import com.xlend.gui.work.SuppliersGrid;
+import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xdieselpchs;
-import com.xlend.orm.Xsite;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -18,10 +14,7 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.rmi.RemoteException;
 import java.util.Date;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -45,10 +38,7 @@ class EditDieselPurchasePanel extends RecordEditPanel {
     private JComboBox paidByCB;
     private DefaultComboBoxModel paidByCbModel;
     private JComboBox paidMethodCB;
-    private DefaultComboBoxModel paidMethodCbModel;
-    private AbstractAction supplierLookupAction;
-    private AbstractAction authorizedLookupAction;
-    private AbstractAction paidByLookupAction;
+//    private DefaultComboBoxModel paidMethodCbModel;
 
     public EditDieselPurchasePanel(DbObject dbObject) {
         super(dbObject);
@@ -80,19 +70,20 @@ class EditDieselPurchasePanel extends RecordEditPanel {
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel),
-                supplierLookupAction = supplierLookup()),
+                new SupplierLookupAction(supplierCB)),
             getGridPanel(dateSP = new SelectedDateSpinner(), 3),
             comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel),
-                authorizedLookupAction = authorizedLookup()),
+                new EmployeeLookupAction(authorizedCB)),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
             getGridPanel(amtRandsSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), paidByLookupAction = paidByLookup()),
+            comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), 
+                new EmployeeLookupAction(paidByCB)),
             getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods(DashBoard.getExchanger())), 2)
         };
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(dateSP);
         idField.setEnabled(false);
-        organizePanels(titles, edits);
+        organizePanels(titles, edits, null);
         setPreferredSize(new Dimension(500, getPreferredSize().height));
     }
 
@@ -142,89 +133,18 @@ class EditDieselPurchasePanel extends RecordEditPanel {
                 }
             }
         } else {
-            dps.setXsupplierId(ci == null ? null : ci.getId());
-            ci = (ComboItem) authorizedCB.getSelectedItem();
-            dps.setAuthorizerId(ci == null ? null : ci.getId());
-            ci = (ComboItem) paidByCB.getSelectedItem();
-            dps.setPaidbyId(ci == null ? null : ci.getId());
-            ci = (ComboItem) paidMethodCB.getSelectedItem();
-            dps.setXpaidmethodId(ci == null ? null : ci.getId());
-            dps.setAmountLiters((Integer) amtLitersSP.getValue());
+            dps.setXsupplierId(getSelectedCbItem(supplierCB));
+            dps.setAuthorizerId(getSelectedCbItem(authorizedCB));
+            dps.setPaidbyId(getSelectedCbItem(paidByCB));
+            dps.setXpaidmethodId(getSelectedCbItem(paidMethodCB));
             dps.setAmountLiters((Integer) amtLitersSP.getValue());
             dps.setAmountRands((Integer) amtRandsSP.getValue());
             Date dt = (Date) dateSP.getValue();
             if (dt != null) {
                 dps.setPurchased(new java.sql.Date(dt.getTime()));
             }
-            try {
-                dps.setNew(isNew);
-                DbObject saved = DashBoard.getExchanger().saveDbObject(dps);
-                setDbObject(saved);
-                return true;
-            } catch (Exception ex) {
-                GeneralFrame.errMessageBox("Error:", ex.getMessage());
-            }
+            return saveDbRecord(dps, isNew);
         }
         return false;
-    }
-
-    private AbstractAction supplierLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showSupplierLookup();
-            }
-        };
-    }
-
-    private void showSupplierLookup() {
-        try {
-            LookupDialog ld = new LookupDialog("Suppliers Lookup", supplierCB,
-                    new SuppliersGrid(DashBoard.getExchanger(), Selects.SELECT_SUPPLIERS4LOOKUP, false),
-                    new String[]{"companyname", "vatnr", "company_regnr", "contactperson"});
-        } catch (RemoteException ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
-    }
-
-    private AbstractAction authorizedLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAuthorizedLookup();
-            }
-        };
-    }
-
-    private void showAuthorizedLookup() {
-        try {
-            LookupDialog ld = new LookupDialog("Employee Lookup", authorizedCB,
-                    new EmployeesGrid(DashBoard.getExchanger(), Selects.EMPLOYEES, true),
-                    new String[]{"sur_name", "clock_num"});
-        } catch (RemoteException ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
-    }
-
-    private AbstractAction paidByLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showPaidByLookup();
-            }
-        };
-    }
-
-    private void showPaidByLookup() {
-        try {
-            LookupDialog ld = new LookupDialog("Employee Lookup", authorizedCB,
-                    new EmployeesGrid(DashBoard.getExchanger(), Selects.EMPLOYEES, false),
-                    new String[]{"sur_name", "clock_num"});
-        } catch (RemoteException ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
     }
 }

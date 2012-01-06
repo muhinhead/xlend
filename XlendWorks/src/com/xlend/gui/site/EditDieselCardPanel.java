@@ -1,13 +1,10 @@
-package com.xlend.gui.work;
+package com.xlend.gui.site;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.fleet.MachineGrid;
-import com.xlend.gui.hr.EmployeesGrid;
+import com.xlend.gui.fleet.MachineLookupAction;
+import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.orm.Xdieselcard;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -15,8 +12,6 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.rmi.RemoteException;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -81,11 +76,14 @@ public class EditDieselCardPanel extends RecordEditPanel {
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(dateSP = new SelectedDateSpinner(), 3),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), machineLookupAction = machinesLookup()),
-            comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), employeeLookupAction = emplLookup(operatorCB)),
-            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), siteLookupAction = siteLookup()),
+            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), 
+                new MachineLookupAction(machineCB, null)),
+            comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), 
+                employeeLookupAction = new EmployeeLookupAction(operatorCB)),
+            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
             getGridPanel(litersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            comboPanelWithLookupBtn(personIssCB = new JComboBox(personIssCbModel), persIssLookupAction = emplLookup(personIssCB))
+            comboPanelWithLookupBtn(personIssCB = new JComboBox(personIssCbModel), 
+                persIssLookupAction = new EmployeeLookupAction(personIssCB))
         };
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(dateSP);
@@ -127,75 +125,32 @@ public class EditDieselCardPanel extends RecordEditPanel {
             xdc.setXdieselcardId(0);
             isNew = true;
         }
-        ComboItem ci = (ComboItem) machineCB.getSelectedItem();
-        xdc.setXmachineId(ci == null ? null : ci.getId());
-        ci = (ComboItem) operatorCB.getSelectedItem();
-        xdc.setOperatorId(ci == null ? null : ci.getId());
-        ci = (ComboItem) siteCB.getSelectedItem();
-        xdc.setXsiteId(ci == null ? null : ci.getId());
-        ci = (ComboItem) personIssCB.getSelectedItem();
-        xdc.setPersonissId(ci == null ? null : ci.getId());
+        xdc.setXmachineId(getSelectedCbItem(machineCB));
+        xdc.setOperatorId(getSelectedCbItem(operatorCB));
+        xdc.setXsiteId(getSelectedCbItem(siteCB));
+        xdc.setPersonissId(getSelectedCbItem(personIssCB));
         xdc.setAmountLiters((Integer) litersSP.getValue());
         Date dt = (Date) dateSP.getValue();
         if (dt != null) {
             xdc.setCarddate(new java.sql.Date(dt.getTime()));
         }
-        try {
-            xdc.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(xdc);
-            setDbObject(saved);
-            return true;
-        } catch (Exception ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
-        return false;
+        return saveDbRecord(xdc, isNew);
     }
 
-    private AbstractAction machinesLookup() {
-        return new AbstractAction("...") {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    LookupDialog ld = new LookupDialog("Machines Lookup", machineCB,
-                            new MachineGrid(DashBoard.getExchanger(), Selects.SELECT_MASCHINES4LOOKUP, false),
-                            new String[]{"tmvnr", "reg_nr"});
-                } catch (RemoteException ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
-    }
-
-    private AbstractAction emplLookup(final JComboBox cb) {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    LookupDialog ld = new LookupDialog("Employee Lookup", cb,
-                            new EmployeesGrid(DashBoard.getExchanger(), Selects.SELECT_FROM_EMPLOYEE, true),
-                            new String[]{"clock_num", "id_num", "first_name", "sur_name"});
-                } catch (RemoteException ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
-    }
-
-    private AbstractAction siteLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    LookupDialog ld = new LookupDialog("Site Lookup", siteCB,
-                            new SitesGrid(DashBoard.getExchanger(), Selects.SELECT_SITES4LOOKUP, true),
-                            new String[]{"name"});
-                } catch (RemoteException ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
-    }
+//    private AbstractAction siteLookup() {
+//        return new AbstractAction("...") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    LookupDialog ld = new LookupDialog("Site Lookup", siteCB,
+//                            new SitesGrid(DashBoard.getExchanger(), Selects.SELECT_SITES4LOOKUP, true),
+//                            new String[]{"name"});
+//                } catch (RemoteException ex) {
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//            }
+//        };
+//    }
 }

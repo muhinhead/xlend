@@ -138,6 +138,8 @@ public class Selects {
             + "and xsite_id = #";
     public static final String MACHINETVMS = 
             "Select xmachine_id,classify+tmvnr from xmachine where classify in ('M','T') order by classify+tmvnr";
+    public static final String ALLMACHINETVMS = 
+            "Select xmachine_id,classify+tmvnr from xmachine order by classify+tmvnr";
     public static final String FREEMACHINETVMS = 
             "Select xmachine_id,classify+tmvnr \"TMVNR\" from xmachine "
             + "where classify in ('M','T') "
@@ -155,8 +157,7 @@ public class Selects {
             + "t1.machtype \"Machine\",t2.machtype \"Type\" "
             + "from xmachine m, xmachtype t1, xmachtype t2 "
             + "where m.xmachtype_id=t1.xmachtype_id "
-            + "and m.xmachtype2_id=t2.xmachtype_id "
-            + "and m.classify in ('M','T')";
+            + "and m.xmachtype2_id=t2.xmachtype_id ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_FROM_SUPPLIERS =
@@ -181,6 +182,19 @@ public class Selects {
             + "and xdieselcard.operator_id=xemployee.xemployee_id";
     public static final String PAYMETHODS = 
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
+    public static final String SELECT_FROM_CONSUMABLES = 
+            "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
+            + "mac.classify+mac.tmvnr \"Machine\", substr(req.first_name,0,1)+"
+            + "'.'+req.sur_name+' ('+req.clock_num+')' \"Requested by\", "
+            + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.partnumber \"Part.Nr\" "
+            + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
+            + "where con.xsupplier_id=sup.xsupplier_id and con.xmachine_id=mac.xmachine_id "
+            + "and con.requester_id=req.xemployee_id";      
+    public static final String SELECT_CONSUMABLES4BREAKDOWN =
+            "Select xconsume_id, 'Invoice Nr:'+invoicenumber, partnumber from xconsume where xmachine_id = #";
+    public static final String SELECT_FROM_BREAKDOWNS = 
+            "Select xbreakdown_id \"Id\", mac.classify+mac.tmvnr \"Machine\", s.name \"Site\", bd.repairdate \"Repair Date\" "
+            + "from xbreakdown bd, xmachine mac, xsite s where bd.xmachine_id=mac.xmachine_id and s.xsite_id=bd.xsite_id";
 
     public static String[] getStringArray(String select) {
         try {

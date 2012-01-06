@@ -305,21 +305,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                ComboItem tp1 = (ComboItem) machineTypeCB.getSelectedItem();
-//                machineType2CbModel.removeAllElements();
-//                if (tp1 != null) {
-//                    try {
-//                        DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
-//                                Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype");
-//                        for (DbObject tp2 : tp2list) {
-//                            Xmachtype type2 = (Xmachtype) tp2;
-//                            machineType2CbModel.addElement(
-//                                    new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
-//                        }
-//                    } catch (RemoteException ex) {
-//                        XlendWorks.log(ex);
-//                    }
-//                }
                 syncTypes();
             }
         };

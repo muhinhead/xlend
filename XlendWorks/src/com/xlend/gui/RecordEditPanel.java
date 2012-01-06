@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -37,6 +39,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected PagesPanel pagesdPanel;
     protected JComponent[] edits;
     protected JLabel[] labels;
+//    protected ArrayList<JComponent[]> componentRows = new ArrayList<JComponent[]>();
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -49,14 +52,19 @@ public abstract class RecordEditPanel extends JPanel {
         upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
     }
 
-    protected void organizePanels(String[] titles, JComponent[] edits) {
-        organizePanels(titles.length, edits.length);
+    protected void organizePanels(String[] titles, JComponent[] edits, HashSet<JComponent> except) {
+        int diff = (except == null ? 0 : except.size());
+        organizePanels(titles.length-diff, edits.length-diff);
         labels = createLabelsArray(titles);
         for (int i = 0; i < labels.length; i++) {
-            lblPanel.add(labels[i]);
+            if (except == null || !except.contains(edits[i])) {
+                lblPanel.add(labels[i]);
+            }
         }
         for (int i = 0; i < edits.length; i++) {
-            editPanel.add(edits[i]);
+            if (except == null || !except.contains(edits[i])) {
+                editPanel.add(edits[i]);
+            }
         }
     }
 
@@ -151,4 +159,29 @@ public abstract class RecordEditPanel extends JPanel {
         }
         return ans;
     }
+
+    protected JComponent getGridPanel(JComponent[] comps) {
+        JPanel ans = new JPanel(new GridLayout(1, comps.length));
+        for (int i = 0; i < comps.length; i++) {
+            ans.add(comps[i]);
+        }
+        return ans;
+    }
+
+    protected Integer getSelectedCbItem(JComboBox cb) {
+        ComboItem ci = (ComboItem) cb.getSelectedItem();
+        return ci == null ? null : ci.getId();
+    }
+
+    protected boolean saveDbRecord(DbObject dbOb, boolean isNew) {
+        try {
+            dbOb.setNew(isNew);
+            setDbObject(DashBoard.getExchanger().saveDbObject(dbOb));
+            return true;
+        } catch (Exception ex) {
+            GeneralFrame.errMessageBox("Error:", ex.getMessage());
+        }
+        return false;
+    }
+
 }

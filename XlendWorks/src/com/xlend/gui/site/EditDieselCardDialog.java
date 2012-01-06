@@ -1,23 +1,23 @@
 package com.xlend.gui.site;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.orm.Xdieselpchs;
+import com.xlend.orm.Xdieselcard;
 
 /**
  *
  * @author Nick Mukhin
  */
-class EditDieselPurchaseDialog extends EditRecordDialog {
+public class EditDieselCardDialog extends EditRecordDialog {
 
     public static boolean okPressed;
 
-    public EditDieselPurchaseDialog(String title, Object obj) {
+    public EditDieselCardDialog(String title, Object obj) {
         super(title, obj);
     }
 
     @Override
     protected void fillContent() {
-        super.fillContent(new EditDieselPurchasePanel((Xdieselpchs) getObject()));
+        super.fillContent(new EditDieselCardPanel((Xdieselcard) getObject()));
     }
 
     @Override

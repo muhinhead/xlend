@@ -371,6 +371,24 @@ public class XlendWorks {
         return null;
     }
 
+    public static ComboItem[] loadAllMachines(IMessageSender exchanger) {
+        try {
+            Vector[] tab = exchanger.getTableBody(Selects.ALLMACHINETVMS);
+            Vector rows = tab[1];
+            ComboItem[] ans = new ComboItem[rows.size()];
+            for (int i = 0; i < rows.size(); i++) {
+                Vector line = (Vector) rows.get(i);
+                int id = Integer.parseInt(line.get(0).toString());
+                String tmvnr = line.get(1).toString();
+                ans[i] = new ComboItem(id, tmvnr);
+            }
+            return ans;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
+    }
+
     private static ComboItem[] loadOnSelect(IMessageSender exchanger, String select) {
         try {
             Vector[] tab = exchanger.getTableBody(select);
@@ -435,6 +453,10 @@ public class XlendWorks {
             log(ex);
         }
         return 0;
+    }
+
+    public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
+        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", ""+id));
     }
 
 }

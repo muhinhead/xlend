@@ -7,6 +7,7 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.client.EditClientDialog;
+import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.gui.work.OrdersGrid;
 import com.xlend.gui.work.SitesGrid;
@@ -192,7 +193,8 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 }
                 editPanel.add(idPanel);
             } else if (i == 1) {
-                editPanel.add(comboPanelWithLookupBtn(employeeRefBox, employeeLookup = employeeLookup()));
+                editPanel.add(comboPanelWithLookupBtn(employeeRefBox, 
+                        employeeLookup = new EmployeeLookupAction(employeeRefBox)));
             } else if (i == 3) {
                 editPanel.add(comboPanelWithLookupBtn(siteRefBox, siteLookupAction = siteLookup()));
             } else if (i == 4) {
@@ -317,22 +319,22 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         return "Scanned Timesheet";
     }
 
-    private AbstractAction employeeLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    LookupDialog ld = new LookupDialog("Employee Lookup", employeeRefBox,
-                            new EmployeesGrid(DashBoard.getExchanger(), Selects.SELECT_FROM_EMPLOYEE, true),
-                            new String[]{"clock_num", "id_num", "first_name", "sur_name"});
-                } catch (RemoteException ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-
-            }
-        };
-    }
+//    private AbstractAction employeeLookup() {
+//        return new AbstractAction("...") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    LookupDialog ld = new LookupDialog("Employee Lookup", employeeRefBox,
+//                            new EmployeesGrid(DashBoard.getExchanger(), Selects.SELECT_FROM_EMPLOYEE, true),
+//                            new String[]{"clock_num", "id_num", "first_name", "sur_name"});
+//                } catch (RemoteException ex) {
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//
+//            }
+//        };
+//    }
 
     private ActionListener getSiteRefChangedaCtion() {
         return new AbstractAction() {

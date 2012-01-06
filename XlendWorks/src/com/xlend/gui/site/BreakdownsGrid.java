@@ -1,11 +1,10 @@
-package com.xlend.gui.work;
+package com.xlend.gui.site;
 
-import com.xlend.gui.site.EditDieselCardDialog;
 import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xdieselcard;
+import com.xlend.orm.Xbreakdown;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -17,34 +16,33 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-class DieselCardsGrid extends GeneralGridPanel {
+public class BreakdownsGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
         maxWidths.put(0, 40);
-
     }
 
-    public DieselCardsGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_DIESELCARD, maxWidths, false);
+    public BreakdownsGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_BREAKDOWNS, maxWidths, false);
     }
 
-    public DieselCardsGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
+    public BreakdownsGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
         super(exchanger, select, maxWidths, readonly);
     }
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add Diesel Issuing") {
+        return new AbstractAction("Add Breakdown") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditDieselCardDialog ed = new EditDieselCardDialog("Add Issuing", null);
-                    if (EditDieselCardDialog.okPressed) {
-                        Xdieselcard xdc = (Xdieselcard) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xdc.getXdieselcardId());
+                    EditBreakdownDialog ed = new EditBreakdownDialog("Add breakdown", null);
+                    if (EditBreakdownDialog.okPressed) {
+                        Xbreakdown xb = (Xbreakdown) ed.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,16 +54,16 @@ class DieselCardsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Issuing") {
+         return new AbstractAction("Edit Breakdown") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xdieselcard xdc = (Xdieselcard) exchanger.loadDbObjectOnID(Xdieselcard.class, id);
-                        new EditDieselCardDialog("Edit Issuing", xdc);
-                        if (EditDieselCardDialog.okPressed) {
+                        Xbreakdown xb = (Xbreakdown) exchanger.loadDbObjectOnID(Xbreakdown.class, id);
+                        new EditBreakdownDialog("Edit breakdown", xb);
+                        if (EditBreakdownDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
@@ -79,16 +77,16 @@ class DieselCardsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Issuing") {
+        return new AbstractAction("Delete Breakdown") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xdieselcard xdc = (Xdieselcard) exchanger.loadDbObjectOnID(Xdieselcard.class, id);
-                    if (xdc != null && GeneralFrame.yesNo("Attention!",
-                            "Do you want to delete diesel issuing card?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(xdc);
+                    Xbreakdown xb = (Xbreakdown) exchanger.loadDbObjectOnID(Xbreakdown.class, id);
+                    if (xb !=null && GeneralFrame.yesNo("Attention!", 
+                            "Do you want to delete breakdown?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xb);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
@@ -99,4 +97,5 @@ class DieselCardsGrid extends GeneralGridPanel {
             }
         };
     }
+
 }

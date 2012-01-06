@@ -38,13 +38,4 @@ public class EditMachineOnSiteItemDialog extends EditRecordDialog {
         super.dispose();
         EditMachineOnSiteItemDialog.xsite = null;
     }
-
-//    private static String getItemId(Object ob) {
-//        Xmachineonsite itm = (Xmachineonsite) ob;
-//        if (itm != null) {
-//            return " " + itm.getXmachineonsateId();
-//        } else {
-//            return " null";
-//        }
-//    }
 }

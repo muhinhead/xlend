@@ -1,13 +1,11 @@
 package com.xlend.gui.site;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.fleet.MachineGrid;
-import com.xlend.gui.hr.EmployeesGrid;
+import com.xlend.gui.fleet.MachineLookupAction;
+import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.orm.Xmachineonsite;
 import com.xlend.orm.Xsite;
 import com.xlend.orm.dbobject.ComboItem;
@@ -17,7 +15,6 @@ import com.xlend.util.Util;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.rmi.RemoteException;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -42,8 +39,8 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
     private JCheckBox workingCB;
     private JSpinner deestDateSpin;
     private Xsite xsite;
-    private AbstractAction machineLookupAction;
-    private AbstractAction employeeLookupAction;
+//    private AbstractAction machineLookupAction;
+//    private AbstractAction employeeLookupAction;
 
     public EditMachineOnSiteItemPanel(DbObject dbObject) {
         super(dbObject);
@@ -64,8 +61,10 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
         };
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 3),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), machineLookupAction = machinesLookup()),
-            comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel), employeeLookupAction = employeeLookup()),
+            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), 
+                new MachineLookupAction(machineCB, "m.classify in ('M','T')")),
+            comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel),
+                new EmployeeLookupAction(employeeCB)),
             getGridPanel(estDateSpin = new SelectedDateSpinner(), 2),
             workingCB = new JCheckBox(),
             getGridPanel(deestDateSpin = new SelectedDateSpinner(), 2)
@@ -150,20 +149,20 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
             }
             if (!isNew) {
                 DbObject[] others = DashBoard.getExchanger().getDbObjects(
-                        Xmachineonsite.class, 
-                        "xmachineonsate_id<>" + idField.getText() + 
-                        " and xemployee_id=" + mos.getXemployeeId(), null);
+                        Xmachineonsite.class,
+                        "xmachineonsate_id<>" + idField.getText()
+                        + " and xemployee_id=" + mos.getXemployeeId(), null);
                 if (others.length > 0) {
                     valid = false;
-                    throw new Exception("Operator "+employeeCB.getSelectedItem()+" already works on another site");
+                    throw new Exception("Operator " + employeeCB.getSelectedItem() + " already works on another site or machine");
                 }
                 others = DashBoard.getExchanger().getDbObjects(
-                        Xmachineonsite.class, 
-                        "xmachineonsate_id<>" + idField.getText() + 
-                        " and xmachine_id=" + mos.getXmachineId(), null);
+                        Xmachineonsite.class,
+                        "xmachineonsate_id<>" + idField.getText()
+                        + " and xmachine_id=" + mos.getXmachineId(), null);
                 if (others.length > 0) {
                     valid = false;
-                    throw new Exception("Machine "+machineCB.getSelectedItem()+" already works on another site");
+                    throw new Exception("Machine " + machineCB.getSelectedItem() + " already works on another site");
                 }
             }
             DbObject saved = DashBoard.getExchanger().saveDbObject(mos);
@@ -193,43 +192,20 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
         };
     }
 
-    private AbstractAction machinesLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showMachineLookup();
-            }
-        };
-    }
-
-    private AbstractAction employeeLookup() {
-        return new AbstractAction("...") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showEmployeeLookup();
-            }
-        };
-    }
-
-    private void showMachineLookup() {
-        try {
-            LookupDialog ld = new LookupDialog("Machines Lookup", machineCB,
-                    new MachineGrid(DashBoard.getExchanger(), Selects.SELECT_MASCHINES4LOOKUP, false),
-                    new String[]{"tmvnr", "reg_nr"});
-        } catch (RemoteException ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
-    }
-
-    private void showEmployeeLookup() {
-        try {
-            LookupDialog ld = new LookupDialog("Employee Lookup", employeeCB,
-                    new EmployeesGrid(DashBoard.getExchanger(), Selects.SELECT_FROM_EMPLOYEE, true),
-                    new String[]{"clock_num", "id_num", "first_name", "sur_name"});
-        } catch (RemoteException ex) {
-            GeneralFrame.errMessageBox("Error:", ex.getMessage());
-        }
-    }
+//    private AbstractAction machinesLookup() {
+//        return new AbstractAction("...") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    LookupDialog ld = new LookupDialog("Machines Lookup", machineCB,
+//                            new MachineGrid(DashBoard.getExchanger(), 
+//                                    Selects.SELECT_MASCHINES4LOOKUP+" and m.classify in ('M','T')", false),
+//                            new String[]{"tmvnr", "reg_nr"});
+//                } catch (RemoteException ex) {
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//            }
+//        };
+//    }
 }

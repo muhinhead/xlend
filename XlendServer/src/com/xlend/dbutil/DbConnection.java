@@ -419,6 +419,7 @@ public class DbConnection {
         + "    xmachine_id       int not null,"
         + "    requester_id      int not null,"
         + "    invoicedate       date,"
+        +"     invoicenumber     varchar(16),"
         + "    authorizer_id     int,"
         + "    collector_id      int,"
         + "    description       varchar(255),"
@@ -436,7 +437,8 @@ public class DbConnection {
         + "    constraint xconsume_xemployee_fk3 foreign key (collector_id) references xemployee, "
         + "    constraint xconsume_xemployee_fk4 foreign key (payer_id) references xemployee,"
         + "    constraint xconsume_xpaidmethod_fk foreign key (xpaidmethod_id) references xpaidmethod"
-        + ")"
+        + ")",
+        "alter table xconsume add invoicenumber varchar(16)"
     };
 
     public static Connection getConnection() throws RemoteException {

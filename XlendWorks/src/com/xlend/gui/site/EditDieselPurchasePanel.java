@@ -80,10 +80,10 @@ class EditDieselPurchasePanel extends RecordEditPanel {
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel),
-            supplierLookupAction = supplierLookup()),
+                supplierLookupAction = supplierLookup()),
             getGridPanel(dateSP = new SelectedDateSpinner(), 3),
             comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel),
-            authorizedLookupAction = authorizedLookup()),
+                authorizedLookupAction = authorizedLookup()),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
             getGridPanel(amtRandsSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
             comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), paidByLookupAction = paidByLookup()),
@@ -94,17 +94,6 @@ class EditDieselPurchasePanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits);
         setPreferredSize(new Dimension(500, getPreferredSize().height));
-    }
-
-    protected void organizePanels(String[] titles, JComponent[] edits) {
-        super.organizePanels(titles.length, edits.length);
-        labels = createLabelsArray(titles);
-        for (int i = 0; i < labels.length; i++) {
-            lblPanel.add(labels[i]);
-        }
-        for (int i = 0; i < edits.length; i++) {
-            editPanel.add(edits[i]);
-        }
     }
 
     @Override

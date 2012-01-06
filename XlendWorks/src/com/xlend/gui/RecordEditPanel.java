@@ -49,6 +49,17 @@ public abstract class RecordEditPanel extends JPanel {
         upPanel.add(getRightUpperPanel(), BorderLayout.EAST);
     }
 
+    protected void organizePanels(String[] titles, JComponent[] edits) {
+        organizePanels(titles.length, edits.length);
+        labels = createLabelsArray(titles);
+        for (int i = 0; i < labels.length; i++) {
+            lblPanel.add(labels[i]);
+        }
+        for (int i = 0; i < edits.length; i++) {
+            editPanel.add(edits[i]);
+        }
+    }
+
     protected JPanel comboPanelWithLookupBtn(JComboBox cb, AbstractAction lookupButtonAction) {
         JPanel comboBoxPanel = new JPanel(new BorderLayout());
         comboBoxPanel.add(cb);

@@ -25,10 +25,4 @@ class EditDieselPurchaseDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        EditMachineOnSiteItemDialog.xsite = null;
-    }
 }

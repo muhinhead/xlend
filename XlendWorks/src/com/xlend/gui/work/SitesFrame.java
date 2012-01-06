@@ -17,6 +17,7 @@ public class SitesFrame extends GeneralFrame {
 
     private GeneralGridPanel sitesPanel = null;
     private GeneralGridPanel disprchsPanel = null;
+    private GeneralGridPanel dieselIsissPanel = null;
 
     public SitesFrame(IMessageSender exch) {
         super("Sites", exch);
@@ -28,6 +29,7 @@ public class SitesFrame extends GeneralFrame {
 //        workTab.add(getContractsPanel(), "Contracts");
         workTab.add(getSitesPanel(), "Sites");
         workTab.add(getDieselPrchsPanel(), "Diesel Rurchases");
+        workTab.add(getDieselCardsPanel(), "Diesel Issuing");
         workTab.add(new JPanel(), "Fuel");
         return workTab;
     }
@@ -54,5 +56,17 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return disprchsPanel;
+    }
+    
+    private JPanel getDieselCardsPanel() {
+        if (dieselIsissPanel == null) {
+            try {
+                registerGrid(dieselIsissPanel = new DieselCardsGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return dieselIsissPanel;
     }
 }

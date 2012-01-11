@@ -194,7 +194,9 @@ create cached table xemployee
     contract_end    date,
     rate            int not null,
     xposition_id    int,
+    taxnum          varchar(32),
     photo           other,
+    photo2          other,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition
 );

@@ -19,8 +19,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 11;
-    public static final String DB_VERSION = "0.11";
+    private static final int DB_VERSION_ID = 12;
+    public static final String DB_VERSION = "0.12";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -146,7 +146,9 @@ public class DbConnection {
         //        + "    contract_end    date,"
         //        + "    rate            int not null,"
         //        + "    xposition_id    int,"
-        //        + "    photo          other,"
+        //        + "    taxnum          varchar(32),
+        //        + "    photo           other,"
+        //        + "    photo2          other,"
         //        + "    constraint xemployee_pk primary key (xemployee_id),"
         //        + "    constraint xemployeer_xposition_fk foreign key (xposition_id) references xposition"
         //        + ")",
@@ -438,7 +440,9 @@ public class DbConnection {
         + "    constraint xconsume_xemployee_fk4 foreign key (payer_id) references xemployee,"
         + "    constraint xconsume_xpaidmethod_fk foreign key (xpaidmethod_id) references xpaidmethod"
         + ")",
-        "alter table xconsume add invoicenumber varchar(16)"
+        "alter table xconsume add invoicenumber varchar(16)",
+        "alter table xemployee add photo2 other",
+        "alter table xemployee add taxnum varchar(32)"
     };
 
     public static Connection getConnection() throws RemoteException {

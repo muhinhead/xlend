@@ -10,6 +10,7 @@ import com.xlend.util.PopupListener;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -36,12 +37,15 @@ import javax.swing.JScrollPane;
 public abstract class EditPanelWithPhoto extends RecordEditPanel {
 
     private ImageIcon currentPicture;
+    protected JPanel picPanel;
+    protected JPopupMenu picturePopMenu;
+    protected byte[] imageData;
 
     public EditPanelWithPhoto(DbObject dbObject) {
         super(dbObject);
     }
 
-    private static void exportDocImage(byte[] imageData) {
+    protected static void exportDocImage(byte[] imageData) {
         JFileChooser chooser = new JFileChooser(DashBoard.readProperty("imagedir", "./"));
         chooser.setFileFilter(new FileFilterOnExtension("jpg"));
         chooser.setDialogTitle("Save photo to file");
@@ -59,9 +63,6 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
             Util.writeFile(fout, imageData);
         }
     }
-    private JPanel picPanel;
-    private JPopupMenu picturePopMenu;
-    protected byte[] imageData;
 
     private JPopupMenu getPhotoPopupMenu() {
         if (null == picturePopMenu) {
@@ -69,7 +70,7 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
             picturePopMenu.add(new AbstractAction("Open in window") {
 
                 public void actionPerformed(ActionEvent e) {
-                    viewDocumentImage();
+                    viewDocumentImage(currentPicture);
                 }
             });
             picturePopMenu.add(new AbstractAction("Replace image") {
@@ -99,13 +100,15 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         JPanel rightPanel = new JPanel(new BorderLayout());
         if (picPanel == null) {
             rightPanel.add(getPicPanel(), BorderLayout.CENTER);
-            picPanel.setBorder(BorderFactory.createTitledBorder(
-                    BorderFactory.createEtchedBorder(), getImagePanelLabel()));
+            if (getImagePanelLabel() != null) {
+                picPanel.setBorder(BorderFactory.createTitledBorder(
+                        BorderFactory.createEtchedBorder(), getImagePanelLabel()));
+            }
             picPanel.setPreferredSize(new Dimension(500, picPanel.getPreferredSize().height));
         }
         return rightPanel;
     }
-    
+
     public JPanel getPicPanel() {
         if (picPanel == null) {
             picPanel = new JPanel(new BorderLayout());
@@ -160,7 +163,8 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         picPanel.removeAll();
         String tmpImgFile = "$$$.img";
         currentPicture = new ImageIcon(imageData);
-        Dimension d = picPanel.getSize();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension d = new Dimension(screenSize.width/3,screenSize.height/3);
         JScrollPane sp = null;
         int height = 1;
         int wscale = 1;
@@ -175,7 +179,7 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         hscale = hscale <= 0 ? 1 : hscale;
         int scale = wscale < hscale ? wscale : hscale;
         StringBuffer html = new StringBuffer("<html>");
-        html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width=" 
+        html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width="
                 + width / scale + " height=" + height / scale + "></img>");
         JEditorPane ed = new JEditorPane("text/html", html.toString());
         ed.setEditable(false);
@@ -185,7 +189,7 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
 
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    viewDocumentImage();
+                    viewDocumentImage(currentPicture);
                 }
             }
         });
@@ -194,11 +198,11 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         picPanel.setVisible(true);
     }
 
-    private void viewDocumentImage() {
+    protected void viewDocumentImage(ImageIcon curPic) {
         JDialog dlg = new JDialog();
         dlg.setModal(true);
         JPanel pane = new JPanel(new BorderLayout());
-        pane.add(new JScrollPane(new JLabel(currentPicture)), BorderLayout.CENTER);
+        pane.add(new JScrollPane(new JLabel(curPic)), BorderLayout.CENTER);
         dlg.setContentPane(pane);
         dlg.pack();
         dlg.setVisible(true);

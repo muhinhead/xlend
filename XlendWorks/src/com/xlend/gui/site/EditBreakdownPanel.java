@@ -251,8 +251,10 @@ class EditBreakdownPanel extends RecordEditPanel {
     private void syncPurchases() {
         ComboItem ci = (ComboItem) machineCB.getSelectedItem();
         purchasesCbModel.removeAllElements();
-        for (ComboItem itm : XlendWorks.loadConsumesOnMachine(DashBoard.getExchanger(), ci.getId())) {
-            purchasesCbModel.addElement(itm);
+        if (ci != null) {
+            for (ComboItem itm : XlendWorks.loadConsumesOnMachine(DashBoard.getExchanger(), ci.getId())) {
+                purchasesCbModel.addElement(itm);
+            }
         }
     }
 }

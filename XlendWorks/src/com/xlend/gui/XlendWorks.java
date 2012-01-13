@@ -456,6 +456,7 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
+    	System.out.println("!!!!  ID="+id);
         return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", ""+id));
     }
 

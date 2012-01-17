@@ -67,8 +67,7 @@ public class DbTableGridPanel extends JPanel {
         }
         tableDoc = new DbTableDocument(toString(), tableBody);
         new Controller(getTableDoc(), getTableView());
-        JPanel btnPanel = new JPanel(new GridLayout(4, 1, 5, 5));
-        JPanel leftPanel = new JPanel(new BorderLayout());
+        JPanel btnPanel = new JPanel(new GridLayout(3, 1, 5, 5));
         if (addAction != null) {
             btnPanel.add(addButton = new JButton(addAction));
         }
@@ -78,9 +77,8 @@ public class DbTableGridPanel extends JPanel {
         if (delAction != null) {
             btnPanel.add(delButton = new JButton(delAction));
         }
-        leftPanel.add(btnPanel, BorderLayout.NORTH);
         add(sp = new JScrollPane(getTableView()), BorderLayout.CENTER);
-        add(leftPanel, BorderLayout.EAST);
+        add(getRightPanel(btnPanel), BorderLayout.EAST);
         tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
@@ -90,6 +88,12 @@ public class DbTableGridPanel extends JPanel {
             }
         });
         activatePopup(addAction, editAction, delAction);
+    }
+    
+    protected JPanel getRightPanel(JPanel btnPanel) {
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.add(btnPanel, BorderLayout.NORTH);
+        return rightPanel;
     }
 
     public void activatePopup(AbstractAction addAction,

@@ -2,7 +2,9 @@ package com.xlend.gui;
 
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.gui.hr.TimeSheetsGrid;
+import com.xlend.gui.hr.WagesGrid;
 import com.xlend.remote.IMessageSender;
+import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -15,6 +17,7 @@ public class HRFrame extends GeneralFrame {
 
     private EmployeesGrid operatorsPanel;
     private TimeSheetsGrid weeklyWagesPanel;
+    private WagesGrid wagesSummaryPanel;
 
     public HRFrame(IMessageSender exch) {
         super("HR", exch);
@@ -25,6 +28,7 @@ public class HRFrame extends GeneralFrame {
         hrTab.add(getOperatorsPanel(), "Employee Files");
         hrTab.add(getWeeklyWagesPanel(), "Time Sheets");
         hrTab.add(new JPanel(), "Salaries");
+        hrTab.add(getWagesSummaryPanel(), "Wages");
         hrTab.add(new JPanel(), "Diciplinary Actions");
         hrTab.add(new JPanel(), "Rewards Program");
         return hrTab;
@@ -52,5 +56,17 @@ public class HRFrame extends GeneralFrame {
             }
         }
         return weeklyWagesPanel;
+    }
+
+    private JPanel getWagesSummaryPanel() {
+        if (wagesSummaryPanel == null) {
+            try {
+                registerGrid(wagesSummaryPanel = new WagesGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return wagesSummaryPanel;
     }
 }

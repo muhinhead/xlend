@@ -8,56 +8,56 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xwage extends DbObject  {
+public class Xwagesumitem extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xwageId = null;
+    private Integer xwagesumitemId = null;
+    private Integer xwagesumId = null;
+    private Integer xemployeeId = null;
     private Integer xtimesheetId = null;
-    private Date day = null;
+    private Integer weeklywage = null;
     private Double normaltime = null;
     private Double overtime = null;
     private Double doubletime = null;
-    private Double deduction = null;
-    private String stoppeddetails = null;
 
-    public Xwage(Connection connection) {
-        super(connection, "xwage", "xwage_id");
-        setColumnNames(new String[]{"xwage_id", "xtimesheet_id", "day", "normaltime", "overtime", "doubletime", "deduction", "stoppeddetails"});
+    public Xwagesumitem(Connection connection) {
+        super(connection, "xwagesumitem", "xwagesumitem_id");
+        setColumnNames(new String[]{"xwagesumitem_id", "xwagesum_id", "xemployee_id", "xtimesheet_id", "weeklywage", "normaltime", "overtime", "doubletime"});
     }
 
-    public Xwage(Connection connection, Integer xwageId, Integer xtimesheetId, Date day, Double normaltime, Double overtime, Double doubletime, Double deduction, String stoppeddetails) {
-        super(connection, "xwage", "xwage_id");
-        setNew(xwageId.intValue() <= 0);
-//        if (xwageId.intValue() != 0) {
-            this.xwageId = xwageId;
+    public Xwagesumitem(Connection connection, Integer xwagesumitemId, Integer xwagesumId, Integer xemployeeId, Integer xtimesheetId, Integer weeklywage, Double normaltime, Double overtime, Double doubletime) {
+        super(connection, "xwagesumitem", "xwagesumitem_id");
+        setNew(xwagesumitemId.intValue() <= 0);
+//        if (xwagesumitemId.intValue() != 0) {
+            this.xwagesumitemId = xwagesumitemId;
 //        }
+        this.xwagesumId = xwagesumId;
+        this.xemployeeId = xemployeeId;
         this.xtimesheetId = xtimesheetId;
-        this.day = day;
+        this.weeklywage = weeklywage;
         this.normaltime = normaltime;
         this.overtime = overtime;
         this.doubletime = doubletime;
-        this.deduction = deduction;
-        this.stoppeddetails = stoppeddetails;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xwage xwage = null;
+        Xwagesumitem xwagesumitem = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwage_id,xtimesheet_id,day,normaltime,overtime,doubletime,deduction,stoppeddetails FROM xwage WHERE xwage_id=" + id;
+        String stmt = "SELECT xwagesumitem_id,xwagesum_id,xemployee_id,xtimesheet_id,weeklywage,normaltime,overtime,doubletime FROM xwagesumitem WHERE xwagesumitem_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xwage = new Xwage(getConnection());
-                xwage.setXwageId(new Integer(rs.getInt(1)));
-                xwage.setXtimesheetId(new Integer(rs.getInt(2)));
-                xwage.setDay(rs.getDate(3));
-                xwage.setNormaltime(rs.getDouble(4));
-                xwage.setOvertime(rs.getDouble(5));
-                xwage.setDoubletime(rs.getDouble(6));
-                xwage.setDeduction(rs.getDouble(7));
-                xwage.setStoppeddetails(rs.getString(8));
-                xwage.setNew(false);
+                xwagesumitem = new Xwagesumitem(getConnection());
+                xwagesumitem.setXwagesumitemId(new Integer(rs.getInt(1)));
+                xwagesumitem.setXwagesumId(new Integer(rs.getInt(2)));
+                xwagesumitem.setXemployeeId(new Integer(rs.getInt(3)));
+                xwagesumitem.setXtimesheetId(new Integer(rs.getInt(4)));
+                xwagesumitem.setWeeklywage(new Integer(rs.getInt(5)));
+                xwagesumitem.setNormaltime(rs.getDouble(6));
+                xwagesumitem.setOvertime(rs.getDouble(7));
+                xwagesumitem.setDoubletime(rs.getDouble(8));
+                xwagesumitem.setNew(false);
             }
         } finally {
             try {
@@ -66,7 +66,7 @@ public class Xwage extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xwage;
+        return xwagesumitem;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -75,32 +75,32 @@ public class Xwage extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xwage ("+(getXwageId().intValue()!=0?"xwage_id,":"")+"xtimesheet_id,day,normaltime,overtime,doubletime,deduction,stoppeddetails) values("+(getXwageId().intValue()!=0?"?,":"")+"?,?,?,?,?,?,?)";
+                "INSERT INTO xwagesumitem ("+(getXwagesumitemId().intValue()!=0?"xwagesumitem_id,":"")+"xwagesum_id,xemployee_id,xtimesheet_id,weeklywage,normaltime,overtime,doubletime) values("+(getXwagesumitemId().intValue()!=0?"?,":"")+"?,?,?,?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXwageId().intValue()!=0) {
-                 ps.setObject(++n, getXwageId());
+             if (getXwagesumitemId().intValue()!=0) {
+                 ps.setObject(++n, getXwagesumitemId());
              }
+             ps.setObject(++n, getXwagesumId());
+             ps.setObject(++n, getXemployeeId());
              ps.setObject(++n, getXtimesheetId());
-             ps.setObject(++n, getDay());
+             ps.setObject(++n, getWeeklywage());
              ps.setObject(++n, getNormaltime());
              ps.setObject(++n, getOvertime());
              ps.setObject(++n, getDoubletime());
-             ps.setObject(++n, getDeduction());
-             ps.setObject(++n, getStoppeddetails());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXwageId().intValue()==0) {
-             stmt = "SELECT max(xwage_id) FROM xwage";
+         if (getXwagesumitemId().intValue()==0) {
+             stmt = "SELECT max(xwagesumitem_id) FROM xwagesumitem";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXwageId(new Integer(rs.getInt(1)));
+                     setXwagesumitemId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -126,18 +126,18 @@ public class Xwage extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xwage " +
-                    "SET xtimesheet_id = ?, day = ?, normaltime = ?, overtime = ?, doubletime = ?, deduction = ?, stoppeddetails = ?" + 
-                    " WHERE xwage_id = " + getXwageId();
+                    "UPDATE xwagesumitem " +
+                    "SET xwagesum_id = ?, xemployee_id = ?, xtimesheet_id = ?, weeklywage = ?, normaltime = ?, overtime = ?, doubletime = ?" + 
+                    " WHERE xwagesumitem_id = " + getXwagesumitemId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXtimesheetId());
-                ps.setObject(2, getDay());
-                ps.setObject(3, getNormaltime());
-                ps.setObject(4, getOvertime());
-                ps.setObject(5, getDoubletime());
-                ps.setObject(6, getDeduction());
-                ps.setObject(7, getStoppeddetails());
+                ps.setObject(1, getXwagesumId());
+                ps.setObject(2, getXemployeeId());
+                ps.setObject(3, getXtimesheetId());
+                ps.setObject(4, getWeeklywage());
+                ps.setObject(5, getNormaltime());
+                ps.setObject(6, getOvertime());
+                ps.setObject(7, getDoubletime());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -155,29 +155,29 @@ public class Xwage extends DbObject  {
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xwage " +
-                "WHERE xwage_id = " + getXwageId();
+                "DELETE FROM xwagesumitem " +
+                "WHERE xwagesumitem_id = " + getXwagesumitemId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXwageId(new Integer(-getXwageId().intValue()));
+        setXwagesumitemId(new Integer(-getXwagesumitemId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXwageId().intValue() < 0);
+        return (getXwagesumitemId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwage_id,xtimesheet_id,day,normaltime,overtime,doubletime,deduction,stoppeddetails FROM xwage " +
+        String stmt = "SELECT xwagesumitem_id,xwagesum_id,xemployee_id,xtimesheet_id,weeklywage,normaltime,overtime,doubletime FROM xwagesumitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -187,7 +187,7 @@ public class Xwage extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xwage(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getDate(3),rs.getDouble(4),rs.getDouble(5),rs.getDouble(6),rs.getDouble(7),rs.getString(8)));
+                lst.add(dbObj=new Xwagesumitem(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),new Integer(rs.getInt(4)),new Integer(rs.getInt(5)),rs.getDouble(6),rs.getDouble(7),rs.getDouble(8)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -197,10 +197,10 @@ public class Xwage extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xwage[] objects = new Xwage[lst.size()];
+        Xwagesumitem[] objects = new Xwagesumitem[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xwage xwage = (Xwage) lst.get(i);
-            objects[i] = xwage;
+            Xwagesumitem xwagesumitem = (Xwagesumitem) lst.get(i);
+            objects[i] = xwagesumitem;
         }
         return objects;
     }
@@ -212,7 +212,7 @@ public class Xwage extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwage_id FROM xwage " +
+        String stmt = "SELECT xwagesumitem_id FROM xwagesumitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -230,17 +230,43 @@ public class Xwage extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXwageId() + getDelimiter();
+    //    return getXwagesumitemId() + getDelimiter();
     //}
 
-    public Integer getXwageId() {
-        return xwageId;
+    public Integer getXwagesumitemId() {
+        return xwagesumitemId;
     }
 
-    public void setXwageId(Integer xwageId) throws ForeignKeyViolationException {
-        setWasChanged(this.xwageId != null && this.xwageId != xwageId);
-        this.xwageId = xwageId;
-        setNew(xwageId.intValue() == 0);
+    public void setXwagesumitemId(Integer xwagesumitemId) throws ForeignKeyViolationException {
+        setWasChanged(this.xwagesumitemId != null && this.xwagesumitemId != xwagesumitemId);
+        this.xwagesumitemId = xwagesumitemId;
+        setNew(xwagesumitemId.intValue() == 0);
+    }
+
+    public Integer getXwagesumId() {
+        return xwagesumId;
+    }
+
+    public void setXwagesumId(Integer xwagesumId) throws SQLException, ForeignKeyViolationException {
+        if (null != xwagesumId)
+            xwagesumId = xwagesumId == 0 ? null : xwagesumId;
+        if (xwagesumId!=null && !Xwagesum.exists(getConnection(),"xwagesum_id = " + xwagesumId)) {
+            throw new ForeignKeyViolationException("Can't set xwagesum_id, foreign key violation: xwagesumitem_xwagesum_fk");
+        }
+        setWasChanged(this.xwagesumId != null && !this.xwagesumId.equals(xwagesumId));
+        this.xwagesumId = xwagesumId;
+    }
+
+    public Integer getXemployeeId() {
+        return xemployeeId;
+    }
+
+    public void setXemployeeId(Integer xemployeeId) throws SQLException, ForeignKeyViolationException {
+        if (xemployeeId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + xemployeeId)) {
+            throw new ForeignKeyViolationException("Can't set xemployee_id, foreign key violation: xwagesumitem_xemployee_fk");
+        }
+        setWasChanged(this.xemployeeId != null && !this.xemployeeId.equals(xemployeeId));
+        this.xemployeeId = xemployeeId;
     }
 
     public Integer getXtimesheetId() {
@@ -248,20 +274,24 @@ public class Xwage extends DbObject  {
     }
 
     public void setXtimesheetId(Integer xtimesheetId) throws SQLException, ForeignKeyViolationException {
+        if (null != xtimesheetId)
+            xtimesheetId = xtimesheetId == 0 ? null : xtimesheetId;
         if (xtimesheetId!=null && !Xtimesheet.exists(getConnection(),"xtimesheet_id = " + xtimesheetId)) {
-            throw new ForeignKeyViolationException("Can't set xtimesheet_id, foreign key violation: xwage_xtimesheet_fk");
+            throw new ForeignKeyViolationException("Can't set xtimesheet_id, foreign key violation: xwagesumitem_xtimesheet_fk");
         }
         setWasChanged(this.xtimesheetId != null && !this.xtimesheetId.equals(xtimesheetId));
         this.xtimesheetId = xtimesheetId;
     }
 
-    public Date getDay() {
-        return day;
+    public Integer getWeeklywage() {
+        return weeklywage;
     }
 
-    public void setDay(Date day) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.day != null && !this.day.equals(day));
-        this.day = day;
+    public void setWeeklywage(Integer weeklywage) throws SQLException, ForeignKeyViolationException {
+        if (null != weeklywage)
+            weeklywage = weeklywage == 0 ? null : weeklywage;
+        setWasChanged(this.weeklywage != null && !this.weeklywage.equals(weeklywage));
+        this.weeklywage = weeklywage;
     }
 
     public Double getNormaltime() {
@@ -290,34 +320,16 @@ public class Xwage extends DbObject  {
         setWasChanged(this.doubletime != null && !this.doubletime.equals(doubletime));
         this.doubletime = doubletime;
     }
-
-    public Double getDeduction() {
-        return deduction;
-    }
-
-    public void setDeduction(Double deduction) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.deduction != null && !this.deduction.equals(deduction));
-        this.deduction = deduction;
-    }
-
-    public String getStoppeddetails() {
-        return stoppeddetails;
-    }
-
-    public void setStoppeddetails(String stoppeddetails) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.stoppeddetails != null && !this.stoppeddetails.equals(stoppeddetails));
-        this.stoppeddetails = stoppeddetails;
-    }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[8];
-        columnValues[0] = getXwageId();
-        columnValues[1] = getXtimesheetId();
-        columnValues[2] = getDay();
-        columnValues[3] = getNormaltime();
-        columnValues[4] = getOvertime();
-        columnValues[5] = getDoubletime();
-        columnValues[6] = getDeduction();
-        columnValues[7] = getStoppeddetails();
+        columnValues[0] = getXwagesumitemId();
+        columnValues[1] = getXwagesumId();
+        columnValues[2] = getXemployeeId();
+        columnValues[3] = getXtimesheetId();
+        columnValues[4] = getWeeklywage();
+        columnValues[5] = getNormaltime();
+        columnValues[6] = getOvertime();
+        columnValues[7] = getDoubletime();
         return columnValues;
     }
 
@@ -334,36 +346,44 @@ public class Xwage extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXwageId(Integer.parseInt(flds[0]));
+            setXwagesumitemId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXwageId(null);
+            setXwagesumitemId(null);
         }
         try {
-            setXtimesheetId(Integer.parseInt(flds[1]));
+            setXwagesumId(Integer.parseInt(flds[1]));
+        } catch(NumberFormatException ne) {
+            setXwagesumId(null);
+        }
+        try {
+            setXemployeeId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setXemployeeId(null);
+        }
+        try {
+            setXtimesheetId(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
             setXtimesheetId(null);
         }
-        setDay(toDate(flds[2]));
         try {
-            setNormaltime(Double.parseDouble(flds[3]));
+            setWeeklywage(Integer.parseInt(flds[4]));
+        } catch(NumberFormatException ne) {
+            setWeeklywage(null);
+        }
+        try {
+            setNormaltime(Double.parseDouble(flds[5]));
         } catch(NumberFormatException ne) {
             setNormaltime(null);
         }
         try {
-            setOvertime(Double.parseDouble(flds[4]));
+            setOvertime(Double.parseDouble(flds[6]));
         } catch(NumberFormatException ne) {
             setOvertime(null);
         }
         try {
-            setDoubletime(Double.parseDouble(flds[5]));
+            setDoubletime(Double.parseDouble(flds[7]));
         } catch(NumberFormatException ne) {
             setDoubletime(null);
         }
-        try {
-            setDeduction(Double.parseDouble(flds[6]));
-        } catch(NumberFormatException ne) {
-            setDeduction(null);
-        }
-        setStoppeddetails(flds[7]);
     }
 }

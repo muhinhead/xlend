@@ -8,38 +8,38 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Picture extends DbObject  {
+public class Xwagesum extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer pictureId = null;
-    private Object picture = null;
+    private Integer xwagesumId = null;
+    private Date weekend = null;
 
-    public Picture(Connection connection) {
-        super(connection, "picture", "picture_id");
-        setColumnNames(new String[]{"picture_id", "picture"});
+    public Xwagesum(Connection connection) {
+        super(connection, "xwagesum", "xwagesum_id");
+        setColumnNames(new String[]{"xwagesum_id", "weekend"});
     }
 
-    public Picture(Connection connection, Integer pictureId, Object picture) {
-        super(connection, "picture", "picture_id");
-        setNew(pictureId.intValue() <= 0);
-//        if (pictureId.intValue() != 0) {
-            this.pictureId = pictureId;
+    public Xwagesum(Connection connection, Integer xwagesumId, Date weekend) {
+        super(connection, "xwagesum", "xwagesum_id");
+        setNew(xwagesumId.intValue() <= 0);
+//        if (xwagesumId.intValue() != 0) {
+            this.xwagesumId = xwagesumId;
 //        }
-        this.picture = picture;
+        this.weekend = weekend;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Picture picture = null;
+        Xwagesum xwagesum = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture WHERE picture_id=" + id;
+        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum WHERE xwagesum_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                picture = new Picture(getConnection());
-                picture.setPictureId(new Integer(rs.getInt(1)));
-                picture.setPicture(rs.getObject(2));
-                picture.setNew(false);
+                xwagesum = new Xwagesum(getConnection());
+                xwagesum.setXwagesumId(new Integer(rs.getInt(1)));
+                xwagesum.setWeekend(rs.getDate(2));
+                xwagesum.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +48,7 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return picture;
+        return xwagesum;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +57,26 @@ public class Picture extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO picture ("+(getPictureId().intValue()!=0?"picture_id,":"")+"picture) values("+(getPictureId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xwagesum ("+(getXwagesumId().intValue()!=0?"xwagesum_id,":"")+"weekend) values("+(getXwagesumId().intValue()!=0?"?,":"")+"?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getPictureId().intValue()!=0) {
-                 ps.setObject(++n, getPictureId());
+             if (getXwagesumId().intValue()!=0) {
+                 ps.setObject(++n, getXwagesumId());
              }
-             ps.setObject(++n, getPicture());
+             ps.setObject(++n, getWeekend());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getPictureId().intValue()==0) {
-             stmt = "SELECT max(picture_id) FROM picture";
+         if (getXwagesumId().intValue()==0) {
+             stmt = "SELECT max(xwagesum_id) FROM xwagesum";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setPictureId(new Integer(rs.getInt(1)));
+                     setXwagesumId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +102,12 @@ public class Picture extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE picture " +
-                    "SET picture = ?" + 
-                    " WHERE picture_id = " + getPictureId();
+                    "UPDATE xwagesum " +
+                    "SET weekend = ?" + 
+                    " WHERE xwagesum_id = " + getXwagesumId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPicture());
+                ps.setObject(1, getWeekend());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,37 +120,41 @@ public class Picture extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Profile.exists(getConnection(),"picture_id = " + getPictureId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: profile_picture_fk");
-        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
+        {// delete cascade from xwagesumitem
+            Xwagesumitem[] records = (Xwagesumitem[])Xwagesumitem.load(getConnection(),"xwagesum_id = " + getXwagesumId(),null);
+            for (int i = 0; i<records.length; i++) {
+                Xwagesumitem xwagesumitem = records[i];
+                xwagesumitem.delete();
+            }
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM picture " +
-                "WHERE picture_id = " + getPictureId();
+                "DELETE FROM xwagesum " +
+                "WHERE xwagesum_id = " + getXwagesumId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setPictureId(new Integer(-getPictureId().intValue()));
+        setXwagesumId(new Integer(-getXwagesumId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getPictureId().intValue() < 0);
+        return (getXwagesumId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id,picture FROM picture " +
+        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -160,7 +164,7 @@ public class Picture extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Picture(con,new Integer(rs.getInt(1)),rs.getObject(2)));
+                lst.add(dbObj=new Xwagesum(con,new Integer(rs.getInt(1)),rs.getDate(2)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -170,10 +174,10 @@ public class Picture extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Picture[] objects = new Picture[lst.size()];
+        Xwagesum[] objects = new Xwagesum[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Picture picture = (Picture) lst.get(i);
-            objects[i] = picture;
+            Xwagesum xwagesum = (Xwagesum) lst.get(i);
+            objects[i] = xwagesum;
         }
         return objects;
     }
@@ -185,7 +189,7 @@ public class Picture extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT picture_id FROM picture " +
+        String stmt = "SELECT xwagesum_id FROM xwagesum " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -203,31 +207,31 @@ public class Picture extends DbObject  {
     }
 
     //public String toString() {
-    //    return getPictureId() + getDelimiter();
+    //    return getXwagesumId() + getDelimiter();
     //}
 
-    public Integer getPictureId() {
-        return pictureId;
+    public Integer getXwagesumId() {
+        return xwagesumId;
     }
 
-    public void setPictureId(Integer pictureId) throws ForeignKeyViolationException {
-        setWasChanged(this.pictureId != null && this.pictureId != pictureId);
-        this.pictureId = pictureId;
-        setNew(pictureId.intValue() == 0);
+    public void setXwagesumId(Integer xwagesumId) throws ForeignKeyViolationException {
+        setWasChanged(this.xwagesumId != null && this.xwagesumId != xwagesumId);
+        this.xwagesumId = xwagesumId;
+        setNew(xwagesumId.intValue() == 0);
     }
 
-    public Object getPicture() {
-        return picture;
+    public Date getWeekend() {
+        return weekend;
     }
 
-    public void setPicture(Object picture) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.picture != null && !this.picture.equals(picture));
-        this.picture = picture;
+    public void setWeekend(Date weekend) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.weekend != null && !this.weekend.equals(weekend));
+        this.weekend = weekend;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[2];
-        columnValues[0] = getPictureId();
-        columnValues[1] = getPicture();
+        columnValues[0] = getXwagesumId();
+        columnValues[1] = getWeekend();
         return columnValues;
     }
 
@@ -244,10 +248,10 @@ public class Picture extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setPictureId(Integer.parseInt(flds[0]));
+            setXwagesumId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setPictureId(null);
+            setXwagesumId(null);
         }
-        setPicture(flds[1]);
+        setWeekend(toDate(flds[1]));
     }
 }

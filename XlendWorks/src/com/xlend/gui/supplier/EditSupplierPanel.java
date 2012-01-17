@@ -47,7 +47,7 @@ class EditSupplierPanel extends RecordEditPanel {
             "Vat Nr:", "Company Reg.Nr:",
             "Product Description:", "Address:"
         };
-        JComponent[] edits = new JComponent[]{
+        JComponent[] edits = new JComponent[] {
             getGridPanel(idField = new JTextField(), 3),
             companyNameField = new JTextField(40),
             contactPersonField = new JTextField(),

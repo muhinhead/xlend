@@ -12,6 +12,8 @@ import com.xlend.orm.Xorder;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.Xsite;
+import com.xlend.orm.Xtimesheet;
+import com.xlend.orm.Xwage;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -21,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.sql.Date;
+import java.util.HashSet;
 import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -39,6 +43,21 @@ import javax.swing.SpinnerNumberModel;
  */
 public class XlendWorks {
 
+    public static class XDate extends java.sql.Date {
+
+        public XDate(long t) {
+            super(t);
+        }
+
+        @Override
+        public String toString() {
+            if (getTime() == 0) {
+                return "--Unknown--";
+            }
+            String s = super.toString();
+            return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
+        }
+    };
     public static final String version = "0.7";
     private static Userprofile currentUser;
     private static Logger logger = null;
@@ -54,13 +73,6 @@ public class XlendWorks {
             try {
                 exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
                 if (login(exchanger)) {
-
-//                    DbObject[] xtypes = exchanger.getDbObjects(Xmachtype.class, null, "xmachtype_id");
-//                    for (DbObject o : xtypes) {
-//                        Xmachtype mt = (Xmachtype) o;
-//                        System.out.println(""+mt.getXmachtypeId()+"|"+mt.getMachtype()+"|"+mt.getParenttypeId()+"|"+mt.getClassify());
-//                    }
-
                     new DashBoard(exchanger);
                     break;
                 } else {
@@ -389,6 +401,26 @@ public class XlendWorks {
         return null;
     }
 
+    private static String[] loadOnSelect(IMessageSender exchanger, String select, int fldNum, String initValue) {
+        try {
+            Vector[] tab = exchanger.getTableBody(select);
+            Vector rows = tab[1];
+            String[] ans = new String[rows.size() + (initValue != null ? 1 : 0)];
+            int n = 0;
+            if (initValue != null) {
+                ans[n++] = initValue;
+            }
+            for (int i = 0; i < rows.size(); i++) {
+                Vector line = (Vector) rows.get(i);
+                ans[n++] = line.get(fldNum).toString();
+            }
+            return ans;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return new String[]{""};
+    }
+
     private static ComboItem[] loadOnSelect(IMessageSender exchanger, String select) {
         try {
             Vector[] tab = exchanger.getTableBody(select);
@@ -404,9 +436,9 @@ public class XlendWorks {
         } catch (RemoteException ex) {
             log(ex);
         }
-        return new ComboItem[]{new ComboItem(0,"")};
+        return new ComboItem[]{new ComboItem(0, "")};
     }
-    
+
     public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {
         return loadOnSelect(exchanger, freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES);
     }
@@ -414,11 +446,11 @@ public class XlendWorks {
     public static ComboItem[] loadAllSuppliers(IMessageSender exchanger) {
         return loadOnSelect(exchanger, Selects.SUPPLIERS);
     }
-    
+
     public static ComboItem[] loadPayMethods(IMessageSender exchanger) {
         return loadOnSelect(exchanger, Selects.PAYMETHODS);
     }
-    
+
     public static Image loadImage(String iconName, Window w) {
         Image im = null;
         File f = new File("images/" + iconName);
@@ -456,8 +488,50 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
-    	System.out.println("!!!!  ID="+id);
-        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", ""+id));
+        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", "" + id));
     }
 
+    public static Object[] getNotFixedTimeSheetDates(IMessageSender exchanger) {
+        HashSet hs = new HashSet();
+        try {
+            hs.add(new XDate(0));
+            DbObject[] recs = exchanger.getDbObjects(Xtimesheet.class,
+                    "weekend not in (select weekend from xwagesum)", "weekend");
+            for (DbObject rec : recs) {
+                Xtimesheet ts = (Xtimesheet) rec;
+                if (!hs.contains(ts.getWeekend())) {
+                    hs.add(new XDate(ts.getWeekend().getTime()));
+                }
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return hs.toArray();
+    }
+
+    public static Object[] getTimeSheetData(IMessageSender exchanger, Date xd, int xemployee_Id) {
+        Object[] ans = new Object[]{new Integer(0), new Double(0.0), new Double(0.0), new Double(0.0)};
+        try {
+            java.sql.Date dt = new java.sql.Date(xd.getTime());
+            DbObject[] itms = exchanger.getDbObjects(Xwage.class, "xtimesheet_id="
+                    + "(select xtimesheet_id from xtimesheet where xemployee_id="
+                    + xemployee_Id + " and weekend='" + dt.toString() + "')", null);
+            double normalTimeSum = 0.0;
+            double overTimeSum = 0.0;
+            double doubleTimeSum = 0.0;
+            for (DbObject itm : itms) {
+                Xwage wg = (Xwage) itm;
+                ans[0] = wg.getXtimesheetId();
+                normalTimeSum += wg.getNormaltime();
+                overTimeSum += wg.getOvertime();
+                doubleTimeSum += wg.getDoubletime();
+            }
+            ans[1] = new Double(normalTimeSum);
+            ans[2] = new Double(overTimeSum);
+            ans[3] = new Double(doubleTimeSum);
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return ans;
+    }
 }

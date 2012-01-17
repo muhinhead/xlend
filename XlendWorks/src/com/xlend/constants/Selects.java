@@ -200,7 +200,9 @@ public class Selects {
             + " substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name+' ('+xemployee.clock_num+')' \"Name\","
             + "weeklywage \"Weekly Wage\", normaltime \"Hours\",overtime \"Overtime\", doubletime \"Doubletime\" "
             + "from xwagesum,xwagesumitem,xemployee "
-            + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id and xemployee.xemployee_id=xemployee.xemployee_id";
+            + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id and xwagesumitem.xemployee_id=xemployee.xemployee_id";
+    public static String NOTFIXED_TIMESHEETDATES = 
+            "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     
     public static String[] getStringArray(String select) {
         try {

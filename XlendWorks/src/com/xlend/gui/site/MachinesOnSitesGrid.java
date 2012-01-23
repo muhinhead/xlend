@@ -7,11 +7,14 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachineonsite;
 import com.xlend.orm.Xsite;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -49,7 +52,7 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
                         ed = new EditMachineOnSiteItemDialog("Add Machine to site", null);
                         if (EditMachineOnSiteItemDialog.okPressed) {
                             Xmachineonsite xsitemachine = (Xmachineonsite) ed.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), 
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
                                     xsitemachine.getXmachineonsateId());
                         }
                     } else {
@@ -89,27 +92,35 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Remove from site") {
+        return new AbstractAction("De-establish from site") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xmachineonsite xsitemachine = (Xmachineonsite) exchanger.loadDbObjectOnID(Xmachineonsite.class, id);
-                    if (xsitemachine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(xsitemachine);
-                        GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+//                    if (xsitemachine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
+//                        exchanger.deleteObject(xsitemachine);
+//                        GeneralFrame.updateGrid(exchanger, getTableView(),
+//                                getTableDoc(), getSelect(), null);
+//                    }
+                    JSpinner dtSp = new SelectedDateSpinner();
+                    dtSp.setEditor(new JSpinner.DateEditor(dtSp, "dd/MM/yyyy"));
+                    Util.addFocusSelectAllAction(dtSp);
+                    new DeEstablishMachineDate("De-establish machine from site", dtSp);
+                    if (DeEstablishMachineDate.okPressed) {
+                        java.util.Date dt = (java.util.Date) dtSp.getValue();
+                        xsitemachine.setDeestdate(new java.sql.Date(dt.getTime()));
+                        exchanger.saveDbObject(xsitemachine);
                     }
-                } catch (RemoteException ex) {
+                } catch (Exception ex) {
                     XlendWorks.log(ex);
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
         };
     }
-    
-    
+
     /**
      * @return the xsite
      */

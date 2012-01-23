@@ -26,7 +26,7 @@ public class EmployeeLookupAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         try {
             LookupDialog ld = new LookupDialog("Employee Lookup", employeeCB,
-                    new EmployeesGrid(DashBoard.getExchanger(), Selects.EMPLOYEES, true),
+                    new EmployeesGrid(DashBoard.getExchanger(), Selects.SELECT_FROM_EMPLOYEE, true),
                     new String[]{"sur_name", "clock_num"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

@@ -114,7 +114,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Employee") {
+        return new AbstractAction("Delete Timesheet") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

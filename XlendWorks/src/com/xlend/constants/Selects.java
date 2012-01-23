@@ -146,10 +146,12 @@ public class Selects {
             + "and xmachine_id not in (select xmachine_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by classify+tmvnr";
     public static final String EMPLOYEES = 
-            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
+            "Select xemployee_id, clock_num+' '+first_name \"Operator\" "
+//            + "substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
             + "from xemployee order by sur_name";
     public static final String FREEEMPLOYEES = 
-            "Select xemployee_id, substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
+            "Select xemployee_id, clock_num+' '+first_name \"Operator\" "
+            //substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
             + "from xemployee where xemployee_id not in (select xemployee_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by sur_name";
     public static final String SELECT_MASCHINES4LOOKUP =

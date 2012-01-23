@@ -202,7 +202,7 @@ public class XlendWorks {
             for (DbObject o : employees) {
                 Xemployee emp = (Xemployee) o;
                 itms[i++] = new ComboItem(emp.getXemployeeId(), emp.getClockNum()
-                        + " (" + emp.getFirstName().substring(0, 1) + "." + emp.getSurName() + ")");
+                        + " " + emp.getFirstName());
             }
             return itms;
         } catch (RemoteException ex) {

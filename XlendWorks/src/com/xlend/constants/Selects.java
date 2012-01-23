@@ -198,11 +198,13 @@ public class Selects {
             "Select xbreakdown_id \"Id\", mac.classify+mac.tmvnr \"Machine\", s.name \"Site\", bd.repairdate \"Repair Date\" "
             + "from xbreakdown bd, xmachine mac, xsite s where bd.xmachine_id=mac.xmachine_id and s.xsite_id=bd.xsite_id";
     public static final String SELECT_FROM_WAGES =
-            "Select xwagesum.xwagesum_id \"List Id\",weekend \"Week edning\", xemployee.clock_num \"Clock Nr.\","
-            + " substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name+' ('+xemployee.clock_num+')' \"Name\","
-            + "weeklywage \"Weekly Wage\", normaltime \"Hours\",overtime \"Overtime\", doubletime \"Doubletime\" "
-            + "from xwagesum,xwagesumitem,xemployee "
-            + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id and xwagesumitem.xemployee_id=xemployee.xemployee_id";
+            "Select xwagesum.xwagesum_id \"List Id\",weekend \"Week edning\", "
+//            + "xemployee.clock_num \"Clock Nr.\","
+//            + " substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name+' ('+xemployee.clock_num+')' \"Name\","
+//            + "weeklywage \"Weekly Wage\", "
+            + "sum(normaltime) \"Total Hours\",sum(overtime) \"Total Overtime\", sum(doubletime) \"Total Doubletime\" "
+            + "from xwagesum,xwagesumitem "//,xemployee "
+            + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id group by xwagesum.xwagesum_id,weekend";//and xwagesumitem.xemployee_id=xemployee.xemployee_id";
     public static String NOTFIXED_TIMESHEETDATES = 
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     

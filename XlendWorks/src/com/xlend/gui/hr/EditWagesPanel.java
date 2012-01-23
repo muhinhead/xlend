@@ -13,6 +13,7 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -73,7 +74,9 @@ class EditWagesPanel extends RecordEditPanel {
         idField.setEnabled(false);
         labels = createLabelsArray(titles);
         organizePanels(titles, edits);
-        add(new JScrollPane(getGridPanel()), BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(getGridPanel());
+        add(sp, BorderLayout.CENTER);
+        sp.setPreferredSize(new Dimension(sp.getPreferredSize().width+50, 400));
     }
 
     protected void organizePanels(String[] titles, JComponent[] edits) {

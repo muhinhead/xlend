@@ -266,9 +266,10 @@ public class XlendWorks {
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {
         try {
             DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
-            ComboItem[] itms = new ComboItem[orders.length + 1];
-            itms[0] = new ComboItem(0, "--Add new order --");
-            int i = 1;
+            ComboItem[] itms = new ComboItem[orders.length + 2];
+            itms[0] = new ComboItem(-1, "--ORDER NOT RECEIVED--");
+            itms[1] = new ComboItem(0, "--Add new order--");
+            int i = 2;
             for (DbObject o : orders) {
                 Xorder xorder = (Xorder) o;
                 itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());

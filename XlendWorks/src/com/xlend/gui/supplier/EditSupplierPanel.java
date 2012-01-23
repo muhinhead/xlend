@@ -33,6 +33,7 @@ class EditSupplierPanel extends RecordEditPanel {
     private JTextField companyRegNrField;
     private JTextArea productDescrField;
     private JTextArea addressField;
+    private JTextArea bankingField;
 
     public EditSupplierPanel(DbObject dbObject) {
         super(dbObject);
@@ -45,20 +46,21 @@ class EditSupplierPanel extends RecordEditPanel {
             "ID:", "Company Name:", "Contact Person:",
             "Tel Nr:", "Fax Nr:", "Cell Nr:", "Email:",
             "Vat Nr:", "Company Reg.Nr:",
-            "Product Description:", "Address:"
+            "Product Description:", "Address:", "Banking details:"
         };
         JComponent[] edits = new JComponent[] {
-            getGridPanel(idField = new JTextField(), 3),
-            companyNameField = new JTextField(40),
-            contactPersonField = new JTextField(),
-            getGridPanel(phoneField = new JTextField(), 2),
-            getGridPanel(faxField = new JTextField(), 2),
-            getGridPanel(cellField = new JTextField(), 2),
-            getGridPanel(emailField = new JTextField(), 2),
-            getGridPanel(vatNrField = new JTextField(), 3),
+            getGridPanel(idField = new JTextField(), 5),
+            getGridPanel(companyNameField = new JTextField(40),2),
+            getGridPanel(contactPersonField = new JTextField(),2),
+            getGridPanel(phoneField = new JTextField(), 3),
+            getGridPanel(faxField = new JTextField(), 3),
+            getGridPanel(cellField = new JTextField(), 3),
+            getGridPanel(emailField = new JTextField(), 3),
+            getGridPanel(vatNrField = new JTextField(), 4),
             getGridPanel(companyRegNrField = new JTextField(), 3),
-            productDescrField = new JTextArea(5, 20),
-            addressField = new JTextArea(5, 20)
+            productDescrField = new JTextArea(7, 20),
+            addressField = new JTextArea(7, 20),
+            bankingField = new JTextArea(7, 20)
         };
         idField.setEnabled(false);
         labels = createLabelsArray(titles);
@@ -75,7 +77,7 @@ class EditSupplierPanel extends RecordEditPanel {
         for (int i = 0; i < edits.length - 2; i++) {
             editPanel.add(edits[i]);
         }
-        JPanel centerPanel = new JPanel(new GridLayout(1, 2));
+        JPanel centerPanel = new JPanel(new GridLayout(1, 3));
 
         JPanel descrPanel = new JPanel(new BorderLayout());
         descrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[9].getText()));
@@ -94,6 +96,16 @@ class EditSupplierPanel extends RecordEditPanel {
         addressField.setWrapStyleWord(true);
         addressField.setLineWrap(true);
         centerPanel.add(addressPanel);
+        
+        JPanel bankingPanel = new JPanel(new BorderLayout());
+        bankingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[11].getText()));
+        bankingPanel.add(new JScrollPane(bankingField,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        bankingField.setWrapStyleWord(true);
+        bankingField.setLineWrap(true);
+        centerPanel.add(bankingPanel);
+        
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -112,6 +124,7 @@ class EditSupplierPanel extends RecordEditPanel {
             companyRegNrField.setText(sup.getCompanyRegnr());
             productDescrField.setText(sup.getProductdesc());
             addressField.setText(sup.getAddress());
+            bankingField.setText(sup.getBanking());
         }
     }
 
@@ -134,6 +147,7 @@ class EditSupplierPanel extends RecordEditPanel {
         sup.setCompanyRegnr(companyRegNrField.getText());
         sup.setProductdesc(productDescrField.getText());
         sup.setAddress(addressField.getText());
+        sup.setBanking(bankingField.getText());
         try {
             sup.setNew(isNew);
             DbObject saved = DashBoard.getExchanger().saveDbObject(sup);

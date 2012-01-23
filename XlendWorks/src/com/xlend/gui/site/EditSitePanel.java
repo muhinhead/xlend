@@ -47,6 +47,7 @@ public class EditSitePanel extends RecordEditPanel {
     private DefaultComboBoxModel orderCBModel;
     private Xorder xorder;
     private AbstractAction ordLookupAction;
+    private JScrollPane dsp;
 
     public EditSitePanel(DbObject dbObject) {
         super(dbObject);
@@ -73,7 +74,7 @@ public class EditSitePanel extends RecordEditPanel {
             clientSuppliedDieselRB = new JRadioButton(),
             xlendSuppliedDieselRB = new JRadioButton(),
             typeBox = new JComboBox(new String[]{"Work Site", "Additional"}),
-            new JScrollPane(descriptionField = new JTextArea(6, 30),
+            dsp = new JScrollPane(descriptionField = new JTextArea(6, 30),
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER)
         };
@@ -120,7 +121,7 @@ public class EditSitePanel extends RecordEditPanel {
         leftpanel.add(new JLabel(labels[6], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
-        form.add(descriptionField);
+        form.add(dsp);
         form.add(getTabbedPanel(), BorderLayout.SOUTH);
 
         add(form);
@@ -134,7 +135,7 @@ public class EditSitePanel extends RecordEditPanel {
         try {
             msg = new MachinesOnSitesGrid(DashBoard.getExchanger(),
                     Selects.SELECTMACHINESONSITE.replace("#", "" + xsite_id));
-            Dimension pref = new Dimension(600, 200);
+            Dimension pref = new Dimension(800, 200);
             msg.setPreferredSize(pref);
             tp.add(msg, "Machines/Trucks on site");
         } catch (RemoteException ex) {
@@ -174,8 +175,8 @@ public class EditSitePanel extends RecordEditPanel {
         xsite.setSitetype(tp.substring(0, 1));
         xsite.setDieselsponsor(clientSuppliedDieselRB.isSelected() ? 1 : 0);
 
-        if (itm.getValue().startsWith("--")) { // add new order
-            EditOrderDialog eod = new EditOrderDialog("New Oredr", null);
+        if (itm.getValue().startsWith("--Add new order")) { // add new order
+            EditOrderDialog eod = new EditOrderDialog("New Order", null);
             if (eod.okPressed) {
                 Xorder xorder = (Xorder) eod.getEditPanel().getDbObject();
                 if (xorder != null) {

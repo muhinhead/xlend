@@ -118,7 +118,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             chassisNrField = new JTextField(),
             insuranceNrField = new JTextField(),
             insuranceTypeCB = new JComboBox(new String[]{
-                "None","3rd Party Only","3rd Party and Theft","Comprehensive"}),
+                "None", "3rd Party Only", "3rd Party and Theft", "Comprehensive"}),
             insurabceAmtSP,
             depositAmtSP,
             contractFeeSP,
@@ -219,7 +219,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             regNrField.setText(machine.getRegNr());
             if (machine.getTmvnr() != null) {
                 tmvnrTextSP.setValue(Integer.parseInt(machine.getTmvnr()));
-            } else {
+            } else {                                                                                                                                                                                                        
                 tmvnrTextSP.setValue(0);
             }
             vehicleNrField.setText(machine.getVehicleidNr());
@@ -235,6 +235,10 @@ class EditMachinePanel extends EditPanelWithPhoto {
             repaintLicFields();
         }
         syncTypes();
+        if (machine != null && machine.getXmachtype2Id() != null) {
+            selectComboItem(machType2CB, machine.getXmachtype2Id());
+        }
+
     }
 
     protected String getFleetNumberChar() {

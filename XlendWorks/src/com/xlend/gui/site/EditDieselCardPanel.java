@@ -76,14 +76,14 @@ public class EditDieselCardPanel extends RecordEditPanel {
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(dateSP = new SelectedDateSpinner(), 3),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), 
-                new MachineLookupAction(machineCB, null)),
-            comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), 
-                employeeLookupAction = new EmployeeLookupAction(operatorCB)),
+            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
+            new MachineLookupAction(machineCB, null)),
+            comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel),
+            employeeLookupAction = new EmployeeLookupAction(operatorCB)),
             comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
             getGridPanel(litersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            comboPanelWithLookupBtn(personIssCB = new JComboBox(personIssCbModel), 
-                persIssLookupAction = new EmployeeLookupAction(personIssCB))
+            comboPanelWithLookupBtn(personIssCB = new JComboBox(personIssCbModel),
+            persIssLookupAction = new EmployeeLookupAction(personIssCB))
         };
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(dateSP);
@@ -106,7 +106,9 @@ public class EditDieselCardPanel extends RecordEditPanel {
             if (xdc.getXsiteId() != null) {
                 selectComboItem(siteCB, xdc.getXsiteId());
             }
-            litersSP.setValue(xdc.getAmountLiters());
+            if (xdc.getAmountLiters() != null) {
+                litersSP.setValue(xdc.getAmountLiters());
+            }
             if (xdc.getXsiteId() != null) {
                 selectComboItem(siteCB, xdc.getXsiteId());
             }
@@ -136,8 +138,6 @@ public class EditDieselCardPanel extends RecordEditPanel {
         }
         return saveDbRecord(xdc, isNew);
     }
-
-
 //    private AbstractAction siteLookup() {
 //        return new AbstractAction("...") {
 //

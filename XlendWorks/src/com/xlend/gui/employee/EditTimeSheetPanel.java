@@ -99,6 +99,9 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private Xemployee xemployee;
     private ChangeListener deductListener;
     private Double[] prevDeduct;
+    private JLabel[] daysLabels;
+    private String[] days;
+    private String[] headers;
 
     public EditTimeSheetPanel(DbObject dbObject) {
         super(dbObject);
@@ -106,6 +109,11 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
     @Override
     protected void fillContent() {
+        days = new String[]{//"", 
+            "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday", "Sunday"};
+        headers = new String[]{"Normal Time", "Overtime", "Double Time", "Deduct"};
+        daysLabels = new JLabel[7];
         dayWages = new Xwage[7];
         prevDeduct = new Double[7];
         for (int i = 0; i < 7; i++) {
@@ -169,12 +177,22 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
-            weekendSp = new SelectedDateSpinner(),
+            getGridPanel(weekendSp = new SelectedDateSpinner(), 3),
             siteRefBox = new JComboBox(siteCbModel),
             orderRefBox = new JComboBox(orderCbModel),
             clockSheetChB = new JCheckBox()
         };
         weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
+
+        ChangeListener changeListener = new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                shiftDayLabels();
+            }
+        };
+        weekendSp.getModel().addChangeListener(changeListener);
+
         Util.addFocusSelectAllAction(weekendSp);
 
         idField.setEditable(false);
@@ -189,7 +207,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 }
                 editPanel.add(idPanel);
             } else if (i == 1) {
-                editPanel.add(comboPanelWithLookupBtn(employeeRefBox, 
+                editPanel.add(comboPanelWithLookupBtn(employeeRefBox,
                         employeeLookup = new EmployeeLookupAction(employeeRefBox)));
             } else if (i == 3) {
                 editPanel.add(comboPanelWithLookupBtn(siteRefBox, siteLookupAction = siteLookup()));
@@ -207,6 +225,43 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         }
 
         add(getDaysPanel(), BorderLayout.CENTER);
+    }
+
+    private Component getDaysPanel() {
+        JPanel daysgridPanel = new JPanel(new BorderLayout());
+
+        daysgridPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Daily Time sheet"));
+        JPanel uppanel = new JPanel(new BorderLayout());
+
+        daysgridPanel.add(uppanel, BorderLayout.NORTH);
+        JPanel leftPanel = new JPanel(new GridLayout(8, 1));
+
+        uppanel.add(leftPanel, BorderLayout.WEST);
+        JPanel centralPanel = new JPanel(new GridLayout(8, 4));
+        uppanel.add(centralPanel, BorderLayout.CENTER);
+
+        JPanel rightPanel = new JPanel(new GridLayout(8, 1));
+        uppanel.add(rightPanel, BorderLayout.EAST);
+
+        rightPanel.add(new JLabel("Details"));
+        for (JTextField tf : detailsFlds) {
+            rightPanel.add(tf);
+        }
+        
+        leftPanel.add(new JPanel());
+        for (int l = 0; l < days.length; l++) {
+            leftPanel.add(daysLabels[l] = new JLabel(days[l], SwingConstants.RIGHT));
+        }
+
+        for (int i = 0; i < 32; i++) {
+            if (i < 4) {
+                centralPanel.add(new JLabel(headers[i], SwingConstants.CENTER));
+            } else {
+                centralPanel.add(sps[i - 4]);
+            }
+        }
+
+        return daysgridPanel;
     }
 
     @Override
@@ -241,6 +296,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
         }
+        shiftDayLabels();
     }
 
     @Override
@@ -266,47 +322,44 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         } else {
             Date weekend = (Date) weekendSp.getValue();
 
-            if (weekend.getDay() != 0) {
-                GeneralFrame.errMessageBox("Error:", "Date entered is not Sunday!");
-            } else {
-                try {
-                    Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
-                    ts.setXorderId(id != null && id > 0 ? id : null);
-                    id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
-                    ts.setXemployeeId(id != null && id > 0 ? id : null);
-                    id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
-                    ts.setXsiteId(id != null && id > 0 ? id : null);
-                    ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
-                    ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
-                    ts.setImage(imageData);
-                    setDbObject(ts = (Xtimesheet) DashBoard.getExchanger().saveDbObject(ts));
-                    for (int d = 0; d < 7; d++) {
-                        double norm, over, dbl;
-                        if (dayWages[d] == null) {
-                            dayWages[d] = new Xwage(null);
-                            dayWages[d].setXwageId(0);
-                            dayWages[d].setNew(true);
-                        }
-                        dayWages[d].setXtimesheetId(ts.getXtimesheetId());
-                        dayWages[d].setDay(new java.sql.Date(weekend.getTime() - (7 - d) * 1000 * 3600 * 24));
-                        dayWages[d].setNormaltime(norm = (Double) sps[d * 4].getValue());
-                        dayWages[d].setOvertime(over = (Double) sps[d * 4 + 1].getValue());
-                        dayWages[d].setDoubletime(dbl = (Double) sps[d * 4 + 2].getValue());
-                        dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
-                        dayWages[d].setStoppeddetails(detailsFlds[d].getText());
-                        if (norm + over + dbl > 24) {
-                            GeneralFrame.errMessageBox("Error:", "Total day time exceeds 24h!");
-                            ((JSpinner.DefaultEditor) sps[d * 4].getEditor()).getTextField().requestFocus();
-                            return false;
-                        } else {
-                            dayWages[d] = (Xwage) DashBoard.getExchanger().saveDbObject(dayWages[d]);
-                        }
+            try {
+                Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
+                ts.setXorderId(id != null && id > 0 ? id : null);
+                id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
+                ts.setXemployeeId(id != null && id > 0 ? id : null);
+                id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
+                ts.setXsiteId(id != null && id > 0 ? id : null);
+                ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
+                ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
+                ts.setImage(imageData);
+                setDbObject(ts = (Xtimesheet) DashBoard.getExchanger().saveDbObject(ts));
+                for (int d = 0; d < 7; d++) {
+                    double norm, over, dbl;
+                    if (dayWages[d] == null) {
+                        dayWages[d] = new Xwage(null);
+                        dayWages[d].setXwageId(0);
+                        dayWages[d].setNew(true);
                     }
-                    return true;
-                } catch (Exception ex) {
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    dayWages[d].setXtimesheetId(ts.getXtimesheetId());
+                    dayWages[d].setDay(new java.sql.Date(weekend.getTime() - (7 - d) * 1000 * 3600 * 24));
+                    dayWages[d].setNormaltime(norm = (Double) sps[d * 4].getValue());
+                    dayWages[d].setOvertime(over = (Double) sps[d * 4 + 1].getValue());
+                    dayWages[d].setDoubletime(dbl = (Double) sps[d * 4 + 2].getValue());
+                    dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
+                    dayWages[d].setStoppeddetails(detailsFlds[d].getText());
+                    if (norm + over + dbl > 24) {
+                        GeneralFrame.errMessageBox("Error:", "Total day time exceeds 24h!");
+                        ((JSpinner.DefaultEditor) sps[d * 4].getEditor()).getTextField().requestFocus();
+                        return false;
+                    } else {
+                        dayWages[d] = (Xwage) DashBoard.getExchanger().saveDbObject(dayWages[d]);
+                    }
                 }
+                return true;
+            } catch (Exception ex) {
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
+//            }
         }
         return false;
     }
@@ -331,7 +384,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 //            }
 //        };
 //    }
-
     private ActionListener getSiteRefChangedaCtion() {
         return new AbstractAction() {
 
@@ -397,46 +449,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         };
     }
 
-    private Component getDaysPanel() {
-
-        String[] days = new String[]{"", "Monday", "Tuesday", "Wednesday",
-            "Thursday", "Friday", "Saturday", "Sunday"};
-        String[] headers = new String[]{"Normal Time", "Overtime", "Double Time", "Deduct"};
-        JPanel daysgridPanel = new JPanel(new BorderLayout());
-
-        daysgridPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Daily Time sheet"));
-        JPanel uppanel = new JPanel(new BorderLayout());
-
-        daysgridPanel.add(uppanel, BorderLayout.NORTH);
-        JPanel leftPanel = new JPanel(new GridLayout(8, 1));
-
-        uppanel.add(leftPanel, BorderLayout.WEST);
-        JPanel centralPanel = new JPanel(new GridLayout(8, 4));
-        uppanel.add(centralPanel, BorderLayout.CENTER);
-
-        JPanel rightPanel = new JPanel(new GridLayout(8, 1));
-        uppanel.add(rightPanel, BorderLayout.EAST);
-
-        rightPanel.add(new JLabel("Details"));
-        for (JTextField tf : detailsFlds) {
-            rightPanel.add(tf);
-        }
-
-        for (String day : days) {
-            leftPanel.add(new JLabel(day, SwingConstants.RIGHT));
-        }
-
-        for (int i = 0; i < 32; i++) {
-            if (i < 4) {
-                centralPanel.add(new JLabel(headers[i], SwingConstants.CENTER));
-            } else {
-                centralPanel.add(sps[i - 4]);
-            }
-        }
-
-        return daysgridPanel;
-    }
-
     private ChangeListener getDeductListener() {
         return new ChangeListener() {
 
@@ -472,5 +484,14 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 return -1;
             }
         };
+    }
+
+    private void shiftDayLabels() {
+        Date weekend = (Date) weekendSp.getValue();
+        int d = weekend.getDay();
+        for (int i = 0; i < 7; i++) {
+            daysLabels[i].setText(days[d++]);
+            d = (d >= 7 ? 0 : d);
+        }
     }
 }

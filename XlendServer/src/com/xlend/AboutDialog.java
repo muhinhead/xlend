@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -37,6 +38,15 @@ public class AboutDialog extends PopupDialog {
                 dispose();
             }
         });
+        
+        JLabel version = new JLabel("Version 0.22");
+        version.setBounds(270, 10, version.getPreferredSize().width, version.getPreferredSize().height);
+        main.add(version);
+        
+        JLabel devBy = new JLabel("Nick Mukhin (mukhin.nick@gmail.com) (c) 2012");
+        devBy.setBounds(41, 110, devBy.getPreferredSize().width, devBy.getPreferredSize().height);
+        main.add(devBy);
+        
         closeBtn.setBounds(290, 170,
                 closeBtn.getPreferredSize().width,
                 closeBtn.getPreferredSize().height);

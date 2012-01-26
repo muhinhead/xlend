@@ -26,6 +26,7 @@ import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Vector;
+import java.util.concurrent.Exchanger;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -488,6 +489,11 @@ public class XlendWorks {
         return 0;
     }
 
+    public static ComboItem[] loadConsumeInvNumbersOnSupplier(IMessageSender exchanger, int id) {
+        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4LOOKUP.replace("#", "" + id));
+    }
+
+    
     public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
         return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", "" + id));
     }

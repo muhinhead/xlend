@@ -54,7 +54,7 @@ public abstract class RecordEditPanel extends JPanel {
 
     protected void organizePanels(String[] titles, JComponent[] edits, HashSet<JComponent> except) {
         int diff = (except == null ? 0 : except.size());
-        organizePanels(titles.length-diff, edits.length-diff);
+        organizePanels(titles.length - diff, edits.length - diff);
         labels = createLabelsArray(titles);
         for (int i = 0; i < labels.length; i++) {
             if (except == null || !except.contains(edits[i])) {
@@ -168,6 +168,19 @@ public abstract class RecordEditPanel extends JPanel {
         return ans;
     }
 
+    protected JComponent getGridPanel(JComponent[] comps, int ceils) {
+        ceils = (comps.length > ceils ? comps.length : ceils);
+        JPanel ans = new JPanel(new GridLayout(1, ceils));
+        for (int i = 0; i < ceils; i++) {
+            if (i < comps.length) {
+                ans.add(comps[i]);
+            } else {
+                ans.add(new JPanel());
+            }
+        }
+        return ans;
+    }
+
     protected Integer getSelectedCbItem(JComboBox cb) {
         ComboItem ci = (ComboItem) cb.getSelectedItem();
         return ci == null ? null : ci.getId();
@@ -183,5 +196,4 @@ public abstract class RecordEditPanel extends JPanel {
         }
         return false;
     }
-
 }

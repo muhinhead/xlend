@@ -194,6 +194,8 @@ public class Selects {
             + "and con.requester_id=req.xemployee_id";      
     public static final String SELECT_CONSUMABLES4BREAKDOWN =
             "Select xconsume_id, 'Invoice Nr:'+invoicenumber, partnumber from xconsume where xmachine_id = #";
+    public static final String SELECT_CONSUMABLES4LOOKUP =
+            "Select xconsume_id, invoicenumber from xconsume where xsupplier_id = #";
     public static final String SELECT_FROM_BREAKDOWNS = 
             "Select xbreakdown_id \"Id\", mac.classify+mac.tmvnr \"Machine\", s.name \"Site\", bd.repairdate \"Repair Date\" "
             + "from xbreakdown bd, xmachine mac, xsite s where bd.xmachine_id=mac.xmachine_id and s.xsite_id=bd.xsite_id";
@@ -207,6 +209,14 @@ public class Selects {
             + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id group by xwagesum.xwagesum_id,weekend";//and xwagesumitem.xemployee_id=xemployee.xemployee_id";
     public static String NOTFIXED_TIMESHEETDATES = 
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
+    public static String SELECT_FROM_CREDITORS =
+            "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
+            + "invoicenumber \"Invoice Nr.\", invoiceammount \"Invoice Ammt.\", "
+            + "paid \"Paid\", outstandammount \"Outstanding Ammt.\", paidfrom \"Paid from\" "
+            + "from xcreditor, xsupplier, xconsume "
+            + "where xsupplier.xsupplier_id=xcreditor.xsupplier_id "
+            + "and xconsume.xconsume_id=xconsume.xconsume_id";
+    
     
     public static String[] getStringArray(String select) {
         try {

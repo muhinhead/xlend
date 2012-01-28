@@ -8,38 +8,44 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xpaidmethod extends DbObject  {
+public class Cbitems extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xpaidmethodId = null;
-    private String method = null;
+    private Integer cbitemId = null;
+    private String name = null;
+    private Integer id = null;
+    private String val = null;
 
-    public Xpaidmethod(Connection connection) {
-        super(connection, "xpaidmethod", "xpaidmethod_id");
-        setColumnNames(new String[]{"xpaidmethod_id", "method"});
+    public Cbitems(Connection connection) {
+        super(connection, "cbitems", "cbitem_id");
+        setColumnNames(new String[]{"cbitem_id", "name", "id", "val"});
     }
 
-    public Xpaidmethod(Connection connection, Integer xpaidmethodId, String method) {
-        super(connection, "xpaidmethod", "xpaidmethod_id");
-        setNew(xpaidmethodId.intValue() <= 0);
-//        if (xpaidmethodId.intValue() != 0) {
-            this.xpaidmethodId = xpaidmethodId;
+    public Cbitems(Connection connection, Integer cbitemId, String name, Integer id, String val) {
+        super(connection, "cbitems", "cbitem_id");
+        setNew(cbitemId.intValue() <= 0);
+//        if (cbitemId.intValue() != 0) {
+            this.cbitemId = cbitemId;
 //        }
-        this.method = method;
+        this.name = name;
+        this.id = id;
+        this.val = val;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xpaidmethod xpaidmethod = null;
+        Cbitems cbitems = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpaidmethod_id,method FROM xpaidmethod WHERE xpaidmethod_id=" + id;
+        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems WHERE cbitem_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xpaidmethod = new Xpaidmethod(getConnection());
-                xpaidmethod.setXpaidmethodId(new Integer(rs.getInt(1)));
-                xpaidmethod.setMethod(rs.getString(2));
-                xpaidmethod.setNew(false);
+                cbitems = new Cbitems(getConnection());
+                cbitems.setCbitemId(new Integer(rs.getInt(1)));
+                cbitems.setName(rs.getString(2));
+                cbitems.setId(new Integer(rs.getInt(3)));
+                cbitems.setVal(rs.getString(4));
+                cbitems.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +54,7 @@ public class Xpaidmethod extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xpaidmethod;
+        return cbitems;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +63,28 @@ public class Xpaidmethod extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xpaidmethod ("+(getXpaidmethodId().intValue()!=0?"xpaidmethod_id,":"")+"method) values("+(getXpaidmethodId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO cbitems ("+(getCbitemId().intValue()!=0?"cbitem_id,":"")+"name,id,val) values("+(getCbitemId().intValue()!=0?"?,":"")+"?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXpaidmethodId().intValue()!=0) {
-                 ps.setObject(++n, getXpaidmethodId());
+             if (getCbitemId().intValue()!=0) {
+                 ps.setObject(++n, getCbitemId());
              }
-             ps.setObject(++n, getMethod());
+             ps.setObject(++n, getName());
+             ps.setObject(++n, getId());
+             ps.setObject(++n, getVal());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXpaidmethodId().intValue()==0) {
-             stmt = "SELECT max(xpaidmethod_id) FROM xpaidmethod";
+         if (getCbitemId().intValue()==0) {
+             stmt = "SELECT max(cbitem_id) FROM cbitems";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXpaidmethodId(new Integer(rs.getInt(1)));
+                     setCbitemId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +110,14 @@ public class Xpaidmethod extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xpaidmethod " +
-                    "SET method = ?" + 
-                    " WHERE xpaidmethod_id = " + getXpaidmethodId();
+                    "UPDATE cbitems " +
+                    "SET name = ?, id = ?, val = ?" + 
+                    " WHERE cbitem_id = " + getCbitemId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getMethod());
+                ps.setObject(1, getName());
+                ps.setObject(2, getId());
+                ps.setObject(3, getVal());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,40 +130,31 @@ public class Xpaidmethod extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xdieselpchs.exists(getConnection(),"xpaidmethod_id = " + getXpaidmethodId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xdieselpchs_xpaidmethod_fk");
-        }
-        if (Xconsume.exists(getConnection(),"xpaidmethod_id = " + getXpaidmethodId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xconsume_xpaidmethod_fk");
-        }
-        if (getTriggers() != null) {
-            getTriggers().beforeDelete(this);
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xpaidmethod " +
-                "WHERE xpaidmethod_id = " + getXpaidmethodId();
+                "DELETE FROM cbitems " +
+                "WHERE cbitem_id = " + getCbitemId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXpaidmethodId(new Integer(-getXpaidmethodId().intValue()));
+        setCbitemId(new Integer(-getCbitemId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXpaidmethodId().intValue() < 0);
+        return (getCbitemId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpaidmethod_id,method FROM xpaidmethod " +
+        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -163,7 +164,7 @@ public class Xpaidmethod extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xpaidmethod(con,new Integer(rs.getInt(1)),rs.getString(2)));
+                lst.add(dbObj=new Cbitems(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3)),rs.getString(4)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -173,10 +174,10 @@ public class Xpaidmethod extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xpaidmethod[] objects = new Xpaidmethod[lst.size()];
+        Cbitems[] objects = new Cbitems[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xpaidmethod xpaidmethod = (Xpaidmethod) lst.get(i);
-            objects[i] = xpaidmethod;
+            Cbitems cbitems = (Cbitems) lst.get(i);
+            objects[i] = cbitems;
         }
         return objects;
     }
@@ -188,7 +189,7 @@ public class Xpaidmethod extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpaidmethod_id FROM xpaidmethod " +
+        String stmt = "SELECT cbitem_id FROM cbitems " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -206,31 +207,51 @@ public class Xpaidmethod extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXpaidmethodId() + getDelimiter();
+    //    return getCbitemId() + getDelimiter();
     //}
 
-    public Integer getXpaidmethodId() {
-        return xpaidmethodId;
+    public Integer getCbitemId() {
+        return cbitemId;
     }
 
-    public void setXpaidmethodId(Integer xpaidmethodId) throws ForeignKeyViolationException {
-        setWasChanged(this.xpaidmethodId != null && this.xpaidmethodId != xpaidmethodId);
-        this.xpaidmethodId = xpaidmethodId;
-        setNew(xpaidmethodId.intValue() == 0);
+    public void setCbitemId(Integer cbitemId) throws ForeignKeyViolationException {
+        setWasChanged(this.cbitemId != null && this.cbitemId != cbitemId);
+        this.cbitemId = cbitemId;
+        setNew(cbitemId.intValue() == 0);
     }
 
-    public String getMethod() {
-        return method;
+    public String getName() {
+        return name;
     }
 
-    public void setMethod(String method) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.method != null && !this.method.equals(method));
-        this.method = method;
+    public void setName(String name) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.name != null && !this.name.equals(name));
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.id != null && !this.id.equals(id));
+        this.id = id;
+    }
+
+    public String getVal() {
+        return val;
+    }
+
+    public void setVal(String val) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.val != null && !this.val.equals(val));
+        this.val = val;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getXpaidmethodId();
-        columnValues[1] = getMethod();
+        Object[] columnValues = new Object[4];
+        columnValues[0] = getCbitemId();
+        columnValues[1] = getName();
+        columnValues[2] = getId();
+        columnValues[3] = getVal();
         return columnValues;
     }
 
@@ -247,10 +268,16 @@ public class Xpaidmethod extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXpaidmethodId(Integer.parseInt(flds[0]));
+            setCbitemId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXpaidmethodId(null);
+            setCbitemId(null);
         }
-        setMethod(flds[1]);
+        setName(flds[1]);
+        try {
+            setId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setId(null);
+        }
+        setVal(flds[3]);
     }
 }

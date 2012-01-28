@@ -59,7 +59,7 @@ public class SitesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Site") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,7 +82,7 @@ public class SitesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Site") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -36,6 +36,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
@@ -77,6 +78,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JComboBox positionCB;
     private JTextField taxnumField;
     private ImageIcon currentPicture2;
+    private JCheckBox deceasedCb, dismissedCb, abscondedCb;
+    
     protected JPanel picPanel2;
     protected JPopupMenu picturePopMenu2;
     protected byte[] imageData2;
@@ -99,7 +102,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             "Alternative Number 2:", " Relation to person:",
             "Home Address:", "Work Position:",
             "Contract Duration:", "Contract Start Date:", "Contract End Date:",
-            "Rate of Pay:"
+            "Rate of Pay (R per hour):",
+            ""
         };
         labels = createLabelsArray(titles);
         ComboItem[] durations = new ComboItem[]{
@@ -143,7 +147,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         setEndDateVisible(true);
 
         idField.setEditable(false);
-        organizePanels(13, 13);
+        organizePanels(15, 15);
         for (int i = 0; i < 6; i++) {
             lblPanel.add(labels[i]);
             if (i == 0 || i == 1 || i == 4 || i == 6) {
@@ -191,6 +195,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         alt3.add(labels[16]);
         alt3.add(edits[16]);
         editPanel.add(alt3);
+        
+        lblPanel.add(labels[17]);
+        editPanel.add(getGridPanel(edits[17], 4));
+        
+        editPanel.add(getGridPanel(new JComponent[]{
+            deceasedCb = new JCheckBox("Deceased"),
+            dismissedCb = new JCheckBox("Dismissed"),
+            abscondedCb = new JCheckBox("Absconded")
+        }));
+        
         contractLenCB.setAction(new AbstractAction() {
 
             @Override
@@ -260,6 +274,15 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             if (emp.getContractLen() != null) {
                 setEndDateVisible(emp.getContractLen() > 0);
             }
+            if (emp.getDeceased()!=null && emp.getDeceased()==1) {
+                deceasedCb.setSelected(true);
+            }
+            if (emp.getDismissed()!=null && emp.getDismissed()==1) {
+                dismissedCb.setSelected(true);
+            }
+            if (emp.getAbsconded()!=null && emp.getAbsconded()==1) {
+                abscondedCb.setSelected(true);
+            }
             imageData = (byte[]) emp.getPhoto();
             setImage(imageData);
             imageData2 = (byte[]) emp.getPhoto2();
@@ -322,6 +345,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setXpositionId(null);
                 }
+                emp.setDeceased(deceasedCb.isSelected()?1:0);
+                emp.setDismissed(dismissedCb.isSelected()?1:0);
+                emp.setAbsconded(abscondedCb.isSelected()?1:0);
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));

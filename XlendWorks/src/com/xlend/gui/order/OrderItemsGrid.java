@@ -65,7 +65,7 @@ class OrderItemsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Item") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +89,7 @@ class OrderItemsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Item") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

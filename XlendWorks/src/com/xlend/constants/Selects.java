@@ -211,12 +211,12 @@ public class Selects {
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static String SELECT_FROM_CREDITORS =
             "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
-            + "invoicenumber \"Invoice Nr.\", invoiceammount \"Invoice Ammt.\", "
-            + "paid \"Paid\", outstandammount \"Outstanding Ammt.\", paidfrom \"Paid from\" "
-            + "from xcreditor, xsupplier, xconsume "
-            + "where xsupplier.xsupplier_id=xcreditor.xsupplier_id "
-            + "and xconsume.xconsume_id=xconsume.xconsume_id";
-    
+            + "(select invoicenumber from xconsume where xconsume_id=xcreditor.xconsume_id) \"Invoice Nr.\", invoiceammount \"Invoice Ammt.\", "
+            + "paid \"Paid\", "//outstandammount \"Outstanding Ammt.\", "
+            + "cbitems.val \"Paid from\" "
+            + "from xcreditor, xsupplier, cbitems "
+            + "where xsupplier.xsupplier_id=xcreditor.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
+   
     
     public static String[] getStringArray(String select) {
         try {

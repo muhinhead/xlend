@@ -5,6 +5,7 @@ import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
+import com.xlend.orm.Xcreditor;
 import com.xlend.orm.Xemployee;
 //import com.xlend.orm.Xlicensestat;
 import com.xlend.orm.Xmachtype;
@@ -493,7 +494,6 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4LOOKUP.replace("#", "" + id));
     }
 
-    
     public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
         return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", "" + id));
     }
@@ -541,4 +541,25 @@ public class XlendWorks {
         }
         return ans;
     }
+
+    public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id, Xcreditor xcred) {
+        double sum = 0.0;
+        int xcred_id = (xcred != null ? xcred.getXcreditorId() : 0);
+        try {
+            DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
+                    "xsupplier_id="+xsupplier_id+" and xcreditor_id!="+xcred_id+" and (paid is null or not paid)",null);
+            for (DbObject rec : recs) {
+                Xcreditor c = (Xcreditor) rec;
+                sum += c.getInvoiceammount();        
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return sum;
+    }
+
+    public static ComboItem[] loadPaidFromCodes(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select id,val from cbitems where name='paidfrom'");
+    }
+    
 }

@@ -38,7 +38,7 @@ public class CreditorsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-       return new AbstractAction("Add Supplier") {
+       return new AbstractAction("Add Creditor") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -58,7 +58,7 @@ public class CreditorsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-       return new AbstractAction("Edit Breakdown") {
+       return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,7 +81,7 @@ public class CreditorsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Creditor") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +89,7 @@ public class CreditorsGrid extends GeneralGridPanel {
                 try {
                     Xcreditor xcred = (Xcreditor) exchanger.loadDbObjectOnID(Xcreditor.class, id);
                     if (xcred !=null && GeneralFrame.yesNo("Attention!", 
-                            "Do you want to delete breakdown?") == JOptionPane.YES_OPTION) {
+                            "Do you want to delete this entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xcred);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }

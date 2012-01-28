@@ -69,7 +69,7 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit RFQ") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,7 +93,7 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Order") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -43,7 +43,7 @@ public class UsersGrid extends GeneralGridPanel {
     }
 
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit User") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -67,7 +67,7 @@ public class UsersGrid extends GeneralGridPanel {
     }
 
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete User") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

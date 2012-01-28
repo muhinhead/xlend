@@ -183,7 +183,7 @@ public abstract class RecordEditPanel extends JPanel {
 
     protected Integer getSelectedCbItem(JComboBox cb) {
         ComboItem ci = (ComboItem) cb.getSelectedItem();
-        return ci == null ? null : ci.getId();
+        return ci == null || ci.getId()==0 ? null : ci.getId();
     }
 
     protected boolean saveDbRecord(DbObject dbOb, boolean isNew) {

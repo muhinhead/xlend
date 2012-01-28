@@ -38,7 +38,7 @@ public class ClientsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add client") {
+        return new AbstractAction("Add Client") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +59,7 @@ public class ClientsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Client") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +83,7 @@ public class ClientsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Client") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {

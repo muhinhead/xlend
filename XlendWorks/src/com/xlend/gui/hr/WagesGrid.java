@@ -51,7 +51,7 @@ public class WagesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Wage List") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -74,7 +74,7 @@ public class WagesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Wage List") {
+        return new AbstractAction("Delete Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,7 +82,7 @@ public class WagesGrid extends GeneralGridPanel {
                 try {
                     Xwagesum xs = (Xwagesum) exchanger.loadDbObjectOnID(Xwagesum.class, id);
                     if (xs !=null && GeneralFrame.yesNo("Attention!", 
-                            "Do you want to delete wage list?") == JOptionPane.YES_OPTION) {
+                            "Do you want to delete this entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xs);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }

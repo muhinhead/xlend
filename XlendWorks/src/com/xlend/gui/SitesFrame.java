@@ -1,4 +1,4 @@
-package com.xlend.gui.work;
+package com.xlend.gui;
 
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
@@ -6,6 +6,8 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.gui.site.BreakdownsGrid;
 import com.xlend.gui.site.ConsumablesGrid;
 import com.xlend.gui.site.DieselPurchaseGrid;
+import com.xlend.gui.work.DieselCardsGrid;
+import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -22,21 +24,33 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel dieselIsissPanel = null;
     private GeneralGridPanel consumablesPanel = null;
     private GeneralGridPanel breakdownsPanel;
+    private static String[] sheetList = new String[]{
+        "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", "Fuel"
+    };
 
     public SitesFrame(IMessageSender exch) {
         super("Sites", exch);
     }
 
     @Override
+    protected String[] getSheetList() {
+        return sheetList;
+    }
+
+    public static String[] sheets() {
+        return sheetList;
+    }
+
+    @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
-        workTab.add(getSitesPanel(), "Sites");
-        workTab.add(getDieselPrchsPanel(), "Diesel Rurchases");
-        workTab.add(getDieselCardsPanel(), "Diesel Issuing");
-        workTab.add(getConsumablesPanel(), "Consumables");
-        workTab.add(getBreakdownsPanel(), "Breakdowns");
-        workTab.add(new JPanel(), "Fuel");
+        workTab.add(getSitesPanel(), sheets()[0]);
+        workTab.add(getDieselPrchsPanel(), sheets()[1]);
+        workTab.add(getDieselCardsPanel(), sheets()[2]);
+        workTab.add(getConsumablesPanel(), sheets()[3]);
+        workTab.add(getBreakdownsPanel(), sheets()[4]);
+        workTab.add(new JPanel(), sheets()[5]);
         return workTab;
     }
 
@@ -63,7 +77,7 @@ public class SitesFrame extends GeneralFrame {
         }
         return disprchsPanel;
     }
-    
+
     private JPanel getDieselCardsPanel() {
         if (dieselIsissPanel == null) {
             try {
@@ -75,7 +89,7 @@ public class SitesFrame extends GeneralFrame {
         }
         return dieselIsissPanel;
     }
-    
+
     private JPanel getConsumablesPanel() {
         if (consumablesPanel == null) {
             try {
@@ -87,7 +101,7 @@ public class SitesFrame extends GeneralFrame {
         }
         return consumablesPanel;
     }
-    
+
     private JPanel getBreakdownsPanel() {
         if (breakdownsPanel == null) {
             try {
@@ -99,5 +113,4 @@ public class SitesFrame extends GeneralFrame {
         }
         return breakdownsPanel;
     }
-    
 }

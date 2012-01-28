@@ -70,6 +70,8 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         this("Works", exch);
     }
 
+    protected abstract String[] getSheetList();
+    
     public void setLookAndFeel(String lf) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException,
             UnsupportedLookAndFeelException {

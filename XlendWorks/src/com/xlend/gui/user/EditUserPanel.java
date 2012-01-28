@@ -9,8 +9,6 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -43,7 +41,7 @@ public class EditUserPanel extends ProfilePanel {
         String[] labels = new String[]{
             "",
             "Login:", "Password:", "Fax:", "Web Address:", "Office Hours:",
-            "Manager:", "Admin Clerk:"};
+            "Manager:", "Clerk:"};
         JComponent[] edits = new JComponent[]{
             new JPanel(),
             loginField = new JTextField(),

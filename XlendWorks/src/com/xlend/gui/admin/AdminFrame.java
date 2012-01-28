@@ -23,7 +23,7 @@ public class AdminFrame extends GeneralFrame {
 
     protected JTabbedPane getMainPanel() {
         JTabbedPane admTab = new JTabbedPane();
-        admTab.add(getUsersPanel(), "Users");
+        admTab.add(getUsersPanel(), getSheetList()[0]);
         return admTab;
     }
 
@@ -37,5 +37,10 @@ public class AdminFrame extends GeneralFrame {
             }
         }
         return usersPanel;
+    }
+
+    @Override
+    protected String[] getSheetList() {
+        return new String[] {"Users"};
     }
 }

@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-class DieselCardsGrid extends GeneralGridPanel {
+public class DieselCardsGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 

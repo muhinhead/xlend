@@ -1,8 +1,8 @@
 package com.xlend.gui;
 
 import com.xlend.gui.admin.AdminFrame;
-import com.xlend.gui.work.DocFrame;
-import com.xlend.gui.work.SitesFrame;
+import com.xlend.orm.Sheet;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.NoFrameButton;
@@ -73,6 +73,47 @@ public class DashBoard extends JFrame {
     private GeneralFrame adminFrame = null;
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
+
+    private void updateSheetList() {
+        updateSheetList("DOCS", DocFrame.sheets());
+        updateSheetList("SITES", SitesFrame.sheets());
+        updateSheetList("HR", HRFrame.sheets());
+//        updateSheetList("REPORTS", ReportsFrame.sheets());
+        updateSheetList("FLEET", FleetFrame.sheets());
+    }
+
+    private void updateSheetList(String parentName, String[] sheetNames) {
+        try {
+            DbObject[] sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", null);
+            Sheet sh;
+            String[] names;
+            int papa_id;
+            if (sheets.length == 0) {
+                sh = new Sheet(null);
+                sh.setSheetname(parentName);
+                sh.setSheetId(0);
+                sh.setNew(true);
+                sh = (Sheet) exchanger.saveDbObject(sh);
+                papa_id = sh.getSheetId();
+            } else {
+                sh = (Sheet) sheets[0];
+                papa_id = sh.getSheetId();
+            }
+            sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
+            if (sheets.length == 0) {
+                for (String s : sheetNames) {
+                    sh = new Sheet(null);
+                    sh.setSheetname(s);
+                    sh.setParentId(papa_id);
+                    sh.setSheetId(0);
+                    sh.setNew(true);
+                    exchanger.saveDbObject(sh);
+                }
+            }
+        } catch (Exception ex) {
+            XlendWorks.log(ex);
+        }
+    }
 
     private class WinListener extends WindowAdapter {
 
@@ -289,6 +330,7 @@ public class DashBoard extends JFrame {
         setLocation(screenSize.width - getWidth() - 10, 10);
         setResizable(false);
         setVisible(true);
+        updateSheetList();
     }
 
     public void setVisible(boolean show) {

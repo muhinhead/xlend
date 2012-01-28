@@ -11,7 +11,9 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
@@ -37,6 +39,16 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
             xsite = (Xsite) exchanger.loadDbObjectOnID(
                     Xsite.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
         }
+    }
+
+    protected void init(AbstractAction[] acts, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
+        AbstractAction[] superActs = new AbstractAction[acts.length + 1];
+        for (int i = 0; i < acts.length; i++) {
+            superActs[i] = acts[i];
+        }
+        superActs[acts.length] = deEstablishAction();
+        super.init(superActs, tableBody, maxWidths);
+        enableActions();
     }
 
     @Override
@@ -68,7 +80,7 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Machine on Site") {
+        return new AbstractAction("Edit Entry") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -92,6 +104,29 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
+        return new AbstractAction("Delete Entry") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                try {
+                    Xmachineonsite xsitemachine = (Xmachineonsite) exchanger.loadDbObjectOnID(Xmachineonsite.class, id);
+                    if (xsitemachine != null && GeneralFrame.yesNo("Attention!",
+                            "Do you want to delete machine on site?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xsitemachine);
+                        GeneralFrame.updateGrid(exchanger, getTableView(),
+                                getTableDoc(), getSelect(), null);
+                    }
+                } catch (RemoteException ex) {
+                    ex.printStackTrace();
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
+    }
+
+//    @Override
+    protected AbstractAction deEstablishAction() {
         return new AbstractAction("De-establish from site") {
 
             @Override
@@ -107,11 +142,15 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
                     JSpinner dtSp = new SelectedDateSpinner();
                     dtSp.setEditor(new JSpinner.DateEditor(dtSp, "dd/MM/yyyy"));
                     Util.addFocusSelectAllAction(dtSp);
+                    dtSp.setValue(xsitemachine.getDeestdate() == null ? 
+                            Calendar.getInstance().getTime() : xsitemachine.getDeestdate());
                     new DeEstablishMachineDate("De-establish machine from site", dtSp);
                     if (DeEstablishMachineDate.okPressed) {
                         java.util.Date dt = (java.util.Date) dtSp.getValue();
                         xsitemachine.setDeestdate(new java.sql.Date(dt.getTime()));
                         exchanger.saveDbObject(xsitemachine);
+                        GeneralFrame.updateGrid(exchanger, getTableView(),
+                                getTableDoc(), getSelect(), null);
                     }
                 } catch (Exception ex) {
                     XlendWorks.log(ex);

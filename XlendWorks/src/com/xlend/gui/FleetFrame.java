@@ -14,20 +14,38 @@ import javax.swing.JTabbedPane;
  */
 public class FleetFrame extends GeneralFrame {
 
+    /**
+     * @param aSheetList the sheetList to set
+     */
+    public static void setSheetList(String[] aSheetList) {
+        sheetList = aSheetList;
+    }
+
     private GeneralGridPanel machinesPanel;
     private GeneralGridPanel trackPanel;
-
+    private static String[] sheetList = new String[] {
+        "Machine Files","Truck Files","Low-Beds","Pool Vehicles","Company Vehicles"};
+    
     public FleetFrame(IMessageSender exch) {
         super("Fleet", exch);
     }
 
+    @Override
+    protected String[] getSheetList() {
+        return sheetList;
+    }    
+    
+    public static String[] sheets() {
+        return sheetList;
+    }
+    
     protected JTabbedPane getMainPanel() {
         JTabbedPane fleetTab = new JTabbedPane();
-        fleetTab.add(getMachinesPanel(), "Machine Files");
-        fleetTab.add(getTrackPanel(), "Truck Files");
-        fleetTab.add(new JPanel(), "Low-Beds");
-        fleetTab.add(new JPanel(), "Pool Vehicles");
-        fleetTab.add(new JPanel(), "Company Vehicles");
+        fleetTab.add(getMachinesPanel(), sheets()[0]);
+        fleetTab.add(getTrackPanel(), sheets()[1]);
+        fleetTab.add(new JPanel(), sheets()[2]);
+        fleetTab.add(new JPanel(), sheets()[3]);
+        fleetTab.add(new JPanel(), sheets()[4]);
         return fleetTab;
     }
 
@@ -54,4 +72,5 @@ public class FleetFrame extends GeneralFrame {
         }
         return trackPanel;
     }
+
 }

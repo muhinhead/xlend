@@ -4,6 +4,7 @@ import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 
 /**
@@ -20,9 +21,9 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         super();
         this.select = select;
         this.exchanger = exchanger;
-        init(readOnly?null:addAction(), 
-                readOnly?null:editAction(), 
-                readOnly?null:delAction(), exchanger.getTableBody(select), maxWidths);
+        init(new AbstractAction[]{readOnly ? null : addAction(),
+                    readOnly ? null : editAction(),
+                    readOnly ? null : delAction()}, exchanger.getTableBody(select), maxWidths);
     }
 
     protected abstract AbstractAction addAction();
@@ -30,6 +31,11 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
     protected abstract AbstractAction editAction();
 
     protected abstract AbstractAction delAction();
+
+    protected void init(AbstractAction[] acts, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
+        super.init(acts, tableBody, maxWidths);
+        enableActions();
+    }
 
     /**
      * @return the select
@@ -43,5 +49,10 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
      */
     public void setSelect(String select) {
         this.select = select;
+    }
+
+    protected void enableActions() {
+        boolean enableDelete = (XlendWorks.getCurrentUser().getManager() != null && XlendWorks.getCurrentUser().getManager() != 0);
+        getDelAction().setEnabled(enableDelete);
     }
 }

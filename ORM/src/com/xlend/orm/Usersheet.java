@@ -8,44 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Cbitems extends DbObject  {
+public class Usersheet extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer cbitemId = null;
-    private String name = null;
-    private Integer id = null;
-    private String val = null;
+    private Integer usersheetId = null;
+    private Integer profileId = null;
+    private Integer sheetId = null;
 
-    public Cbitems(Connection connection) {
-        super(connection, "cbitems", "cbitem_id");
-        setColumnNames(new String[]{"cbitem_id", "name", "id", "val"});
+    public Usersheet(Connection connection) {
+        super(connection, "usersheet", "usersheet_id");
+        setColumnNames(new String[]{"usersheet_id", "profile_id", "sheet_id"});
     }
 
-    public Cbitems(Connection connection, Integer cbitemId, String name, Integer id, String val) {
-        super(connection, "cbitems", "cbitem_id");
-        setNew(cbitemId.intValue() <= 0);
-//        if (cbitemId.intValue() != 0) {
-            this.cbitemId = cbitemId;
+    public Usersheet(Connection connection, Integer usersheetId, Integer profileId, Integer sheetId) {
+        super(connection, "usersheet", "usersheet_id");
+        setNew(usersheetId.intValue() <= 0);
+//        if (usersheetId.intValue() != 0) {
+            this.usersheetId = usersheetId;
 //        }
-        this.name = name;
-        this.id = id;
-        this.val = val;
+        this.profileId = profileId;
+        this.sheetId = sheetId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Cbitems cbitems = null;
+        Usersheet usersheet = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems WHERE cbitem_id=" + id;
+        String stmt = "SELECT usersheet_id,profile_id,sheet_id FROM usersheet WHERE usersheet_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                cbitems = new Cbitems(getConnection());
-                cbitems.setCbitemId(new Integer(rs.getInt(1)));
-                cbitems.setName(rs.getString(2));
-                cbitems.setId(new Integer(rs.getInt(3)));
-                cbitems.setVal(rs.getString(4));
-                cbitems.setNew(false);
+                usersheet = new Usersheet(getConnection());
+                usersheet.setUsersheetId(new Integer(rs.getInt(1)));
+                usersheet.setProfileId(new Integer(rs.getInt(2)));
+                usersheet.setSheetId(new Integer(rs.getInt(3)));
+                usersheet.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +51,7 @@ public class Cbitems extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return cbitems;
+        return usersheet;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +60,27 @@ public class Cbitems extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO cbitems ("+(getCbitemId().intValue()!=0?"cbitem_id,":"")+"name,id,val) values("+(getCbitemId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO usersheet ("+(getUsersheetId().intValue()!=0?"usersheet_id,":"")+"profile_id,sheet_id) values("+(getUsersheetId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getCbitemId().intValue()!=0) {
-                 ps.setObject(++n, getCbitemId());
+             if (getUsersheetId().intValue()!=0) {
+                 ps.setObject(++n, getUsersheetId());
              }
-             ps.setObject(++n, getName());
-             ps.setObject(++n, getId());
-             ps.setObject(++n, getVal());
+             ps.setObject(++n, getProfileId());
+             ps.setObject(++n, getSheetId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getCbitemId().intValue()==0) {
-             stmt = "SELECT max(cbitem_id) FROM cbitems";
+         if (getUsersheetId().intValue()==0) {
+             stmt = "SELECT max(usersheet_id) FROM usersheet";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setCbitemId(new Integer(rs.getInt(1)));
+                     setUsersheetId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +106,13 @@ public class Cbitems extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE cbitems " +
-                    "SET name = ?, id = ?, val = ?" + 
-                    " WHERE cbitem_id = " + getCbitemId();
+                    "UPDATE usersheet " +
+                    "SET profile_id = ?, sheet_id = ?" + 
+                    " WHERE usersheet_id = " + getUsersheetId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getName());
-                ps.setObject(2, getId());
-                ps.setObject(3, getVal());
+                ps.setObject(1, getProfileId());
+                ps.setObject(2, getSheetId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,31 +125,34 @@ public class Cbitems extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (getTriggers() != null) {
+            getTriggers().beforeDelete(this);
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM cbitems " +
-                "WHERE cbitem_id = " + getCbitemId();
+                "DELETE FROM usersheet " +
+                "WHERE usersheet_id = " + getUsersheetId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setCbitemId(new Integer(-getCbitemId().intValue()));
+        setUsersheetId(new Integer(-getUsersheetId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getCbitemId().intValue() < 0);
+        return (getUsersheetId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems " +
+        String stmt = "SELECT usersheet_id,profile_id,sheet_id FROM usersheet " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -164,7 +162,7 @@ public class Cbitems extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Cbitems(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3)),rs.getString(4)));
+                lst.add(dbObj=new Usersheet(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -174,10 +172,10 @@ public class Cbitems extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Cbitems[] objects = new Cbitems[lst.size()];
+        Usersheet[] objects = new Usersheet[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Cbitems cbitems = (Cbitems) lst.get(i);
-            objects[i] = cbitems;
+            Usersheet usersheet = (Usersheet) lst.get(i);
+            objects[i] = usersheet;
         }
         return objects;
     }
@@ -189,7 +187,7 @@ public class Cbitems extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id FROM cbitems " +
+        String stmt = "SELECT usersheet_id FROM usersheet " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -207,51 +205,47 @@ public class Cbitems extends DbObject  {
     }
 
     //public String toString() {
-    //    return getCbitemId() + getDelimiter();
+    //    return getUsersheetId() + getDelimiter();
     //}
 
-    public Integer getCbitemId() {
-        return cbitemId;
+    public Integer getUsersheetId() {
+        return usersheetId;
     }
 
-    public void setCbitemId(Integer cbitemId) throws ForeignKeyViolationException {
-        setWasChanged(this.cbitemId != null && this.cbitemId != cbitemId);
-        this.cbitemId = cbitemId;
-        setNew(cbitemId.intValue() == 0);
+    public void setUsersheetId(Integer usersheetId) throws ForeignKeyViolationException {
+        setWasChanged(this.usersheetId != null && this.usersheetId != usersheetId);
+        this.usersheetId = usersheetId;
+        setNew(usersheetId.intValue() == 0);
     }
 
-    public String getName() {
-        return name;
+    public Integer getProfileId() {
+        return profileId;
     }
 
-    public void setName(String name) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.name != null && !this.name.equals(name));
-        this.name = name;
+    public void setProfileId(Integer profileId) throws SQLException, ForeignKeyViolationException {
+        if (profileId!=null && !Userprofile.exists(getConnection(),"profile_id = " + profileId)) {
+            throw new ForeignKeyViolationException("Can't set profile_id, foreign key violation: usersheet_user_fk");
+        }
+        setWasChanged(this.profileId != null && !this.profileId.equals(profileId));
+        this.profileId = profileId;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getSheetId() {
+        return sheetId;
     }
 
-    public void setId(Integer id) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.id != null && !this.id.equals(id));
-        this.id = id;
-    }
-
-    public String getVal() {
-        return val;
-    }
-
-    public void setVal(String val) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.val != null && !this.val.equals(val));
-        this.val = val;
+    public void setSheetId(Integer sheetId) throws SQLException, ForeignKeyViolationException {
+        if (sheetId!=null && !Sheet.exists(getConnection(),"sheet_id = " + sheetId)) {
+            throw new ForeignKeyViolationException("Can't set sheet_id, foreign key violation: usersheet_sheet_fk");
+        }
+        setWasChanged(this.sheetId != null && !this.sheetId.equals(sheetId));
+        this.sheetId = sheetId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getCbitemId();
-        columnValues[1] = getName();
-        columnValues[2] = getId();
-        columnValues[3] = getVal();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getUsersheetId();
+        columnValues[1] = getProfileId();
+        columnValues[2] = getSheetId();
         return columnValues;
     }
 
@@ -268,16 +262,19 @@ public class Cbitems extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setCbitemId(Integer.parseInt(flds[0]));
+            setUsersheetId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setCbitemId(null);
+            setUsersheetId(null);
         }
-        setName(flds[1]);
         try {
-            setId(Integer.parseInt(flds[2]));
+            setProfileId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setId(null);
+            setProfileId(null);
         }
-        setVal(flds[3]);
+        try {
+            setSheetId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setSheetId(null);
+        }
     }
 }

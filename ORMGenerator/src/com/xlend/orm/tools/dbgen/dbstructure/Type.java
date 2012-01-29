@@ -29,6 +29,7 @@ public class Type {
         sql2java.put("varchar_ignorecase", "String");
         sql2java.put("longvarchar", "String");
         sql2java.put("varchar_ignorecase", "String");
+        sql2java.put("text", "String");
         sql2java.put("char", "String");
         sql2java.put("date", "Date");
         sql2java.put("time", "Timestamp");

@@ -44,13 +44,25 @@ public class DocFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
-        workTab.add(getContractsPanel(), sheets()[0]);
-        workTab.add(getQuotasPanel(), sheets()[1]);
-        workTab.add(getOrdersPanel(), sheets()[2]);
+        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+            workTab.add(getContractsPanel(), sheets()[0]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+            workTab.add(getQuotasPanel(), sheets()[1]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+            workTab.add(getOrdersPanel(), sheets()[2]);
+        }
 //        workTab.add(getSitesPanel(), "Sites");
-        workTab.add(getClientsPanel(), sheets()[3]);
-        workTab.add(getSuppliersPanel(), sheets()[4]);
-        workTab.add(getCreditorsPanel(), sheets()[5]);
+        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+            workTab.add(getClientsPanel(), sheets()[3]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+            workTab.add(getSuppliersPanel(), sheets()[4]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
+            workTab.add(getCreditorsPanel(), sheets()[5]);
+        }
         return workTab;
     }
 

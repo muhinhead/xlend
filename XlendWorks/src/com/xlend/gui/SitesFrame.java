@@ -45,12 +45,24 @@ public class SitesFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new JTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
-        workTab.add(getSitesPanel(), sheets()[0]);
-        workTab.add(getDieselPrchsPanel(), sheets()[1]);
-        workTab.add(getDieselCardsPanel(), sheets()[2]);
-        workTab.add(getConsumablesPanel(), sheets()[3]);
-        workTab.add(getBreakdownsPanel(), sheets()[4]);
-        workTab.add(new JPanel(), sheets()[5]);
+        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+            workTab.add(getSitesPanel(), sheets()[0]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+            workTab.add(getDieselPrchsPanel(), sheets()[1]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+            workTab.add(getDieselCardsPanel(), sheets()[2]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+            workTab.add(getConsumablesPanel(), sheets()[3]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+            workTab.add(getBreakdownsPanel(), sheets()[4]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
+            workTab.add(new JPanel(), sheets()[5]);
+        }
         return workTab;
     }
 

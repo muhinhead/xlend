@@ -7,11 +7,16 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.ProfilePanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.admin.EditSheetAccessDialog;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
@@ -39,18 +44,20 @@ public class EditUserPanel extends ProfilePanel {
     @Override
     protected void fillContent() {
         String[] labels = new String[]{
-            "",
+            //            "",
             "Login:", "Password:", "Fax:", "Web Address:", "Office Hours:",
-            "Manager:", "Clerk:"};
+            "Manager:", "Clerk:", ""};
         JComponent[] edits = new JComponent[]{
-            new JPanel(),
+            //            new JPanel(),
             loginField = new JTextField(),
             passwordField = new JPasswordField(),
             faxField = new JTextField(),
             webAddressField = new JTextField(),
             officeHoursField = new JTextField(),
             managerRB = new JRadioButton(),
-            salerRB = new JRadioButton(),};
+            salerRB = new JRadioButton(),
+            new JButton(detailedAccessAction())
+        };
         ButtonGroup bg = new ButtonGroup();
         bg.add(managerRB);
         bg.add(salerRB);
@@ -59,12 +66,29 @@ public class EditUserPanel extends ProfilePanel {
             editPanel.add(edits[i]);
             lblPanel.add(new JLabel(labels[i], SwingConstants.RIGHT));
         }
-        boolean isManager = (XlendWorks.getCurrentUser().getManager() != null 
+        boolean isManager = (XlendWorks.getCurrentUser().getManager() != null
                 && XlendWorks.getCurrentUser().getManager() == 1);
         loginField.setEnabled(isManager);
         passwordField.setEnabled(isManager);
         managerRB.setEnabled(isManager);
         salerRB.setEnabled(isManager);
+    }
+
+    private AbstractAction detailedAccessAction() {
+        return new AbstractAction("Document access...") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (getDbObject()==null) {
+                    JOptionPane.showMessageDialog(pagesdPanel, "Save user record first!", 
+                            "Attention!", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    new EditSheetAccessDialog("Document access", getDbObject());
+                    if (EditSheetAccessDialog.okPressed) {
+                    }
+                }
+            }
+        };
     }
 
     @Override

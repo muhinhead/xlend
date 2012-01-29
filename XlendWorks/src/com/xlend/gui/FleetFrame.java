@@ -20,12 +20,11 @@ public class FleetFrame extends GeneralFrame {
     public static void setSheetList(String[] aSheetList) {
         sheetList = aSheetList;
     }
-
     private GeneralGridPanel machinesPanel;
     private GeneralGridPanel trackPanel;
-    private static String[] sheetList = new String[] {
-        "Machine Files","Truck Files","Low-Beds","Pool Vehicles","Company Vehicles"};
-    
+    private static String[] sheetList = new String[]{
+        "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", "Company Vehicles"};
+
     public FleetFrame(IMessageSender exch) {
         super("Fleet", exch);
     }
@@ -33,19 +32,29 @@ public class FleetFrame extends GeneralFrame {
     @Override
     protected String[] getSheetList() {
         return sheetList;
-    }    
-    
+    }
+
     public static String[] sheets() {
         return sheetList;
     }
-    
+
     protected JTabbedPane getMainPanel() {
         JTabbedPane fleetTab = new JTabbedPane();
-        fleetTab.add(getMachinesPanel(), sheets()[0]);
-        fleetTab.add(getTrackPanel(), sheets()[1]);
-        fleetTab.add(new JPanel(), sheets()[2]);
-        fleetTab.add(new JPanel(), sheets()[3]);
-        fleetTab.add(new JPanel(), sheets()[4]);
+        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+            fleetTab.add(getMachinesPanel(), sheets()[0]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+            fleetTab.add(getTrackPanel(), sheets()[1]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+            fleetTab.add(new JPanel(), sheets()[2]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+            fleetTab.add(new JPanel(), sheets()[3]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+            fleetTab.add(new JPanel(), sheets()[4]);
+        }
         return fleetTab;
     }
 
@@ -72,5 +81,4 @@ public class FleetFrame extends GeneralFrame {
         }
         return trackPanel;
     }
-
 }

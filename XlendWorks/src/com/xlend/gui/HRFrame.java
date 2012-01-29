@@ -18,8 +18,8 @@ public class HRFrame extends GeneralFrame {
     private EmployeesGrid operatorsPanel;
     private TimeSheetsGrid weeklyWagesPanel;
     private WagesGrid wagesSummaryPanel;
-    private static String[] sheetList = new String[] {
-        "Employee Files","Time Sheets","Salaries","Wages","Diciplinary Actions","Rewards Program"};
+    private static String[] sheetList = new String[]{
+        "Employee Files", "Time Sheets", "Salaries", "Wages", "Diciplinary Actions", "Rewards Program"};
 
     public HRFrame(IMessageSender exch) {
         super("HR", exch);
@@ -36,12 +36,24 @@ public class HRFrame extends GeneralFrame {
 
     protected JTabbedPane getMainPanel() {
         JTabbedPane hrTab = new JTabbedPane();
-        hrTab.add(getOperatorsPanel(), sheets()[0]);
-        hrTab.add(getWeeklyWagesPanel(), sheets()[1]);
-        hrTab.add(new JPanel(), sheets()[2]);
-        hrTab.add(getWagesSummaryPanel(), sheets()[3]);
-        hrTab.add(new JPanel(), sheets()[4]);
-        hrTab.add(new JPanel(), sheets()[5]);
+        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+            hrTab.add(getOperatorsPanel(), sheets()[0]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+            hrTab.add(getWeeklyWagesPanel(), sheets()[1]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+            hrTab.add(new JPanel(), sheets()[2]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+            hrTab.add(getWagesSummaryPanel(), sheets()[3]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+            hrTab.add(new JPanel(), sheets()[4]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
+            hrTab.add(new JPanel(), sheets()[5]);
+        }
         return hrTab;
     }
 

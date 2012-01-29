@@ -3,6 +3,7 @@ package com.xlend.gui;
 import com.xlend.constants.Selects;
 import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
+import com.xlend.orm.Usersheet;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xcreditor;
@@ -547,10 +548,10 @@ public class XlendWorks {
         int xcred_id = (xcred != null ? xcred.getXcreditorId() : 0);
         try {
             DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
-                    "xsupplier_id="+xsupplier_id+" and xcreditor_id!="+xcred_id+" and (paid is null or not paid)",null);
+                    "xsupplier_id=" + xsupplier_id + " and xcreditor_id!=" + xcred_id + " and (paid is null or not paid)", null);
             for (DbObject rec : recs) {
                 Xcreditor c = (Xcreditor) rec;
-                sum += c.getInvoiceammount();        
+                sum += c.getInvoiceammount();
             }
         } catch (RemoteException ex) {
             log(ex);
@@ -561,5 +562,23 @@ public class XlendWorks {
     public static ComboItem[] loadPaidFromCodes(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select id,val from cbitems where name='paidfrom'");
     }
-    
+
+    public static ComboItem[] loadRootSheets(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id is null");
+    }
+
+    public static ComboItem[] loadSubSheets(IMessageSender exchanger, int parent_id) {
+        return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id=" + parent_id);
+    }
+
+    public static boolean availableForCurrentUsder(String sheetName) {
+        try {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
+                    + " and sheet_id=(select min(sheet_id) from sheet where sheetname='" + sheetName + "')", null);
+            return recs.length > 0;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return false;
+    }
 }

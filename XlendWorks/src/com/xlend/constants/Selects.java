@@ -216,7 +216,13 @@ public class Selects {
             + "cbitems.val \"Paid from\" "
             + "from xcreditor, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xcreditor.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
-   
+    public static String SELECT_FROM_FUELS = 
+            "Select xfuel_id \"Id\", ammount \"Amount\", "
+            + "(Select name from xsite where xsite_id=xfuel.xsite_id) \"Site\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\", "
+            + "(Select companyname from xsupplier where xsupplier_id=xfuel.xsupplier_id) \"Supplier\", iscache \"Cache\" "
+            + "from xfuel";
     
     public static String[] getStringArray(String select) {
         try {

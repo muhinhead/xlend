@@ -1,14 +1,13 @@
 package com.xlend.gui;
 
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.GeneralGridPanel;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.site.FuelGrid;
 import com.xlend.gui.site.BreakdownsGrid;
 import com.xlend.gui.site.ConsumablesGrid;
 import com.xlend.gui.site.DieselPurchaseGrid;
 import com.xlend.gui.work.DieselCardsGrid;
 import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
+import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -24,6 +23,7 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel dieselIsissPanel = null;
     private GeneralGridPanel consumablesPanel = null;
     private GeneralGridPanel breakdownsPanel;
+    private GeneralGridPanel fuelPanel;
     private static String[] sheetList = new String[]{
         "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", "Fuel"
     };
@@ -61,7 +61,7 @@ public class SitesFrame extends GeneralFrame {
             workTab.add(getBreakdownsPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
-            workTab.add(new JPanel(), sheets()[5]);
+            workTab.add(getFuelPanel(), sheets()[5]);
         }
         return workTab;
     }
@@ -124,5 +124,17 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return breakdownsPanel;
+    }
+
+    private JPanel getFuelPanel() {
+        if (fuelPanel == null) {
+            try {
+                registerGrid(fuelPanel = new FuelGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return fuelPanel;
     }
 }

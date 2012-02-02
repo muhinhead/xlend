@@ -84,8 +84,8 @@ public class EditUserPanel extends ProfilePanel {
                             "Attention!", JOptionPane.WARNING_MESSAGE);
                 } else {
                     new EditSheetAccessDialog("Document access", getDbObject());
-                    if (EditSheetAccessDialog.okPressed) {
-                    }
+//                    if (EditSheetAccessDialog.okPressed) {
+//                    }
                 }
             }
         };

@@ -53,6 +53,8 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
 
     protected void enableActions() {
         boolean enableDelete = (XlendWorks.getCurrentUser().getManager() != null && XlendWorks.getCurrentUser().getManager() != 0);
-        getDelAction().setEnabled(enableDelete);
+        if (getDelAction() != null) {
+            getDelAction().setEnabled(enableDelete);
+        }
     }
 }

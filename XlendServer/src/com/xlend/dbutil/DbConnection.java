@@ -553,7 +553,6 @@ public class DbConnection {
         + "    issuedto_id  int,"
         + "    xsupplier_id int,"
         + "    iscache      bit,"
-        + "    ammount2     decimal(10,2),"
         + "    constraint xfuel_id primary key (xfuel_id),"
         + "    constraint xfuel_xsite_fk foreign key (xsite_id) references xsite,"
         + "    constraint xfuel_xemployee_fk foreign key (issuedby_id) references xemployee,"

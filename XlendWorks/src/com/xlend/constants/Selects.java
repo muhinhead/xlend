@@ -211,13 +211,16 @@ public class Selects {
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static String SELECT_FROM_CREDITORS =
             "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
-            + "(select invoicenumber from xconsume where xconsume_id=xcreditor.xconsume_id) \"Invoice Nr.\", invoiceammount \"Invoice Ammt.\", "
+            + "(select invoicenumber from xconsume where xconsume_id=xc.xconsume_id) \"Invoice Nr.\", round(invoiceammount,2) \"Invoice Ammt.\", "
             + "paid \"Paid\", "//outstandammount \"Outstanding Ammt.\", "
+            + "((select round(sum(invoiceammount),2) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
+            + "+(select ifnull(round(sum(ammount),2),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))) "
+            + " \"Outstanding Ammt.\","
             + "cbitems.val \"Paid from\" "
-            + "from xcreditor, xsupplier, cbitems "
-            + "where xsupplier.xsupplier_id=xcreditor.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
+            + "from xcreditor xc, xsupplier, cbitems "
+            + "where xsupplier.xsupplier_id=xc.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
     public static String SELECT_FROM_FUELS = 
-            "Select xfuel_id \"Id\", ammount \"Amount\", "
+            "Select xfuel_id \"Id\", ROUND(ammount,2) \"Amount\", "
             + "(Select name from xsite where xsite_id=xfuel.xsite_id) \"Site\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\", "

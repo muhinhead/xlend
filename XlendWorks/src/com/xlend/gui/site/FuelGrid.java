@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -49,12 +50,48 @@ public class FuelGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return null;
+        return new AbstractAction("Edit Entry") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xfuel xfl  = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
+                        new EditFuelDialog("Edit Entry", xfl);
+                        if (EditFuelDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
     }
 
     @Override
     protected AbstractAction delAction() {
-        return null;
+        return new AbstractAction("Delete Entry") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                try {
+                    Xfuel xfl  = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
+                    if (xfl !=null && GeneralFrame.yesNo("Attention!", 
+                            "Do you want to delete entry?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xfl);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+
+            }
+        };
     }
     
 }

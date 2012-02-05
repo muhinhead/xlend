@@ -9,6 +9,7 @@ import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xcreditor;
 import com.xlend.orm.Xemployee;
 //import com.xlend.orm.Xlicensestat;
+import com.xlend.orm.Xfuel;
 import com.xlend.orm.Xmachtype;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xposition;
@@ -552,6 +553,11 @@ public class XlendWorks {
             for (DbObject rec : recs) {
                 Xcreditor c = (Xcreditor) rec;
                 sum += c.getInvoiceammount();
+            }
+            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="+xsupplier_id+" and (iscache is null or not iscache)", null);
+            for (DbObject rec : recs) {
+                Xfuel f = (Xfuel) rec;
+                sum += f.getAmmount();
             }
         } catch (RemoteException ex) {
             log(ex);

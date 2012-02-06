@@ -545,22 +545,23 @@ public class XlendWorks {
         return ans;
     }
 
-    public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id, Xcreditor xcred) {
+    public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id) {
         double sum = 0.0;
-        int xcred_id = (xcred != null ? xcred.getXcreditorId() : 0);
+//        int xcred_id = (xcred != null ? xcred.getXcreditorId() : 0);
         try {
             DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
-                    "xsupplier_id=" + xsupplier_id + " and xcreditor_id!=" + xcred_id + " and (paid is null or not paid)", null);
+                    "xsupplier_id=" + xsupplier_id + //" and xcreditor_id!=" + xcred_id + 
+                    " and (paid is null or not paid)", null);
             for (DbObject rec : recs) {
                 Xcreditor c = (Xcreditor) rec;
                 sum += c.getInvoiceammount();
             }
-            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="+xsupplier_id+" and (iscache is null or not iscache)", null);
+            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id=" + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
                 sum += f.getAmmount();
             }
-            recs = exchanger.getDbObjects(Xpayment.class, "xsupplier_id="+xsupplier_id, null);
+            recs = exchanger.getDbObjects(Xpayment.class, "xsupplier_id=" + xsupplier_id, null);
             for (DbObject rec : recs) {
                 Xpayment xp = (Xpayment) rec;
                 sum -= xp.getAmmount();

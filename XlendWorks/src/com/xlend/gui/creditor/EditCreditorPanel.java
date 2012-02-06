@@ -233,8 +233,8 @@ public class EditCreditorPanel extends RecordEditPanel {
         double outAmt = 0.0;
         ComboItem ci = (ComboItem) suppliersCB.getSelectedItem();
         if (ci != null) {
-            Xcreditor xcred = (Xcreditor) getDbObject();
-            outAmt = XlendWorks.calcOutstandingAmtSum(DashBoard.getExchanger(), ci.getId(), xcred);
+//            Xcreditor xcred = (Xcreditor) getDbObject();
+            outAmt = XlendWorks.calcOutstandingAmtSum(DashBoard.getExchanger(), ci.getId());//, xcred);
         }
         if (noRBselected) {//noRb.isSelected()) {
             outAmt += invAmt;

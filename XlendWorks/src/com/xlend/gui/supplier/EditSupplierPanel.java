@@ -7,14 +7,21 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.EmailFocusAdapter;
+import com.xlend.util.SelectedNumberSpinner;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -34,6 +41,8 @@ class EditSupplierPanel extends RecordEditPanel {
     private JTextArea productDescrField;
     private JTextArea addressField;
     private JTextArea bankingField;
+    private JSpinner outStandAmtSP;
+    private JLabel outStandAmtLB;
 
     public EditSupplierPanel(DbObject dbObject) {
         super(dbObject);
@@ -48,10 +57,15 @@ class EditSupplierPanel extends RecordEditPanel {
             "Vat Nr:", "Company Reg.Nr:",
             "Product Description:", "Address:", "Banking details:"
         };
-        JComponent[] edits = new JComponent[] {
+        JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 5),
-            getGridPanel(companyNameField = new JTextField(40),2),
-            getGridPanel(contactPersonField = new JTextField(),2),
+            getGridPanel(new JComponent[]{companyNameField = new JTextField(40), getGridPanel(
+                new JComponent[]{new JLabel("   Outstanding Amount:", SwingConstants.CENTER),
+                    outStandAmtLB = new JLabel(),
+                    outStandAmtSP = new SelectedNumberSpinner(0.0, 0.0, 1000000.0, 1)
+//                        ,new JPanel()
+                })}),
+            getGridPanel(contactPersonField = new JTextField(), 2),
             getGridPanel(phoneField = new JTextField(), 3),
             getGridPanel(faxField = new JTextField(), 3),
             getGridPanel(cellField = new JTextField(), 3),
@@ -63,6 +77,9 @@ class EditSupplierPanel extends RecordEditPanel {
             bankingField = new JTextArea(7, 20)
         };
         idField.setEnabled(false);
+
+        outStandAmtSP.setVisible(false);//setEnabled(false);
+
         labels = createLabelsArray(titles);
         organizePanels(titles, edits);
         emailField.addFocusListener(new EmailFocusAdapter(labels[6], emailField));
@@ -96,7 +113,7 @@ class EditSupplierPanel extends RecordEditPanel {
         addressField.setWrapStyleWord(true);
         addressField.setLineWrap(true);
         centerPanel.add(addressPanel);
-        
+
         JPanel bankingPanel = new JPanel(new BorderLayout());
         bankingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[11].getText()));
         bankingPanel.add(new JScrollPane(bankingField,
@@ -105,7 +122,7 @@ class EditSupplierPanel extends RecordEditPanel {
         bankingField.setWrapStyleWord(true);
         bankingField.setLineWrap(true);
         centerPanel.add(bankingPanel);
-        
+
         add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -125,6 +142,13 @@ class EditSupplierPanel extends RecordEditPanel {
             productDescrField.setText(sup.getProductdesc());
             addressField.setText(sup.getAddress());
             bankingField.setText(sup.getBanking());
+            double outAmt = XlendWorks.calcOutstandingAmtSum(DashBoard.getExchanger(), sup.getXsupplierId());
+            outStandAmtSP.setValue(outAmt);
+            if (outAmt > 0) {
+                outStandAmtLB.setFont(outStandAmtLB.getFont().deriveFont(Font.BOLD, 16));
+                outStandAmtLB.setForeground(Color.red);
+            }
+            outStandAmtLB.setText(((JSpinner.DefaultEditor) outStandAmtSP.getEditor()).getTextField().getText());
         }
     }
 

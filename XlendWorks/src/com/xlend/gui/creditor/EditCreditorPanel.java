@@ -103,6 +103,7 @@ public class EditCreditorPanel extends RecordEditPanel {
         group.add(yesRb);
 
         idField.setEnabled(false);
+        outstandingAmtSP.setEnabled(false);
         suppliersCB.addActionListener(getSupplierCBaction());
         consumeInvNrCB.addActionListener(getInvoiceCBaction());
         organizePanels(titles, edits, null);

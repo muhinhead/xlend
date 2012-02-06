@@ -25,7 +25,7 @@ public class DocFrame extends GeneralFrame {
     private GeneralGridPanel suppliersPanel = null;
     private GeneralGridPanel creditorsPanel = null;
     private static String[] sheetList = new String[]{
-        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Credotors"
+        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Creditors"
     };
 
     public DocFrame(IMessageSender exch) {

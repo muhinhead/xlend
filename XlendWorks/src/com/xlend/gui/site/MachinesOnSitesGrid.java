@@ -134,11 +134,6 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xmachineonsite xsitemachine = (Xmachineonsite) exchanger.loadDbObjectOnID(Xmachineonsite.class, id);
-//                    if (xsitemachine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
-//                        exchanger.deleteObject(xsitemachine);
-//                        GeneralFrame.updateGrid(exchanger, getTableView(),
-//                                getTableDoc(), getSelect(), null);
-//                    }
                     JSpinner dtSp = new SelectedDateSpinner();
                     dtSp.setEditor(new JSpinner.DateEditor(dtSp, "dd/MM/yyyy"));
                     Util.addFocusSelectAllAction(dtSp);

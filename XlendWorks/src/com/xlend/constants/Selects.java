@@ -213,10 +213,11 @@ public class Selects {
             "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
             + "(select invoicenumber from xconsume where xconsume_id=xc.xconsume_id) \"Invoice Nr.\", round(invoiceammount,2) \"Invoice Ammt.\", "
             + "paid \"Paid\", "//outstandammount \"Outstanding Ammt.\", "
-            + "((select round(sum(invoiceammount),2) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
-            + "+(select ifnull(round(sum(ammount),2),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))) "
-            + " \"Outstanding Ammt.\","
-            + "cbitems.val \"Paid from\" "
+            + "cbitems.val \"Paid from\", "
+            + "((select ifnull(round(sum(invoiceammount),2),0) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
+            + "+(select ifnull(round(sum(ammount),2),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))"
+            + "-(select ifnull(round(sum(ammount),2),0) from xpayment where xsupplier_id=xc.xsupplier_id)) "
+            + " \"Outstanding Ammt.\" "
             + "from xcreditor xc, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xc.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
     public static String SELECT_FROM_FUELS = 

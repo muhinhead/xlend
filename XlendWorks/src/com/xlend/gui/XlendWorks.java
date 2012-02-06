@@ -12,6 +12,7 @@ import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xfuel;
 import com.xlend.orm.Xmachtype;
 import com.xlend.orm.Xorder;
+import com.xlend.orm.Xpayment;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.Xsite;
@@ -558,6 +559,11 @@ public class XlendWorks {
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
                 sum += f.getAmmount();
+            }
+            recs = exchanger.getDbObjects(Xpayment.class, "xsupplier_id="+xsupplier_id, null);
+            for (DbObject rec : recs) {
+                Xpayment xp = (Xpayment) rec;
+                sum -= xp.getAmmount();
             }
         } catch (RemoteException ex) {
             log(ex);

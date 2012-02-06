@@ -75,7 +75,7 @@ class EditDieselPurchasePanel extends RecordEditPanel {
             comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel),
                 new EmployeeLookupAction(authorizedCB)),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            getGridPanel(amtRandsSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
+            getGridPanel(amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 10000.0, 0.01), 3),
             comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), 
                 new EmployeeLookupAction(paidByCB)),
             getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods(DashBoard.getExchanger())), 2)
@@ -138,7 +138,7 @@ class EditDieselPurchasePanel extends RecordEditPanel {
             dps.setPaidbyId(getSelectedCbItem(paidByCB));
             dps.setXpaidmethodId(getSelectedCbItem(paidMethodCB));
             dps.setAmountLiters((Integer) amtLitersSP.getValue());
-            dps.setAmountRands((Integer) amtRandsSP.getValue());
+            dps.setAmountRands((Double) amtRandsSP.getValue());
             Date dt = (Date) dateSP.getValue();
             if (dt != null) {
                 dps.setPurchased(new java.sql.Date(dt.getTime()));

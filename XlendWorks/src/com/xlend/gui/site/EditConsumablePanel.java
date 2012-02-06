@@ -73,7 +73,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             "Part Nr:",
             "Amount in Liters:",
             "Amount in Rands:",
-            "Paied by (Employee):",
+            "Paid by (Employee):",
             "Paid by (Method):",
             "Cheque Nr:"
         };
@@ -108,7 +108,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             descrField = new JTextField(),
             getGridPanel(partNumberField = new JTextField(), 3),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            getGridPanel(amtRandsSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
+            getGridPanel(amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01), 3),
             comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), new EmployeeLookupAction(paidByCB)),
             getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods(DashBoard.getExchanger())), 2),
             getGridPanel(cheqNumberField = new JTextField(), 3)
@@ -198,7 +198,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             xcns.setDescription(descrField.getText());
             xcns.setPartnumber(partNumberField.getText());
             xcns.setAmountLiters((Integer) amtLitersSP.getValue());
-            xcns.setAmountRands((Integer) amtRandsSP.getValue());
+            xcns.setAmountRands((Double) amtRandsSP.getValue());
             xcns.setPayerId(getSelectedCbItem(paidByCB));
             xcns.setXpaidmethodId(getSelectedCbItem(paidMethodCB));
             xcns.setChequenumber(cheqNumberField.isVisible() ? cheqNumberField.getText() : null);

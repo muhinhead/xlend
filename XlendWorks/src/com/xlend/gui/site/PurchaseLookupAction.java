@@ -16,11 +16,11 @@ import javax.swing.JComboBox;
 public class PurchaseLookupAction extends AbstractAction {
 
     private final JComboBox siteCB;
-//    private final Integer xmachine_id;
+    private static Integer xmachine_id;
 
-    public PurchaseLookupAction(JComboBox cb) {
+    public PurchaseLookupAction(JComboBox cb, Integer xmachineID) {
         super("...");
-//        this.xmachine_id = xmachine_id;
+        this.xmachine_id = xmachineID;
         this.siteCB = cb;
     }
 
@@ -28,11 +28,17 @@ public class PurchaseLookupAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         try {
             LookupDialog ld = new LookupDialog("Puchases lookup", siteCB,
-                    new ConsumablesGrid(DashBoard.getExchanger(), 
-                            Selects.SELECT_FROM_CONSUMABLES, false),
-                    new String[]{"invoicenumber","partnumber"});
+                    new ConsumablesGrid(DashBoard.getExchanger(),
+                    xmachine_id == null ? Selects.SELECT_FROM_CONSUMABLES
+                    : Selects.SELECT_FROM_CONSUMABLES4MACHINE.replace("#", xmachine_id.toString()),
+                    false),
+                    new String[]{"invoicenumber", "partnumber"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
+    }
+    
+    public static void setXmachineID(Integer xmachineID) {
+        xmachine_id = xmachineID;
     }
 }

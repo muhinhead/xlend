@@ -61,6 +61,7 @@ class EditBreakdownPanel extends RecordEditPanel {
     private JSpinner timeBackSP;
     private JCheckBox stayedOverCb;
     private JSpinner accomPriceSP;
+    private static final String UNKNOWN = "--Unknown--";
 
     public EditBreakdownPanel(DbObject dbObject) {
         super(dbObject);
@@ -103,6 +104,12 @@ class EditBreakdownPanel extends RecordEditPanel {
         reportedByCbModel = new DefaultComboBoxModel();
         attendedByCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
+
+        reportedToCbModel.addElement(new ComboItem(0, UNKNOWN));
+        reportedByCbModel.addElement(new ComboItem(0, UNKNOWN));
+//        attendedByCbModel.addElement(new ComboItem(0, UNKNOWN));
+//        operatorCbModel.addElement(new ComboItem(0, UNKNOWN));
+
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
@@ -128,8 +135,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             descrOfBreakdownField = new JTextField(40),
             getGridPanel(operatorFaultCb = new JCheckBox(), 3),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
-//            getGridPanel(purchasesCB = new JComboBox(purchasesCbModel), 2),
-            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB)),
+            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
             getGridPanel(new JComponent[]{
                 km2siteSP = new SelectedNumberSpinner(0, 0, 10000, 1),
                 new JLabel("Hours on job:", SwingConstants.RIGHT),
@@ -252,9 +258,12 @@ class EditBreakdownPanel extends RecordEditPanel {
         ComboItem ci = (ComboItem) machineCB.getSelectedItem();
         purchasesCbModel.removeAllElements();
         if (ci != null) {
+            PurchaseLookupAction.setXmachineID(ci.getId());
             for (ComboItem itm : XlendWorks.loadConsumesOnMachine(DashBoard.getExchanger(), ci.getId())) {
                 purchasesCbModel.addElement(itm);
             }
+        } else {
+            PurchaseLookupAction.setXmachineID(null);
         }
     }
 }

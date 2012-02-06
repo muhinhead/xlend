@@ -98,7 +98,7 @@ public class Selects {
     public static final String SELECT_FROM_EMPLOYEE = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee";
+            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee order by clock_num";
     public static final String SELECT_FROM_TIMESHEET = 
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
@@ -192,6 +192,14 @@ public class Selects {
             + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
             + "where con.xsupplier_id=sup.xsupplier_id and con.xmachine_id=mac.xmachine_id "
             + "and con.requester_id=req.xemployee_id";      
+    public static final String SELECT_FROM_CONSUMABLES4MACHINE = 
+            "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
+            + "mac.classify+mac.tmvnr \"Machine\", substr(req.first_name,0,1)+"
+            + "'.'+req.sur_name+' ('+req.clock_num+')' \"Requested by\", "
+            + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.partnumber \"Part.Nr\" "
+            + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
+            + "where con.xsupplier_id=sup.xsupplier_id and con.xmachine_id=mac.xmachine_id "
+            + "and con.requester_id=req.xemployee_id and mac.xmachine_id=#";      
     public static final String SELECT_CONSUMABLES4BREAKDOWN =
             "Select xconsume_id, 'Invoice Nr:'+invoicenumber, partnumber from xconsume where xmachine_id = #";
     public static final String SELECT_CONSUMABLES4LOOKUP =
@@ -214,9 +222,12 @@ public class Selects {
             + "(select invoicenumber from xconsume where xconsume_id=xc.xconsume_id) \"Invoice Nr.\", round(invoiceammount,2) \"Invoice Ammt.\", "
             + "paid \"Paid\", "//outstandammount \"Outstanding Ammt.\", "
             + "cbitems.val \"Paid from\", "
-            + "((select ifnull(round(sum(invoiceammount),2),0) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
-            + "+(select ifnull(round(sum(ammount),2),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))"
-            + "-(select ifnull(round(sum(ammount),2),0) from xpayment where xsupplier_id=xc.xsupplier_id)) "
+//            + "((select ifnull(round(sum(invoiceammount),2),0) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
+//            + "+(select ifnull(round(sum(ammount),2),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))"
+//            + "-(select ifnull(round(sum(ammount),2),0) from xpayment where xsupplier_id=xc.xsupplier_id)) "
+            + "round((select ifnull(sum(invoiceammount),0) from xcreditor where xsupplier_id=xc.xsupplier_id and (paid is null or not paid))"
+            + "+(select ifnull(sum(ammount),0) from xfuel where xsupplier_id=xc.xsupplier_id  and (iscache is null or not iscache))"
+            + "-(select ifnull(sum(ammount),0) from xpayment where xsupplier_id=xc.xsupplier_id),2) "
             + " \"Outstanding Ammt.\" "
             + "from xcreditor xc, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xc.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";

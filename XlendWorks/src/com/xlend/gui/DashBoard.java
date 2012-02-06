@@ -78,13 +78,14 @@ public class DashBoard extends JFrame {
         updateSheetList("DOCS", DocFrame.sheets());
         updateSheetList("SITES", SitesFrame.sheets());
         updateSheetList("HR", HRFrame.sheets());
-//        updateSheetList("REPORTS", ReportsFrame.sheets());
+        updateSheetList("REPORTS", new String[]{});//ReportsFrame.sheets());
         updateSheetList("FLEET", FleetFrame.sheets());
     }
 
     private void updateSheetList(String parentName, String[] sheetNames) {
+        DbObject rec;
         try {
-            DbObject[] sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", null);
+            DbObject[] sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
             Sheet sh;
             String[] names;
             int papa_id;
@@ -98,6 +99,10 @@ public class DashBoard extends JFrame {
             } else {
                 sh = (Sheet) sheets[0];
                 papa_id = sh.getSheetId();
+                for (int i=1; i<sheets.length; i++) {
+                    rec = sheets[i];
+                    exchanger.deleteObject(rec);
+                }
             }
             sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
             if (sheets.length == 0) {

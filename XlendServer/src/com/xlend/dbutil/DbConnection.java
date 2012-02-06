@@ -573,7 +573,15 @@ public class DbConnection {
         + "    constraint xpayment_pk primary key (xpayment_id),"
         + "    constraint xpayment_xsupplier_fk foreign key (xsupplier_id) references xsupplier,"
         + "    constraint xpayment_xemployee_fk foreign key (paydby_id) references xemployee"
-        + ")"
+        + ")",
+        "alter table xconsume alter column amount_rands rename to _amt",
+        "alter table xconsume add amount_rands decimal(10,2)",
+        "update xconsume set amount_rands=_amt",
+        "alter table xconsume drop _amt",
+        "alter table xdieselpchs alter column amount_rands rename to _amt",
+        "alter table xdieselpchs add amount_rands decimal(10,2)",
+        "update xdieselpchs set amount_rands=_amt",
+        "alter table xdieselpchs drop _amt"
     };
 
     public static Connection getConnection() throws RemoteException {

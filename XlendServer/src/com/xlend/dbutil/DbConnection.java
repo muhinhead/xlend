@@ -23,8 +23,8 @@ import java.util.logging.Logger;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 15;
-    public static final String DB_VERSION = "0.15";
+    private static final int DB_VERSION_ID = 16;
+    public static final String DB_VERSION = "0.16";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -581,7 +581,10 @@ public class DbConnection {
         "alter table xdieselpchs alter column amount_rands rename to _amt",
         "alter table xdieselpchs add amount_rands decimal(10,2)",
         "update xdieselpchs set amount_rands=_amt",
-        "alter table xdieselpchs drop _amt"
+        "alter table xdieselpchs drop _amt",
+        "alter table xemployee add deceased_date date",
+        "alter table xemployee add dismissed_date date",
+        "alter table xemployee add absconded_date date"
     };
 
     public static Connection getConnection() throws RemoteException {

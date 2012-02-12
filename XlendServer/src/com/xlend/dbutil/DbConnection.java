@@ -584,7 +584,12 @@ public class DbConnection {
         "alter table xdieselpchs drop _amt",
         "alter table xemployee add deceased_date date",
         "alter table xemployee add dismissed_date date",
-        "alter table xemployee add absconded_date date"
+        "alter table xemployee add absconded_date date",
+        "alter table xemployee add resigned_date date",
+        "alter table xemployee add resigned bit",
+        "alter table xconsume add accnum varchar(16)",
+        "alter table xbreakdown add invoicenumber varchar(16)",
+        "alter table xbreakdown add amount decimal(10,2)"
     };
 
     public static Connection getConnection() throws RemoteException {

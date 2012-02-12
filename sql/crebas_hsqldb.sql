@@ -573,7 +573,6 @@ create cached table xbreakdown
     vehicle_id        int,
     repairdate        date,
     repaired          smallint,
-    description       varchar(255),
     operatorfault     smallint,
     operator_id       int,
     xconsume_id       int,

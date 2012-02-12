@@ -53,6 +53,8 @@ public class EditConsumablePanel extends RecordEditPanel {
     private JComboBox paidMethodCB;
     private JComboBox machineCB;
     private JTextField cheqNumberField;
+    private JTextField accNumField;
+    
 
     public EditConsumablePanel(DbObject dbObject) {
         super(dbObject);
@@ -70,6 +72,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             "Authorized by:",
             "Collected by:",
             "Description:",
+            "Account Nr/Reference:",
             "Part Nr:",
             "Amount in Liters:",
             "Amount in Rands:",
@@ -106,6 +109,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             comboPanelWithLookupBtn(authorizerCB = new JComboBox(authorizedCbModel), new EmployeeLookupAction(authorizerCB)),
             comboPanelWithLookupBtn(collectorCB = new JComboBox(collectedByCbModel), new EmployeeLookupAction(collectorCB)),
             descrField = new JTextField(),
+            getGridPanel(accNumField = new JTextField(), 3),
             getGridPanel(partNumberField = new JTextField(), 3),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
             getGridPanel(amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01), 3),
@@ -159,6 +163,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             if (xcns.getXpaidmethodId() != null) {
                 selectComboItem(paidMethodCB, xcns.getXpaidmethodId());
             }
+            accNumField.setText(xcns.getAccnum());
             cheqNumberField.setText(xcns.getChequenumber());
         }
         showChequeField();
@@ -202,6 +207,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             xcns.setPayerId(getSelectedCbItem(paidByCB));
             xcns.setXpaidmethodId(getSelectedCbItem(paidMethodCB));
             xcns.setChequenumber(cheqNumberField.isVisible() ? cheqNumberField.getText() : null);
+            xcns.setAccnum(accNumField.getText());
             return saveDbRecord(xcns, isNew);
         }
         return false;

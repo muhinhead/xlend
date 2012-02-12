@@ -5,6 +5,7 @@ import com.xlend.orm.Profile;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.Usersheet;
 import com.xlend.orm.Xclient;
+import com.xlend.orm.Xconsume;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.Xcreditor;
 import com.xlend.orm.Xemployee;
@@ -547,14 +548,19 @@ public class XlendWorks {
 
     public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id) {
         double sum = 0.0;
-//        int xcred_id = (xcred != null ? xcred.getXcreditorId() : 0);
         try {
-            DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
-                    "xsupplier_id=" + xsupplier_id + //" and xcreditor_id!=" + xcred_id + 
-                    " and (paid is null or not paid)", null);
+//            DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
+//                    "xsupplier_id=" + xsupplier_id + //" and xcreditor_id!=" + xcred_id + 
+//                    " and (paid is null or not paid)", null);
+//            for (DbObject rec : recs) {
+//                Xcreditor c = (Xcreditor) rec;
+//                sum += c.getInvoiceammount();
+//            }
+            DbObject[] recs = exchanger.getDbObjects(Xconsume.class,
+                    "xsupplier_id=" + xsupplier_id + " and xpaidmethod_id=4", null);
             for (DbObject rec : recs) {
-                Xcreditor c = (Xcreditor) rec;
-                sum += c.getInvoiceammount();
+                Xconsume c = (Xconsume) rec;
+                sum += c.getAmountRands();
             }
             recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id=" + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {

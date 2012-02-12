@@ -61,6 +61,8 @@ class EditBreakdownPanel extends RecordEditPanel {
     private JSpinner timeBackSP;
     private JCheckBox stayedOverCb;
     private JSpinner accomPriceSP;
+    private JTextField invoiceNumberField;
+    private JSpinner amountSP;
     private static final String UNKNOWN = "--Unknown--";
 
     public EditBreakdownPanel(DbObject dbObject) {
@@ -86,7 +88,8 @@ class EditBreakdownPanel extends RecordEditPanel {
             "Kilometers to site (one way):",// "Hours on job:",
             "Time left:", //   "Time Back:",
             "Stayed Over?:",
-            "Accomodation Price:"
+            "Accomodation Price:",
+            "Invoice Nr:"
         };
         machineCbModel = new DefaultComboBoxModel();
         vehicleByCbModel = new DefaultComboBoxModel();
@@ -147,7 +150,10 @@ class EditBreakdownPanel extends RecordEditPanel {
                 timeBackSP = new SelectedNumberSpinner(0, 0, 12, 1)
             }),
             getGridPanel(stayedOverCb = new JCheckBox(), 3),
-            getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3)
+            getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3),
+            getGridPanel(new JComponent[]{invoiceNumberField = new JTextField(),
+                new JLabel("Amount:",SwingConstants.RIGHT),
+                amountSP = new SelectedNumberSpinner(0.0, 0.0, 100000, .01)})
         };
         machineCB.addActionListener(getMachineCBaction());
         breakdownDateSP.setEditor(new JSpinner.DateEditor(breakdownDateSP, "dd/MM/yyyy"));
@@ -202,6 +208,8 @@ class EditBreakdownPanel extends RecordEditPanel {
             stayedOverCb.setSelected(xbr.getStayedover() != null && xbr.getStayedover() == 1);
             hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
+            invoiceNumberField.setText(xbr.getInvoicenumber());
+            amountSP.setValue(xbr.getAmount()==null?0:xbr.getAmount());
         }
         syncPurchases();
     }
@@ -241,6 +249,8 @@ class EditBreakdownPanel extends RecordEditPanel {
         xbr.setTimeleft((Integer) timeLeftSP.getValue());
         xbr.setStayedover(stayedOverCb.isSelected() ? 1 : 0);
         xbr.setAccomprice((Integer) accomPriceSP.getValue());
+        xbr.setInvoicenumber(invoiceNumberField.getText());
+        xbr.setAmount((Double) amountSP.getValue());
         return saveDbRecord(xbr, isNew);
     }
 

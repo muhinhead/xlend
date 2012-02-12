@@ -79,10 +79,12 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JTextField taxnumField;
     private ImageIcon currentPicture2;
     private JCheckBox deceasedCb, dismissedCb, abscondedCb;
-    
     protected JPanel picPanel2;
     protected JPopupMenu picturePopMenu2;
     protected byte[] imageData2;
+    private JSpinner deceasedDateSP;
+    private JSpinner dismissedDateSP;
+    private JSpinner abscondedDateSP;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -103,6 +105,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             "Home Address:", "Work Position:",
             "Contract Duration:", "Contract Start Date:", "Contract End Date:",
             "Rate of Pay (R per hour):",
+            "",
             ""
         };
         labels = createLabelsArray(titles);
@@ -132,22 +135,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             contractStartSP = new SelectedDateSpinner(),
             contractEndSP = new SelectedDateSpinner(),
             rateSP = new SelectedNumberSpinner(0, 0, 10000, 10)//new SelectedNumberSpinner(
+//                ,new JPanel(), new JPanel()
         };
 
         contractLenCB.addActionListener(updateEndContract());
         contractStartSP.addChangeListener(startContractChangeListener());
 
-
-        contractStartSP.setEditor(new JSpinner.DateEditor(contractStartSP, "dd/MM/yyyy"));
-        Util.addFocusSelectAllAction(contractStartSP);
-
-        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "dd/MM/yyyy"));
-        Util.addFocusSelectAllAction(contractEndSP);
-
         setEndDateVisible(true);
 
         idField.setEditable(false);
-        organizePanels(15, 15);
+        organizePanels(16, 16);
         for (int i = 0; i < 6; i++) {
             lblPanel.add(labels[i]);
             if (i == 0 || i == 1 || i == 4 || i == 6) {
@@ -195,22 +192,61 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         alt3.add(labels[16]);
         alt3.add(edits[16]);
         editPanel.add(alt3);
-        
+
         lblPanel.add(labels[17]);
         editPanel.add(getGridPanel(edits[17], 4));
-        
+
         editPanel.add(getGridPanel(new JComponent[]{
-            deceasedCb = new JCheckBox("Deceased"),
-            dismissedCb = new JCheckBox("Dismissed"),
-            abscondedCb = new JCheckBox("Absconded")
-        }));
-        
+                    deceasedCb = new JCheckBox("Deceased"),
+                    dismissedCb = new JCheckBox("Dismissed"),
+                    abscondedCb = new JCheckBox("Absconded")
+                }));
+//        editPanel.add(new JButton("!!!"));
+        editPanel.add(getGridPanel(new JComponent[]{
+                    deceasedDateSP = new SelectedDateSpinner(),
+                    dismissedDateSP = new SelectedDateSpinner(),
+                    abscondedDateSP = new SelectedDateSpinner()
+                }));
+        deceasedDateSP.setVisible(false);
+        dismissedDateSP.setVisible(false);
+        abscondedDateSP.setVisible(false);
+        for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP, 
+            deceasedDateSP, dismissedDateSP, abscondedDateSP}) {
+            sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
+            Util.addFocusSelectAllAction(sp);
+        }
+
+//        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "dd/MM/yyyy"));
+//        Util.addFocusSelectAllAction(contractEndSP);
+
         contractLenCB.setAction(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 ComboItem citm = (ComboItem) contractLenCB.getSelectedItem();
                 setEndDateVisible(citm.getId() > 0);
+            }
+        });
+
+        deceasedCb.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                deceasedDateSP.setVisible(deceasedCb.isSelected());
+            }
+        });
+        dismissedCb.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                dismissedDateSP.setVisible(dismissedCb.isSelected());
+            }
+        });
+        abscondedCb.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                abscondedDateSP.setVisible(abscondedCb.isSelected());
             }
         });
 
@@ -268,19 +304,31 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 dt = new java.util.Date(emp.getContractEnd().getTime());
                 contractEndSP.setValue(dt);
             }
+            if (emp.getDeceasedDate() != null) {
+                dt = new java.util.Date(emp.getDeceasedDate().getTime());
+                deceasedDateSP.setValue(dt);
+            }
+            if (emp.getDismissedDate() != null) {
+                dt = new java.util.Date(emp.getDismissedDate().getTime());
+                dismissedDateSP.setValue(dt);
+            }
+            if (emp.getAbscondedDate() != null) {
+                dt = new java.util.Date(emp.getAbscondedDate().getTime());
+                abscondedDateSP.setValue(dt);
+            }
             if (emp.getRate() != null) {
                 rateSP.setValue(emp.getRate());
             }
             if (emp.getContractLen() != null) {
                 setEndDateVisible(emp.getContractLen() > 0);
             }
-            if (emp.getDeceased()!=null && emp.getDeceased()==1) {
+            if (emp.getDeceased() != null && emp.getDeceased() == 1) {
                 deceasedCb.setSelected(true);
             }
-            if (emp.getDismissed()!=null && emp.getDismissed()==1) {
+            if (emp.getDismissed() != null && emp.getDismissed() == 1) {
                 dismissedCb.setSelected(true);
             }
-            if (emp.getAbsconded()!=null && emp.getAbsconded()==1) {
+            if (emp.getAbsconded() != null && emp.getAbsconded() == 1) {
                 abscondedCb.setSelected(true);
             }
             imageData = (byte[]) emp.getPhoto();
@@ -345,9 +393,24 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setXpositionId(null);
                 }
-                emp.setDeceased(deceasedCb.isSelected()?1:0);
-                emp.setDismissed(dismissedCb.isSelected()?1:0);
-                emp.setAbsconded(abscondedCb.isSelected()?1:0);
+                emp.setDeceased(deceasedCb.isSelected() ? 1 : 0);
+                if (deceasedCb.isSelected() && deceasedDateSP.getValue() != null) {
+                    emp.setDeceasedDate(new java.sql.Date(((java.util.Date) deceasedDateSP.getValue()).getTime()));
+                } else {
+                    emp.setDeceasedDate(null);
+                }
+                emp.setDismissed(dismissedCb.isSelected() ? 1 : 0);
+                if (dismissedCb.isSelected() && dismissedDateSP.getValue() != null) {
+                    emp.setDismissedDate(new java.sql.Date(((java.util.Date) dismissedDateSP.getValue()).getTime()));
+                } else {
+                    emp.setDismissedDate(null);
+                }
+                emp.setAbsconded(abscondedCb.isSelected() ? 1 : 0);
+                if (abscondedCb.isSelected() && abscondedDateSP.getValue() != null) {
+                    emp.setAbscondedDate(new java.sql.Date(((java.util.Date) abscondedDateSP.getValue()).getTime()));
+                } else {
+                    emp.setAbscondedDate(null);
+                }
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));

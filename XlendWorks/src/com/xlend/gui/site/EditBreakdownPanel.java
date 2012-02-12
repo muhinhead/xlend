@@ -53,7 +53,7 @@ class EditBreakdownPanel extends RecordEditPanel {
     private JComboBox purchasesCB;
     private JSpinner repairDateSP;
     private JCheckBox problemRepairedCb;
-    private JTextField descrOfBreakdownField;
+//    private JTextField descrOfBreakdownField;
     private JCheckBox operatorFaultCb;
     private JSpinner km2siteSP;
     private JSpinner hrsOnJobSP;
@@ -81,7 +81,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             "With Vehicle:",
             "Repair Date:",
             "Problem Repaired?:",
-            "Description of breakdown:",
+//            "Description of breakdown:",
             "Operator at fault?:",
             "Operator Clock Number:",
             "Purchases for repair:",
@@ -135,7 +135,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
             getGridPanel(repairDateSP = new SelectedDateSpinner(), 3),
             getGridPanel(problemRepairedCb = new JCheckBox(), 3),
-            descrOfBreakdownField = new JTextField(40),
+//            descrOfBreakdownField = new JTextField(40),
             getGridPanel(operatorFaultCb = new JCheckBox(), 3),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
             comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
@@ -194,7 +194,7 @@ class EditBreakdownPanel extends RecordEditPanel {
                 repairDateSP.setValue(new Date(xbr.getRepairdate().getTime()));
             }
             problemRepairedCb.setSelected(xbr.getRepaired() != null && xbr.getRepaired() == 1);
-            descrOfBreakdownField.setText(xbr.getDescription());
+//            descrOfBreakdownField.setText(xbr.getDescription());
             operatorFaultCb.setSelected(xbr.getOperatorfault() != null && xbr.getOperatorfault() == 1);
             if (xbr.getOperatorId() != null) {
                 selectComboItem(operatorCB, xbr.getOperatorId());
@@ -239,7 +239,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             xbr.setRepairdate(new java.sql.Date(dt.getTime()));
         }
         xbr.setRepaired(problemRepairedCb.isSelected() ? 1 : 0);
-        xbr.setDescription(descrOfBreakdownField.getText());
+//        xbr.setDescription(descrOfBreakdownField.getText());
         xbr.setOperatorfault(operatorFaultCb.isSelected() ? 1 : 0);
         xbr.setOperatorId(getSelectedCbItem(operatorCB));
         xbr.setXconsumeId(getSelectedCbItem(purchasesCB));

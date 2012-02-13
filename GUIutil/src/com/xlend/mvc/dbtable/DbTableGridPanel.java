@@ -21,6 +21,14 @@ import javax.swing.JScrollPane;
  */
 public class DbTableGridPanel extends JPanel {
 
+    protected static HashMap<Integer, Integer> getMaxWidths(int[] widths) {
+        HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+        for (int i = 0; i < widths.length; i++) {
+            maxWidths.put(i, widths[i]);
+        }
+        return maxWidths;
+    }
+
     private DbTableView tableView = null;
     private DbTableDocument tableDoc = null;
     private JScrollPane sp = null;

@@ -589,7 +589,9 @@ public class DbConnection {
         "alter table xemployee add resigned bit",
         "alter table xconsume add accnum varchar(16)",
         "alter table xbreakdown add invoicenumber varchar(16)",
-        "alter table xbreakdown add amount decimal(10,2)"
+        "alter table xbreakdown add amount decimal(10,2)",
+        "alter table xbreakdown drop description",
+        "update sheet set sheetname='Payments' where sheetname='Creditors'"
     };
 
     public static Connection getConnection() throws RemoteException {

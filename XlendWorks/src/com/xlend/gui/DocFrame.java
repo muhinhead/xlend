@@ -4,6 +4,7 @@ import com.xlend.gui.work.ClientsGrid;
 import com.xlend.gui.work.ContractsGrid;
 import com.xlend.gui.work.CreditorsGrid;
 import com.xlend.gui.work.OrdersGrid;
+import com.xlend.gui.work.PaymentsGrid;
 import com.xlend.gui.work.QuotationsGrid;
 import com.xlend.gui.work.SuppliersGrid;
 import com.xlend.remote.IMessageSender;
@@ -23,9 +24,9 @@ public class DocFrame extends GeneralFrame {
     private GeneralGridPanel ordersPanel = null;
     private GeneralGridPanel quotasPanel = null;
     private GeneralGridPanel suppliersPanel = null;
-    private GeneralGridPanel creditorsPanel = null;
+    private GeneralGridPanel paymentsPanel = null;
     private static String[] sheetList = new String[]{
-        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Creditors"
+        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Payments"
     };
 
     public DocFrame(IMessageSender exch) {
@@ -61,7 +62,7 @@ public class DocFrame extends GeneralFrame {
             workTab.add(getSuppliersPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
-            workTab.add(getCreditorsPanel(), sheets()[5]);
+            workTab.add(getPaymentsPanel(), sheets()[5]);
         }
         return workTab;
     }
@@ -126,15 +127,15 @@ public class DocFrame extends GeneralFrame {
         return suppliersPanel;
     }
 
-    private JPanel getCreditorsPanel() {
-        if (creditorsPanel == null) {
+    private JPanel getPaymentsPanel() {
+        if (paymentsPanel == null) {
             try {
-                registerGrid(creditorsPanel = new CreditorsGrid(exchanger));
+                registerGrid(paymentsPanel = new PaymentsGrid(exchanger));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
             }
         }
-        return creditorsPanel;
+        return paymentsPanel;
     }
 }

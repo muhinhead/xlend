@@ -64,7 +64,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.26";
+    public static final String version = "0.27";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -549,20 +549,14 @@ public class XlendWorks {
     public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id) {
         double sum = 0.0;
         try {
-//            DbObject[] recs = exchanger.getDbObjects(Xcreditor.class,
-//                    "xsupplier_id=" + xsupplier_id + //" and xcreditor_id!=" + xcred_id + 
-//                    " and (paid is null or not paid)", null);
-//            for (DbObject rec : recs) {
-//                Xcreditor c = (Xcreditor) rec;
-//                sum += c.getInvoiceammount();
-//            }
             DbObject[] recs = exchanger.getDbObjects(Xconsume.class,
                     "xsupplier_id=" + xsupplier_id + " and xpaidmethod_id=4", null);
             for (DbObject rec : recs) {
                 Xconsume c = (Xconsume) rec;
                 sum += c.getAmountRands();
             }
-            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id=" + xsupplier_id + " and (iscache is null or not iscache)", null);
+            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id=" 
+                    + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
                 sum += f.getAmmount();

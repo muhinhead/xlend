@@ -1,10 +1,11 @@
-package com.xlend.gui.site;
+package com.xlend.gui.work;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xconsume;
+import com.xlend.gui.creditor.EditPaymentDialog;
+import com.xlend.orm.Xpayment;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -16,33 +17,27 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class ConsumablesGrid extends GeneralGridPanel {
-
-//    private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
-//
-//    static {
-//        maxWidths.put(0, 40);
-//    }
-
-    public ConsumablesGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_CONSUMABLES, getMaxWidths(new int[]{40}), false);
+public class PaymentsGrid extends GeneralGridPanel {
+    
+    public PaymentsGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_PAYMENTS, getMaxWidths(new int[]{40}), false);
     }
 
-    public ConsumablesGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
-        super(exchanger, select, getMaxWidths(new int[]{40,100,100}), readonly);
+    public PaymentsGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, getMaxWidths(new int[]{40,70,70,100,100}), true);
     }
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add Consumable") {
+        return new AbstractAction("New Payment") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditConsumableDialog ed = new EditConsumableDialog("Add Consumable", null);
-                    if (EditConsumableDialog.okPressed) {
-                        Xconsume xcns = (Xconsume) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId());
+                    EditPaymentDialog ed = new EditPaymentDialog("New Payment", null);
+                    if (EditPaymentDialog.okPressed) {
+                        Xpayment xpay = (Xpayment) ed.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xpay.getXpaymentId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,9 +56,9 @@ public class ConsumablesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xconsume xcns = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
-                        new EditConsumableDialog("Edit Consumable", xcns);
-                        if (EditConsumableDialog.okPressed) {
+                        Xpayment xpay = (Xpayment) exchanger.loadDbObjectOnID(Xpayment.class, id);
+                        new EditPaymentDialog("Edit Payment", xpay);
+                        if (EditPaymentDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {
@@ -83,10 +78,10 @@ public class ConsumablesGrid extends GeneralGridPanel {
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xconsume xcns = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
-                    if (xcns !=null && GeneralFrame.yesNo("Attention!", 
-                            "Do you want to delete consumable?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(xcns);
+                    Xpayment xpay = (Xpayment) exchanger.loadDbObjectOnID(Xpayment.class, id);
+                    if (xpay != null && GeneralFrame.yesNo("Attention!",
+                            "Do you want to delete this payment?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xpay);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
@@ -96,5 +91,5 @@ public class ConsumablesGrid extends GeneralGridPanel {
 
             }
         };
-    }    
+    }
 }

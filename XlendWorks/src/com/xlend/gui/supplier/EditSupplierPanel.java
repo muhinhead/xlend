@@ -1,24 +1,34 @@
 package com.xlend.gui.supplier;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.site.ConsumablesGrid;
+import com.xlend.gui.site.FuelGrid;
+import com.xlend.gui.work.PaymentsGrid;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.EmailFocusAdapter;
 import com.xlend.util.SelectedNumberSpinner;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -124,6 +134,46 @@ class EditSupplierPanel extends RecordEditPanel {
         centerPanel.add(bankingPanel);
 
         add(centerPanel, BorderLayout.CENTER);
+    }
+
+    @Override
+    protected JComponent getRightUpperPanel() {
+        JTabbedPane detailPanel = new JTabbedPane(JTabbedPane.TOP);
+        JPanel paymentPanel = new JPanel(new BorderLayout());
+        JPanel fuelPanel = new JPanel(new BorderLayout());
+        JPanel consPanel = new JPanel(new BorderLayout());
+        Xsupplier sup = (Xsupplier) getDbObject();
+        if (sup != null) {
+            try {
+                JScrollPane sp1 = new JScrollPane(new PaymentsGrid(DashBoard.getExchanger(),
+                        Selects.SELECT_SUPPLIERS_PAYMENTS.replace("#",
+                        sup.getXsupplierId().toString())));
+                sp1.setPreferredSize(new Dimension(400, 300));
+                paymentPanel.add(sp1, BorderLayout.NORTH);
+
+                JScrollPane sp2 = new JScrollPane(
+                        new FuelGrid(DashBoard.getExchanger(),
+                        Selects.SELECT_SUPPLIERS_FUELS.replace("#",
+                        sup.getXsupplierId().toString())));
+                sp2.setPreferredSize(new Dimension(400, 300));
+                fuelPanel.add(sp2, BorderLayout.NORTH);
+
+                JScrollPane sp3 = new JScrollPane(
+                        new ConsumablesGrid(DashBoard.getExchanger(),
+                        Selects.SELECT_SUPPLIERS_CONSUMABLES.replace("#",
+                        sup.getXsupplierId().toString()), true));
+                sp3.setPreferredSize(new Dimension(400, 300));
+                consPanel.add(sp3, BorderLayout.NORTH);
+
+
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+            }
+        }
+        detailPanel.add("Payemtns", paymentPanel);
+        detailPanel.add("Fuel", fuelPanel);
+        detailPanel.add("Consumables not paid", consPanel);
+        return detailPanel;
     }
 
     @Override

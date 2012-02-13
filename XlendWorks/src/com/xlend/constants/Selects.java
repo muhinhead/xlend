@@ -192,6 +192,14 @@ public class Selects {
             + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
             + "where con.xsupplier_id=sup.xsupplier_id and con.xmachine_id=mac.xmachine_id "
             + "and con.requester_id=req.xemployee_id";      
+    public static final String SELECT_SUPPLIERS_CONSUMABLES = 
+            "Select xconsume_id \"Id\", "
+            + "mac.classify+mac.tmvnr \"Machine\", substr(req.first_name,0,1)+"
+            + "'.'+req.sur_name+' ('+req.clock_num+')' \"Requested by\", "
+            + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.amount_rands \"Amount(R)\" "
+            + "from xconsume con, xmachine mac, xemployee req "
+            + "where con.xsupplier_id=# and con.xmachine_id=mac.xmachine_id and con.xpaidmethod_id=4 "
+            + "and con.requester_id=req.xemployee_id";      
     public static final String SELECT_FROM_CONSUMABLES4MACHINE = 
             "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
             + "mac.classify+mac.tmvnr \"Machine\", substr(req.first_name,0,1)+"
@@ -217,6 +225,18 @@ public class Selects {
             + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id group by xwagesum.xwagesum_id,weekend";//and xwagesumitem.xemployee_id=xemployee.xemployee_id";
     public static String NOTFIXED_TIMESHEETDATES = 
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
+    public static String SELECT_FROM_PAYMENTS =
+            "Select xpayment_id \"Id\", companyname \"Supplier\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
+            + "(select clock_num+' '+first_name from xemployee where xemployee_id=paydby_id) \"Payd By\" "
+            + "from xpayment, xsupplier, cbitems "
+            + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
+            + "order by paydate desc";
+    public static String SELECT_SUPPLIERS_PAYMENTS = 
+            "Select xpayment_id \"Id\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
+            + "(select clock_num+' '+first_name from xemployee where xemployee_id=paydby_id) \"Payd By\" "
+            + "from xpayment, cbitems "
+            + "where cbitems.id=xpayment.paidfrom and xsupplier_id=# "
+            + "order by paydate desc";
     public static String SELECT_FROM_CREDITORS =
             "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
             + "(select invoicenumber from xconsume where xconsume_id=xc.xconsume_id) \"Invoice Nr.\", round(invoiceammount,2) \"Invoice Ammt.\", "
@@ -236,6 +256,12 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\", "
             + "(Select companyname from xsupplier where xsupplier_id=xfuel.xsupplier_id) \"Supplier\", iscache \"Cache\" "
             + "from xfuel";
+    public static String SELECT_SUPPLIERS_FUELS = 
+            "Select xfuel_id \"Id\", ROUND(ammount,2) \"Amount\", "
+            + "(Select name from xsite where xsite_id=xfuel.xsite_id) \"Site\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\" "
+            + "from xfuel where xsupplier_id=#";
     
     public static String[] getStringArray(String select) {
         try {

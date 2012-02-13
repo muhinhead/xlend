@@ -18,15 +18,20 @@ import javax.swing.JOptionPane;
  */
 public class FuelGrid extends GeneralGridPanel {
 
- private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
-
-    static {
-        maxWidths.put(0, 40);
-    }
+// private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+//
+//    static {
+//        maxWidths.put(0, 40);
+//    }
 
     public FuelGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_FUELS, maxWidths, false);
+        super(exchanger, Selects.SELECT_FROM_FUELS, getMaxWidths(new int[]{40}), false);
     }
+    
+    public FuelGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, getMaxWidths(new int[]{40,70,70,100,100}), true);
+    }
+    
     
     @Override
     protected AbstractAction addAction() {

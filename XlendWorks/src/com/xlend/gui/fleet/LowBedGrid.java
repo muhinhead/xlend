@@ -4,7 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xmachine;
+import com.xlend.orm.Xlowbed;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class MachineGrid extends GeneralGridPanel {
+public class LowBedGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
@@ -24,26 +24,22 @@ public class MachineGrid extends GeneralGridPanel {
         maxWidths.put(0, 40);
     }
 
-    public MachineGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_MACHINE, maxWidths, false);
+    public LowBedGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_LOWBEDS, maxWidths, false);
     }
-
-    public MachineGrid(IMessageSender exchanger, String select, boolean readOnly) throws RemoteException {
-        super(exchanger, select, maxWidths, readOnly);
-    }
-
+    
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("New Machine") {
+        return new AbstractAction("New Low-Bed") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditMachineDialog ed = new EditMachineDialog("New Machine", null);
-                    if (EditMachineDialog.okPressed) {
-                        Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
+                    EditLowBedDialog ed = new EditLowBedDialog("New Low-Bed", null);
+                    if (EditLowBedDialog.okPressed) {
+                        Xlowbed lb = (Xlowbed) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId());
+                                getTableView(), getTableDoc(), getSelect(), lb.getXmachineId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -62,9 +58,9 @@ public class MachineGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                        new EditMachineDialog("Edit Machine", machine);
-                        if (EditMachineDialog.okPressed) {
+                        Xlowbed xlb = (Xlowbed) exchanger.loadDbObjectOnID(Xlowbed.class, id);
+                        new EditLowBedDialog("Edit Low-Bed", xlb);
+                        if (EditLowBedDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id);
                         }
@@ -85,10 +81,9 @@ public class MachineGrid extends GeneralGridPanel {
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete machine  [Reg.Nr "
-                            + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
-                        exchanger.deleteObject(machine);
+                    Xlowbed xlb = (Xlowbed) exchanger.loadDbObjectOnID(Xlowbed.class, id);
+                    if (xlb != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xlb);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }
                 } catch (RemoteException ex) {
@@ -97,5 +92,5 @@ public class MachineGrid extends GeneralGridPanel {
                 }
             }
         };
-    }
+    }    
 }

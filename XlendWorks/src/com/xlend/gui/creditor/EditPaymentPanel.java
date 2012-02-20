@@ -107,8 +107,7 @@ class EditPaymentPanel extends RecordEditPanel {
         Xpayment xp = (Xpayment) getDbObject();
         if (xp == null) {
             xp = new Xpayment(null);
-            xp.setXpaymentId(
-                    0);
+            xp.setXpaymentId(0);
             isNew = true;
         }
         ComboItem ci = (ComboItem) suppliersCB.getSelectedItem();

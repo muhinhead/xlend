@@ -1,8 +1,10 @@
 package com.xlend.gui;
 
+import com.xlend.gui.fleet.LowBedGrid;
 import com.xlend.gui.fleet.MachineGrid;
 import com.xlend.gui.fleet.TrackGrid;
 import com.xlend.remote.IMessageSender;
+import java.awt.Component;
 import java.rmi.RemoteException;
 import java.util.Properties;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ public class FleetFrame extends GeneralFrame {
     }
     private GeneralGridPanel machinesPanel;
     private GeneralGridPanel trackPanel;
+    private GeneralGridPanel lowbedsPanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", "Company Vehicles"};
 
@@ -47,7 +50,7 @@ public class FleetFrame extends GeneralFrame {
             fleetTab.add(getTrackPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
-            fleetTab.add(new JPanel(), sheets()[2]);
+            fleetTab.add(getLowBedsPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
             fleetTab.add(new JPanel(), sheets()[3]);
@@ -80,5 +83,17 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         return trackPanel;
+    }
+
+    private JPanel getLowBedsPanel() {
+        if (lowbedsPanel == null) {
+            try {
+                registerGrid(lowbedsPanel = new LowBedGrid(exchanger));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return lowbedsPanel;
     }
 }

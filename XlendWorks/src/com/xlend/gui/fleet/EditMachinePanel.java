@@ -219,7 +219,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             regNrField.setText(machine.getRegNr());
             if (machine.getTmvnr() != null) {
                 tmvnrTextSP.setValue(Integer.parseInt(machine.getTmvnr()));
-            } else {                                                                                                                                                                                                        
+            } else {
                 tmvnrTextSP.setValue(0);
             }
             vehicleNrField.setText(machine.getVehicleidNr());
@@ -320,11 +320,17 @@ class EditMachinePanel extends EditPanelWithPhoto {
         if (tp1 != null) {
             try {
                 DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
-                        Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype");
+                        Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype,xmachtype_id");
+                String prevType = "";
                 for (DbObject tp2 : tp2list) {
                     Xmachtype type2 = (Xmachtype) tp2;
-                    machineType2CbModel.addElement(
-                            new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
+                    if (!prevType.equals(type2.getMachtype())) {
+                        machineType2CbModel.addElement(
+                                new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
+                    } else {
+                        DashBoard.getExchanger().deleteObject(type2); //to fix bug with duplicates
+                    }
+                    prevType = type2.getMachtype();
                 }
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);

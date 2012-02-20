@@ -119,6 +119,13 @@ public class Selects {
             "Select xsite_id \"Id\", name \"Site Name\","
             + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
             + "from xsite order by upper(name)";
+    public static final String SELECT_FROM_LOWBEDS =
+            "Select xlowbed_id \"Id\", "
+            + "m.tmvnr \"TMVnr\", t1.machtype \"Machine Type\", m.reg_nr \"Reg.Nr\", "
+            + "(select clock_num+' '+first_name from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\", "
+            + "(select clock_num+' '+first_name from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
+            + "from xlowbed, xmachine m, xmachtype t1 "
+            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
@@ -262,6 +269,9 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\" "
             + "from xfuel where xsupplier_id=#";
+    public static String SELECT_TRIPS = 
+            "Select xtrip_id \"Id\", trip_date,fromsite_id, tosite_id from xtrip where xlowbed_id=# order by trip_date desc";
+    
     
     public static String[] getStringArray(String select) {
         try {

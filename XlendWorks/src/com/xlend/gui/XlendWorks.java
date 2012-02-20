@@ -18,6 +18,9 @@ import com.xlend.orm.Xposition;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.Xsite;
 import com.xlend.orm.Xtimesheet;
+import com.xlend.orm.Xtrip;
+import com.xlend.orm.Xtripestablish;
+import com.xlend.orm.Xtripmoving;
 import com.xlend.orm.Xwage;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -555,7 +558,7 @@ public class XlendWorks {
                 Xconsume c = (Xconsume) rec;
                 sum += c.getAmountRands();
             }
-            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id=" 
+            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="
                     + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
@@ -584,6 +587,19 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id=" + parent_id);
     }
 
+    public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "
+                + "from xmachine m, xmachtype t1 "
+                + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
+    }
+
+    /*
+     * Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
+    + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
+    + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
+    + "from xmachine m, xmachtype t1 "
+    + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
+     */
     public static boolean availableForCurrentUsder(String sheetName) {
         try {
             DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
@@ -594,4 +610,41 @@ public class XlendWorks {
         }
         return false;
     }
+
+    public static Xtripestablish getTripEstablish(Xtrip xtr) throws RemoteException {
+        Xtripestablish xtre = null;
+        if (xtr != null) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, 
+                    "xtrip_id="+xtr.getXtripId()+" and ifnull(distance_loaded,0)=0", "xtripestablish_id");
+            if (recs.length>0) {
+                xtre = (Xtripestablish) recs[0];
+            }
+        }
+        return xtre;
+    }
+
+    public static Xtripestablish getTripDeEstablish(Xtrip xtr) throws RemoteException {
+        Xtripestablish xtre = null;
+        if (xtr != null) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, 
+                    "xtrip_id="+xtr.getXtripId()+" and ifnull(distance_loaded,0)<>0", "xtripestablish_id");
+            if (recs.length>0) {
+                xtre = (Xtripestablish) recs[0];
+            }
+        }
+        return xtre;
+    }
+
+    public static Xtripmoving getTripMove(Xtrip xtr) throws RemoteException {
+        Xtripmoving xtrm = null;
+        if (xtr != null) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripmoving.class, 
+                    "xtrip_id="+xtr.getXtripId(), "xtripmoving_id");
+            if (recs.length>0) {
+                xtrm = (Xtripmoving) recs[0];
+            }
+        }
+        return xtrm;
+    }
+    
 }

@@ -20,6 +20,7 @@ import com.xlend.orm.Xsite;
 import com.xlend.orm.Xtimesheet;
 import com.xlend.orm.Xtrip;
 import com.xlend.orm.Xtripestablish;
+import com.xlend.orm.Xtripexchange;
 import com.xlend.orm.Xtripmoving;
 import com.xlend.orm.Xwage;
 import com.xlend.orm.dbobject.ComboItem;
@@ -647,4 +648,15 @@ public class XlendWorks {
         return xtrm;
     }
     
+    public static Xtripexchange getTripExchange(Xtrip xtr) throws RemoteException {
+        Xtripexchange xtre = null;
+        if (xtr != null) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripexchange.class, 
+                    "xtrip_id="+xtr.getXtripId(), "xtripexchange_id");
+            if (recs.length>0) {
+                xtre = (Xtripexchange) recs[0];
+            }
+        }
+        return xtre;
+    }
 }

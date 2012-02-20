@@ -66,6 +66,7 @@ public class EditTripPanel extends RecordEditPanel {
     private RecordEditPanel establishPanel;
     private RecordEditPanel deEstablishPanel;
     private RecordEditPanel movingPanel;
+    private RecordEditPanel exchangePanel;
 
     public EditTripPanel(DbObject dbObject) {
         super(dbObject);
@@ -160,8 +161,12 @@ public class EditTripPanel extends RecordEditPanel {
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
-        //detailInfoPanel.add(new JButton("MOV"), detailPanelLabels[2]);
-        detailInfoPanel.add(new JButton("EXCH"), detailPanelLabels[3]);
+        try {
+            detailInfoPanel.add(exchangePanel = new EditTripExchangePanel(XlendWorks.getTripExchange(xtr)), detailPanelLabels[3]);
+            exchangePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[3]));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
 
         return detailInfoPanel;
     }
@@ -259,6 +264,7 @@ public class EditTripPanel extends RecordEditPanel {
             EditTripEstablishingPanel.setXtrip_id(xtr.getXtripId());
             EditTripDeEstablishingPanel.setXtrip_id(xtr.getXtripId());
             EditTripMovinganel.setXtrip_id(xtr.getXtripId());
+            EditTripExchangePanel.setXtrip_id(xtr.getXtripId());
             if (xtr.getTripType() < 2) {
                 if (xtr.getTripType() == 0) {
                     if (establishPanel.save()) {
@@ -277,8 +283,10 @@ public class EditTripPanel extends RecordEditPanel {
                     deleteEstablishInfo(xtr.getXtripId());
                 }
             } else if (xtr.getTripType() == 3) {
-                deleteMovingInfo(xtr.getXtripId());
-                deleteEstablishInfo(xtr.getXtripId());
+                if (exchangePanel.save()) {
+                    deleteMovingInfo(xtr.getXtripId());
+                    deleteEstablishInfo(xtr.getXtripId());
+                }
             }
         }
         return ok;

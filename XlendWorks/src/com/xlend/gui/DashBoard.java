@@ -5,7 +5,6 @@ import com.xlend.orm.Sheet;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
-import com.xlend.util.NoFrameButton;
 import com.xlend.util.TexturedPanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.BorderLayout;
@@ -26,12 +25,10 @@ import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.UIManager;
 
 /**

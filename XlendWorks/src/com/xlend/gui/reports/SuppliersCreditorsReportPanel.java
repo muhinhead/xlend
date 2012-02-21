@@ -5,16 +5,9 @@ import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JEditorPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JViewport;
 
 /**
  *

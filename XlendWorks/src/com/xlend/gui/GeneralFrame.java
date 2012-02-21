@@ -46,6 +46,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private ToolBarButton exitButton;
     private JToolBar toolBar;
     private ToolBarButton refreshButton;
+    private ToolBarButton printButton;
     private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
     private HashMap<GeneralReportPanel, String> reports = new HashMap<GeneralReportPanel, String>();
 
@@ -93,6 +94,8 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         statusLabel2.setText(" ");
         statusPanel.add(statusLabel2, BorderLayout.CENTER);
 
+        printButton = new ToolBarButton("print.png");
+        
         refreshButton = new ToolBarButton("refresh.png");
         refreshButton.setToolTipText("Refresh data");
         refreshButton.addActionListener(new AbstractAction() {
@@ -113,6 +116,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         });
 
         toolBar = new JToolBar();
+        toolBar.add(printButton);
         toolBar.add(refreshButton);
         toolBar.add(aboutButton);
         toolBar.add(exitButton);

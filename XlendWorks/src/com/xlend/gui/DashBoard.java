@@ -82,8 +82,10 @@ public class DashBoard extends JFrame {
 
     private void updateSheetList(String parentName, String[] sheetNames) {
         DbObject rec;
+        DbObject[] children;
+        DbObject[] sheets;
         try {
-            DbObject[] sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
+            sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
             Sheet sh;
             String[] names;
             int papa_id;
@@ -97,20 +99,24 @@ public class DashBoard extends JFrame {
             } else {
                 sh = (Sheet) sheets[0];
                 papa_id = sh.getSheetId();
-                for (int i = 1; i < sheets.length; i++) {
-                    rec = sheets[i];
-                    exchanger.deleteObject(rec);
+                for (int i = 1; i < sheets.length; i++) {//to remove duplicates
+                    exchanger.deleteObject(sheets[i]);
                 }
             }
             sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
-            if (sheets.length == 0) {
-                for (String s : sheetNames) {
+            for (String s : sheetNames) {
+                children = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id + " and sheetname='" + s + "'", null);
+                if (children.length == 0) {
                     sh = new Sheet(null);
                     sh.setSheetname(s);
                     sh.setParentId(papa_id);
                     sh.setSheetId(0);
                     sh.setNew(true);
                     exchanger.saveDbObject(sh);
+                } else {
+                    for (int i = 1; i < children.length; i++) {
+                        exchanger.deleteObject(children[i]);
+                    }
                 }
             }
         } catch (Exception ex) {

@@ -7,7 +7,7 @@ import com.xlend.orm.Usersheet;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.Xconsume;
 import com.xlend.orm.Xcontract;
-import com.xlend.orm.Xcreditor;
+//import com.xlend.orm.Xcreditor;
 import com.xlend.orm.Xemployee;
 //import com.xlend.orm.Xlicensestat;
 import com.xlend.orm.Xfuel;
@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Vector;
 import java.util.concurrent.Exchanger;
@@ -550,6 +551,39 @@ public class XlendWorks {
         return ans;
     }
 
+    public static double calcOutstandingAmtSumBetweenDays(IMessageSender exchanger, int xsupplier_id, int lastday1, int lastday2) {
+        double sum = 0.0;
+        Calendar started = Calendar.getInstance();
+        started.set(Calendar.HOUR_OF_DAY, 0);
+        started.set(Calendar.MINUTE, 0);
+        started.set(Calendar.SECOND, 0);
+        started.set(Calendar.MILLISECOND, 0);
+        long d;
+        try {
+            DbObject[] recs = exchanger.getDbObjects(Xconsume.class,
+                    "xsupplier_id=" + xsupplier_id + " and xpaidmethod_id=4", null);
+            for (DbObject rec : recs) {
+                Xconsume c = (Xconsume) rec;
+                d = (started.getTime().getTime() - c.getInvoicedate().getTime()) / (24 * 3600 * 1000);
+                if ((lastday1 == 0 || d < lastday1) && d >= lastday2) {
+                    sum += c.getAmountRands();
+                }
+            }
+            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="
+                    + xsupplier_id + " and (iscache is null or not iscache)", null);
+            for (DbObject rec : recs) {
+                Xfuel f = (Xfuel) rec;
+                d = (started.getTime().getTime() - f.getFdate().getTime()) / (24 * 3600 * 1000);
+                if ((lastday1 == 0 || d < lastday1) && d >= lastday2) {
+                    sum += f.getAmmount();
+                }
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return sum;
+    }
+
     public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id) {
         double sum = 0.0;
         try {
@@ -615,9 +649,9 @@ public class XlendWorks {
     public static Xtripestablish getTripEstablish(Xtrip xtr) throws RemoteException {
         Xtripestablish xtre = null;
         if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, 
-                    "xtrip_id="+xtr.getXtripId()+" and ifnull(distance_loaded,0)=0", "xtripestablish_id");
-            if (recs.length>0) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
+                    "xtrip_id=" + xtr.getXtripId() + " and ifnull(distance_loaded,0)=0", "xtripestablish_id");
+            if (recs.length > 0) {
                 xtre = (Xtripestablish) recs[0];
             }
         }
@@ -627,9 +661,9 @@ public class XlendWorks {
     public static Xtripestablish getTripDeEstablish(Xtrip xtr) throws RemoteException {
         Xtripestablish xtre = null;
         if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, 
-                    "xtrip_id="+xtr.getXtripId()+" and ifnull(distance_loaded,0)<>0", "xtripestablish_id");
-            if (recs.length>0) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
+                    "xtrip_id=" + xtr.getXtripId() + " and ifnull(distance_loaded,0)<>0", "xtripestablish_id");
+            if (recs.length > 0) {
                 xtre = (Xtripestablish) recs[0];
             }
         }
@@ -639,21 +673,21 @@ public class XlendWorks {
     public static Xtripmoving getTripMove(Xtrip xtr) throws RemoteException {
         Xtripmoving xtrm = null;
         if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripmoving.class, 
-                    "xtrip_id="+xtr.getXtripId(), "xtripmoving_id");
-            if (recs.length>0) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripmoving.class,
+                    "xtrip_id=" + xtr.getXtripId(), "xtripmoving_id");
+            if (recs.length > 0) {
                 xtrm = (Xtripmoving) recs[0];
             }
         }
         return xtrm;
     }
-    
+
     public static Xtripexchange getTripExchange(Xtrip xtr) throws RemoteException {
         Xtripexchange xtre = null;
         if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripexchange.class, 
-                    "xtrip_id="+xtr.getXtripId(), "xtripexchange_id");
-            if (recs.length>0) {
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripexchange.class,
+                    "xtrip_id=" + xtr.getXtripId(), "xtripexchange_id");
+            if (recs.length > 0) {
                 xtre = (Xtripexchange) recs[0];
             }
         }

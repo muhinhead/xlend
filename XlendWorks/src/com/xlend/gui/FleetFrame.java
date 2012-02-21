@@ -64,7 +64,7 @@ public class FleetFrame extends GeneralFrame {
     private JPanel getMachinesPanel() {
         if (machinesPanel == null) {
             try {
-                registerGrid(machinesPanel = new MachineGrid(exchanger));
+                registerGrid(machinesPanel = new MachineGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -76,7 +76,7 @@ public class FleetFrame extends GeneralFrame {
     private JPanel getTrackPanel() {
         if (trackPanel == null) {
             try {
-                registerGrid(trackPanel = new TrackGrid(exchanger));
+                registerGrid(trackPanel = new TrackGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -88,7 +88,7 @@ public class FleetFrame extends GeneralFrame {
     private JPanel getLowBedsPanel() {
         if (lowbedsPanel == null) {
             try {
-                registerGrid(lowbedsPanel = new LowBedGrid(exchanger));
+                registerGrid(lowbedsPanel = new LowBedGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

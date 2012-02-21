@@ -69,7 +69,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getSitesPanel() {
         if (sitesPanel == null) {
             try {
-                registerGrid(sitesPanel = new SitesGrid(exchanger));
+                registerGrid(sitesPanel = new SitesGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -81,7 +81,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getDieselPrchsPanel() {
         if (disprchsPanel == null) {
             try {
-                registerGrid(disprchsPanel = new DieselPurchaseGrid(exchanger));
+                registerGrid(disprchsPanel = new DieselPurchaseGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -93,7 +93,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getDieselCardsPanel() {
         if (dieselIsissPanel == null) {
             try {
-                registerGrid(dieselIsissPanel = new DieselCardsGrid(exchanger));
+                registerGrid(dieselIsissPanel = new DieselCardsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -105,7 +105,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getConsumablesPanel() {
         if (consumablesPanel == null) {
             try {
-                registerGrid(consumablesPanel = new ConsumablesGrid(exchanger));
+                registerGrid(consumablesPanel = new ConsumablesGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -117,7 +117,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getBreakdownsPanel() {
         if (breakdownsPanel == null) {
             try {
-                registerGrid(breakdownsPanel = new BreakdownsGrid(exchanger));
+                registerGrid(breakdownsPanel = new BreakdownsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -129,7 +129,7 @@ public class SitesFrame extends GeneralFrame {
     private JPanel getFuelPanel() {
         if (fuelPanel == null) {
             try {
-                registerGrid(fuelPanel = new FuelGrid(exchanger));
+                registerGrid(fuelPanel = new FuelGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

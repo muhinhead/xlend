@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
@@ -36,7 +37,7 @@ import javax.swing.event.ChangeListener;
  */
 public abstract class GeneralFrame extends JFrame implements WindowListener {
 
-    protected IMessageSender exchanger;
+    private IMessageSender exchanger;
     private JPanel statusPanel = new JPanel();
     private JLabel statusLabel1 = new JLabel();
     private JLabel statusLabel2 = new JLabel();
@@ -46,6 +47,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private JToolBar toolBar;
     private ToolBarButton refreshButton;
     private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
+    private HashMap<GeneralReportPanel, String> reports = new HashMap<GeneralReportPanel, String>();
 
     public GeneralFrame(String title, IMessageSender exch) {
         super(title);
@@ -137,10 +139,13 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {
-                updateGrid(exchanger, grid.getTableView(), grid.getTableDoc(), grids.get(grid),null);
+                updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid),null);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
+        }
+        for (GeneralReportPanel report : reports.keySet()) {
+            report.updateReport();
         }
     }
 
@@ -294,7 +299,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //    }
     protected DbTableGridPanel createAndRegisterGrid(String select,
             AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
-        DbTableGridPanel panel = createGridPanel(exchanger, select, add, edit, del, maxWidths);
+        DbTableGridPanel panel = createGridPanel(getExchanger(), select, add, edit, del, maxWidths);
         grids.put(panel, select);
         return panel;
     }
@@ -316,5 +321,17 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     protected void registerGrid(GeneralGridPanel grid) {
         grids.put(grid, grid.getSelect());
+    }
+    
+    protected void registerGrid(GeneralReportPanel repPanel) {
+        reports.put(repPanel, repPanel.toString());
+    }
+
+
+    /**
+     * @return the exchanger
+     */
+    public IMessageSender getExchanger() {
+        return exchanger;
     }
 }

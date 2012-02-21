@@ -70,7 +70,7 @@ public class DocFrame extends GeneralFrame {
     private JPanel getContractsPanel() {
         if (contractsPanel == null) {
             try {
-                registerGrid(contractsPanel = new ContractsGrid(exchanger));
+                registerGrid(contractsPanel = new ContractsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -82,7 +82,7 @@ public class DocFrame extends GeneralFrame {
     private Component getClientsPanel() {
         if (clientsPanel == null) {
             try {
-                registerGrid(clientsPanel = new ClientsGrid(exchanger));
+                registerGrid(clientsPanel = new ClientsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -94,7 +94,7 @@ public class DocFrame extends GeneralFrame {
     private Component getOrdersPanel() {
         if (ordersPanel == null) {
             try {
-                registerGrid(ordersPanel = new OrdersGrid(exchanger));
+                registerGrid(ordersPanel = new OrdersGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -106,7 +106,7 @@ public class DocFrame extends GeneralFrame {
     private Component getQuotasPanel() {
         if (quotasPanel == null) {
             try {
-                registerGrid(quotasPanel = new QuotationsGrid(exchanger));
+                registerGrid(quotasPanel = new QuotationsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -118,7 +118,7 @@ public class DocFrame extends GeneralFrame {
     private JPanel getSuppliersPanel() {
         if (suppliersPanel == null) {
             try {
-                registerGrid(suppliersPanel = new SuppliersGrid(exchanger));
+                registerGrid(suppliersPanel = new SuppliersGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -130,7 +130,7 @@ public class DocFrame extends GeneralFrame {
     private JPanel getPaymentsPanel() {
         if (paymentsPanel == null) {
             try {
-                registerGrid(paymentsPanel = new PaymentsGrid(exchanger));
+                registerGrid(paymentsPanel = new PaymentsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

@@ -60,7 +60,7 @@ public class HRFrame extends GeneralFrame {
     private JPanel getOperatorsPanel() {
         if (operatorsPanel == null) {
             try {
-                registerGrid(operatorsPanel = new EmployeesGrid(exchanger));
+                registerGrid(operatorsPanel = new EmployeesGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -72,7 +72,7 @@ public class HRFrame extends GeneralFrame {
     private JPanel getWeeklyWagesPanel() {
         if (weeklyWagesPanel == null) {
             try {
-                registerGrid(weeklyWagesPanel = new TimeSheetsGrid(exchanger));
+                registerGrid(weeklyWagesPanel = new TimeSheetsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -84,7 +84,7 @@ public class HRFrame extends GeneralFrame {
     private JPanel getWagesSummaryPanel() {
         if (wagesSummaryPanel == null) {
             try {
-                registerGrid(wagesSummaryPanel = new WagesGrid(exchanger));
+                registerGrid(wagesSummaryPanel = new WagesGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

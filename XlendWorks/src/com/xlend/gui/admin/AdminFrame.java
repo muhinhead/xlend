@@ -30,7 +30,7 @@ public class AdminFrame extends GeneralFrame {
     private JPanel getUsersPanel() {
         if (usersPanel == null) {
             try {
-                registerGrid(usersPanel = new UsersGrid(exchanger));
+                registerGrid(usersPanel = new UsersGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

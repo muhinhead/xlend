@@ -68,6 +68,7 @@ public class DashBoard extends JFrame {
     private GeneralFrame hrFrame = null;
     private GeneralFrame fleetFrame = null;
     private GeneralFrame adminFrame = null;
+    private GeneralFrame reportsFrame = null;
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
 
@@ -75,7 +76,7 @@ public class DashBoard extends JFrame {
         updateSheetList("DOCS", DocFrame.sheets());
         updateSheetList("SITES", SitesFrame.sheets());
         updateSheetList("HR", HRFrame.sheets());
-        updateSheetList("REPORTS", new String[]{});//ReportsFrame.sheets());
+        updateSheetList("REPORTS", ReportsFrame.sheets());
         updateSheetList("FLEET", FleetFrame.sheets());
     }
 
@@ -96,7 +97,7 @@ public class DashBoard extends JFrame {
             } else {
                 sh = (Sheet) sheets[0];
                 papa_id = sh.getSheetId();
-                for (int i=1; i<sheets.length; i++) {
+                for (int i = 1; i < sheets.length; i++) {
                     rec = sheets[i];
                     exchanger.deleteObject(rec);
                 }
@@ -261,11 +262,17 @@ public class DashBoard extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                GeneralFrame.notImplementedYet();
-//                JComboBox loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
-//                loginField.setEditable(true);
-//                JPasswordField pwdField = new JPasswordField(20);
-//                new LoginImagedDialog(new Object[]{loginField, pwdField, exchanger});
+//                GeneralFrame.notImplementedYet();
+                if (reportsFrame == null) {
+                    reportsFrame = new ReportsFrame(getExchanger());
+                } else {
+                    try {
+                        reportsFrame.setLookAndFeel(readProperty("LookAndFeel",
+                                UIManager.getSystemLookAndFeelClassName()));
+                    } catch (Exception ex) {
+                    }
+                    reportsFrame.setVisible(true);
+                }
             }
         });
 

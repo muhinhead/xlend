@@ -511,8 +511,8 @@ public class DbConnection {
                 "alter table xemployee add deceased bit",
                 "alter table xemployee add dismissed bit",
                 "alter table xemployee add absconded bit",
-                "drop table usersheet",
-                "drop table sheet",
+//                "drop table usersheet",
+//                "drop table sheet",
                 "drop table dual",
                 "create table dual (dummy char(1))",
                 "insert into dual values('A')",
@@ -657,7 +657,8 @@ public class DbConnection {
         + "    constraint xtripexchange_xsite_fk foreign key (xsite_id) references xsite,"
         + "    constraint xtripexchange_xmachine_fk foreign key (machine_id) references xmachine,"
         + "    constraint xtripexchange_xmachine_fk2 foreign key (withmachine_id) references xmachine"
-        + ")"
+        + ")",
+        "drop table xcreditor"
     };
 
     public static Connection getConnection() throws RemoteException {

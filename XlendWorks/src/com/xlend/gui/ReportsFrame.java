@@ -3,6 +3,12 @@ package com.xlend.gui;
 import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -15,24 +21,25 @@ public class ReportsFrame extends GeneralFrame {
     private static String[] sheetList = new String[]{
         "Supplier and Creditor"
     };
-    private GeneralReportPanel suppliersCreditorsPanel;
-    
+    private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
+    private JTabbedPane reportsTab;
+
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
     }
-     
+
     @Override
     protected String[] getSheetList() {
         return sheetList;
     }
-    
+
     public static String[] sheets() {
         return sheetList;
     }
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane reportsTab = new JTabbedPane();
+        reportsTab = new JTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             reportsTab.add(getSuppliersCreditorsPanel(), sheets()[0]);
         }
@@ -42,15 +49,24 @@ public class ReportsFrame extends GeneralFrame {
     private JPanel getSuppliersCreditorsPanel() {
         if (suppliersCreditorsPanel == null) {
             registerGrid(suppliersCreditorsPanel = new SuppliersCreditorsReportPanel(getExchanger()));
-//            try {
-//                registerGrid(disprchsPanel = new DieselPurchaseGrid(exchanger));
-//            } catch (RemoteException ex) {
-//                XlendWorks.log(ex);
-//                errMessageBox("Error:", ex.getMessage());
-//            }
         }
         return suppliersCreditorsPanel;
     }
 
-    
+    @Override
+    protected ActionListener getPrintAction() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (suppliersCreditorsPanel.getEditorPanel() != null) {
+                    try {
+                        suppliersCreditorsPanel.getEditorPanel().print();
+                    } catch (PrinterException ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            }
+        };
+    }
 }

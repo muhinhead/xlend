@@ -22,6 +22,7 @@ import javax.swing.JViewport;
  */
 public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     private double total;
+    private JEditorPane editorPanel;
 
     public SuppliersCreditorsReportPanel(IMessageSender exchanger) {
         super(exchanger);
@@ -31,13 +32,18 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     @Override
     public void updateReport() {
         removeAll();
+        editorPanel = null;
         JEditorPane p;
-        JScrollPane sp = new JScrollPane(p = getEditorPanel());
+        JScrollPane sp = new JScrollPane(p = createEditorPanel());
         add(sp, BorderLayout.CENTER);
         p.setCaretPosition(0);
     }
+    
+    public JEditorPane getEditorPanel() {
+        return editorPanel;
+    }
 
-    private JEditorPane getEditorPanel() {
+    private JEditorPane createEditorPanel() {
         StringBuffer html = new StringBuffer("<html>"
                 +"<table>"
                 + "<tr>"
@@ -59,8 +65,8 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 + "</table>"
                 +"</html>");
 
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        return ed;
+        editorPanel = new JEditorPane("text/html", html.toString());
+        return editorPanel;
     }
 
     private String getSupplierInfoHTML() {

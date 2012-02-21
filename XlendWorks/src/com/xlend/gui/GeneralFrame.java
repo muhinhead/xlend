@@ -95,6 +95,8 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         statusPanel.add(statusLabel2, BorderLayout.CENTER);
 
         printButton = new ToolBarButton("print.png");
+        printButton.setToolTipText("Print current tab");
+        printButton.addActionListener(getPrintAction());
         
         refreshButton = new ToolBarButton("refresh.png");
         refreshButton.setToolTipText("Refresh data");
@@ -337,5 +339,16 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
      */
     public IMessageSender getExchanger() {
         return exchanger;
+    }
+
+    protected ActionListener getPrintAction() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                notImplementedYet();
+            }
+            
+        };
     }
 }

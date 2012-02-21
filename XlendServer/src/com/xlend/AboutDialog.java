@@ -39,7 +39,7 @@ public class AboutDialog extends PopupDialog {
             }
         });
         
-        JLabel version = new JLabel("Version 0.23");
+        JLabel version = new JLabel("Version "+XlendServer.version);
         version.setBounds(270, 10, version.getPreferredSize().width, version.getPreferredSize().height);
         main.add(version);
         

@@ -7,7 +7,7 @@ CREAte cached table dbversion
     constraint dbversion_pk primary key (dbversion_id)
 );
 
-insert into dbversion values(1,15,'0.15');
+insert into dbversion values(1,17,'0.17');
 
 
 create cached table picture

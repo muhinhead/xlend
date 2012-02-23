@@ -52,16 +52,16 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 + Calendar.getInstance().getTime().toString() + "</td>"
                 + "</tr>"
                 + "</table>"
-                + "<table frame=\"abowe\" width=\"1000\"><tr bgcolor=\"#dedede\"><th align=\"left\">Supplier Name</th>"
-                + "<th width=\"10%\" align=\"right\">30 Days</th>"
-                + "<th width=\"10%\" align=\"right\">60 Days</th>"
-                + "<th width=\"10%\" align=\"right\">90 Days</th>"
-                + "<th width=\"10%\" align=\"right\">120 Days</th>"
-                + "<th width=\"10%\" align=\"right\">&gt 120</th>"
-                + "<th width=\"10%\" align=\"right\">Total</th>"
+                + "<table frame=\"abowe\" width=\"800\"><tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 90%; font-family: sans-serif\">Supplier Name</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">30 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">60 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">90 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">120 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">&gt 120</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">Total</th>"
                 + getSupplierInfoHTML()
                 + "</tr>"
-                + "<tr bgcolor=\"#dedede\"><th align=\"left\">Total:</th>"
+                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 90%; font-family: sans-serif\">Total:</th>"
                 + "<th align=\"right\" " + getColor(total30) + ">R " + stdFormat(total30) + "</th>"
                 + "<th align=\"right\" " + getColor(total60) + ">R " + stdFormat(total60) + "</th>"
                 + "<th align=\"right\" " + getColor(total90) + ">R " + stdFormat(total90) + "</th>"
@@ -72,11 +72,12 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 + "</html>");
 
         editorPanel = new JEditorPane("text/html", html.toString());
+//        editorPanel.setFont(editorPanel.getFont().deriveFont(1, (float) 8.0));
         return editorPanel;
     }
 
-    private String getColor(double sum) {
-        return (sum>0.0?"color=\"#ff0000\"":sum<0.0?"color=\"#0000ff\"":"");
+    private String getColor(double sum) {//style=\"font-size: 160%; font-family: sans-serif\"
+        return (sum>0.0?"color=\"#ff0000\"":sum<0.0?"color=\"#0000ff\"":"")+"style=\"font-size: 90%; font-family: arial\"";
     }
     
     private String getSupplierInfoHTML() {
@@ -89,7 +90,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 Xsupplier sup = (Xsupplier) rec;
                 int supplier_id = sup.getXsupplierId();
                 if (XlendWorks.calcOutstandingAmtSum(exchanger, sup.getXsupplierId()) != 0) {
-                    line = "<tr><td>" + sup.getCompanyname() + "</td>"
+                    line = "<tr><td style=\"font-size: 90%; font-family: sans-serif\">" + sup.getCompanyname() + "</td>"
                             + get30OutstandingAmount(supplier_id)
                             + get60OutstandingAmount(supplier_id)
                             + get90OutstandingAmount(supplier_id)

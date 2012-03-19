@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Vector;
 
 /**
@@ -134,10 +136,22 @@ public abstract class DbObject implements Serializable {
     }
 
     public static Date toDate(String yearMonthDay) {
-        int year = Integer.parseInt(yearMonthDay.substring(0, 4)) - 1900;
-        int month = Integer.parseInt(yearMonthDay.substring(5, 7)) - 1;
-        int day = Integer.parseInt(yearMonthDay.substring(8, 10));
-        return new Date(year, month, day);
+        Calendar cal = Calendar.getInstance();
+        cal.set(Integer.parseInt(yearMonthDay.substring(0, 4)), //year
+                Integer.parseInt(yearMonthDay.substring(5, 7)), //month
+                Integer.parseInt(yearMonthDay.substring(9, 11))); //sec
+        return new Date(cal.getTimeInMillis());
+    }
+
+    public static Timestamp toTimeStamp(String yearMonthDayHourMinuteSecond) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Integer.parseInt(yearMonthDayHourMinuteSecond.substring(0, 4)), //year
+                Integer.parseInt(yearMonthDayHourMinuteSecond.substring(5, 7)), //month
+                Integer.parseInt(yearMonthDayHourMinuteSecond.substring(9, 11)), //day
+                Integer.parseInt(yearMonthDayHourMinuteSecond.substring(13, 15)), //hour of day
+                Integer.parseInt(yearMonthDayHourMinuteSecond.substring(17, 19)), //minute
+                Integer.parseInt(yearMonthDayHourMinuteSecond.substring(21, 23))); //sec
+        return new Timestamp(cal.getTimeInMillis());
     }
 
     public static String[] splitStr(String line, String delim) {

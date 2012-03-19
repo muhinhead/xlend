@@ -23,6 +23,7 @@ public class DbTableDocument extends Document {
     private Vector colNames;
     private Connection connection;
     private static final String errDb = "Database error:";
+    private String filterText = null;
 
     public DbTableDocument(String name, Object[] body) {
         super(name);
@@ -99,14 +100,20 @@ public class DbTableDocument extends Document {
                 }
             }
             rs = ps.executeQuery();
+            boolean filtered = true;
             while (rs.next()) {
                 line = new Vector();
                 for (i = 1; i <= colNames.size(); i++) {
                     String ceil = rs.getString(i);
                     ceil = ceil == null ? "" : ceil;
+                    if (filterText != null && filterText.trim().length() > 0) {
+                        filtered = (ceil.toUpperCase().indexOf(filterText.toUpperCase()) >= 0);
+                    }
                     line.add(ceil);
                 }
-                rows.add(line);
+                if (filtered) {
+                    rows.add(line);
+                }
             }
         } catch (SQLException se) {
             JOptionPane.showMessageDialog(null, se.toString(), errDb, JOptionPane.ERROR_MESSAGE);
@@ -166,5 +173,9 @@ public class DbTableDocument extends Document {
 
     public Vector getRowData() {
         return rowData;
+    }
+
+    public void setFilter(String text) {
+        filterText = text;
     }
 }

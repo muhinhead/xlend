@@ -3,6 +3,7 @@ package com.xlend.mvc.dbtable;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.Document;
 import com.xlend.mvc.IView;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JTable;
@@ -25,15 +26,15 @@ public class DbTableView extends JTable implements IView, ITableView {
     private int idRowNum;
     private HashMap<Integer, Integer> maxColWidths = new HashMap<Integer, Integer>();
     private TableCellRenderer myCellRenderer = new MyColorRenderer(this);
+    private String string2find;
 
     public TableCellRenderer getCellRenderer(int row, int column) {
 //        return column > 0 ? myCellRenderer : super.getCellRenderer(row, column);
         return myCellRenderer;
     }
-
     protected AbstractTableModel tableModel =
             new AbstractTableModel() {
-                
+
                 private int colNumAdjusted(int col) {
                     if (idRowNum >= 0 && col >= idRowNum) {
                         return col + 1;
@@ -41,7 +42,7 @@ public class DbTableView extends JTable implements IView, ITableView {
                         return col;
                     }
                 }
-                
+
                 public void fireTableCellUpdated(int row, int col) {
                     super.fireTableCellUpdated(row, colNumAdjusted(col));
                 }
@@ -55,13 +56,13 @@ public class DbTableView extends JTable implements IView, ITableView {
                 }
 
                 public int getColumnCount() {
-                    return idRowNum >=0 ? (colName.size()-1) : 
-                            colName.size();
+                    return idRowNum >= 0 ? (colName.size() - 1)
+                            : colName.size();
                     ///return colName.size();
                 }
 
                 public boolean isCellEditable(int row, int col) {
-                    
+
                     return (getValueAt(row, col).getClass().equals(Boolean.class));
                 }
 
@@ -122,7 +123,7 @@ public class DbTableView extends JTable implements IView, ITableView {
         colName = (Vector) body[0];
         rowData = (Vector) body[1];
         idRowNum = -1;
-        for(int i=0; i<colName.size();i++) {
+        for (int i = 0; i < colName.size(); i++) {
             if (colName.get(i).equals("_ID")) {
                 idRowNum = i;
                 break;
@@ -164,6 +165,8 @@ public class DbTableView extends JTable implements IView, ITableView {
     public void gotoRow(int row) {
         if (row >= 0 && row < getRowCount()) {
             setSelectedRow(row);
+            Rectangle rect = getCellRect(row, 0, true);
+            scrollRectToVisible(rect);
             //@TODO: real selection with scrolling
             //selectionModel.setSelectionInterval(row, row);
         }
@@ -179,5 +182,30 @@ public class DbTableView extends JTable implements IView, ITableView {
 
     public Vector getRowData() {
         return rowData;
+    }
+
+    public void gotoFirstMatch(String find) {
+        Vector data = getRowData();
+        for (int row = 0; row < getRowCount(); row++) {
+            Vector line = (Vector) rowData.get(row);
+            for (int col = 0; col < line.size(); col++) {
+                String ceil = (String) line.get(col);
+                if (ceil.toUpperCase().indexOf(find.toUpperCase()) >= 0) {
+                    gotoRow(row);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setSearchString(String find) {
+        this.string2find = find;
+        gotoFirstMatch(find);
+    }
+
+    @Override
+    public String getSearchString() {
+        return string2find;
     }
 }

@@ -37,6 +37,7 @@ public class DbTableViewMarked extends JTable implements IView, ITableView {
     protected JPopupMenu pop;
     private HashMap<Integer, Integer> maxColWidths = new HashMap<Integer, Integer>();
     private TableCellRenderer myCellRenderer = new MyColorRenderer(this);
+    private String string2find;
 
     public TableCellRenderer getCellRenderer(int row, int column) {
         return column > 0 ? myCellRenderer : super.getCellRenderer(row, column);
@@ -351,5 +352,15 @@ public class DbTableViewMarked extends JTable implements IView, ITableView {
             Vector line = (Vector) r;
             line.add(0, new Boolean(false));
         }
+    }
+
+    @Override
+    public void setSearchString(String find) {
+        this.string2find = find;
+    }
+
+    @Override
+    public String getSearchString() {
+        return string2find;
     }
 }

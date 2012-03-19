@@ -16,6 +16,8 @@ import javax.swing.table.TableCellRenderer;
 public class MyColorRenderer extends JLabel implements TableCellRenderer {
 
     private Color stripColor = new Color(0, 0, 255, 16);
+    private Color searchStringColor = Color.BLUE;
+    private Color searchBackColor = Color.CYAN;
     private final ITableView tv;
 
     public MyColorRenderer(ITableView tv) {
@@ -35,8 +37,14 @@ public class MyColorRenderer extends JLabel implements TableCellRenderer {
             setText(value.toString());
         }
         this.setOpaque(true);
-        Color backColor = (row % 2 == 0 && !isSelected) ? stripColor : (isSelected ? table.getSelectionBackground() : table.getBackground());
-        Color foreColor = isSelected ? table.getSelectionForeground() : table.getForeground();
+        String searchStr = tv.getSearchString();
+        String ceilStr = (String) line.get(column);
+        boolean found = (searchStr != null && searchStr.length() > 0 && ceilStr.toUpperCase().indexOf(searchStr.toUpperCase())>=0);
+        Color backColor = (row % 2 == 0 && !isSelected) ? found ? searchBackColor : stripColor : (isSelected ? 
+                table.getSelectionBackground() 
+                : found ? searchBackColor : table.getBackground());
+        Color foreColor = isSelected ? found ? searchStringColor : table.getSelectionForeground() 
+                : found ? searchStringColor : table.getForeground();
         setBackground(backColor);
         setForeground(foreColor);
         return this;

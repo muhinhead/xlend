@@ -20,4 +20,7 @@ public interface ITableView {
     
     int getRowCount();
     
+    void setSearchString(String find);
+ 
+    String getSearchString();
 }

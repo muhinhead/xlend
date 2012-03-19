@@ -6,15 +6,21 @@ import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
+import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -23,6 +29,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -47,8 +55,14 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     private JToolBar toolBar;
     private ToolBarButton refreshButton;
     private ToolBarButton printButton;
+    private JToggleButton searchButton;
+//    private JToggleButton filterButton;
     private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
     private HashMap<GeneralReportPanel, String> reports = new HashMap<GeneralReportPanel, String>();
+    private JLabel srcLabel;
+    private JTextField srcField;
+//    private JLabel fltrLabel;
+//    private JTextField fltrField;
 
     public GeneralFrame(String title, IMessageSender exch) {
         super(title);
@@ -74,7 +88,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     }
 
     protected abstract String[] getSheetList();
-    
+
     public void setLookAndFeel(String lf) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException,
             UnsupportedLookAndFeelException {
@@ -97,7 +111,15 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         printButton = new ToolBarButton("print.png");
         printButton.setToolTipText("Print current tab");
         printButton.addActionListener(getPrintAction());
-        
+
+        searchButton = new JToggleButton(new ImageIcon(Util.loadImage("search.png")));
+        searchButton.setToolTipText("Search on fragment");
+        searchButton.addActionListener(getSearchAction());
+
+//        filterButton = new JToggleButton(new ImageIcon(Util.loadImage("filter.png")));
+//        filterButton.setToolTipText("Filter on fragment");
+//        filterButton.addActionListener(getFilterAction());
+
         refreshButton = new ToolBarButton("refresh.png");
         refreshButton.setToolTipText("Refresh data");
         refreshButton.addActionListener(new AbstractAction() {
@@ -118,22 +140,95 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         });
 
         toolBar = new JToolBar();
+        toolBar.add(searchButton);
+        toolBar.add(srcLabel = new JLabel("  Search for:"));
+        toolBar.add(srcField = new JTextField(20));
+        srcLabel.setVisible(false);
+        srcField.setVisible(false);
+        srcField.addKeyListener(getSrcFieldKeyListener());
+        srcField.setMaximumSize(srcField.getPreferredSize());
+
+//        toolBar.add(filterButton);
+//        toolBar.add(fltrLabel = new JLabel("  Filter on:"));
+//        toolBar.add(fltrField = new JTextField(20));
+//        fltrLabel.setVisible(false);
+//        fltrField.setVisible(false);
+//        fltrField.addKeyListener(getFilterFieldKeyListener());
+//        fltrField.setMaximumSize(fltrField.getPreferredSize());
+
         toolBar.add(printButton);
         toolBar.add(refreshButton);
         toolBar.add(aboutButton);
         toolBar.add(exitButton);
         aboutButton.setToolTipText("About program...");
+        aboutButton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AboutDialog();
+            }
+        });
+
         exitButton.setToolTipText("Close thiw window");
+
+
+
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
         mainPanel = getMainPanel();
         getContentPane().add(mainPanel, BorderLayout.CENTER);
+        mainPanel.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                searchButton.setSelected(false);
+                srcField.setText(null);
+                srcField.setVisible(false);
+                srcLabel.setVisible(false);
+//                fltrField.setText(null);
+//                fltrField.setVisible(false);
+//                fltrLabel.setVisible(false);
+                highlightFound();
+            }
+        });
 
         getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
         buildMenu();
 
     }
+
+    private KeyAdapter getSrcFieldKeyListener() {
+        return new KeyAdapter() {
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                highlightFound();
+            }
+        };
+    }
+
+    private void highlightFound() {
+        Component selectedPanel = mainPanel.getSelectedComponent();
+        if (selectedPanel instanceof GeneralGridPanel) {
+            GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
+            selectedGridPanel.highlightSearch(srcField.getText());
+        }
+    }
+
+//    private KeyAdapter getFilterFieldKeyListener() {
+//        return new KeyAdapter() {
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//                Component selectedPanel = mainPanel.getSelectedComponent();
+//                if (selectedPanel instanceof GeneralGridPanel) {
+//                    GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
+//                    selectedGridPanel.setFilter(fltrField.getText());
+//                }
+//            }
+//        };
+//    }
 
     public void setVisible(boolean b) {
         if (b) {
@@ -142,10 +237,34 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         super.setVisible(b);
     }
 
+    private ActionListener getSearchAction() {
+        return new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean pressed = searchButton.isSelected();
+                srcLabel.setVisible(pressed);
+                srcField.setVisible(pressed);
+            }
+        };
+    }
+
+//    private ActionListener getFilterAction() {
+//        return new ActionListener() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                boolean pressed = filterButton.isSelected();
+//                fltrLabel.setVisible(pressed);
+//                fltrField.setVisible(pressed);
+//            }
+//        };
+//    }
+
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {
-                updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid),null);
+                updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid), null);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -172,8 +291,9 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     public static void notImplementedYet() {
         errMessageBox("Sorry!", "Not implemented yet");
     }
+
     public static void notImplementedYet(String msg) {
-        errMessageBox("Sorry!", "Not implemented yet "+msg);
+        errMessageBox("Sorry!", "Not implemented yet " + msg);
     }
 
     public void setStatusLabel1Text(String lbl) {
@@ -193,21 +313,16 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         m.add(mi);
         bar.add(m);
 
+//        m = createMenu("Edit", "Edit operations");
+//        mi = createMenuItem("Find...", "Search on fragment");
+//        mi.addActionListener(getSearchAction());
+//        m.add(mi);
+//        bar.add(m);
+
         setJMenuBar(bar);
     }
 
     protected abstract JTabbedPane getMainPanel();
-//    {
-//        JTabbedPane workTab = new JTabbedPane();
-//        workTab.add(getContractsPanel(), "Contracts");
-//        //TODO: Quotas panel
-//        workTab.add(new JPanel(), "Quotas");
-//        //TODO: Orders panel
-//        workTab.add(new JPanel(), "Orders");
-//        workTab.add(getSitesPanel(), "Sites");
-//        workTab.add(getClientsPanel(), "Clients");
-//        return workTab;
-//    }
 
     protected JMenuItem createMenuItem(String label, String microHelp) {
         JMenuItem m = new JMenuItem(label);
@@ -242,14 +357,16 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
             DbTableView view, DbTableDocument doc, String select, Integer id)
             throws RemoteException {
         int row = view.getSelectedRow();
-        doc.setBody(exchanger.getTableBody(select));
-        view.getController().updateExcept(null);
-        if (id != null) {
-            DbTableGridPanel.selectRowOnId(view, id);
-        } else {
-            row = row < view.getRowCount() ? row : row - 1;
-            if (row >= 0 && row < view.getRowCount()) {
-                view.setRowSelectionInterval(row, row);
+        if (select != null) {
+            doc.setBody(exchanger.getTableBody(select));
+            view.getController().updateExcept(null);
+            if (id != null) {
+                DbTableGridPanel.selectRowOnId(view, id);
+            } else {
+                row = row < view.getRowCount() ? row : row - 1;
+                if (row >= 0 && row < view.getRowCount()) {
+                    view.setRowSelectionInterval(row, row);
+                }
             }
         }
     }
@@ -328,11 +445,10 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     protected void registerGrid(GeneralGridPanel grid) {
         grids.put(grid, grid.getSelect());
     }
-    
+
     protected void registerGrid(GeneralReportPanel repPanel) {
         reports.put(repPanel, repPanel.toString());
     }
-
 
     /**
      * @return the exchanger
@@ -348,7 +464,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
             public void actionPerformed(ActionEvent e) {
                 notImplementedYet();
             }
-            
         };
     }
 }

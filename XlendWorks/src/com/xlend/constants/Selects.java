@@ -230,21 +230,21 @@ public class Selects {
             + "sum(normaltime) \"Total Hours\",sum(overtime) \"Total Overtime\", sum(doubletime) \"Total Doubletime\" "
             + "from xwagesum,xwagesumitem "//,xemployee "
             + "where xwagesumitem.xwagesum_id=xwagesum.xwagesum_id group by xwagesum.xwagesum_id,weekend";//and xwagesumitem.xemployee_id=xemployee.xemployee_id";
-    public static String NOTFIXED_TIMESHEETDATES = 
+    public static final String NOTFIXED_TIMESHEETDATES = 
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
-    public static String SELECT_FROM_PAYMENTS =
+    public static final String SELECT_FROM_PAYMENTS =
             "Select xpayment_id \"Id\", companyname \"Supplier\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
             + "(select clock_num+' '+first_name from xemployee where xemployee_id=paydby_id) \"Payd By\" "
             + "from xpayment, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
             + "order by paydate desc";
-    public static String SELECT_SUPPLIERS_PAYMENTS = 
+    public static final String SELECT_SUPPLIERS_PAYMENTS = 
             "Select xpayment_id \"Id\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
             + "(select clock_num+' '+first_name from xemployee where xemployee_id=paydby_id) \"Payd By\" "
             + "from xpayment, cbitems "
             + "where cbitems.id=xpayment.paidfrom and xsupplier_id=# "
             + "order by paydate desc";
-    public static String SELECT_FROM_CREDITORS =
+    public static final String SELECT_FROM_CREDITORS =
             "Select xcreditor_id \"Id\", companyname \"Supplier\", accnum \"Account Nr.\", "
             + "(select invoicenumber from xconsume where xconsume_id=xc.xconsume_id) \"Invoice Nr.\", round(invoiceammount,2) \"Invoice Ammt.\", "
             + "paid \"Paid\", "
@@ -256,24 +256,30 @@ public class Selects {
             + " \"Outstanding Ammt.\" "
             + "from xcreditor xc, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xc.xsupplier_id and cbitems.name='paidfrom' and cbitems.id=ifnull(paidfrom,0)";
-    public static String SELECT_FROM_FUELS = 
+    public static final String SELECT_FROM_FUELS = 
             "Select xfuel_id \"Id\", ROUND(ammount,2) \"Amount\", "
             + "(Select name from xsite where xsite_id=xfuel.xsite_id) \"Site\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\", "
             + "(Select companyname from xsupplier where xsupplier_id=xfuel.xsupplier_id) \"Supplier\", iscache \"Cache\" "
             + "from xfuel";
-    public static String SELECT_SUPPLIERS_FUELS = 
+    public static final String SELECT_SUPPLIERS_FUELS = 
             "Select xfuel_id \"Id\", ROUND(ammount,2) \"Amount\", "
             + "(Select name from xsite where xsite_id=xfuel.xsite_id) \"Site\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedby_id) \"Issued By\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\" "
             + "from xfuel where xsupplier_id=#";
-    public static String SELECT_TRIPS = 
+    public static final String SELECT_TRIPS = 
             "Select xtrip_id \"Id\", trip_date,fromsite_id, tosite_id from xtrip where xlowbed_id=# order by trip_date desc";
+    public static final String SELECT_FROM_ABSENTEISM = 
+            "Select xabsenteeism_id \"Id\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xabsenteeism.xemployee_id) \"Employee\", "
+            + "absentdate \"Date\", "
+            + "(Select name from xsite where xsite_id=xabsenteeism.xsite_id) \"Site\", "
+            + "(Select classify+tmvnr from xmachine where xmachine_id=xabsenteeism.xmachine_id) \"Machine\" "
+            + "from xabsenteeism";
     
-    
-    public static String[] getStringArray(String select) {
+    public static final String[] getStringArray(String select) {
         try {
             Vector[] body = DashBoard.getExchanger().getTableBody(select);
             Vector lines = body[1];

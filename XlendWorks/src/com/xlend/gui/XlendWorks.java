@@ -36,7 +36,6 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Vector;
-import java.util.concurrent.Exchanger;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,7 +68,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.30";
+    public static final String version = "0.31";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;

@@ -81,7 +81,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             "With Vehicle:",
             "Repair Date:",
             "Problem Repaired?:",
-//            "Description of breakdown:",
+            //            "Description of breakdown:",
             "Operator at fault?:",
             "Operator Clock Number:",
             "Purchases for repair:",
@@ -135,7 +135,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
             getGridPanel(repairDateSP = new SelectedDateSpinner(), 3),
             getGridPanel(problemRepairedCb = new JCheckBox(), 3),
-//            descrOfBreakdownField = new JTextField(40),
+            //            descrOfBreakdownField = new JTextField(40),
             getGridPanel(operatorFaultCb = new JCheckBox(), 3),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
             comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
@@ -152,7 +152,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             getGridPanel(stayedOverCb = new JCheckBox(), 3),
             getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3),
             getGridPanel(new JComponent[]{invoiceNumberField = new JTextField(),
-                new JLabel("Amount:",SwingConstants.RIGHT),
+                new JLabel("Amount:", SwingConstants.RIGHT),
                 amountSP = new SelectedNumberSpinner(0.0, 0.0, 100000, .01)})
         };
         machineCB.addActionListener(getMachineCBaction());
@@ -209,7 +209,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
             invoiceNumberField.setText(xbr.getInvoicenumber());
-            amountSP.setValue(xbr.getAmount()==null?0:xbr.getAmount());
+            amountSP.setValue(xbr.getAmount() == null ? 0 : xbr.getAmount());
         }
         syncPurchases();
     }

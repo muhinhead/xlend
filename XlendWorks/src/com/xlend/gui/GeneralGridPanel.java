@@ -14,6 +14,7 @@ import javax.swing.AbstractAction;
 public abstract class GeneralGridPanel extends DbTableGridPanel {
 
     private String select;
+//    private String originalSelect;
     protected IMessageSender exchanger;
 
     public GeneralGridPanel(IMessageSender exchanger, String select,
@@ -37,6 +38,18 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         enableActions();
     }
 
+    protected void refresh() {
+        int id = getSelectedID();
+        if (id > 0) {
+            try {
+                GeneralFrame.updateGrid(exchanger, getTableView(),
+                        getTableDoc(), getSelect(), id);
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+            }
+        }
+    }
+
     /**
      * @return the select
      */
@@ -55,6 +68,21 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         boolean enableDelete = (XlendWorks.getCurrentUser().getManager() != null && XlendWorks.getCurrentUser().getManager() != 0);
         if (getDelAction() != null) {
             getDelAction().setEnabled(enableDelete);
+        }
+    }
+
+    void highlightSearch(String text) {
+        getTableView().setSearchString(text);
+        refresh();
+    }
+
+    void setFilter(String text) {
+        getTableDoc().setFilter(text);
+        try {
+            GeneralFrame.updateGrid(exchanger, getTableView(),
+                    getTableDoc(), getSelect(), null);
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
         }
     }
 }

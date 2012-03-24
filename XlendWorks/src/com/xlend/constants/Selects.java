@@ -278,6 +278,11 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xabsenteeism.xsite_id) \"Site\", "
             + "(Select classify+tmvnr from xmachine where xmachine_id=xabsenteeism.xmachine_id) \"Machine\" "
             + "from xabsenteeism";
+    public static final String SELECT_FROM_ISSUING = 
+            "Select xissuing_id \"Id\", issueddate \"Date\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xissuing.operator_id) \"Operator\", "
+            + "(Select classify+tmvnr from xmachine where xmachine_id=xissuing.xmachine_id) \"Machine\" "
+            + " from xissuing";
     
     public static final String[] getStringArray(String select) {
         try {

@@ -625,6 +625,11 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id=" + parent_id);
     }
 
+    public static ComboItem[] loadDistinctAccNames(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select distinct 0,accname from xaccounts");
+    }
+
+    
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "
                 + "from xmachine m, xmachtype t1 "

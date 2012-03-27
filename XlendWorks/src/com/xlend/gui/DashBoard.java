@@ -73,6 +73,7 @@ public class DashBoard extends JFrame {
     private GeneralFrame adminFrame = null;
     private GeneralFrame reportsFrame = null;
     private GeneralFrame logisticsFrame = null;
+    private GeneralFrame bankingFrame = null;
     
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
@@ -84,6 +85,7 @@ public class DashBoard extends JFrame {
         updateSheetList("REPORTS", ReportsFrame.sheets());
         updateSheetList("FLEET", FleetFrame.sheets());
         updateSheetList("LOGISTICS", LogisticsFrame.sheets());
+        updateSheetList("BANKING", BankingFrame.sheets());
     }
 
     private void updateSheetList(String parentName, String[] sheetNames) {
@@ -348,6 +350,22 @@ public class DashBoard extends JFrame {
                     } catch (Exception ex) {
                     }
                     logisticsFrame.setVisible(true);
+                }
+            }
+        });
+        
+        bankingbutton.addActionListener(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (bankingFrame == null) {
+                    bankingFrame = new BankingFrame(getExchanger());
+                } else {
+                    try {
+                        bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
+                                UIManager.getSystemLookAndFeelClassName()));
+                    } catch (Exception ex) {
+                    }
+                    bankingFrame.setVisible(true);
                 }
             }
         });

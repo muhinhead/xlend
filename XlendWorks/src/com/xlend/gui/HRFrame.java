@@ -5,7 +5,6 @@ import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.gui.hr.WagesGrid;
 import com.xlend.remote.IMessageSender;
-import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;

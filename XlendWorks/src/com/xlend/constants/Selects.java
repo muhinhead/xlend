@@ -292,6 +292,9 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xtripsheet.driver_id) \"Driver\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xtripsheet.authorized_id) \"Authorized By\" "
             + "from xtripsheet";
+    public static final String SELECT_FROM_ACCOUNTS =
+            "Select xaccount_id \"Id\", accname \"Name\", accnumber \"Number\", bank \"Bank\", branch \"Branch\" "
+            + "from xaccounts";
     
     public static final String[] getStringArray(String select) {
         try {

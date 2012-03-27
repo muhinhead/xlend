@@ -462,6 +462,10 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.PAYMETHODS);
     }
 
+    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
+    }
+    
     public static Image loadImage(String iconName, Window w) {
         Image im = null;
         File f = new File("images/" + iconName);

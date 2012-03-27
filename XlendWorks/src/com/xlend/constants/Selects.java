@@ -126,6 +126,10 @@ public class Selects {
             + "(select clock_num+' '+first_name from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
             + "from xlowbed, xmachine m, xmachtype t1 "
             + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
+    public static final String SELECT_LOWBEDS4LOOKUP = 
+            "Select xlowbed_id \"Id\", m.tmvnr+' ('+m.reg_nr+')' "
+            + "from xlowbed, xmachine m, xmachtype t1 "
+            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";            
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
@@ -283,6 +287,11 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xissuing.operator_id) \"Operator\", "
             + "(Select classify+tmvnr from xmachine where xmachine_id=xissuing.xmachine_id) \"Machine\" "
             + " from xissuing";
+    public static final String SELECT_FROM_TRIPSHEET =
+            "Select xtripsheet_id \"Id\", tripdate \"Trip Date\","
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xtripsheet.driver_id) \"Driver\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xtripsheet.authorized_id) \"Authorized By\" "
+            + "from xtripsheet";
     
     public static final String[] getStringArray(String select) {
         try {

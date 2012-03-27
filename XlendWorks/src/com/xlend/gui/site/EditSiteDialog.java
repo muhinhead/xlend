@@ -3,6 +3,7 @@ package com.xlend.gui.site;
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.Xsite;
+import com.xlend.orm.dbobject.DbObject;
 
 /**
  *
@@ -13,7 +14,7 @@ public class EditSiteDialog extends EditRecordDialog {
     public static boolean okPressed;
     public static Xorder xorder;
 
-    public EditSiteDialog(String title, Object obj) {
+    public EditSiteDialog(String title, DbObject obj) {
         super(title, obj);
     }
 

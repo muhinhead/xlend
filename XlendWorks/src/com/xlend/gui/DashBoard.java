@@ -59,7 +59,10 @@ public class DashBoard extends JFrame {
     private final JButton docsButton;
     private final JButton sitesButton;
     private final JButton hrbutton;
+    private final JButton partsbutton;
     private final JButton fleetbutton;
+    private final JButton logisticsButton;
+    private final JButton bankingbutton;
     private final JButton logoutButton;
     private JPanel controlsPanel;
     private final JLabel userLogin;
@@ -69,6 +72,8 @@ public class DashBoard extends JFrame {
     private GeneralFrame fleetFrame = null;
     private GeneralFrame adminFrame = null;
     private GeneralFrame reportsFrame = null;
+    private GeneralFrame logisticsFrame = null;
+    
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
 
@@ -78,6 +83,7 @@ public class DashBoard extends JFrame {
         updateSheetList("HR", HRFrame.sheets());
         updateSheetList("REPORTS", ReportsFrame.sheets());
         updateSheetList("FLEET", FleetFrame.sheets());
+        updateSheetList("LOGISTICS", LogisticsFrame.sheets());
     }
 
     private void updateSheetList(String parentName, String[] sheetNames) {
@@ -164,8 +170,8 @@ public class DashBoard extends JFrame {
         Insets insets = getInsets();
         int dashWidth = img.getWidth();
         int dashHeight = img.getHeight();
-        int yShift = 20;
-        int xShift = 10;
+        int yShift = 97;
+        int xShift = 20;
         this.setMinimumSize(new Dimension(dashWidth + insets.left + insets.right, dashHeight + insets.top + insets.bottom));
         layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -174,7 +180,7 @@ public class DashBoard extends JFrame {
 
         img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
-        adminButton.setBounds(xShift, yShift + 10, img.getWidth(), img.getHeight());
+        adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
@@ -182,38 +188,54 @@ public class DashBoard extends JFrame {
         sitesButton = new ToolBarButton("Sites.png");
         reportsButton = new ToolBarButton("Reports.png");
         hrbutton = new ToolBarButton("HR.png");
+        partsbutton = new ToolBarButton("Parts.png");
         fleetbutton = new ToolBarButton("Fleet.png");
-        logoutButton = new ToolBarButton("logoutsmall.png");
+        bankingbutton = new ToolBarButton("Banking.png");
+        logisticsButton = new ToolBarButton("Logistics.png");
+        logoutButton = new ToolBarButton("logout.png");
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
-        docsButton.setBounds(xShift, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
-        docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        docsButton.setBounds(32, 285, img.getWidth(), img.getHeight());
+//        docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(docsButton);
 
-        img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
-        sitesButton.setBounds((dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
-        sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
-        main.add(sitesButton);
-
-        img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
-        reportsButton.setBounds((dashWidth - img.getWidth()) / 2, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
-        reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
-        main.add(reportsButton);
-
         img = new ImagePanel(XlendWorks.loadImage("HR.png", this));
-        hrbutton.setBounds(3 * (dashWidth - img.getWidth()) / 4, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
-        hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        hrbutton.setBounds(192, 285, img.getWidth(), img.getHeight());
+//        hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(hrbutton);
 
+        img = new ImagePanel(XlendWorks.loadImage("Parts.png", this));
+        partsbutton.setBounds(352, 285, img.getWidth(), img.getHeight());
+//        partsbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(partsbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
+        sitesButton.setBounds(512, 285, img.getWidth(), img.getHeight());
+//        sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(sitesButton);
+
         img = new ImagePanel(XlendWorks.loadImage("Fleet.png", this));
-        fleetbutton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift, img.getWidth(), img.getHeight());
-        fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        fleetbutton.setBounds(672, 285, img.getWidth(), img.getHeight());
+//        fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
         main.add(fleetbutton);
 
-//        fleetbutton.setBounds(270, 220, img.getWidth(), img.getHeight());
-//        main.add(fleetbutton);
-        img = new ImagePanel(XlendWorks.loadImage("logoutsmall.png", this));
-        logoutButton.setBounds(dashWidth - img.getWidth() - xShift, yShift + 10, img.getWidth(), img.getHeight());
+        img = new ImagePanel(XlendWorks.loadImage("Banking.png", this));
+        bankingbutton.setBounds(166, 447, img.getWidth(), img.getHeight());
+//        bankingbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(bankingbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
+        reportsButton.setBounds(340, 447, img.getWidth(), img.getHeight());
+//        reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(reportsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Logistics.png", this));
+        logisticsButton.setBounds(490, 445, img.getWidth(), img.getHeight());
+//        logisticsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(logisticsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("logout.png", this));
+        logoutButton.setBounds(dashWidth - img.getWidth() - 76, 37, img.getWidth(), img.getHeight());
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {
@@ -314,6 +336,22 @@ public class DashBoard extends JFrame {
             }
         });
 
+        logisticsButton.addActionListener(new AbstractAction() {
+
+            public void actionPerformed(ActionEvent e) {
+                if (logisticsFrame == null) {
+                    logisticsFrame = new LogisticsFrame(getExchanger());
+                } else {
+                    try {
+                        logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
+                                UIManager.getSystemLookAndFeelClassName()));
+                    } catch (Exception ex) {
+                    }
+                    logisticsFrame.setVisible(true);
+                }
+            }
+        });
+
         logoutButton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
@@ -321,8 +359,6 @@ public class DashBoard extends JFrame {
                 saveProps();
                 if (XlendWorks.login(getExchanger())) {
                     userLogin.setText(XlendWorks.getCurrentUserLogin());
-//                    boolean isadmin = XlendWorks.isCurrentAdmin();
-//                    System.out.println("User "+XlendWorks.getCurrentUserLogin()+" is admin:"+isadmin);
                     adminButton.setVisible(XlendWorks.isCurrentAdmin());
                     setVisible(true);
                     repaint();
@@ -341,8 +377,12 @@ public class DashBoard extends JFrame {
         userLogin.setBounds(10, 30, 50, userLogin.getPreferredSize().height);
         main.add(userLogin);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(screenSize.width - getWidth() - 10, 10);
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        setLocation(screenSize.width - getWidth() - 10, 10);
+
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
+
         setResizable(false);
         setVisible(true);
         updateSheetList();

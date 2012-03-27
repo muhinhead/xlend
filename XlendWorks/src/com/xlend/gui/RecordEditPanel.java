@@ -151,6 +151,22 @@ public abstract class RecordEditPanel extends JPanel {
         return formatter;
     }
 
+    protected JComponent getBorderPanel(JComponent[] comps) {
+        JPanel ans = new JPanel(new BorderLayout());
+        if (comps != null && comps.length > 0) {
+            if (comps[0] != null) {
+                ans.add(comps[0], BorderLayout.WEST);
+            }
+            if (comps.length > 1 && comps[1] != null) {
+                ans.add(comps[1], BorderLayout.CENTER);
+            }
+            if (comps.length > 2 && comps[2] != null) {
+                ans.add(comps[2], BorderLayout.EAST);
+            }
+        }
+        return ans;
+    }
+
     protected JComponent getGridPanel(JComponent comp, int ceils) {
         JPanel ans = new JPanel(new GridLayout(1, ceils));
         ans.add(comp);
@@ -183,7 +199,7 @@ public abstract class RecordEditPanel extends JPanel {
 
     protected Integer getSelectedCbItem(JComboBox cb) {
         ComboItem ci = (ComboItem) cb.getSelectedItem();
-        return ci == null || ci.getId()==0 ? null : ci.getId();
+        return ci == null || ci.getId() == 0 ? null : ci.getId();
     }
 
     protected boolean saveDbRecord(DbObject dbOb, boolean isNew) {

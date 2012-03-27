@@ -135,7 +135,7 @@ public class EditIssuingPanel extends RecordEditPanel {
                 Util.addFocusSelectAllAction(daysSPs[i]);
             }
             timesSPs[i] = new SelectedDateSpinner();
-            timesSPs[i].setEditor(new JSpinner.DateEditor(timesSPs[i], "hh:mm:ss"));
+            timesSPs[i].setEditor(new JSpinner.DateEditor(timesSPs[i], "HH:mm:ss"));
             Util.addFocusSelectAllAction(timesSPs[i]);
             hourSPs[i] = new SelectedNumberSpinner(0, 0, Integer.MAX_VALUE, 1);
             hourSPs[i].setPreferredSize(daysSPs[0].getPreferredSize());
@@ -455,8 +455,8 @@ public class EditIssuingPanel extends RecordEditPanel {
         xi.setXmachineId(getSelectedCbItem(machineCB));
         xi.setXsiteId(getSelectedCbItem(siteCB));
         
-        TimeZone tz = TimeZone.getDefault();
-        long tdiff = tz.getRawOffset();
+//        TimeZone tz = TimeZone.getDefault();
+//        long tdiff = tz.getRawOffset();
         
         Date dt = (Date) dateSP.getValue();
         if (dt != null) {
@@ -465,37 +465,37 @@ public class EditIssuingPanel extends RecordEditPanel {
 
         dt = (Date) timesSPs[0].getValue();
         if (dt != null) {
-            xi.setTime1Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime1Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[2].getValue();
         if (dt != null) {
-            xi.setTime2Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime2Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[4].getValue();
         if (dt != null) {
-            xi.setTime3Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime3Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[6].getValue();
         if (dt != null) {
-            xi.setTime4Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime4Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[8].getValue();
         if (dt != null) {
-            xi.setTime5Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime5Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[10].getValue();
         if (dt != null) {
-            xi.setTime6Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime6Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) timesSPs[12].getValue();
         if (dt != null) {
-            xi.setTime7Start(new Timestamp(dt.getTime()+tdiff));
+            xi.setTime7Start(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
         }
 
         if (moreCBs[0].isSelected()) {
             dt = (Date) timesSPs[1].getValue();
             if (dt != null) {
-                xi.setTime1End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime1End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime1End(null);
@@ -503,7 +503,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[1].isSelected()) {
             dt = (Date) timesSPs[3].getValue();
             if (dt != null) {
-                xi.setTime2End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime2End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime2End(null);
@@ -511,7 +511,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[2].isSelected()) {
             dt = (Date) timesSPs[5].getValue();
             if (dt != null) {
-                xi.setTime3End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime3End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime3End(null);
@@ -519,7 +519,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[3].isSelected()) {
             dt = (Date) timesSPs[7].getValue();
             if (dt != null) {
-                xi.setTime4End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime4End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime4End(null);
@@ -527,7 +527,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[4].isSelected()) {
             dt = (Date) timesSPs[9].getValue();
             if (dt != null) {
-                xi.setTime5End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime5End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime5End(null);
@@ -535,7 +535,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[5].isSelected()) {
             dt = (Date) timesSPs[11].getValue();
             if (dt != null) {
-                xi.setTime6End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime6End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime6End(null);
@@ -543,7 +543,7 @@ public class EditIssuingPanel extends RecordEditPanel {
         if (moreCBs[6].isSelected()) {
             dt = (Date) timesSPs[13].getValue();
             if (dt != null) {
-                xi.setTime7End(new Timestamp(dt.getTime()+tdiff));
+                xi.setTime7End(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
             }
         } else {
             xi.setTime7End(null);

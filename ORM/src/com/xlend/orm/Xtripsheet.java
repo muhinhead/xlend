@@ -8,44 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xlowbed extends DbObject  {
+public class Xtripsheet extends DbObject  {
     private static Triggers activeTriggers = null;
+    private Integer xtripsheetId = null;
+    private Date tripdate = null;
     private Integer xlowbedId = null;
-    private Integer xmachineId = null;
     private Integer driverId = null;
-    private Integer assistantId = null;
+    private Integer authorizedId = null;
 
-    public Xlowbed(Connection connection) {
-        super(connection, "xlowbed", "xlowbed_id");
-        setColumnNames(new String[]{"xlowbed_id", "xmachine_id", "driver_id", "assistant_id"});
+    public Xtripsheet(Connection connection) {
+        super(connection, "xtripsheet", "xtripsheet_id");
+        setColumnNames(new String[]{"xtripsheet_id", "tripdate", "xlowbed_id", "driver_id", "authorized_id"});
     }
 
-    public Xlowbed(Connection connection, Integer xlowbedId, Integer xmachineId, Integer driverId, Integer assistantId) {
-        super(connection, "xlowbed", "xlowbed_id");
-        setNew(xlowbedId.intValue() <= 0);
-//        if (xlowbedId.intValue() != 0) {
-            this.xlowbedId = xlowbedId;
+    public Xtripsheet(Connection connection, Integer xtripsheetId, Date tripdate, Integer xlowbedId, Integer driverId, Integer authorizedId) {
+        super(connection, "xtripsheet", "xtripsheet_id");
+        setNew(xtripsheetId.intValue() <= 0);
+//        if (xtripsheetId.intValue() != 0) {
+            this.xtripsheetId = xtripsheetId;
 //        }
-        this.xmachineId = xmachineId;
+        this.tripdate = tripdate;
+        this.xlowbedId = xlowbedId;
         this.driverId = driverId;
-        this.assistantId = assistantId;
+        this.authorizedId = authorizedId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xlowbed xlowbed = null;
+        Xtripsheet xtripsheet = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xlowbed_id,xmachine_id,driver_id,assistant_id FROM xlowbed WHERE xlowbed_id=" + id;
+        String stmt = "SELECT xtripsheet_id,tripdate,xlowbed_id,driver_id,authorized_id FROM xtripsheet WHERE xtripsheet_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xlowbed = new Xlowbed(getConnection());
-                xlowbed.setXlowbedId(new Integer(rs.getInt(1)));
-                xlowbed.setXmachineId(new Integer(rs.getInt(2)));
-                xlowbed.setDriverId(new Integer(rs.getInt(3)));
-                xlowbed.setAssistantId(new Integer(rs.getInt(4)));
-                xlowbed.setNew(false);
+                xtripsheet = new Xtripsheet(getConnection());
+                xtripsheet.setXtripsheetId(new Integer(rs.getInt(1)));
+                xtripsheet.setTripdate(rs.getDate(2));
+                xtripsheet.setXlowbedId(new Integer(rs.getInt(3)));
+                xtripsheet.setDriverId(new Integer(rs.getInt(4)));
+                xtripsheet.setAuthorizedId(new Integer(rs.getInt(5)));
+                xtripsheet.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +57,7 @@ public class Xlowbed extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xlowbed;
+        return xtripsheet;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +66,29 @@ public class Xlowbed extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xlowbed ("+(getXlowbedId().intValue()!=0?"xlowbed_id,":"")+"xmachine_id,driver_id,assistant_id) values("+(getXlowbedId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xtripsheet ("+(getXtripsheetId().intValue()!=0?"xtripsheet_id,":"")+"tripdate,xlowbed_id,driver_id,authorized_id) values("+(getXtripsheetId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXlowbedId().intValue()!=0) {
-                 ps.setObject(++n, getXlowbedId());
+             if (getXtripsheetId().intValue()!=0) {
+                 ps.setObject(++n, getXtripsheetId());
              }
-             ps.setObject(++n, getXmachineId());
+             ps.setObject(++n, getTripdate());
+             ps.setObject(++n, getXlowbedId());
              ps.setObject(++n, getDriverId());
-             ps.setObject(++n, getAssistantId());
+             ps.setObject(++n, getAuthorizedId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXlowbedId().intValue()==0) {
-             stmt = "SELECT max(xlowbed_id) FROM xlowbed";
+         if (getXtripsheetId().intValue()==0) {
+             stmt = "SELECT max(xtripsheet_id) FROM xtripsheet";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXlowbedId(new Integer(rs.getInt(1)));
+                     setXtripsheetId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +114,15 @@ public class Xlowbed extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xlowbed " +
-                    "SET xmachine_id = ?, driver_id = ?, assistant_id = ?" + 
-                    " WHERE xlowbed_id = " + getXlowbedId();
+                    "UPDATE xtripsheet " +
+                    "SET tripdate = ?, xlowbed_id = ?, driver_id = ?, authorized_id = ?" + 
+                    " WHERE xtripsheet_id = " + getXtripsheetId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXmachineId());
-                ps.setObject(2, getDriverId());
-                ps.setObject(3, getAssistantId());
+                ps.setObject(1, getTripdate());
+                ps.setObject(2, getXlowbedId());
+                ps.setObject(3, getDriverId());
+                ps.setObject(4, getAuthorizedId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,44 +135,41 @@ public class Xlowbed extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xtripsheet.exists(getConnection(),"xlowbed_id = " + getXlowbedId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xtripsheet_xmachine_fk");
-        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from xtrip
-            Xtrip[] records = (Xtrip[])Xtrip.load(getConnection(),"xlowbed_id = " + getXlowbedId(),null);
+        {// delete cascade from xtripsheetpart
+            Xtripsheetpart[] records = (Xtripsheetpart[])Xtripsheetpart.load(getConnection(),"xtripsheet_id = " + getXtripsheetId(),null);
             for (int i = 0; i<records.length; i++) {
-                Xtrip xtrip = records[i];
-                xtrip.delete();
+                Xtripsheetpart xtripsheetpart = records[i];
+                xtripsheetpart.delete();
             }
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xlowbed " +
-                "WHERE xlowbed_id = " + getXlowbedId();
+                "DELETE FROM xtripsheet " +
+                "WHERE xtripsheet_id = " + getXtripsheetId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXlowbedId(new Integer(-getXlowbedId().intValue()));
+        setXtripsheetId(new Integer(-getXtripsheetId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXlowbedId().intValue() < 0);
+        return (getXtripsheetId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xlowbed_id,xmachine_id,driver_id,assistant_id FROM xlowbed " +
+        String stmt = "SELECT xtripsheet_id,tripdate,xlowbed_id,driver_id,authorized_id FROM xtripsheet " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -177,7 +179,7 @@ public class Xlowbed extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xlowbed(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),new Integer(rs.getInt(4))));
+                lst.add(dbObj=new Xtripsheet(con,new Integer(rs.getInt(1)),rs.getDate(2),new Integer(rs.getInt(3)),new Integer(rs.getInt(4)),new Integer(rs.getInt(5))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -187,10 +189,10 @@ public class Xlowbed extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xlowbed[] objects = new Xlowbed[lst.size()];
+        Xtripsheet[] objects = new Xtripsheet[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xlowbed xlowbed = (Xlowbed) lst.get(i);
-            objects[i] = xlowbed;
+            Xtripsheet xtripsheet = (Xtripsheet) lst.get(i);
+            objects[i] = xtripsheet;
         }
         return objects;
     }
@@ -202,7 +204,7 @@ public class Xlowbed extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xlowbed_id FROM xlowbed " +
+        String stmt = "SELECT xtripsheet_id FROM xtripsheet " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -220,29 +222,38 @@ public class Xlowbed extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXlowbedId() + getDelimiter();
+    //    return getXtripsheetId() + getDelimiter();
     //}
+
+    public Integer getXtripsheetId() {
+        return xtripsheetId;
+    }
+
+    public void setXtripsheetId(Integer xtripsheetId) throws ForeignKeyViolationException {
+        setWasChanged(this.xtripsheetId != null && this.xtripsheetId != xtripsheetId);
+        this.xtripsheetId = xtripsheetId;
+        setNew(xtripsheetId.intValue() == 0);
+    }
+
+    public Date getTripdate() {
+        return tripdate;
+    }
+
+    public void setTripdate(Date tripdate) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.tripdate != null && !this.tripdate.equals(tripdate));
+        this.tripdate = tripdate;
+    }
 
     public Integer getXlowbedId() {
         return xlowbedId;
     }
 
-    public void setXlowbedId(Integer xlowbedId) throws ForeignKeyViolationException {
-        setWasChanged(this.xlowbedId != null && this.xlowbedId != xlowbedId);
-        this.xlowbedId = xlowbedId;
-        setNew(xlowbedId.intValue() == 0);
-    }
-
-    public Integer getXmachineId() {
-        return xmachineId;
-    }
-
-    public void setXmachineId(Integer xmachineId) throws SQLException, ForeignKeyViolationException {
-        if (xmachineId!=null && !Xmachine.exists(getConnection(),"xmachine_id = " + xmachineId)) {
-            throw new ForeignKeyViolationException("Can't set xmachine_id, foreign key violation: xlowbed_xmachine_fk");
+    public void setXlowbedId(Integer xlowbedId) throws SQLException, ForeignKeyViolationException {
+        if (xlowbedId!=null && !Xlowbed.exists(getConnection(),"xlowbed_id = " + xlowbedId)) {
+            throw new ForeignKeyViolationException("Can't set xlowbed_id, foreign key violation: xtripsheet_xmachine_fk");
         }
-        setWasChanged(this.xmachineId != null && !this.xmachineId.equals(xmachineId));
-        this.xmachineId = xmachineId;
+        setWasChanged(this.xlowbedId != null && !this.xlowbedId.equals(xlowbedId));
+        this.xlowbedId = xlowbedId;
     }
 
     public Integer getDriverId() {
@@ -250,34 +261,31 @@ public class Xlowbed extends DbObject  {
     }
 
     public void setDriverId(Integer driverId) throws SQLException, ForeignKeyViolationException {
-        if (null != driverId)
-            driverId = driverId == 0 ? null : driverId;
         if (driverId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + driverId)) {
-            throw new ForeignKeyViolationException("Can't set driver_id, foreign key violation: xlowbed_xemployee_fk");
+            throw new ForeignKeyViolationException("Can't set driver_id, foreign key violation: xtripsheet_xemployee_fk");
         }
         setWasChanged(this.driverId != null && !this.driverId.equals(driverId));
         this.driverId = driverId;
     }
 
-    public Integer getAssistantId() {
-        return assistantId;
+    public Integer getAuthorizedId() {
+        return authorizedId;
     }
 
-    public void setAssistantId(Integer assistantId) throws SQLException, ForeignKeyViolationException {
-        if (null != assistantId)
-            assistantId = assistantId == 0 ? null : assistantId;
-        if (assistantId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + assistantId)) {
-            throw new ForeignKeyViolationException("Can't set assistant_id, foreign key violation: xlowbed_xemployee_fk2");
+    public void setAuthorizedId(Integer authorizedId) throws SQLException, ForeignKeyViolationException {
+        if (authorizedId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + authorizedId)) {
+            throw new ForeignKeyViolationException("Can't set authorized_id, foreign key violation: xtripsheet_xemployee_fk2");
         }
-        setWasChanged(this.assistantId != null && !this.assistantId.equals(assistantId));
-        this.assistantId = assistantId;
+        setWasChanged(this.authorizedId != null && !this.authorizedId.equals(authorizedId));
+        this.authorizedId = authorizedId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getXlowbedId();
-        columnValues[1] = getXmachineId();
-        columnValues[2] = getDriverId();
-        columnValues[3] = getAssistantId();
+        Object[] columnValues = new Object[5];
+        columnValues[0] = getXtripsheetId();
+        columnValues[1] = getTripdate();
+        columnValues[2] = getXlowbedId();
+        columnValues[3] = getDriverId();
+        columnValues[4] = getAuthorizedId();
         return columnValues;
     }
 
@@ -294,24 +302,25 @@ public class Xlowbed extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXlowbedId(Integer.parseInt(flds[0]));
+            setXtripsheetId(Integer.parseInt(flds[0]));
+        } catch(NumberFormatException ne) {
+            setXtripsheetId(null);
+        }
+        setTripdate(toDate(flds[1]));
+        try {
+            setXlowbedId(Integer.parseInt(flds[2]));
         } catch(NumberFormatException ne) {
             setXlowbedId(null);
         }
         try {
-            setXmachineId(Integer.parseInt(flds[1]));
-        } catch(NumberFormatException ne) {
-            setXmachineId(null);
-        }
-        try {
-            setDriverId(Integer.parseInt(flds[2]));
+            setDriverId(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
             setDriverId(null);
         }
         try {
-            setAssistantId(Integer.parseInt(flds[3]));
+            setAuthorizedId(Integer.parseInt(flds[4]));
         } catch(NumberFormatException ne) {
-            setAssistantId(null);
+            setAuthorizedId(null);
         }
     }
 }

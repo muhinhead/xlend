@@ -1,9 +1,6 @@
 package com.xlend.gui;
 
-import com.xlend.gui.site.FuelGrid;
-import com.xlend.gui.site.BreakdownsGrid;
-import com.xlend.gui.site.ConsumablesGrid;
-import com.xlend.gui.site.DieselPurchaseGrid;
+import com.xlend.gui.site.*;
 import com.xlend.gui.work.DieselCardsGrid;
 import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
@@ -25,8 +22,11 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel breakdownsPanel;
     private GeneralGridPanel fuelPanel;
     private GeneralGridPanel issuePanel;
+    private GeneralGridPanel siteDiaryPanel;
+    
     private static String[] sheetList = new String[]{
-        "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", "Fuel", "Issuing"
+        "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", 
+        "Fuel", "Issuing", "Site Diary"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -66,6 +66,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
             workTab.add(getIssuesPanel(), sheets()[6]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[7])) {
+            workTab.add(getSiteDiaryPanel(), sheets()[7]);
         }
         return workTab;
     }
@@ -142,7 +145,7 @@ public class SitesFrame extends GeneralFrame {
         return fuelPanel;
     }
 
-    private Component getIssuesPanel() {
+    private JPanel getIssuesPanel() {
         if (issuePanel == null) {
             try {
                 registerGrid(issuePanel = new IssueGrid(getExchanger()));
@@ -152,5 +155,17 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return issuePanel;
+    }
+
+    private JPanel getSiteDiaryPanel() {
+        if (siteDiaryPanel == null) {
+            try {
+                registerGrid(siteDiaryPanel = new SiteDiaryGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return siteDiaryPanel;
     }
 }

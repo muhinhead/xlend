@@ -2,6 +2,7 @@ package com.xlend.gui.site;
 
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.orm.Xissuing;
+import com.xlend.orm.dbobject.DbObject;
 
 /**
  *
@@ -10,7 +11,7 @@ import com.xlend.orm.Xissuing;
 public class EditIssuingDialog extends EditRecordDialog {
     public static boolean okPressed;
 
-    public EditIssuingDialog(String title, Object obj) {
+    public EditIssuingDialog(String title, DbObject obj) {
         super(title, obj);
     }
 

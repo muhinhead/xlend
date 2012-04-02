@@ -295,6 +295,11 @@ public class Selects {
     public static final String SELECT_FROM_ACCOUNTS =
             "Select xaccount_id \"Id\", accname \"Name\", accnumber \"Number\", bank \"Bank\", branch \"Branch\" "
             + "from xaccounts";
+    public static final String SELECT_FROM_SITE_DIARY = 
+            "Select xsitediary_id \"Id\", diarydate \"Date\", "
+            + "(Select name from xsite where xsite_id=xsitediary.xsite_id) \"Site\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xsitediary.manager_id) \"Manager\" "
+            + "from xsitediary";
     
     public static final String[] getStringArray(String select) {
         try {

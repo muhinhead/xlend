@@ -37,7 +37,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class LoginImagedDialog extends PopupDialog {
 
-    private static final String BACKGROUNDIMAGE = "Login.png";
+    private static final String BACKGROUNDIMAGE = "LoginScreen .png";//"Login.png";
 
     /**
      * @return the okPressed
@@ -94,9 +94,11 @@ public class LoginImagedDialog extends PopupDialog {
         layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
         getContentPane().add(layers, BorderLayout.CENTER);
 
-        loginField.setBounds(250, 262, 180, 27);
+        loginField.setBounds(290, 349, 225, 26);
+        loginField.setBorder(null);
         main.add(loginField);
-        pwdField.setBounds(250, 290, 180, 27);
+        pwdField.setBounds(290, 384, 225, 26);
+        pwdField.setBorder(null);
         main.add(pwdField);
 
         JButton okButton = new ToolBarButton("Lock.png");

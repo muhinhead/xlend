@@ -37,7 +37,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class LoginImagedDialog extends PopupDialog {
 
-    private static final String BACKGROUNDIMAGE = "LoginScreen .png";//"Login.png";
+    private static final String BACKGROUNDIMAGE = "Login.png";
 
     /**
      * @return the okPressed

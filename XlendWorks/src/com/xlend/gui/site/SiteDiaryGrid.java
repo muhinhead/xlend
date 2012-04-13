@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -27,33 +28,69 @@ public class SiteDiaryGrid extends GeneralGridPanel {
     public SiteDiaryGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_SITE_DIARY, maxWidths, false);
     }
-    
+
     @Override
     protected AbstractAction addAction() {
-return new AbstractAction("Add Record") {
+        return new AbstractAction("Add Record") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditSiteDiaryDialog ed = new EditSiteDiaryDialog("Add Record", null);
                     if (EditSiteDiaryDialog.okPressed) {
-                        Xsitediary xi = (Xsitediary) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xi.getXsitediaryId());
+                        Xsitediary xd = (Xsitediary) ed.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xd.getXsitediaryId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
-        };    }
+        };
+    }
 
     @Override
     protected AbstractAction editAction() {
-        return null;
+        return new AbstractAction("Edit Entry") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xsitediary xd = (Xsitediary) exchanger.loadDbObjectOnID(Xsitediary.class, id);
+                        new EditSiteDiaryDialog("Edit Record", xd);
+                        if (EditSiteDiaryDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(),
+                                    getTableDoc(), getSelect(), id);
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
     }
 
     @Override
     protected AbstractAction delAction() {
-        return null;
+       return new AbstractAction("Delete Entry") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                try {
+                    Xsitediary xd = (Xsitediary) exchanger.loadDbObjectOnID(Xsitediary.class, id);
+                    if (xd != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xd);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+            }
+        };
     }
 }

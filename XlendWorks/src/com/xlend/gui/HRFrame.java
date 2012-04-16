@@ -1,9 +1,6 @@
 package com.xlend.gui;
 
-import com.xlend.gui.hr.AbsenteismGrid;
-import com.xlend.gui.hr.EmployeesGrid;
-import com.xlend.gui.hr.TimeSheetsGrid;
-import com.xlend.gui.hr.WagesGrid;
+import com.xlend.gui.hr.*;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -19,10 +16,11 @@ public class HRFrame extends GeneralFrame {
     private TimeSheetsGrid weeklyWagesPanel;
     private WagesGrid wagesSummaryPanel;
     private AbsenteismGrid absenteismPanel;
+    private Application4LeaveGrid app4leavePanel;
     private static String[] sheetList = new String[]{
         "Employee Files", "Time Sheets", "Salaries", "Wages", 
         "Diciplinary Actions", "Rewards Program",
-        "Absenteism"
+        "Absenteism", "Application for Leave"
     };
 
     public HRFrame(IMessageSender exch) {
@@ -60,6 +58,9 @@ public class HRFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
             hrTab.add(getAbsenteismPanel(), sheets()[6]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[7])) {
+            hrTab.add(getApp4LeavePanel(), sheets()[7]);
         }
         return hrTab;
     }
@@ -110,5 +111,17 @@ public class HRFrame extends GeneralFrame {
             }
         }
         return absenteismPanel;
+    }
+
+    private JPanel getApp4LeavePanel() {
+        if (app4leavePanel == null) {
+            try {
+                registerGrid(app4leavePanel = new Application4LeaveGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return app4leavePanel;
     }
 }

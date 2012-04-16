@@ -300,6 +300,11 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xsitediary.xsite_id) \"Site\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xsitediary.manager_id) \"Manager\" "
             + "from xsitediary";
+    public static final String SELECT_FROM_APP4LEAVE =
+            "Select xappforleave_id \"Id\", appdate \"Date\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xappforleave.applicant_id) \"Applicant\","
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xappforleave.approvedby_id) \"Approved\" "
+            + "from xappforleave";
     
     public static final String[] getStringArray(String select) {
         try {

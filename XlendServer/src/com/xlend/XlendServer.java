@@ -184,9 +184,23 @@ public class XlendServer {
                     showLog();
                 }
             });
+            MenuItem miFix = new MenuItem("Recreate Site Diary tables");
+            miFix.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    recreateSiteDiary();
+                }
+
+                private void recreateSiteDiary() {
+                    DbConnection.recreateSiteDiary();
+                }
+            });
 
             popup.add(miLog);
             popup.add(miAbout);
+            
+            popup.add(miFix);
+            
             popup.addSeparator();
             popup.add(miExit);
             ti = new TrayIcon(icon, XLEND_SERVER, popup);

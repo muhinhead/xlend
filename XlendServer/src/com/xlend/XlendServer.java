@@ -34,7 +34,7 @@ import javax.swing.ImageIcon;
  */
 public class XlendServer {
 
-    public static final String version = "0.32";
+    public static final String version = "0.33";
     private static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

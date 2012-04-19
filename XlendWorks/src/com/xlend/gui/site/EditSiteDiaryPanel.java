@@ -189,6 +189,8 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 getContentPane().add(sp = new JScrollPane(ta,
                         JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                         JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+                ta.setWrapStyleWord(true);
+                ta.setLineWrap(true);
                 getContentPane().add(new JPanel(), BorderLayout.WEST);
                 getContentPane().add(new JPanel(), BorderLayout.EAST);
                 JPanel buttonPanel = new JPanel();
@@ -348,7 +350,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             }
             try {
                 DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xsitediarypart.class,
-                        "xsitediary_id="+xd.getXsitediaryId(),"xsitediarypart_id");
+                        "xsitediary_id=" + xd.getXsitediaryId(), "xsitediarypart_id");
                 for (DbObject rec : recs) {
                     childRows.add(new RowPanel((Xsitediarypart) rec));
                 }

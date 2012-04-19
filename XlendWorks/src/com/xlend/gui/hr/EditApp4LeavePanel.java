@@ -9,7 +9,10 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.awt.BorderLayout;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -23,8 +26,8 @@ public class EditApp4LeavePanel extends RecordEditPanel {
     private DefaultComboBoxModel approvedByCbModel;
     private JTextField idField;
     private JSpinner appDateSP;
-    private SelectedDateSpinner fromDateSP;
-    private SelectedDateSpinner toDateSP;
+    private JSpinner fromDateSP;
+    private JSpinner toDateSP;
     private JRadioButton sickRB;
     private JRadioButton annualRB;
     private JRadioButton specRB;
@@ -34,6 +37,8 @@ public class EditApp4LeavePanel extends RecordEditPanel {
     private JRadioButton notSignedRB;
     private JRadioButton approvedRB;
     private JRadioButton notApprovedRB;
+    private JTextArea remarksArea;
+    private EmployeeLookupAction approvedLookupAction;
 
     public EditApp4LeavePanel(DbObject dbObject) {
         super(dbObject);
@@ -74,11 +79,12 @@ public class EditApp4LeavePanel extends RecordEditPanel {
             getBorderPanel(new JComponent[]{specRB = new JRadioButton("Special Leave")}),
             getBorderPanel(new JComponent[]{unpaidRB = new JRadioButton("Unpaid Leave")}),
             getBorderPanel(new JComponent[]{getGridPanel(new JComponent[]{
-                signedRB = new JRadioButton("Y"), notSignedRB = new JRadioButton("No")})}),
+                    signedRB = new JRadioButton("Y"), notSignedRB = new JRadioButton("No")})}),
             getBorderPanel(new JComponent[]{
                 getGridPanel(new JComponent[]{approvedRB = new JRadioButton("Y"), notApprovedRB = new JRadioButton("No")}),
                 getBorderPanel(new JComponent[]{new JPanel(), new JLabel("Approved by:", SwingConstants.RIGHT),
-                    comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel), new EmployeeLookupAction(approvedByCB))})
+                    comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel),
+                    approvedLookupAction = new EmployeeLookupAction(approvedByCB))})
             })
         };
         for (JSpinner sp : new JSpinner[]{appDateSP, fromDateSP, toDateSP}) {
@@ -99,23 +105,112 @@ public class EditApp4LeavePanel extends RecordEditPanel {
 
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
+        JScrollPane sp = new JScrollPane(remarksArea = new JTextArea(8, 40),
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        remarksArea.setWrapStyleWord(true);
+        remarksArea.setLineWrap(true);
+        sp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Comments"));
+        add(sp, BorderLayout.CENTER);
+
+        approvedRB.addChangeListener(yesNoApprovedAction());
     }
 
     @Override
     public void loadData() {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        Xappforleave xl = (Xappforleave) getDbObject();
+        if (xl != null) {
+            idField.setText(xl.getXappforleaveId().toString());
+            if (xl.getAppdate() != null) {
+                appDateSP.setValue(new java.util.Date(xl.getAppdate().getTime()));
+            }
+            if (xl.getApplicantId() != null) {
+                selectComboItem(applicantCB, xl.getApplicantId());
+            }
+            if (xl.getApprovedbyId() != null) {
+                selectComboItem(approvedByCB, xl.getApprovedbyId());
+            }
+            if (xl.getDays() != null) {
+                totDaysSP.setValue(xl.getDays());
+            }
+            if (xl.getFromdate() != null) {
+                fromDateSP.setValue(new java.util.Date(xl.getFromdate().getTime()));
+            }
+            if (xl.getTodate() != null) {
+                toDateSP.setValue(new java.util.Date(xl.getTodate().getTime()));
+            }
+            sickRB.setSelected(xl.getIsSickleave() != null && xl.getIsSickleave() == 1);
+            annualRB.setSelected(xl.getIsAnnualleave() != null && xl.getIsAnnualleave() == 1);
+            specRB.setSelected(xl.getIsSpecialleave() != null && xl.getIsSpecialleave() == 1);
+            unpaidRB.setSelected(xl.getIsUnpaidleave() != null && xl.getIsUnpaidleave() == 1);
+            signedRB.setSelected(xl.getIsSigned() != null && xl.getIsSigned() == 1);
+            approvedRB.setSelected(xl.getIsApproved() != null && xl.getIsApproved() == 1);
+            notSignedRB.setSelected(!signedRB.isSelected());
+            notApprovedRB.setSelected(!approvedRB.isSelected());
+
+            remarksArea.setText(xl.getRemarks());
+        }
+        enableApprovedComboBox(approvedRB.isSelected());
     }
 
     @Override
     public boolean save() throws Exception {
-        Xappforleave xa = (Xappforleave) getDbObject();
+        Xappforleave xl = (Xappforleave) getDbObject();
         boolean isNew = false;
-        if (xa == null) {
-            xa = new Xappforleave(null);
-            xa.setXappforleaveId(0);
+        if (xl == null) {
+            xl = new Xappforleave(null);
+            xl.setXappforleaveId(0);
             isNew = true;
         }
+        java.util.Date dt = (java.util.Date) appDateSP.getValue();
+        if (dt != null) {
+            xl.setAppdate(new java.sql.Date(dt.getTime()));
+        }
+        xl.setApplicantId(getSelectedCbItem(applicantCB));
+        xl.setApprovedbyId(getSelectedCbItem(approvedByCB));
+        xl.setDays((Integer) totDaysSP.getValue());
+        dt = (java.util.Date) fromDateSP.getValue();
+        if (dt != null) {
+            xl.setFromdate(new java.sql.Date(dt.getTime()));
+        }
+        dt = (java.util.Date) toDateSP.getValue();
+        if (dt != null) {
+            xl.setTodate(new java.sql.Date(dt.getTime()));
+        }
+        xl.setIsAnnualleave(0);
+        xl.setIsSickleave(0);
+        xl.setIsSpecialleave(0);
+        xl.setIsUnpaidleave(0);
+        if (sickRB.isSelected()) {
+            xl.setIsSickleave(1);
+        } else if (annualRB.isSelected()) {
+            xl.setIsAnnualleave(1);
+        } else if (specRB.isSelected()) {
+            xl.setIsSpecialleave(1);
+        } else if (unpaidRB.isSelected()) {
+            xl.setIsUnpaidleave(1);
+        }
+        xl.setIsSigned(signedRB.isSelected() ? 1 : 0);
+        xl.setIsApproved(approvedRB.isSelected() ? 1 : 0);
+        xl.setRemarks(remarksArea.getText());
+        return saveDbRecord(xl, isNew);
+    }
 
-        return false;
+    private ChangeListener yesNoApprovedAction() {
+        return new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                enableApprovedComboBox(approvedRB.isSelected());
+            }
+        };
+    }
+
+    private void enableApprovedComboBox(boolean enable) {
+        approvedByCB.setEnabled(enable);
+        approvedLookupAction.setEnabled(enable);
+        if (!enable) {
+            approvedByCB.setSelectedIndex(0);
+        }
     }
 }

@@ -8,41 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Usersheet extends DbObject  {
+public class Xbankbalance extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer usersheetId = null;
-    private Integer profileId = null;
-    private Integer sheetId = null;
+    private Integer xbankbalanceId = null;
+    private Date balancedate = null;
+    private Double totalvalue = null;
 
-    public Usersheet(Connection connection) {
-        super(connection, "usersheet", "usersheet_id");
-        setColumnNames(new String[]{"usersheet_id", "profile_id", "sheet_id"});
+    public Xbankbalance(Connection connection) {
+        super(connection, "xbankbalance", "xbankbalance_id");
+        setColumnNames(new String[]{"xbankbalance_id", "balancedate", "totalvalue"});
     }
 
-    public Usersheet(Connection connection, Integer usersheetId, Integer profileId, Integer sheetId) {
-        super(connection, "usersheet", "usersheet_id");
-        setNew(usersheetId.intValue() <= 0);
-//        if (usersheetId.intValue() != 0) {
-            this.usersheetId = usersheetId;
+    public Xbankbalance(Connection connection, Integer xbankbalanceId, Date balancedate, Double totalvalue) {
+        super(connection, "xbankbalance", "xbankbalance_id");
+        setNew(xbankbalanceId.intValue() <= 0);
+//        if (xbankbalanceId.intValue() != 0) {
+            this.xbankbalanceId = xbankbalanceId;
 //        }
-        this.profileId = profileId;
-        this.sheetId = sheetId;
+        this.balancedate = balancedate;
+        this.totalvalue = totalvalue;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Usersheet usersheet = null;
+        Xbankbalance xbankbalance = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT usersheet_id,profile_id,sheet_id FROM usersheet WHERE usersheet_id=" + id;
+        String stmt = "SELECT xbankbalance_id,balancedate,totalvalue FROM xbankbalance WHERE xbankbalance_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                usersheet = new Usersheet(getConnection());
-                usersheet.setUsersheetId(new Integer(rs.getInt(1)));
-                usersheet.setProfileId(new Integer(rs.getInt(2)));
-                usersheet.setSheetId(new Integer(rs.getInt(3)));
-                usersheet.setNew(false);
+                xbankbalance = new Xbankbalance(getConnection());
+                xbankbalance.setXbankbalanceId(new Integer(rs.getInt(1)));
+                xbankbalance.setBalancedate(rs.getDate(2));
+                xbankbalance.setTotalvalue(rs.getDouble(3));
+                xbankbalance.setNew(false);
             }
         } finally {
             try {
@@ -51,7 +51,7 @@ public class Usersheet extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return usersheet;
+        return xbankbalance;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -60,27 +60,27 @@ public class Usersheet extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO usersheet ("+(getUsersheetId().intValue()!=0?"usersheet_id,":"")+"profile_id,sheet_id) values("+(getUsersheetId().intValue()!=0?"?,":"")+"?,?)";
+                "INSERT INTO xbankbalance ("+(getXbankbalanceId().intValue()!=0?"xbankbalance_id,":"")+"balancedate,totalvalue) values("+(getXbankbalanceId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getUsersheetId().intValue()!=0) {
-                 ps.setObject(++n, getUsersheetId());
+             if (getXbankbalanceId().intValue()!=0) {
+                 ps.setObject(++n, getXbankbalanceId());
              }
-             ps.setObject(++n, getProfileId());
-             ps.setObject(++n, getSheetId());
+             ps.setObject(++n, getBalancedate());
+             ps.setObject(++n, getTotalvalue());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getUsersheetId().intValue()==0) {
-             stmt = "SELECT max(usersheet_id) FROM usersheet";
+         if (getXbankbalanceId().intValue()==0) {
+             stmt = "SELECT max(xbankbalance_id) FROM xbankbalance";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setUsersheetId(new Integer(rs.getInt(1)));
+                     setXbankbalanceId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -106,13 +106,13 @@ public class Usersheet extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE usersheet " +
-                    "SET profile_id = ?, sheet_id = ?" + 
-                    " WHERE usersheet_id = " + getUsersheetId();
+                    "UPDATE xbankbalance " +
+                    "SET balancedate = ?, totalvalue = ?" + 
+                    " WHERE xbankbalance_id = " + getXbankbalanceId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getProfileId());
-                ps.setObject(2, getSheetId());
+                ps.setObject(1, getBalancedate());
+                ps.setObject(2, getTotalvalue());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -125,34 +125,37 @@ public class Usersheet extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (Xbankbalancepart.exists(getConnection(),"xbankbalance_id = " + getXbankbalanceId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xbankbalancepart_xbankbalance_fk");
+        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM usersheet " +
-                "WHERE usersheet_id = " + getUsersheetId();
+                "DELETE FROM xbankbalance " +
+                "WHERE xbankbalance_id = " + getXbankbalanceId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setUsersheetId(new Integer(-getUsersheetId().intValue()));
+        setXbankbalanceId(new Integer(-getXbankbalanceId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getUsersheetId().intValue() < 0);
+        return (getXbankbalanceId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT usersheet_id,profile_id,sheet_id FROM usersheet " +
+        String stmt = "SELECT xbankbalance_id,balancedate,totalvalue FROM xbankbalance " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -162,7 +165,7 @@ public class Usersheet extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Usersheet(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
+                lst.add(dbObj=new Xbankbalance(con,new Integer(rs.getInt(1)),rs.getDate(2),rs.getDouble(3)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -172,10 +175,10 @@ public class Usersheet extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Usersheet[] objects = new Usersheet[lst.size()];
+        Xbankbalance[] objects = new Xbankbalance[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Usersheet usersheet = (Usersheet) lst.get(i);
-            objects[i] = usersheet;
+            Xbankbalance xbankbalance = (Xbankbalance) lst.get(i);
+            objects[i] = xbankbalance;
         }
         return objects;
     }
@@ -187,7 +190,7 @@ public class Usersheet extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT usersheet_id FROM usersheet " +
+        String stmt = "SELECT xbankbalance_id FROM xbankbalance " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -205,47 +208,41 @@ public class Usersheet extends DbObject  {
     }
 
     //public String toString() {
-    //    return getUsersheetId() + getDelimiter();
+    //    return getXbankbalanceId() + getDelimiter();
     //}
 
-    public Integer getUsersheetId() {
-        return usersheetId;
+    public Integer getXbankbalanceId() {
+        return xbankbalanceId;
     }
 
-    public void setUsersheetId(Integer usersheetId) throws ForeignKeyViolationException {
-        setWasChanged(this.usersheetId != null && this.usersheetId != usersheetId);
-        this.usersheetId = usersheetId;
-        setNew(usersheetId.intValue() == 0);
+    public void setXbankbalanceId(Integer xbankbalanceId) throws ForeignKeyViolationException {
+        setWasChanged(this.xbankbalanceId != null && this.xbankbalanceId != xbankbalanceId);
+        this.xbankbalanceId = xbankbalanceId;
+        setNew(xbankbalanceId.intValue() == 0);
     }
 
-    public Integer getProfileId() {
-        return profileId;
+    public Date getBalancedate() {
+        return balancedate;
     }
 
-    public void setProfileId(Integer profileId) throws SQLException, ForeignKeyViolationException {
-        if (profileId!=null && !Userprofile.exists(getConnection(),"profile_id = " + profileId)) {
-            throw new ForeignKeyViolationException("Can't set profile_id, foreign key violation: usersheet_user_fk");
-        }
-        setWasChanged(this.profileId != null && !this.profileId.equals(profileId));
-        this.profileId = profileId;
+    public void setBalancedate(Date balancedate) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.balancedate != null && !this.balancedate.equals(balancedate));
+        this.balancedate = balancedate;
     }
 
-    public Integer getSheetId() {
-        return sheetId;
+    public Double getTotalvalue() {
+        return totalvalue;
     }
 
-    public void setSheetId(Integer sheetId) throws SQLException, ForeignKeyViolationException {
-        if (sheetId!=null && !Sheet.exists(getConnection(),"sheet_id = " + sheetId)) {
-            throw new ForeignKeyViolationException("Can't set sheet_id, foreign key violation: usersheet_sheet_fk");
-        }
-        setWasChanged(this.sheetId != null && !this.sheetId.equals(sheetId));
-        this.sheetId = sheetId;
+    public void setTotalvalue(Double totalvalue) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.totalvalue != null && !this.totalvalue.equals(totalvalue));
+        this.totalvalue = totalvalue;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[3];
-        columnValues[0] = getUsersheetId();
-        columnValues[1] = getProfileId();
-        columnValues[2] = getSheetId();
+        columnValues[0] = getXbankbalanceId();
+        columnValues[1] = getBalancedate();
+        columnValues[2] = getTotalvalue();
         return columnValues;
     }
 
@@ -262,19 +259,15 @@ public class Usersheet extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setUsersheetId(Integer.parseInt(flds[0]));
+            setXbankbalanceId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setUsersheetId(null);
+            setXbankbalanceId(null);
         }
+        setBalancedate(toDate(flds[1]));
         try {
-            setProfileId(Integer.parseInt(flds[1]));
+            setTotalvalue(Double.parseDouble(flds[2]));
         } catch(NumberFormatException ne) {
-            setProfileId(null);
-        }
-        try {
-            setSheetId(Integer.parseInt(flds[2]));
-        } catch(NumberFormatException ne) {
-            setSheetId(null);
+            setTotalvalue(null);
         }
     }
 }

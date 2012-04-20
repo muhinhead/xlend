@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.gui.banking.AccountsGrid;
+import com.xlend.gui.banking.BankBalanceGrid;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
@@ -15,9 +16,10 @@ public class BankingFrame extends GeneralFrame {
 
     private AccountsGrid bankAccountsPanel;
     private static String[] sheetList = new String[]{
-        "Accounts"
+        "Accounts", "Bank Balance"
     };
     private AccountsGrid accountsPanel;
+    private BankBalanceGrid balancePanel;
     
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
@@ -38,6 +40,9 @@ public class BankingFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             bankTab.add(getAccountsPanel(), sheets()[0]);
         }
+        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+            bankTab.add(getBalancePanel(), sheets()[1]);
+        }
         return bankTab;
     }
 
@@ -51,6 +56,18 @@ public class BankingFrame extends GeneralFrame {
             }
         }
         return accountsPanel;
+    }
+
+    private Component getBalancePanel() {
+         if (balancePanel == null) {
+            try {
+                registerGrid(balancePanel = new BankBalanceGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return balancePanel;
     }
     
 }

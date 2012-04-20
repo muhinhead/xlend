@@ -3,21 +3,23 @@ package com.xlend.gui.banking;
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.orm.Xaccounts;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.orm.Xbankbalance;
 
 /**
  *
  * @author Nick Mukhin
  */
-public class EditAccountDialog extends EditRecordDialog {
+class EditBalanceDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
-    public EditAccountDialog(String title, DbObject obj) {
+
+    public EditBalanceDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
-        super.fillContent(new EditAccountPanel((Xaccounts) getObject()));
+        super.fillContent(new EditBalancePanel((Xbankbalance) getObject()));
     }
 
     @Override

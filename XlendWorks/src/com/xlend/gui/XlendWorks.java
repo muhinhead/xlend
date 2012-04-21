@@ -629,6 +629,9 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select distinct 0,accname from xaccounts");
     }
 
+    public static ComboItem[] loadAllAccounts(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select xaccount_id,accname from xaccounts");
+    }
     
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "

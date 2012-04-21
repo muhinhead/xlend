@@ -296,7 +296,7 @@ public class Selects {
             "Select xaccount_id \"Id\", accname \"Name\", accnumber \"Number\", bank \"Bank\", branch \"Branch\" "
             + "from xaccounts";
     public static final String SELECT_FROM_BANKBALANCE = 
-            "Select xbankbalance_id \"Id\", balancedate \"Date/time\", totalvalue "
+            "Select xbankbalance_id \"Id\", to_char(balancedate,'DD/MM/YYYY HH24:MI') \"Date/time\", totalvalue "
             + "from xbankbalance order by balancedate";
     public static final String SELECT_FROM_SITE_DIARY = 
             "Select xsitediary_id \"Id\", diarydate \"Date\", "

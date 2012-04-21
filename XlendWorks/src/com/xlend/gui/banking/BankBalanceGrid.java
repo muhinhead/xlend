@@ -53,7 +53,7 @@ public class BankBalanceGrid extends GeneralGridPanel {
                     try {
                         Xbankbalance xbb = (Xbankbalance) exchanger.loadDbObjectOnID(Xbankbalance.class, id);
                         new EditBalanceDialog("Edit Balance", xbb);
-                        if (EditAccountDialog.okPressed) {
+                        if (EditBalanceDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
                         }
                     } catch (RemoteException ex) {

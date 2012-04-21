@@ -224,7 +224,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             "Date:",//   "Site",
             "Manager:",
             ""//Site Foreman:",
-        //""//"Foreman No:"
+            //""//"Foreman No:"
         };
         siteCbModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {

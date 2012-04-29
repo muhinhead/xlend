@@ -308,6 +308,12 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xappforleave.applicant_id) \"Applicant\","
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xappforleave.approvedby_id) \"Approved\" "
             + "from xappforleave";
+    public static final String SELECT_FROM_LOANS = 
+            "Select xloans_id \"Id\", to_char(loandate,'DD/MM/YYYY') \"Date\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.requestedby_id) \"Requested by\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.represent_id) \"Representative\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.authorizedby_id) \"Authorized by\", "
+            + "to_char(issueddate,'DD/MM/YYYY') \"Date issued\", amount \"Amount\" from xloans";
     
     public static final String[] getStringArray(String select) {
         try {

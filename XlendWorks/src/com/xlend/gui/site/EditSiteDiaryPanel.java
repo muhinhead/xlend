@@ -316,7 +316,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 }
                 if (toDelete.size() > 0) {
                     for (RowPanel p : toDelete) {
-
                         childRows.remove(p);
                     }
                     redrawRows();

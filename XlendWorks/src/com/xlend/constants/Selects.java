@@ -314,6 +314,10 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.represent_id) \"Representative\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.authorizedby_id) \"Authorized by\", "
             + "to_char(issueddate,'DD/MM/YYYY') \"Date issued\", amount \"Amount\" from xloans";
+    public static final String SELECT_FROM_INCIDENTS = 
+            "Select xincidents_id \"Id\", reportdate \"Date\", incidentdate \"Date of incident\", "
+            + "(Select name from xsite where xsite_id=xincidents.xsite_id) \"Site\", "
+            + "estimated_cost \"Estimated cost\", lost_income \"Lost income\" from xincidents";
     
     public static final String[] getStringArray(String select) {
         try {

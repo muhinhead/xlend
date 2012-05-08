@@ -23,10 +23,11 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel fuelPanel;
     private GeneralGridPanel issuePanel;
     private GeneralGridPanel siteDiaryPanel;
+    private GeneralGridPanel incidentsPanel;
     
     private static String[] sheetList = new String[]{
         "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", 
-        "Fuel", "Issuing", "Site Diary"
+        "Fuel", "Issuing", "Site Diary", "Incidents"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -69,6 +70,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[7])) {
             workTab.add(getSiteDiaryPanel(), sheets()[7]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[8])) {
+            workTab.add(getIncidentsPanel(), sheets()[8]);
         }
         return workTab;
     }
@@ -167,5 +171,17 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return siteDiaryPanel;
+    }
+
+    private Component getIncidentsPanel() {
+        if (incidentsPanel == null) {
+            try {
+                registerGrid(incidentsPanel = new IncidentsGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return incidentsPanel;
     }
 }

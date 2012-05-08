@@ -8,44 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Sheet extends DbObject  {
+public class Xemployeeincident extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer sheetId = null;
-    private String sheetname = null;
-    private String classname = null;
-    private Integer parentId = null;
+    private Integer xemployeeincidentId = null;
+    private Integer xincidentsId = null;
+    private Integer xemployeeId = null;
 
-    public Sheet(Connection connection) {
-        super(connection, "sheet", "sheet_id");
-        setColumnNames(new String[]{"sheet_id", "sheetname", "classname", "parent_id"});
+    public Xemployeeincident(Connection connection) {
+        super(connection, "xemployeeincident", "xemployeeincident_id");
+        setColumnNames(new String[]{"xemployeeincident_id", "xincidents_id", "xemployee_id"});
     }
 
-    public Sheet(Connection connection, Integer sheetId, String sheetname, String classname, Integer parentId) {
-        super(connection, "sheet", "sheet_id");
-        setNew(sheetId.intValue() <= 0);
-//        if (sheetId.intValue() != 0) {
-            this.sheetId = sheetId;
+    public Xemployeeincident(Connection connection, Integer xemployeeincidentId, Integer xincidentsId, Integer xemployeeId) {
+        super(connection, "xemployeeincident", "xemployeeincident_id");
+        setNew(xemployeeincidentId.intValue() <= 0);
+//        if (xemployeeincidentId.intValue() != 0) {
+            this.xemployeeincidentId = xemployeeincidentId;
 //        }
-        this.sheetname = sheetname;
-        this.classname = classname;
-        this.parentId = parentId;
+        this.xincidentsId = xincidentsId;
+        this.xemployeeId = xemployeeId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Sheet sheet = null;
+        Xemployeeincident xemployeeincident = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT sheet_id,sheetname,classname,parent_id FROM sheet WHERE sheet_id=" + id;
+        String stmt = "SELECT xemployeeincident_id,xincidents_id,xemployee_id FROM xemployeeincident WHERE xemployeeincident_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                sheet = new Sheet(getConnection());
-                sheet.setSheetId(new Integer(rs.getInt(1)));
-                sheet.setSheetname(rs.getString(2));
-                sheet.setClassname(rs.getString(3));
-                sheet.setParentId(new Integer(rs.getInt(4)));
-                sheet.setNew(false);
+                xemployeeincident = new Xemployeeincident(getConnection());
+                xemployeeincident.setXemployeeincidentId(new Integer(rs.getInt(1)));
+                xemployeeincident.setXincidentsId(new Integer(rs.getInt(2)));
+                xemployeeincident.setXemployeeId(new Integer(rs.getInt(3)));
+                xemployeeincident.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +51,7 @@ public class Sheet extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return sheet;
+        return xemployeeincident;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +60,27 @@ public class Sheet extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO sheet ("+(getSheetId().intValue()!=0?"sheet_id,":"")+"sheetname,classname,parent_id) values("+(getSheetId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xemployeeincident ("+(getXemployeeincidentId().intValue()!=0?"xemployeeincident_id,":"")+"xincidents_id,xemployee_id) values("+(getXemployeeincidentId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getSheetId().intValue()!=0) {
-                 ps.setObject(++n, getSheetId());
+             if (getXemployeeincidentId().intValue()!=0) {
+                 ps.setObject(++n, getXemployeeincidentId());
              }
-             ps.setObject(++n, getSheetname());
-             ps.setObject(++n, getClassname());
-             ps.setObject(++n, getParentId());
+             ps.setObject(++n, getXincidentsId());
+             ps.setObject(++n, getXemployeeId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getSheetId().intValue()==0) {
-             stmt = "SELECT max(sheet_id) FROM sheet";
+         if (getXemployeeincidentId().intValue()==0) {
+             stmt = "SELECT max(xemployeeincident_id) FROM xemployeeincident";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setSheetId(new Integer(rs.getInt(1)));
+                     setXemployeeincidentId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +106,13 @@ public class Sheet extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE sheet " +
-                    "SET sheetname = ?, classname = ?, parent_id = ?" + 
-                    " WHERE sheet_id = " + getSheetId();
+                    "UPDATE xemployeeincident " +
+                    "SET xincidents_id = ?, xemployee_id = ?" + 
+                    " WHERE xemployeeincident_id = " + getXemployeeincidentId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getSheetname());
-                ps.setObject(2, getClassname());
-                ps.setObject(3, getParentId());
+                ps.setObject(1, getXincidentsId());
+                ps.setObject(2, getXemployeeId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -133,38 +128,31 @@ public class Sheet extends DbObject  {
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from usersheet
-            Usersheet[] records = (Usersheet[])Usersheet.load(getConnection(),"sheet_id = " + getSheetId(),null);
-            for (int i = 0; i<records.length; i++) {
-                Usersheet usersheet = records[i];
-                usersheet.delete();
-            }
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM sheet " +
-                "WHERE sheet_id = " + getSheetId();
+                "DELETE FROM xemployeeincident " +
+                "WHERE xemployeeincident_id = " + getXemployeeincidentId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setSheetId(new Integer(-getSheetId().intValue()));
+        setXemployeeincidentId(new Integer(-getXemployeeincidentId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getSheetId().intValue() < 0);
+        return (getXemployeeincidentId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT sheet_id,sheetname,classname,parent_id FROM sheet " +
+        String stmt = "SELECT xemployeeincident_id,xincidents_id,xemployee_id FROM xemployeeincident " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -174,7 +162,7 @@ public class Sheet extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Sheet(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3),new Integer(rs.getInt(4))));
+                lst.add(dbObj=new Xemployeeincident(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -184,10 +172,10 @@ public class Sheet extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Sheet[] objects = new Sheet[lst.size()];
+        Xemployeeincident[] objects = new Xemployeeincident[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Sheet sheet = (Sheet) lst.get(i);
-            objects[i] = sheet;
+            Xemployeeincident xemployeeincident = (Xemployeeincident) lst.get(i);
+            objects[i] = xemployeeincident;
         }
         return objects;
     }
@@ -199,7 +187,7 @@ public class Sheet extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT sheet_id FROM sheet " +
+        String stmt = "SELECT xemployeeincident_id FROM xemployeeincident " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -217,53 +205,47 @@ public class Sheet extends DbObject  {
     }
 
     //public String toString() {
-    //    return getSheetId() + getDelimiter();
+    //    return getXemployeeincidentId() + getDelimiter();
     //}
 
-    public Integer getSheetId() {
-        return sheetId;
+    public Integer getXemployeeincidentId() {
+        return xemployeeincidentId;
     }
 
-    public void setSheetId(Integer sheetId) throws ForeignKeyViolationException {
-        setWasChanged(this.sheetId != null && this.sheetId != sheetId);
-        this.sheetId = sheetId;
-        setNew(sheetId.intValue() == 0);
+    public void setXemployeeincidentId(Integer xemployeeincidentId) throws ForeignKeyViolationException {
+        setWasChanged(this.xemployeeincidentId != null && this.xemployeeincidentId != xemployeeincidentId);
+        this.xemployeeincidentId = xemployeeincidentId;
+        setNew(xemployeeincidentId.intValue() == 0);
     }
 
-    public String getSheetname() {
-        return sheetname;
+    public Integer getXincidentsId() {
+        return xincidentsId;
     }
 
-    public void setSheetname(String sheetname) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.sheetname != null && !this.sheetname.equals(sheetname));
-        this.sheetname = sheetname;
+    public void setXincidentsId(Integer xincidentsId) throws SQLException, ForeignKeyViolationException {
+        if (xincidentsId!=null && !Xincidents.exists(getConnection(),"xincidents_id = " + xincidentsId)) {
+            throw new ForeignKeyViolationException("Can't set xincidents_id, foreign key violation: xemployeeincident_xincidents_fk");
+        }
+        setWasChanged(this.xincidentsId != null && !this.xincidentsId.equals(xincidentsId));
+        this.xincidentsId = xincidentsId;
     }
 
-    public String getClassname() {
-        return classname;
+    public Integer getXemployeeId() {
+        return xemployeeId;
     }
 
-    public void setClassname(String classname) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.classname != null && !this.classname.equals(classname));
-        this.classname = classname;
-    }
-
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) throws SQLException, ForeignKeyViolationException {
-        if (null != parentId)
-            parentId = parentId == 0 ? null : parentId;
-        setWasChanged(this.parentId != null && !this.parentId.equals(parentId));
-        this.parentId = parentId;
+    public void setXemployeeId(Integer xemployeeId) throws SQLException, ForeignKeyViolationException {
+        if (xemployeeId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + xemployeeId)) {
+            throw new ForeignKeyViolationException("Can't set xemployee_id, foreign key violation: xemployeeincident_xemployee_fk");
+        }
+        setWasChanged(this.xemployeeId != null && !this.xemployeeId.equals(xemployeeId));
+        this.xemployeeId = xemployeeId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getSheetId();
-        columnValues[1] = getSheetname();
-        columnValues[2] = getClassname();
-        columnValues[3] = getParentId();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getXemployeeincidentId();
+        columnValues[1] = getXincidentsId();
+        columnValues[2] = getXemployeeId();
         return columnValues;
     }
 
@@ -280,16 +262,19 @@ public class Sheet extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setSheetId(Integer.parseInt(flds[0]));
+            setXemployeeincidentId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setSheetId(null);
+            setXemployeeincidentId(null);
         }
-        setSheetname(flds[1]);
-        setClassname(flds[2]);
         try {
-            setParentId(Integer.parseInt(flds[3]));
+            setXincidentsId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setParentId(null);
+            setXincidentsId(null);
+        }
+        try {
+            setXemployeeId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setXemployeeId(null);
         }
     }
 }

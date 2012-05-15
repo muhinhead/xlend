@@ -12,7 +12,6 @@ import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.Dimension;
 import java.util.Date;
-import java.util.Enumeration;
 import javax.swing.*;
 
 /**

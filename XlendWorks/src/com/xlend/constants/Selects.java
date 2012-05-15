@@ -99,6 +99,10 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee order by clock_num";
+    public static final String SELECT_FROM_EMPLOYEE_EXCLUDING = 
+            "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
+            + "id_num \"ID Number\",first_name \"First Name\", "
+            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee where xemployee_id not in(#) order by clock_num";
     public static final String SELECT_FROM_TIMESHEET = 
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
@@ -318,6 +322,10 @@ public class Selects {
             "Select xincidents_id \"Id\", reportdate \"Date\", incidentdate \"Date of incident\", "
             + "(Select name from xsite where xsite_id=xincidents.xsite_id) \"Site\", "
             + "estimated_cost \"Estimated cost\", lost_income \"Lost income\" from xincidents";
+    public static final String SELECT_FROM_SALARYLISTS = 
+            "Select xsalarylist_id \"Id\", payday \"Date\", "
+            + "(Select sum(amount) from xsalary where xsalarylist_id=xsalarylist.xsalarylist_id) \"Total amount\" "
+            + "from xsalarylist order by payday desc";
     
     public static final String[] getStringArray(String select) {
         try {

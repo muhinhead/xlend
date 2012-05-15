@@ -244,7 +244,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB))
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(managerCB = new JComboBox(managerCbModel), new SiteLookupAction(managerCB)),
+                comboPanelWithLookupBtn(managerCB = new JComboBox(managerCbModel), new EmployeeLookupAction(managerCB)),
                 new JLabel("Site Foreman:", SwingConstants.RIGHT), siteForemanField = new JTextField()}),
             getGridPanel(new JComponent[]{getBorderPanel(new JComponent[]{new JButton(getAddLineAction()),
                     new JPanel(), new JButton(getDeleteLineAction())}),

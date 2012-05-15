@@ -68,7 +68,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.36";
+    public static final String version = "0.37";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -465,7 +465,12 @@ public class XlendWorks {
     public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
         return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
     }
-    
+
+    public static ComboItem loadEmployeeExcept(IMessageSender exchanger, String excepts) {
+        ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_EMPLOYEE_EXCLUDING.replace("#", excepts));
+        return (clist != null && clist.length > 0 ? clist[0] : null);
+    }
+
     public static Image loadImage(String iconName, Window w) {
         Image im = null;
         File f = new File("images/" + iconName);
@@ -632,7 +637,7 @@ public class XlendWorks {
     public static ComboItem[] loadAllAccounts(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select xaccount_id,accname from xaccounts");
     }
-    
+
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "
                 + "from xmachine m, xmachtype t1 "
@@ -640,11 +645,11 @@ public class XlendWorks {
     }
 
     /*
-     * Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
-    + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
-    + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
-    + "from xmachine m, xmachtype t1 "
-    + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
+     * Select xmachine_id \"Id\", tmvnr \"TMVnr\", " + "t1.machtype \"Machine
+     * Type\", reg_nr \"Reg.Nr\", " + "expdate \"License Exp.Date\",
+     * CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal'))
+     * \"License Status\" " + "from xmachine m, xmachtype t1 " + "where
+     * m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
      */
     public static boolean availableForCurrentUsder(String sheetName) {
         try {

@@ -18,10 +18,12 @@ public class HRFrame extends GeneralFrame {
     private AbsenteismGrid absenteismPanel;
     private Application4LeaveGrid app4leavePanel;
     private LoansGrid loansPanel;
+    private SalaryListsGrid salaryListPanel;
     private static String[] sheetList = new String[]{
         "Employee Files", "Time Sheets", "Salaries", "Wages", 
         "Diciplinary Actions", "Rewards Program",
-        "Absenteism", "Application for Leave","Loans"
+        "Absenteism", "Application for Leave","Loans",
+        "Salary lists"
     };
 
     public HRFrame(IMessageSender exch) {
@@ -65,6 +67,9 @@ public class HRFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[8])) {
             hrTab.add(getLoansPanel(), sheets()[8]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
+            hrTab.add(getSalaryListPanel(), sheets()[9]);
         }
         return hrTab;
     }
@@ -139,5 +144,17 @@ public class HRFrame extends GeneralFrame {
             }
         }
         return loansPanel;
+    }
+    
+    private JPanel getSalaryListPanel() {
+        if (salaryListPanel ==  null) {
+            try {
+                registerGrid(salaryListPanel = new SalaryListsGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return salaryListPanel;
     }
 }

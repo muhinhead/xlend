@@ -15,7 +15,7 @@ import javax.swing.JComboBox;
  */
 public class EmployeeLookupAction extends AbstractAction {
 
-    private JComboBox employeeCB;
+    protected JComboBox employeeCB;
 
     public EmployeeLookupAction(JComboBox cBox) {
         super("...");

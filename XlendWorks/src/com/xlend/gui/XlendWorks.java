@@ -207,7 +207,7 @@ public class XlendWorks {
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
         try {
             DbObject[] employees = exchanger.getDbObjects(Xemployee.class, null, "clock_num");
-            ComboItem[] itms = new ComboItem[employees.length + 1];
+            ComboItem[] itms = new ComboItem[employees.length];
             int i = 0;
             for (DbObject o : employees) {
                 Xemployee emp = (Xemployee) o;

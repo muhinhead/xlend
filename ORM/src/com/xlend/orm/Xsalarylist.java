@@ -8,44 +8,38 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xmachtype extends DbObject  {
+public class Xsalarylist extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xmachtypeId = null;
-    private String machtype = null;
-    private Integer parenttypeId = null;
-    private String classify = null;
+    private Integer xsalarylistId = null;
+    private Date payday = null;
 
-    public Xmachtype(Connection connection) {
-        super(connection, "xmachtype", "xmachtype_id");
-        setColumnNames(new String[]{"xmachtype_id", "machtype", "parenttype_id", "classify"});
+    public Xsalarylist(Connection connection) {
+        super(connection, "xsalarylist", "xsalarylist_id");
+        setColumnNames(new String[]{"xsalarylist_id", "payday"});
     }
 
-    public Xmachtype(Connection connection, Integer xmachtypeId, String machtype, Integer parenttypeId, String classify) {
-        super(connection, "xmachtype", "xmachtype_id");
-        setNew(xmachtypeId.intValue() <= 0);
-//        if (xmachtypeId.intValue() != 0) {
-            this.xmachtypeId = xmachtypeId;
+    public Xsalarylist(Connection connection, Integer xsalarylistId, Date payday) {
+        super(connection, "xsalarylist", "xsalarylist_id");
+        setNew(xsalarylistId.intValue() <= 0);
+//        if (xsalarylistId.intValue() != 0) {
+            this.xsalarylistId = xsalarylistId;
 //        }
-        this.machtype = machtype;
-        this.parenttypeId = parenttypeId;
-        this.classify = classify;
+        this.payday = payday;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xmachtype xmachtype = null;
+        Xsalarylist xsalarylist = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id,machtype,parenttype_id,classify FROM xmachtype WHERE xmachtype_id=" + id;
+        String stmt = "SELECT xsalarylist_id,payday FROM xsalarylist WHERE xsalarylist_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xmachtype = new Xmachtype(getConnection());
-                xmachtype.setXmachtypeId(new Integer(rs.getInt(1)));
-                xmachtype.setMachtype(rs.getString(2));
-                xmachtype.setParenttypeId(new Integer(rs.getInt(3)));
-                xmachtype.setClassify(rs.getString(4));
-                xmachtype.setNew(false);
+                xsalarylist = new Xsalarylist(getConnection());
+                xsalarylist.setXsalarylistId(new Integer(rs.getInt(1)));
+                xsalarylist.setPayday(rs.getDate(2));
+                xsalarylist.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +48,7 @@ public class Xmachtype extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xmachtype;
+        return xsalarylist;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +57,26 @@ public class Xmachtype extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xmachtype ("+(getXmachtypeId().intValue()!=0?"xmachtype_id,":"")+"machtype,parenttype_id,classify) values("+(getXmachtypeId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xsalarylist ("+(getXsalarylistId().intValue()!=0?"xsalarylist_id,":"")+"payday) values("+(getXsalarylistId().intValue()!=0?"?,":"")+"?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXmachtypeId().intValue()!=0) {
-                 ps.setObject(++n, getXmachtypeId());
+             if (getXsalarylistId().intValue()!=0) {
+                 ps.setObject(++n, getXsalarylistId());
              }
-             ps.setObject(++n, getMachtype());
-             ps.setObject(++n, getParenttypeId());
-             ps.setObject(++n, getClassify());
+             ps.setObject(++n, getPayday());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXmachtypeId().intValue()==0) {
-             stmt = "SELECT max(xmachtype_id) FROM xmachtype";
+         if (getXsalarylistId().intValue()==0) {
+             stmt = "SELECT max(xsalarylist_id) FROM xsalarylist";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXmachtypeId(new Integer(rs.getInt(1)));
+                     setXsalarylistId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +102,12 @@ public class Xmachtype extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xmachtype " +
-                    "SET machtype = ?, parenttype_id = ?, classify = ?" + 
-                    " WHERE xmachtype_id = " + getXmachtypeId();
+                    "UPDATE xsalarylist " +
+                    "SET payday = ?" + 
+                    " WHERE xsalarylist_id = " + getXsalarylistId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getMachtype());
-                ps.setObject(2, getParenttypeId());
-                ps.setObject(3, getClassify());
+                ps.setObject(1, getPayday());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,40 +120,41 @@ public class Xmachtype extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xorderitem.exists(getConnection(),"xmachtype_id = " + getXmachtypeId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xorderitem_xmachtype_fk");
-        }
-        if (Xmachine.exists(getConnection(),"xmachtype_id = " + getXmachtypeId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xmachine_xmachtype_fk");
-        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
+        {// delete cascade from xsalary
+            Xsalary[] records = (Xsalary[])Xsalary.load(getConnection(),"xsalarylist_id = " + getXsalarylistId(),null);
+            for (int i = 0; i<records.length; i++) {
+                Xsalary xsalary = records[i];
+                xsalary.delete();
+            }
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xmachtype " +
-                "WHERE xmachtype_id = " + getXmachtypeId();
+                "DELETE FROM xsalarylist " +
+                "WHERE xsalarylist_id = " + getXsalarylistId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXmachtypeId(new Integer(-getXmachtypeId().intValue()));
+        setXsalarylistId(new Integer(-getXsalarylistId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXmachtypeId().intValue() < 0);
+        return (getXsalarylistId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id,machtype,parenttype_id,classify FROM xmachtype " +
+        String stmt = "SELECT xsalarylist_id,payday FROM xsalarylist " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -173,7 +164,7 @@ public class Xmachtype extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xmachtype(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3)),rs.getString(4)));
+                lst.add(dbObj=new Xsalarylist(con,new Integer(rs.getInt(1)),rs.getDate(2)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -183,10 +174,10 @@ public class Xmachtype extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xmachtype[] objects = new Xmachtype[lst.size()];
+        Xsalarylist[] objects = new Xsalarylist[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xmachtype xmachtype = (Xmachtype) lst.get(i);
-            objects[i] = xmachtype;
+            Xsalarylist xsalarylist = (Xsalarylist) lst.get(i);
+            objects[i] = xsalarylist;
         }
         return objects;
     }
@@ -198,7 +189,7 @@ public class Xmachtype extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id FROM xmachtype " +
+        String stmt = "SELECT xsalarylist_id FROM xsalarylist " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -216,53 +207,31 @@ public class Xmachtype extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXmachtypeId() + getDelimiter();
+    //    return getXsalarylistId() + getDelimiter();
     //}
 
-    public Integer getXmachtypeId() {
-        return xmachtypeId;
+    public Integer getXsalarylistId() {
+        return xsalarylistId;
     }
 
-    public void setXmachtypeId(Integer xmachtypeId) throws ForeignKeyViolationException {
-        setWasChanged(this.xmachtypeId != null && this.xmachtypeId != xmachtypeId);
-        this.xmachtypeId = xmachtypeId;
-        setNew(xmachtypeId.intValue() == 0);
+    public void setXsalarylistId(Integer xsalarylistId) throws ForeignKeyViolationException {
+        setWasChanged(this.xsalarylistId != null && this.xsalarylistId != xsalarylistId);
+        this.xsalarylistId = xsalarylistId;
+        setNew(xsalarylistId.intValue() == 0);
     }
 
-    public String getMachtype() {
-        return machtype;
+    public Date getPayday() {
+        return payday;
     }
 
-    public void setMachtype(String machtype) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.machtype != null && !this.machtype.equals(machtype));
-        this.machtype = machtype;
-    }
-
-    public Integer getParenttypeId() {
-        return parenttypeId;
-    }
-
-    public void setParenttypeId(Integer parenttypeId) throws SQLException, ForeignKeyViolationException {
-        if (null != parenttypeId)
-            parenttypeId = parenttypeId == 0 ? null : parenttypeId;
-        setWasChanged(this.parenttypeId != null && !this.parenttypeId.equals(parenttypeId));
-        this.parenttypeId = parenttypeId;
-    }
-
-    public String getClassify() {
-        return classify;
-    }
-
-    public void setClassify(String classify) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.classify != null && !this.classify.equals(classify));
-        this.classify = classify;
+    public void setPayday(Date payday) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.payday != null && !this.payday.equals(payday));
+        this.payday = payday;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getXmachtypeId();
-        columnValues[1] = getMachtype();
-        columnValues[2] = getParenttypeId();
-        columnValues[3] = getClassify();
+        Object[] columnValues = new Object[2];
+        columnValues[0] = getXsalarylistId();
+        columnValues[1] = getPayday();
         return columnValues;
     }
 
@@ -279,16 +248,10 @@ public class Xmachtype extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXmachtypeId(Integer.parseInt(flds[0]));
+            setXsalarylistId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXmachtypeId(null);
+            setXsalarylistId(null);
         }
-        setMachtype(flds[1]);
-        try {
-            setParenttypeId(Integer.parseInt(flds[2]));
-        } catch(NumberFormatException ne) {
-            setParenttypeId(null);
-        }
-        setClassify(flds[3]);
+        setPayday(toDate(flds[1]));
     }
 }

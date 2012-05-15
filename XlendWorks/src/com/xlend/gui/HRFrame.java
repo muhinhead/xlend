@@ -22,8 +22,7 @@ public class HRFrame extends GeneralFrame {
     private static String[] sheetList = new String[]{
         "Employee Files", "Time Sheets", "Salaries", "Wages", 
         "Diciplinary Actions", "Rewards Program",
-        "Absenteism", "Application for Leave","Loans",
-        "Salary lists"
+        "Absenteism", "Application for Leave","Loans"
     };
 
     public HRFrame(IMessageSender exch) {
@@ -48,7 +47,7 @@ public class HRFrame extends GeneralFrame {
             hrTab.add(getWeeklyWagesPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
-            hrTab.add(new JPanel(), sheets()[2]);
+            hrTab.add(getSalaryListPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
             hrTab.add(getWagesSummaryPanel(), sheets()[3]);
@@ -68,9 +67,9 @@ public class HRFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUsder(sheets()[8])) {
             hrTab.add(getLoansPanel(), sheets()[8]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
-            hrTab.add(getSalaryListPanel(), sheets()[9]);
-        }
+//        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
+//            hrTab.add(getSalaryListPanel(), sheets()[9]);
+//        }
         return hrTab;
     }
 

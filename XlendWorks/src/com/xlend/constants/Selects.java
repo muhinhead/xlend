@@ -326,6 +326,12 @@ public class Selects {
             "Select xsalarylist_id \"Id\", payday \"Date\", "
             + "(Select sum(amount) from xsalary where xsalarylist_id=xsalarylist.xsalarylist_id) \"Total amount\" "
             + "from xsalarylist order by payday desc";
+    public static final String SELECT_FROM_OPCLOCKSHEET = 
+            "Select xopclocksheet_id \"Id\", to_char(sheet_date,'MM/YYYY') \"Month\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xopclocksheet.xemployee_id) \"Operator\", "
+            + "(Select name from xsite where xsite_id=xopclocksheet.xsite_id) \"Site\", "
+            + "(Select classify+tmvnr from xmachine where xmachine_id=xopclocksheet.xmachine_id) \"Machine/Truck\" "
+            + "from xopclocksheet";
     
     public static final String[] getStringArray(String select) {
         try {

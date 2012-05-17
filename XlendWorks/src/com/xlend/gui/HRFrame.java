@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.gui.hr.*;
 import com.xlend.remote.IMessageSender;
+import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -12,21 +13,24 @@ import javax.swing.JTabbedPane;
  */
 public class HRFrame extends GeneralFrame {
 
-    private EmployeesGrid operatorsPanel;
-    private TimeSheetsGrid weeklyWagesPanel;
-    private WagesGrid wagesSummaryPanel;
-    private AbsenteismGrid absenteismPanel;
-    private Application4LeaveGrid app4leavePanel;
-    private LoansGrid loansPanel;
-    private SalaryListsGrid salaryListPanel;
+    public static HRFrame instance;
+    private GeneralGridPanel operatorsPanel;
+    private GeneralGridPanel weeklyWagesPanel;
+    private GeneralGridPanel wagesSummaryPanel;
+    private GeneralGridPanel absenteismPanel;
+    private GeneralGridPanel app4leavePanel;
+    private GeneralGridPanel loansPanel;
+    private GeneralGridPanel salaryListPanel;
+    private GeneralGridPanel jobCardListrPanel;
     private static String[] sheetList = new String[]{
-        "Employee Files", "Time Sheets", "Salaries", "Wages", 
+        "Employee Files", "Time Sheets", "Salaries", "Wages",
         "Diciplinary Actions", "Rewards Program",
-        "Absenteism", "Application for Leave","Loans"
+        "Absenteism", "Application for Leave", "Loans", "Job Cards"
     };
 
     public HRFrame(IMessageSender exch) {
         super("HR", exch);
+        instance = this;
     }
 
     @Override
@@ -67,9 +71,9 @@ public class HRFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUsder(sheets()[8])) {
             hrTab.add(getLoansPanel(), sheets()[8]);
         }
-//        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
-//            hrTab.add(getSalaryListPanel(), sheets()[9]);
-//        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
+            hrTab.add(getОobCardListrPanel(), sheets()[9]);
+        }
         return hrTab;
     }
 
@@ -108,7 +112,7 @@ public class HRFrame extends GeneralFrame {
         }
         return wagesSummaryPanel;
     }
-    
+
     private JPanel getAbsenteismPanel() {
         if (absenteismPanel == null) {
             try {
@@ -132,9 +136,9 @@ public class HRFrame extends GeneralFrame {
         }
         return app4leavePanel;
     }
-    
+
     private JPanel getLoansPanel() {
-        if (loansPanel ==  null) {
+        if (loansPanel == null) {
             try {
                 registerGrid(loansPanel = new LoansGrid(getExchanger()));
             } catch (RemoteException ex) {
@@ -144,9 +148,9 @@ public class HRFrame extends GeneralFrame {
         }
         return loansPanel;
     }
-    
+
     private JPanel getSalaryListPanel() {
-        if (salaryListPanel ==  null) {
+        if (salaryListPanel == null) {
             try {
                 registerGrid(salaryListPanel = new SalaryListsGrid(getExchanger()));
             } catch (RemoteException ex) {
@@ -155,5 +159,17 @@ public class HRFrame extends GeneralFrame {
             }
         }
         return salaryListPanel;
+    }
+
+    private JPanel getОobCardListrPanel() {
+        if (jobCardListrPanel == null) {
+            try {
+                registerGrid(jobCardListrPanel = new JobCardGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return jobCardListrPanel;
     }
 }

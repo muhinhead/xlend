@@ -9,10 +9,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -172,6 +169,7 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
+        
         childRows = new ArrayList<SalaryPanel>();
         toDelete = new ArrayList<SalaryPanel>();
         String[] titles = new String[]{
@@ -303,7 +301,7 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
-        //TODO
+        HRFrame.instance.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         Xsalarylist xl = (Xsalarylist) getDbObject();
         if (xl != null) {
             idField.setText(xl.getXsalarylistId().toString());
@@ -321,6 +319,7 @@ class EditSalaryListPanel extends RecordEditPanel {
                 XlendWorks.log(ex);
             }
         }
+        HRFrame.instance.setCursor(Cursor.getDefaultCursor());
     }
 
     @Override

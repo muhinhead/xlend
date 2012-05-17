@@ -332,6 +332,10 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xopclocksheet.xsite_id) \"Site\", "
             + "(Select classify+tmvnr from xmachine where xmachine_id=xopclocksheet.xmachine_id) \"Machine/Truck\" "
             + "from xopclocksheet";
+    public static final String SELECT_FROM_JOBCARDS = 
+            "Select xjobcard_id \"Id\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xjobcard.xemployee_id) \"Name\", "
+            + "week_ending \"Week Ending\" from xjobcard";
     
     public static final String[] getStringArray(String select) {
         try {

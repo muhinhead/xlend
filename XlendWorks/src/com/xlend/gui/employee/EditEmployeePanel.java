@@ -31,24 +31,7 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-import javax.swing.SpinnerModel;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -59,6 +42,7 @@ import javax.swing.event.ChangeListener;
 class EditEmployeePanel extends EditPanelWithPhoto {
 
     private DefaultComboBoxModel positionCbModel;
+    private DefaultComboBoxModel wageCategoryDbModel;
     private JTextField idField;
     private JTextField clockNumField;
     private JTextField firstNameField;
@@ -87,6 +71,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner abscondedDateSP;
     private JCheckBox resignedCb;
     private JSpinner resignedDateSP;
+    private JComboBox wageCategoryCB;
+    private JTextField bankDetailsTF;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -95,9 +81,14 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         positionCbModel = new DefaultComboBoxModel();
+        wageCategoryDbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllPositions(DashBoard.getExchanger())) {
             positionCbModel.addElement(itm);
         }
+        for (ComboItem ci : XlendWorks.loadWageCategories(DashBoard.getExchanger())) {
+            wageCategoryDbModel.addElement(ci);
+        }
+        
         String[] titles = new String[]{
             "ID:", "Clock Number:", "Name:", "Surname:",
             "SA ID or Passport Number:", "Nickname:",
@@ -146,7 +137,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         setEndDateVisible(true);
 
         idField.setEditable(false);
-        organizePanels(16, 16);
+        organizePanels(17, 17);
         for (int i = 0; i < 6; i++) {
             lblPanel.add(labels[i]);
             if (i == 0 || i == 1 || i == 4 || i == 6) {
@@ -196,7 +187,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         editPanel.add(alt3);
 
         lblPanel.add(labels[17]);
-        editPanel.add(getGridPanel(edits[17], 4));
+
+        lblPanel.add(new JPanel());
+        lblPanel.add(new JPanel());
+        lblPanel.add(new JLabel("Bank Details:",SwingConstants.RIGHT));
+        
+        editPanel.add(getGridPanel(new JComponent[]{edits[17],
+            new JLabel("Wage category:",SwingConstants.RIGHT),
+            wageCategoryCB = new JComboBox(wageCategoryDbModel)}));
+        
+//        editPanel.add(wageCategoryCB = new JComboBox(wageCategoryDbModel));
 
         editPanel.add(getGridPanel(new JComponent[]{
                     deceasedCb = new JCheckBox("Deceased"),
@@ -211,6 +211,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     abscondedDateSP = new SelectedDateSpinner(),
                     resignedDateSP = new SelectedDateSpinner()
                 }));
+        editPanel.add(bankDetailsTF = new JTextField(40));
+                
         deceasedDateSP.setVisible(false);
         dismissedDateSP.setVisible(false);
         abscondedDateSP.setVisible(false);
@@ -306,8 +308,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             relation1Field.setText(emp.getRelation1());
             relation2Field.setText(emp.getRelation2());
             addressField.setText(emp.getAddress());
+            bankDetailsTF.setText(emp.getBankDetails());
             selectComboItem(positionCB, emp.getXpositionId());
             selectComboItem(contractLenCB, emp.getContractLen());
+            selectComboItem(wageCategoryCB, emp.getWageCategory());
             if (emp.getContractStart() != null) {
                 dt = new java.util.Date(emp.getContractStart().getTime());
                 contractStartSP.setValue(dt);
@@ -385,6 +389,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setAddress(addressField.getText());
                 emp.setClockNum(clockNumField.getText());
                 emp.setContractLen(((ComboItem) contractLenCB.getSelectedItem()).getId());
+                emp.setWageCategory(((ComboItem) wageCategoryCB.getSelectedItem()).getId());
                 if (emp.getContractLen() > 0) {
                     emp.setContractEnd(new java.sql.Date(((java.util.Date) contractEndSP.getValue()).getTime()));
                 } else {
@@ -436,6 +441,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setResignedDate(null);
                 }
+                emp.setBankDetails(bankDetailsTF.getText());
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));

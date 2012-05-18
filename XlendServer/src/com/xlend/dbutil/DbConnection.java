@@ -1130,7 +1130,13 @@ public class DbConnection {
         + "    constraint xjobcard_xmachine_fk37 foreign key (machine_id3_day7) references xmachine,"
         + "    constraint xjobcard_xmachine_fk47 foreign key (machine_id4_day7) references xmachine"
         + ")",
-        "delete from sheet where sheetname='Salary lists'"
+        "delete from sheet where sheetname='Salary lists'",
+        "alter table xemployee add wage_category int",
+        "alter table xemployee add bank_details varchar(512)",
+        "insert into cbitems values(7,'wage_category',1,'Xlend Salaries')",
+        "insert into cbitems values(8,'wage_category',2,'Xlend Wages')",
+        "insert into cbitems values(9,'wage_category',3,'T&F Wages')",
+        "insert into cbitems values(10,'wage_category',4,'Casual Wages')"
     };
 
     public static Connection getConnection() throws RemoteException {

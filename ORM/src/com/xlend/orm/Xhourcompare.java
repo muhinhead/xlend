@@ -8,50 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xtripestablish extends DbObject  {
+public class Xhourcompare extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xtripestablishId = null;
-    private Integer xtripId = null;
+    private Integer xhourcompareId = null;
+    private Date monthYear = null;
     private Integer xsiteId = null;
+    private Integer operatorId = null;
     private Integer xmachineId = null;
-    private Integer distanceEmpty = null;
-    private Integer distanceLoaded = null;
 
-    public Xtripestablish(Connection connection) {
-        super(connection, "xtripestablish", "xtripestablish_id");
-        setColumnNames(new String[]{"xtripestablish_id", "xtrip_id", "xsite_id", "xmachine_id", "distance_empty", "distance_loaded"});
+    public Xhourcompare(Connection connection) {
+        super(connection, "xhourcompare", "xhourcompare_id");
+        setColumnNames(new String[]{"xhourcompare_id", "month_year", "xsite_id", "operator_id", "xmachine_id"});
     }
 
-    public Xtripestablish(Connection connection, Integer xtripestablishId, Integer xtripId, Integer xsiteId, Integer xmachineId, Integer distanceEmpty, Integer distanceLoaded) {
-        super(connection, "xtripestablish", "xtripestablish_id");
-        setNew(xtripestablishId.intValue() <= 0);
-//        if (xtripestablishId.intValue() != 0) {
-            this.xtripestablishId = xtripestablishId;
+    public Xhourcompare(Connection connection, Integer xhourcompareId, Date monthYear, Integer xsiteId, Integer operatorId, Integer xmachineId) {
+        super(connection, "xhourcompare", "xhourcompare_id");
+        setNew(xhourcompareId.intValue() <= 0);
+//        if (xhourcompareId.intValue() != 0) {
+            this.xhourcompareId = xhourcompareId;
 //        }
-        this.xtripId = xtripId;
+        this.monthYear = monthYear;
         this.xsiteId = xsiteId;
+        this.operatorId = operatorId;
         this.xmachineId = xmachineId;
-        this.distanceEmpty = distanceEmpty;
-        this.distanceLoaded = distanceLoaded;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xtripestablish xtripestablish = null;
+        Xhourcompare xhourcompare = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xtripestablish_id,xtrip_id,xsite_id,xmachine_id,distance_empty,distance_loaded FROM xtripestablish WHERE xtripestablish_id=" + id;
+        String stmt = "SELECT xhourcompare_id,month_year,xsite_id,operator_id,xmachine_id FROM xhourcompare WHERE xhourcompare_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xtripestablish = new Xtripestablish(getConnection());
-                xtripestablish.setXtripestablishId(new Integer(rs.getInt(1)));
-                xtripestablish.setXtripId(new Integer(rs.getInt(2)));
-                xtripestablish.setXsiteId(new Integer(rs.getInt(3)));
-                xtripestablish.setXmachineId(new Integer(rs.getInt(4)));
-                xtripestablish.setDistanceEmpty(new Integer(rs.getInt(5)));
-                xtripestablish.setDistanceLoaded(new Integer(rs.getInt(6)));
-                xtripestablish.setNew(false);
+                xhourcompare = new Xhourcompare(getConnection());
+                xhourcompare.setXhourcompareId(new Integer(rs.getInt(1)));
+                xhourcompare.setMonthYear(rs.getDate(2));
+                xhourcompare.setXsiteId(new Integer(rs.getInt(3)));
+                xhourcompare.setOperatorId(new Integer(rs.getInt(4)));
+                xhourcompare.setXmachineId(new Integer(rs.getInt(5)));
+                xhourcompare.setNew(false);
             }
         } finally {
             try {
@@ -60,7 +57,7 @@ public class Xtripestablish extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xtripestablish;
+        return xhourcompare;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -69,30 +66,29 @@ public class Xtripestablish extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xtripestablish ("+(getXtripestablishId().intValue()!=0?"xtripestablish_id,":"")+"xtrip_id,xsite_id,xmachine_id,distance_empty,distance_loaded) values("+(getXtripestablishId().intValue()!=0?"?,":"")+"?,?,?,?,?)";
+                "INSERT INTO xhourcompare ("+(getXhourcompareId().intValue()!=0?"xhourcompare_id,":"")+"month_year,xsite_id,operator_id,xmachine_id) values("+(getXhourcompareId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXtripestablishId().intValue()!=0) {
-                 ps.setObject(++n, getXtripestablishId());
+             if (getXhourcompareId().intValue()!=0) {
+                 ps.setObject(++n, getXhourcompareId());
              }
-             ps.setObject(++n, getXtripId());
+             ps.setObject(++n, getMonthYear());
              ps.setObject(++n, getXsiteId());
+             ps.setObject(++n, getOperatorId());
              ps.setObject(++n, getXmachineId());
-             ps.setObject(++n, getDistanceEmpty());
-             ps.setObject(++n, getDistanceLoaded());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXtripestablishId().intValue()==0) {
-             stmt = "SELECT max(xtripestablish_id) FROM xtripestablish";
+         if (getXhourcompareId().intValue()==0) {
+             stmt = "SELECT max(xhourcompare_id) FROM xhourcompare";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXtripestablishId(new Integer(rs.getInt(1)));
+                     setXhourcompareId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -118,16 +114,15 @@ public class Xtripestablish extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xtripestablish " +
-                    "SET xtrip_id = ?, xsite_id = ?, xmachine_id = ?, distance_empty = ?, distance_loaded = ?" + 
-                    " WHERE xtripestablish_id = " + getXtripestablishId();
+                    "UPDATE xhourcompare " +
+                    "SET month_year = ?, xsite_id = ?, operator_id = ?, xmachine_id = ?" + 
+                    " WHERE xhourcompare_id = " + getXhourcompareId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXtripId());
+                ps.setObject(1, getMonthYear());
                 ps.setObject(2, getXsiteId());
-                ps.setObject(3, getXmachineId());
-                ps.setObject(4, getDistanceEmpty());
-                ps.setObject(5, getDistanceLoaded());
+                ps.setObject(3, getOperatorId());
+                ps.setObject(4, getXmachineId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -140,34 +135,37 @@ public class Xtripestablish extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (Xhourcompareday.exists(getConnection(),"xhourcompare_id = " + getXhourcompareId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xhourcompareday_xhourcompare_fk");
+        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xtripestablish " +
-                "WHERE xtripestablish_id = " + getXtripestablishId();
+                "DELETE FROM xhourcompare " +
+                "WHERE xhourcompare_id = " + getXhourcompareId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXtripestablishId(new Integer(-getXtripestablishId().intValue()));
+        setXhourcompareId(new Integer(-getXhourcompareId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXtripestablishId().intValue() < 0);
+        return (getXhourcompareId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xtripestablish_id,xtrip_id,xsite_id,xmachine_id,distance_empty,distance_loaded FROM xtripestablish " +
+        String stmt = "SELECT xhourcompare_id,month_year,xsite_id,operator_id,xmachine_id FROM xhourcompare " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -177,7 +175,7 @@ public class Xtripestablish extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xtripestablish(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),new Integer(rs.getInt(4)),new Integer(rs.getInt(5)),new Integer(rs.getInt(6))));
+                lst.add(dbObj=new Xhourcompare(con,new Integer(rs.getInt(1)),rs.getDate(2),new Integer(rs.getInt(3)),new Integer(rs.getInt(4)),new Integer(rs.getInt(5))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -187,10 +185,10 @@ public class Xtripestablish extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xtripestablish[] objects = new Xtripestablish[lst.size()];
+        Xhourcompare[] objects = new Xhourcompare[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xtripestablish xtripestablish = (Xtripestablish) lst.get(i);
-            objects[i] = xtripestablish;
+            Xhourcompare xhourcompare = (Xhourcompare) lst.get(i);
+            objects[i] = xhourcompare;
         }
         return objects;
     }
@@ -202,7 +200,7 @@ public class Xtripestablish extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xtripestablish_id FROM xtripestablish " +
+        String stmt = "SELECT xhourcompare_id FROM xhourcompare " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -220,29 +218,26 @@ public class Xtripestablish extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXtripestablishId() + getDelimiter();
+    //    return getXhourcompareId() + getDelimiter();
     //}
 
-    public Integer getXtripestablishId() {
-        return xtripestablishId;
+    public Integer getXhourcompareId() {
+        return xhourcompareId;
     }
 
-    public void setXtripestablishId(Integer xtripestablishId) throws ForeignKeyViolationException {
-        setWasChanged(this.xtripestablishId != null && this.xtripestablishId != xtripestablishId);
-        this.xtripestablishId = xtripestablishId;
-        setNew(xtripestablishId.intValue() == 0);
+    public void setXhourcompareId(Integer xhourcompareId) throws ForeignKeyViolationException {
+        setWasChanged(this.xhourcompareId != null && this.xhourcompareId != xhourcompareId);
+        this.xhourcompareId = xhourcompareId;
+        setNew(xhourcompareId.intValue() == 0);
     }
 
-    public Integer getXtripId() {
-        return xtripId;
+    public Date getMonthYear() {
+        return monthYear;
     }
 
-    public void setXtripId(Integer xtripId) throws SQLException, ForeignKeyViolationException {
-        if (xtripId!=null && !Xtrip.exists(getConnection(),"xtrip_id = " + xtripId)) {
-            throw new ForeignKeyViolationException("Can't set xtrip_id, foreign key violation: xtripestablish_xtrip_fk");
-        }
-        setWasChanged(this.xtripId != null && !this.xtripId.equals(xtripId));
-        this.xtripId = xtripId;
+    public void setMonthYear(Date monthYear) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.monthYear != null && !this.monthYear.equals(monthYear));
+        this.monthYear = monthYear;
     }
 
     public Integer getXsiteId() {
@@ -251,10 +246,22 @@ public class Xtripestablish extends DbObject  {
 
     public void setXsiteId(Integer xsiteId) throws SQLException, ForeignKeyViolationException {
         if (xsiteId!=null && !Xsite.exists(getConnection(),"xsite_id = " + xsiteId)) {
-            throw new ForeignKeyViolationException("Can't set xsite_id, foreign key violation: xtripestablish_xsite_fk");
+            throw new ForeignKeyViolationException("Can't set xsite_id, foreign key violation: xhourcompare_xsite_fk");
         }
         setWasChanged(this.xsiteId != null && !this.xsiteId.equals(xsiteId));
         this.xsiteId = xsiteId;
+    }
+
+    public Integer getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(Integer operatorId) throws SQLException, ForeignKeyViolationException {
+        if (operatorId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + operatorId)) {
+            throw new ForeignKeyViolationException("Can't set operator_id, foreign key violation: xhourcompare_xemployee_fk");
+        }
+        setWasChanged(this.operatorId != null && !this.operatorId.equals(operatorId));
+        this.operatorId = operatorId;
     }
 
     public Integer getXmachineId() {
@@ -263,39 +270,18 @@ public class Xtripestablish extends DbObject  {
 
     public void setXmachineId(Integer xmachineId) throws SQLException, ForeignKeyViolationException {
         if (xmachineId!=null && !Xmachine.exists(getConnection(),"xmachine_id = " + xmachineId)) {
-            throw new ForeignKeyViolationException("Can't set xmachine_id, foreign key violation: xtripestablish_xmachine_fk");
+            throw new ForeignKeyViolationException("Can't set xmachine_id, foreign key violation: xhourcompare_xmachine_fk");
         }
         setWasChanged(this.xmachineId != null && !this.xmachineId.equals(xmachineId));
         this.xmachineId = xmachineId;
     }
-
-    public Integer getDistanceEmpty() {
-        return distanceEmpty;
-    }
-
-    public void setDistanceEmpty(Integer distanceEmpty) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.distanceEmpty != null && !this.distanceEmpty.equals(distanceEmpty));
-        this.distanceEmpty = distanceEmpty;
-    }
-
-    public Integer getDistanceLoaded() {
-        return distanceLoaded;
-    }
-
-    public void setDistanceLoaded(Integer distanceLoaded) throws SQLException, ForeignKeyViolationException {
-        if (null != distanceLoaded)
-            distanceLoaded = distanceLoaded == 0 ? null : distanceLoaded;
-        setWasChanged(this.distanceLoaded != null && !this.distanceLoaded.equals(distanceLoaded));
-        this.distanceLoaded = distanceLoaded;
-    }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[6];
-        columnValues[0] = getXtripestablishId();
-        columnValues[1] = getXtripId();
+        Object[] columnValues = new Object[5];
+        columnValues[0] = getXhourcompareId();
+        columnValues[1] = getMonthYear();
         columnValues[2] = getXsiteId();
-        columnValues[3] = getXmachineId();
-        columnValues[4] = getDistanceEmpty();
-        columnValues[5] = getDistanceLoaded();
+        columnValues[3] = getOperatorId();
+        columnValues[4] = getXmachineId();
         return columnValues;
     }
 
@@ -312,34 +298,25 @@ public class Xtripestablish extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXtripestablishId(Integer.parseInt(flds[0]));
+            setXhourcompareId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXtripestablishId(null);
+            setXhourcompareId(null);
         }
-        try {
-            setXtripId(Integer.parseInt(flds[1]));
-        } catch(NumberFormatException ne) {
-            setXtripId(null);
-        }
+        setMonthYear(toDate(flds[1]));
         try {
             setXsiteId(Integer.parseInt(flds[2]));
         } catch(NumberFormatException ne) {
             setXsiteId(null);
         }
         try {
-            setXmachineId(Integer.parseInt(flds[3]));
+            setOperatorId(Integer.parseInt(flds[3]));
+        } catch(NumberFormatException ne) {
+            setOperatorId(null);
+        }
+        try {
+            setXmachineId(Integer.parseInt(flds[4]));
         } catch(NumberFormatException ne) {
             setXmachineId(null);
-        }
-        try {
-            setDistanceEmpty(Integer.parseInt(flds[4]));
-        } catch(NumberFormatException ne) {
-            setDistanceEmpty(null);
-        }
-        try {
-            setDistanceLoaded(Integer.parseInt(flds[5]));
-        } catch(NumberFormatException ne) {
-            setDistanceLoaded(null);
         }
     }
 }

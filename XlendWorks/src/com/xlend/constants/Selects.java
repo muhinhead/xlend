@@ -336,6 +336,12 @@ public class Selects {
             "Select xjobcard_id \"Id\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xjobcard.xemployee_id) \"Name\", "
             + "week_ending \"Week Ending\" from xjobcard";
+    public static final String SELECT_FROM_HOURCOMPARE = 
+            "Select xhourcompare_id \"Id\", MONTHNAME(month_year) \"Month\", YEAR(month_year) \"Year\", "
+            + "(Select name from xsite where xsite_id=xhourcompare.xsite_id) \"Site\","
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xhourcompare.operator_id) \"Operator\", "
+            + "(Select classify+tmvnr from xmachine where xmachine_id=xhourcompare.xmachine_id) \"Machine\" "
+            + "from xhourcompare";
     
     public static final String[] getStringArray(String select) {
         try {

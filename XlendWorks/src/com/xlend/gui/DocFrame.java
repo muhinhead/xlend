@@ -1,12 +1,6 @@
 package com.xlend.gui;
 
-import com.xlend.gui.work.ClientsGrid;
-import com.xlend.gui.work.ContractsGrid;
-//import com.xlend.gui.work.CreditorsGrid;
-import com.xlend.gui.work.OrdersGrid;
-import com.xlend.gui.work.PaymentsGrid;
-import com.xlend.gui.work.QuotationsGrid;
-import com.xlend.gui.work.SuppliersGrid;
+import com.xlend.gui.work.*;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
 import java.rmi.RemoteException;
@@ -25,8 +19,9 @@ public class DocFrame extends GeneralFrame {
     private GeneralGridPanel quotasPanel = null;
     private GeneralGridPanel suppliersPanel = null;
     private GeneralGridPanel paymentsPanel = null;
+    private GeneralGridPanel hourComparePanel = null;
     private static String[] sheetList = new String[]{
-        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Payments"
+        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Payments", "Hour Comparison"
     };
 
     public DocFrame(IMessageSender exch) {
@@ -63,6 +58,9 @@ public class DocFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
             workTab.add(getPaymentsPanel(), sheets()[5]);
+        }
+        if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
+            workTab.add(getHourComparePanel(), sheets()[6]);
         }
         return workTab;
     }
@@ -137,5 +135,17 @@ public class DocFrame extends GeneralFrame {
             }
         }
         return paymentsPanel;
+    }
+    
+    private JPanel getHourComparePanel() {
+        if (hourComparePanel == null) {
+            try {
+                registerGrid(hourComparePanel = new HourCompareGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return hourComparePanel;
     }
 }

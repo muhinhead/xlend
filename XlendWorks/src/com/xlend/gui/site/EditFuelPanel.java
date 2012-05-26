@@ -91,7 +91,7 @@ class EditFuelPanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(fuelDateSP = new SelectedDateSpinner(), 4),
-            getGridPanel(new JComponent[]{cashRb = new JRadioButton("cashe"), asmtRb = new JRadioButton("account")}, 4),
+            getGridPanel(new JComponent[]{cashRb = new JRadioButton("Cash"), asmtRb = new JRadioButton("Account")}, 4),
             getGridPanel(new JComponent[]{amountSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
                 new JLabel("Liters:", SwingConstants.RIGHT),
                 litersSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, 1)}, 5),

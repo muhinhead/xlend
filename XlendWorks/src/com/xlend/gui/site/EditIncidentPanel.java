@@ -495,7 +495,6 @@ class EditIncidentPanel extends RecordEditPanel {
             childPeopleRows.add(new PeopleRowPanel(null));
             childMachineRows.add(new MachineRowPanel(null));
         } else {
-            //TODO!
             idField.setText(xi.getXincidentsId().toString());
             if (xi.getIncidentdate() != null) {
                 incidentDateSP.setValue(new java.util.Date(xi.getIncidentdate().getTime()));

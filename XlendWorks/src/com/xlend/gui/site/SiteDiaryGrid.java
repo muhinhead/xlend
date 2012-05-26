@@ -29,6 +29,10 @@ public class SiteDiaryGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_SITE_DIARY, maxWidths, false);
     }
 
+    public SiteDiaryGrid(IMessageSender exchanger, String select) throws RemoteException {
+        super(exchanger, select, maxWidths, false);
+    }
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Record") {

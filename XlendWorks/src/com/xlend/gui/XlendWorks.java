@@ -1,28 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.constants.Selects;
-import com.xlend.orm.Profile;
-import com.xlend.orm.Userprofile;
-import com.xlend.orm.Usersheet;
-import com.xlend.orm.Xclient;
-import com.xlend.orm.Xconsume;
-import com.xlend.orm.Xcontract;
-//import com.xlend.orm.Xcreditor;
-import com.xlend.orm.Xemployee;
-//import com.xlend.orm.Xlicensestat;
-import com.xlend.orm.Xfuel;
-import com.xlend.orm.Xmachtype;
-import com.xlend.orm.Xorder;
-import com.xlend.orm.Xpayment;
-import com.xlend.orm.Xposition;
-import com.xlend.orm.Xquotation;
-import com.xlend.orm.Xsite;
-import com.xlend.orm.Xtimesheet;
-import com.xlend.orm.Xtrip;
-import com.xlend.orm.Xtripestablish;
-import com.xlend.orm.Xtripexchange;
-import com.xlend.orm.Xtripmoving;
-import com.xlend.orm.Xwage;
+import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -33,6 +12,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Vector;
@@ -621,7 +601,7 @@ public class XlendWorks {
     public static ComboItem[] loadWageCategories(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select id,val from cbitems where name='wage_category'");
     }
-    
+
     public static ComboItem[] loadPaidFromCodes(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select id,val from cbitems where name='paidfrom'");
     }
@@ -712,5 +692,138 @@ public class XlendWorks {
             }
         }
         return xtre;
+    }
+
+    public static ComboItem[] loadSiteDiaryHrsWorked(java.util.Date dt,
+            Integer siteID, Integer operatorID, Integer machineID) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        String select = "select DAYOFMONTH(partdate)-1, hrs_worked from xsitediarypart "
+                + " where operator_id=" + operatorID + " and xmachine_id=" + machineID
+                + " and year(partdate)=" + year + " and month(partdate)=" + month
+                + " and xsitediary_id in (select xsitediary_id from xsitediary where xsite_id=" + siteID + ")";
+        ComboItem[] itms = loadOnSelect(DashBoard.getExchanger(), select);
+        return itms;
+    }
+
+    public static ComboItem[] loadTimeSheetHrsWorked(java.util.Date dt,
+            Integer siteID, Integer operatorID) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        String select = "select DAYOFMONTH(xw.day)-1, normaltime+overtime+doubletime "
+                + " from xtimesheet ts, xwage xw where xw.xtimesheet_id=ts.xtimesheet_id "
+                + " and year(xw.day)=" + year + " and month(xw.day)=" + month + " and ts.xsite_id=" + siteID
+                + " and ts.xemployee_id=" + operatorID;
+        ComboItem[] itms = loadOnSelect(DashBoard.getExchanger(), select);
+        return itms;
+    }
+
+    private static double timeDiff(Timestamp t1, Timestamp t2) {
+        double diff = 0.0;
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(t1);
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(t2);
+        c1.set(Calendar.YEAR, 0);
+        c1.set(Calendar.MONTH, 0);
+        c1.set(Calendar.DAY_OF_MONTH, 1);
+        c1.set(Calendar.SECOND, 0);
+        c2.set(Calendar.YEAR, 0);
+        c2.set(Calendar.MONTH, 0);
+        c2.set(Calendar.DAY_OF_MONTH, 1);
+        c2.set(Calendar.SECOND, 0);
+        diff = (c2.getTime().getTime() - c1.getTime().getTime()) / 3600000.0;
+        return diff;
+    }
+
+    public static ComboItem[][] loadOperatorHourMeterAndOcs(java.util.Date dt,
+            Integer siteID, Integer operatorID, Integer machineID) {
+        ComboItem[][] ciArr = new ComboItem[2][];
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dt);
+        int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int year1 = cal.get(Calendar.YEAR);
+        int month1 = cal.get(Calendar.MONTH) + 1;
+
+        cal.add(Calendar.MONTH, 1);
+        int year2 = cal.get(Calendar.YEAR);
+        int month2 = cal.get(Calendar.MONTH) + 1;
+
+        String sd1 = String.format("%04d-%02d-01", year1, month1);
+        String sd2 = String.format("%04d-%02d-06", year2, month2);
+
+        try {
+            ComboItem[] hrItms = new ComboItem[daysInMonth];
+            ComboItem[] wrkItms = new ComboItem[daysInMonth];
+            for (int i = 0; i < daysInMonth; i++) {
+                hrItms[i] = new ComboItem(i, "0.0");
+                wrkItms[i] = new ComboItem(i, "0.0");
+            }
+            String whereCond = "xsite_id=" + siteID + " and xemployee_id=" + operatorID + " and xmachine_id=" + machineID
+                    + " and sheet_date between '" + sd1 + "' and '" + sd2 + "'";
+            DbObject[] recs = DashBoard.getExchanger().getDbObjects(
+                    Xopclocksheet.class, whereCond, "sheet_date");
+            Calendar calendar = Calendar.getInstance();
+            for (DbObject rec : recs) {
+                Xopclocksheet ocs = (Xopclocksheet) rec;
+
+                Timestamp wf1 = ocs.getWorkFrom1();
+                Timestamp wt1 = ocs.getWorkTo1();
+                double diff1 = timeDiff(wf1, wt1);
+
+                java.util.Date sheet_date = new java.util.Date(ocs.getSheetDate().getTime());
+                calendar.setTime(sheet_date);
+                int dayShift = calendar.get(Calendar.DAY_OF_MONTH) - 1;
+                for (int i = 0; i < 7; i++, dayShift--) {
+                    if (calendar.get(Calendar.YEAR) == year1 && calendar.get(Calendar.MONTH) + 1 == month1) {
+                        double deltaHR = 0.0;
+                        double deltaWRK = 0.0;
+                        switch (i) {
+                            case 0:
+                                deltaHR = (ocs.getKmStop7() - ocs.getKmStart7());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom7(), ocs.getWorkTo7()) - timeDiff(ocs.getStandFrom7(), ocs.getStandTo7()));
+                                break;
+                            case 1:
+                                deltaHR = (ocs.getKmStop6() - ocs.getKmStart6());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom6(), ocs.getWorkTo6()) - timeDiff(ocs.getStandFrom6(), ocs.getStandTo6()));
+                                break;
+                            case 2:
+                                deltaHR = (ocs.getKmStop5() - ocs.getKmStart5());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom5(), ocs.getWorkTo5()) - timeDiff(ocs.getStandFrom5(), ocs.getStandTo5()));
+                                break;
+                            case 3:
+                                deltaHR = (ocs.getKmStop4() - ocs.getKmStart4());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom4(), ocs.getWorkTo4()) - timeDiff(ocs.getStandFrom4(), ocs.getStandTo4()));
+                                break;
+                            case 4:
+                                deltaHR = (ocs.getKmStop3() - ocs.getKmStart3());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom3(), ocs.getWorkTo3()) - timeDiff(ocs.getStandFrom3(), ocs.getStandTo3()));
+                                break;
+                            case 5:
+                                deltaHR = (ocs.getKmStop2() - ocs.getKmStart2());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom2(), ocs.getWorkTo2()) - timeDiff(ocs.getStandFrom2(), ocs.getStandTo2()));
+                                break;
+                            case 6:
+                                deltaHR = (ocs.getKmStop1() - ocs.getKmStart1());
+                                deltaWRK = (timeDiff(ocs.getWorkFrom1(), ocs.getWorkTo1()) - timeDiff(ocs.getStandFrom1(), ocs.getStandTo1()));
+                                break;
+                        }
+                        hrItms[dayShift].setValue("" + (Double.parseDouble(hrItms[dayShift].getValue()) + deltaHR));
+                        wrkItms[dayShift].setValue("" + (Double.parseDouble(wrkItms[dayShift].getValue()) + deltaWRK));
+                        calendar.add(Calendar.DAY_OF_MONTH, -1);
+                    }
+                }
+            }
+            ciArr[0] = hrItms;
+            ciArr[1] = wrkItms;
+            return ciArr;
+        } catch (Exception ex) {
+            log(ex);
+        }
+        return null;
     }
 }

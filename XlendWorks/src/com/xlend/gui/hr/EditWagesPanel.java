@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author nick
+ * @author Nick Mukhin
  */
 class EditWagesPanel extends RecordEditPanel {
 
@@ -117,9 +117,9 @@ class EditWagesPanel extends RecordEditPanel {
                 overSPs[i] = new SelectedNumberSpinner(0, 0, 168, 0.5);
                 dblSPs[i] = new SelectedNumberSpinner(0, 0, 168, 0.5);
 
-                hoursSPs[i].setEnabled(false);
-                overSPs[i].setEnabled(false);
-                dblSPs[i].setEnabled(false);
+//                hoursSPs[i].setEnabled(false);
+//                overSPs[i].setEnabled(false);
+//                dblSPs[i].setEnabled(false);
 
                 JLabel l = new JLabel(employees[i].getClockNum());
                 l.setBorder(BorderFactory.createEtchedBorder());

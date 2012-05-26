@@ -363,7 +363,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     @Override
     public boolean save() throws Exception {
-        //TODO: save 
         Xemployee emp = (Xemployee) getDbObject();
         boolean isNew = false;
         if (emp == null) {

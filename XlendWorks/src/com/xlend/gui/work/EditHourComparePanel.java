@@ -1,19 +1,25 @@
 package com.xlend.gui.work;
 
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.XlendWorks;
+import com.xlend.constants.Selects;
+import com.xlend.gui.*;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
+import com.xlend.gui.hr.TimeSheetsGrid;
+import com.xlend.gui.site.OperatorClockSheetGrid;
+import com.xlend.gui.site.SiteDiaryGrid;
 import com.xlend.gui.site.SiteLookupAction;
 import com.xlend.orm.Xhourcompare;
 import com.xlend.orm.Xhourcompareday;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.remote.IMessageSender;
+import com.xlend.util.PopupDialog;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +52,17 @@ class EditHourComparePanel extends RecordEditPanel {
     private JLabel[] dowLabels;
     private JLabel[] dayLabels;
     private String[] dows;
+
+    private class SpecSiteDiaryGrid extends SiteDiaryGrid {
+
+        public SpecSiteDiaryGrid(IMessageSender exchanger,
+                Integer operatorID, Integer siteID, Integer machineID, int year, int month) throws RemoteException {
+            super(exchanger, Selects.SELECT_FROM_SITE_DIARY
+                    + " where xsite_id=" + siteID + " and xsitediary_id in "
+                    + "(select xsitediary_id from xsitediarypart where operator_id=" + operatorID + " and xmachine_id=" + machineID
+                    + " and year(partdate)=" + year + " and month(partdate)=" + month + ")");
+        }
+    }
 
     public EditHourComparePanel(DbObject dbObject) {
         super(dbObject);
@@ -82,13 +99,13 @@ class EditHourComparePanel extends RecordEditPanel {
             ocsSpinners, hmSpinners, drSpinners, stdSpinners, tshSpinners, tsnSpinners, invnSpinners
         };
         for (int i = 0; i < 31; i++) {
-            ocsSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            hmSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            drSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            stdSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            tshSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            tsnSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
-            invnSpinners[i] = new SelectedNumberSpinner(0, 0, 24, 1);
+            ocsSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
+            hmSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 99.0, .5);
+            drSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
+            stdSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
+            tshSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
+            tsnSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
+            invnSpinners[i] = new SelectedNumberSpinner(0.0, 0.0, 24.0, .5);
         }
 
         siteCbModel = new DefaultComboBoxModel();
@@ -115,11 +132,11 @@ class EditHourComparePanel extends RecordEditPanel {
         }
 
         JComponent[] edits = new JComponent[]{
-            getGridPanel(new JComponent[]{
-                idField = new JTextField(),
-                new JLabel("Month/Year:", SwingConstants.RIGHT),
-                monthYearSP = new SelectedDateSpinner()
-            }, 16),
+            getBorderPanel(new JComponent[]{getGridPanel(new JComponent[]{
+                    idField = new JTextField(),
+                    new JLabel("Month/Year:", SwingConstants.RIGHT),
+                    monthYearSP = new SelectedDateSpinner()
+                }, 16), new JPanel(), new JButton(getAutoFillAction())}),
             getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 4),
             getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)), 4),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)), 6),
@@ -143,11 +160,84 @@ class EditHourComparePanel extends RecordEditPanel {
             @Override
             public void stateChanged(ChangeEvent e) {
                 adjustDaysColumns();
+//                updateSiteDiaryLine();
+//                updateTimeSheetLine();
             }
         });
+//        siteCB.addActionListener(syncHourLinesLineAction());
+//        operatorCB.addActionListener(syncHourLinesLineAction());
+//        machineCB.addActionListener(syncHourLinesLineAction());
+
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 1);
         monthYearSP.setValue(cal.getTime());
+        JPanel downBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        downBtnPanel.add(new JLabel("Details:"));
+        downBtnPanel.add(new JButton(new AbstractAction("OCS") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    OperatorClockSheetGrid grd = new OperatorClockSheetGrid(DashBoard.getExchanger());
+                    new RefGridDialog(null, "Operator Clock Sheet", grd);
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                }
+            }
+        }));
+
+        downBtnPanel.add(new JButton(new AbstractAction("STD") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                java.util.Date dt = (java.util.Date) monthYearSP.getValue();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dt);
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH) + 1;
+                try {
+                    SpecSiteDiaryGrid grd = new SpecSiteDiaryGrid(DashBoard.getExchanger(),
+                            getSelectedCbItem(operatorCB), getSelectedCbItem(siteCB),
+                            getSelectedCbItem(machineCB), year, month);
+                    new RefGridDialog(null, "Site Diary", grd);
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                }
+            }
+        }));
+        downBtnPanel.add(new JButton(new AbstractAction("TSH") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String select = Selects.SELECT_TIMESHEETS4EMPLOYEE.replaceAll(
+                            "where ", "where t.xsite_id=" + getSelectedCbItem(siteCB) + " and ");
+                    select = select.replaceAll("#", getSelectedCbItem(operatorCB).toString());
+                    TimeSheetsGrid grd = new TimeSheetsGrid(DashBoard.getExchanger(), select, false);
+                    new RefGridDialog(null, "Timesheet", grd);
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                }
+            }
+        }));
+        add(downBtnPanel, BorderLayout.SOUTH);
+    }
+
+    private AbstractAction getAutoFillAction() {
+        return new AbstractAction("Autofill") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (JOptionPane.showConfirmDialog(null,
+                        "Manual input will be overwritten. Are you sure?", "Warning!",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
+                {
+                    updateSiteDiaryLine();
+                    updateTimeSheetLine();
+                    updateOperatorClockSheetLine();
+                }
+            }
+        };
     }
 
     private int daysInMonth() {
@@ -189,6 +279,57 @@ class EditHourComparePanel extends RecordEditPanel {
         }
     }
 
+    //Sync data with xsitediarypart table
+    private void updateSiteDiaryLine() {
+        Date dt = (Date) monthYearSP.getValue();
+        if (dt != null) {
+            ComboItem[] itms = XlendWorks.loadSiteDiaryHrsWorked(
+                    dt,
+                    getSelectedCbItem(siteCB),
+                    getSelectedCbItem(operatorCB),
+                    getSelectedCbItem(machineCB));
+            setValues2Spinners(stdSpinners, itms);
+        }
+    }
+
+    //Sync with xtimesheet/xwage tables
+    private void updateTimeSheetLine() {
+        Date dt = (Date) monthYearSP.getValue();
+        if (dt != null) {
+            ComboItem[] itms = XlendWorks.loadTimeSheetHrsWorked(dt,
+                    getSelectedCbItem(siteCB),
+                    getSelectedCbItem(operatorCB));
+            setValues2Spinners(tshSpinners, itms);
+        }
+    }
+
+    //Sync with xopclocksheet table
+    private void updateOperatorClockSheetLine() {
+        Date dt = (Date) monthYearSP.getValue();
+        if (dt != null) {
+            ComboItem[][] ciArr = XlendWorks.loadOperatorHourMeterAndOcs(
+                    dt,
+                    getSelectedCbItem(siteCB),
+                    getSelectedCbItem(operatorCB),
+                    getSelectedCbItem(machineCB));
+            setValues2Spinners(hmSpinners, ciArr[0]);
+            setValues2Spinners(ocsSpinners, ciArr[1]);
+        }
+    }
+
+    private static void setValues2Spinners(JSpinner[] spinners, ComboItem[] itms) {
+        for (JSpinner sp : spinners) {
+            sp.setValue(new Double(0.0));
+        }
+        for (ComboItem ci : itms) {
+            try {
+                spinners[ci.getId()].setValue(new Double(ci.getValue()));
+            } catch (NumberFormatException ne) {
+            }
+        }
+    }
+
+    
     @Override
     public void loadData() {
         Xhourcompare xh = (Xhourcompare) getDbObject();
@@ -210,7 +351,7 @@ class EditHourComparePanel extends RecordEditPanel {
                 DbObject[] oldItms = DashBoard.getExchanger().getDbObjects(
                         Xhourcompareday.class,
                         "xhourcompare_id=" + xh.getXhourcompareId(), "day_no");
-                int d=0;
+                int d = 0;
                 for (DbObject ob : oldItms) {
                     Xhourcompareday itm = (Xhourcompareday) ob;
                     ocsSpinners[d].setValue(itm.getOcs());
@@ -226,6 +367,8 @@ class EditHourComparePanel extends RecordEditPanel {
                 GeneralFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
                 XlendWorks.log(ex);
             }
+//            updateSiteDiaryLine();
+//            updateTimeSheetLine();
         }
     }
 
@@ -273,13 +416,13 @@ class EditHourComparePanel extends RecordEditPanel {
                     }
                     itm.setNew(isNew);
                     itm.setDayNo(i + 1);
-                    itm.setOcs((Integer) ocsSpinners[i].getValue());
-                    itm.setHm((Integer) hmSpinners[i].getValue());
-                    itm.setDr((Integer) drSpinners[i].getValue());
-                    itm.setStd((Integer) stdSpinners[i].getValue());
-                    itm.setTsh((Integer) tshSpinners[i].getValue());
-                    itm.setTsn((Integer) tsnSpinners[i].getValue());
-                    itm.setInvn((Integer) invnSpinners[i].getValue());
+                    itm.setOcs((Double) ocsSpinners[i].getValue());
+                    itm.setHm((Double) hmSpinners[i].getValue());
+                    itm.setDr((Double) drSpinners[i].getValue());
+                    itm.setStd((Double) stdSpinners[i].getValue());
+                    itm.setTsh((Double) tshSpinners[i].getValue());
+                    itm.setTsn((Double) tsnSpinners[i].getValue());
+                    itm.setInvn((Double) invnSpinners[i].getValue());
                     DashBoard.getExchanger().saveDbObject(itm);
                 }
                 return true;

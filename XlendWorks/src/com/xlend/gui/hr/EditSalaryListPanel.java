@@ -77,7 +77,7 @@ class EditSalaryListPanel extends RecordEditPanel {
             this.xsalary = xsalary;
             employeeCbModel = new DefaultComboBoxModel();
             markCB = new JCheckBox();
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(),"coalesce(wage_category,1)=1")) {
                 employeeCbModel.addElement(ci);
             }
             employeeCB = new JComboBox(employeeCbModel);
@@ -260,7 +260,7 @@ class EditSalaryListPanel extends RecordEditPanel {
                 }
 
                 childRows.clear();
-                ComboItem[] emlist = XlendWorks.loadAllEmployees(DashBoard.getExchanger());
+                ComboItem[] emlist = XlendWorks.loadAllEmployees(DashBoard.getExchanger(),"coalesce(wage_category,1)=1");
                 for (ComboItem ci : emlist) {
                     SalaryPanel p = new SalaryPanel(null);
                     Integer id = p.getSelectedEmployeeID();

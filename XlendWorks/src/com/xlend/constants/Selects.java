@@ -98,11 +98,15 @@ public class Selects {
     public static final String SELECT_FROM_EMPLOYEE = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee order by clock_num";
-    public static final String SELECT_FROM_EMPLOYEE_EXCLUDING = 
+            + "sur_name \"Surename\", phone0_num \"Phone Nr\", "
+            + "(select val from cbitems where name='wage_category' "
+            + " and id=coalesce(xemployee.wage_category,1)) \"Wage Cat.\" "
+            + "from xemployee order by clock_num";
+    public static final String SELECT_FROM_SALEMPLOYEE_EXCLUDING = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee where xemployee_id not in(#) order by clock_num";
+            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee "
+            + "where coalesce(wage_category,1)=1 and xemployee_id not in(#) order by clock_num";
     public static final String SELECT_FROM_TIMESHEET = 
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "

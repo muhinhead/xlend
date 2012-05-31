@@ -60,19 +60,31 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner contractEndSP;
     private JSpinner rateSP;
     private JComboBox positionCB;
+    private JCheckBox deceasedCb, dismissedCb, abscondedCb;
     private JTextField taxnumField;
     private ImageIcon currentPicture2;
-    private JCheckBox deceasedCb, dismissedCb, abscondedCb;
     protected JPanel picPanel2;
     protected JPopupMenu picturePopMenu2;
     protected byte[] imageData2;
+    private ImageIcon currentPicture3;
+    protected JPanel picPanel3;
+    protected JPopupMenu picturePopMenu3;
+    protected byte[] imageData3;
     private JSpinner deceasedDateSP;
     private JSpinner dismissedDateSP;
     private JSpinner abscondedDateSP;
     private JCheckBox resignedCb;
     private JSpinner resignedDateSP;
     private JComboBox wageCategoryCB;
-    private JTextField bankDetailsTF;
+    private JTextField bankNameTF;
+    private JTextField bankAccNrTF;
+    private JTextField bankBranchCodeTF;
+    private JTextField bankName2TF;
+    private JTextField bankAccNr2TF;
+    private JTextField bankBranchCode2TF;
+    private JTextField bankName3TF;
+    private JTextField bankAccNr3TF;
+    private JTextField bankBranchCode3TF;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -80,6 +92,29 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     @Override
     protected void fillContent() {
+        String[] titles = new String[]{
+            "ID:", // "Clock Nr:", 
+            "Name:",//"Surname:", "Nickname:"
+            "SA ID or Passport.Nr", // "Tax Nr:"
+            "Phone Nr:",
+            "Alter.Phone 1:", // "Relation to person:"
+            "Alter.Phone 2:", // "Relation to person:"
+            "Home Address:",
+            "Work Position:",
+            "Contract Duration:", //"Contract Start:","Contract End:"
+            "Rate of Pay (R/hour):",//Wage category:
+            "",
+            "", "", "",
+            "", "", ""
+        };
+        ComboItem[] durations = new ComboItem[]{
+            new ComboItem(1, "1 month"),
+            new ComboItem(2, "2 month"),
+            new ComboItem(3, "3 month"),
+            new ComboItem(6, "6 month"),
+            new ComboItem(12, "1 year"),
+            new ComboItem(0, "Permanent")
+        };
         positionCbModel = new DefaultComboBoxModel();
         wageCategoryDbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllPositions(DashBoard.getExchanger())) {
@@ -88,150 +123,101 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         for (ComboItem ci : XlendWorks.loadWageCategories(DashBoard.getExchanger())) {
             wageCategoryDbModel.addElement(ci);
         }
-        
-        String[] titles = new String[]{
-            "ID:", "Clock Number:", "Name:", "Surname:",
-            "SA ID or Passport Number:", "Nickname:",
-            "Phone Number:", "Tax number:",
-            "Alternative Number 1:", " Relation to person:",
-            "Alternative Number 2:", " Relation to person:",
-            "Home Address:", "Work Position:",
-            "Contract Duration:", "Contract Start Date:", "Contract End Date:",
-            "Rate of Pay (R per hour):",
-            "",
-            ""
-        };
-        labels = createLabelsArray(titles);
-        ComboItem[] durations = new ComboItem[]{
-            new ComboItem(1, "1 month"),
-            new ComboItem(2, "2 month"),
-            new ComboItem(3, "3 month"),
-            new ComboItem(6, "6 month"),
-            new ComboItem(12, "1 year"),
-            new ComboItem(0, "Permanent"),};
-        edits = new JComponent[]{
-            idField = new JTextField(),
-            clockNumField = new JTextField(),
-            firstNameField = new JTextField(),
-            surNameField = new JTextField(20),
-            idNumField = new JTextField(),
-            nickNameField = new JTextField(),
-            phone0NumField = new JTextField(),
-            taxnumField = new JTextField(),
-            phone1NumField = new JTextField(),
-            relation1Field = new JTextField(),
-            phone2NumField = new JTextField(),
-            relation2Field = new JTextField(),
+        JComponent edits[] = new JComponent[]{
+            getGridPanel(new JComponent[]{
+                idField = new JTextField(),
+                new JLabel("Clock Nr:", SwingConstants.RIGHT),
+                clockNumField = new JTextField()
+            }, 5),
+            getGridPanel(new JComponent[]{
+                firstNameField = new JTextField(),
+                new JLabel("Surname:", SwingConstants.RIGHT),
+                surNameField = new JTextField(),
+                new JLabel("Nickname:", SwingConstants.RIGHT),
+                nickNameField = new JTextField()
+            }),
+            getGridPanel(new JComponent[]{
+                idNumField = new JTextField(),
+                new JLabel("Tax Nr:", SwingConstants.RIGHT),
+                taxnumField = new JTextField()
+            }),
+            getGridPanel(phone0NumField = new JTextField(), 3),
+            getGridPanel(new JComponent[]{
+                phone1NumField = new JTextField(),
+                new JLabel("Relation to person:", SwingConstants.RIGHT),
+                relation1Field = new JTextField()
+            }),
+            getGridPanel(new JComponent[]{
+                phone2NumField = new JTextField(),
+                new JLabel("Relation to person:", SwingConstants.RIGHT),
+                relation2Field = new JTextField()
+            }),
             addressField = new JTextField(),
             positionCB = new JComboBox(positionCbModel),
-            contractLenCB = new JComboBox(durations),
-            contractStartSP = new SelectedDateSpinner(),
-            contractEndSP = new SelectedDateSpinner(),
-            rateSP = new SelectedNumberSpinner(0, 0, 10000, 10)//new SelectedNumberSpinner(
-//                ,new JPanel(), new JPanel()
+            getGridPanel(new JComponent[]{
+                contractLenCB = new JComboBox(durations),
+                new JLabel("Start Date:", SwingConstants.RIGHT),
+                contractStartSP = new SelectedDateSpinner(),
+                new JLabel("End Date:", SwingConstants.RIGHT),
+                contractEndSP = new SelectedDateSpinner()
+            }),
+            getGridPanel(new JComponent[]{
+                rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
+                new JLabel("Wage Category:", SwingConstants.RIGHT),
+                wageCategoryCB = new JComboBox(wageCategoryDbModel)
+            }, 5),
+            new JLabel("Bank Accounts:", SwingConstants.CENTER),
+            getGridPanel(new JComponent[]{
+                new JLabel("Bank Name", SwingConstants.CENTER),
+                new JLabel("Account #", SwingConstants.CENTER),
+                new JLabel("Branch code/name", SwingConstants.CENTER)
+            }),
+            getGridPanel(new JComponent[]{
+                bankNameTF = new JTextField(10),
+                bankAccNrTF = new JTextField(10),
+                bankBranchCodeTF = new JTextField(10)
+            }),
+            getGridPanel(new JComponent[]{
+                bankName2TF = new JTextField(10),
+                bankAccNr2TF = new JTextField(10),
+                bankBranchCode2TF = new JTextField(10)
+            }),
+            getGridPanel(new JComponent[]{
+                bankName3TF = new JTextField(10),
+                bankAccNr3TF = new JTextField(10),
+                bankBranchCode3TF = new JTextField(10)
+            }),
+            getGridPanel(new JComponent[]{
+                deceasedCb = new JCheckBox("Deceased"),
+                dismissedCb = new JCheckBox("Dismissed"),
+                abscondedCb = new JCheckBox("Absconded"),
+                resignedCb = new JCheckBox("Resigned")
+            }),
+            getGridPanel(new JComponent[]{
+                deceasedDateSP = new SelectedDateSpinner(),
+                dismissedDateSP = new SelectedDateSpinner(),
+                abscondedDateSP = new SelectedDateSpinner(),
+                resignedDateSP = new SelectedDateSpinner()
+            })
         };
+        idField.setEnabled(false);
+        organizePanels(titles, edits, null);
 
-        contractLenCB.addActionListener(updateEndContract());
-        contractStartSP.addChangeListener(startContractChangeListener());
-
-        setEndDateVisible(true);
-
-        idField.setEditable(false);
-        organizePanels(17, 17);
-        for (int i = 0; i < 6; i++) {
-            lblPanel.add(labels[i]);
-            if (i == 0 || i == 1 || i == 4 || i == 6) {
-                JPanel idPanel = new JPanel(new GridLayout(1, 3, 5, 5));
-                idPanel.add(edits[i]);
-                for (int j = 1; j < 3; j++) {
-                    idPanel.add(new JPanel());
-                }
-                editPanel.add(idPanel);
-            } else {
-                editPanel.add(edits[i]);
-            }
-        }
-        lblPanel.add(labels[6]);
-
-        JPanel tax = new JPanel(new GridLayout(1, 3, 5, 5));
-        tax.add(edits[6]);
-        tax.add(labels[7]);
-        tax.add(edits[7]);
-        editPanel.add(tax);
-
-        lblPanel.add(labels[8]);
-
-        JPanel alt1 = new JPanel(new GridLayout(1, 3, 5, 5));
-        alt1.add(edits[8]);
-        alt1.add(labels[9]);
-        alt1.add(edits[9]);
-        editPanel.add(alt1);
-
-        lblPanel.add(labels[10]);
-
-        JPanel alt2 = new JPanel(new GridLayout(1, 3, 5, 5));
-        alt2.add(edits[10]);
-        alt2.add(labels[11]);
-        alt2.add(edits[11]);
-        editPanel.add(alt2);
-
-        for (int k = 12; k < 15; k++) {
-            lblPanel.add(labels[k]);
-            editPanel.add(edits[k]);
-        }
-        lblPanel.add(labels[15]);
-        JPanel alt3 = new JPanel(new GridLayout(1, 3, 5, 5));
-        alt3.add(edits[15]);
-        alt3.add(labels[16]);
-        alt3.add(edits[16]);
-        editPanel.add(alt3);
-
-        lblPanel.add(labels[17]);
-
-        lblPanel.add(new JPanel());
-        lblPanel.add(new JPanel());
-        lblPanel.add(new JLabel("Bank Details:",SwingConstants.RIGHT));
-        
-        editPanel.add(getGridPanel(new JComponent[]{edits[17],
-            new JLabel("Wage category:",SwingConstants.RIGHT),
-            wageCategoryCB = new JComboBox(wageCategoryDbModel)}));
-        
-//        editPanel.add(wageCategoryCB = new JComboBox(wageCategoryDbModel));
-
-        editPanel.add(getGridPanel(new JComponent[]{
-                    deceasedCb = new JCheckBox("Deceased"),
-                    dismissedCb = new JCheckBox("Dismissed"),
-                    abscondedCb = new JCheckBox("Absconded"),
-                    resignedCb = new JCheckBox("Resigned")
-                }));
-//        editPanel.add(new JButton("!!!"));
-        editPanel.add(getGridPanel(new JComponent[]{
-                    deceasedDateSP = new SelectedDateSpinner(),
-                    dismissedDateSP = new SelectedDateSpinner(),
-                    abscondedDateSP = new SelectedDateSpinner(),
-                    resignedDateSP = new SelectedDateSpinner()
-                }));
-        editPanel.add(bankDetailsTF = new JTextField(40));
-                
         deceasedDateSP.setVisible(false);
         dismissedDateSP.setVisible(false);
         abscondedDateSP.setVisible(false);
         resignedDateSP.setVisible(false);
-        for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP, 
-            deceasedDateSP, dismissedDateSP, abscondedDateSP,resignedDateSP}) {
+        for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
+                    deceasedDateSP, dismissedDateSP, abscondedDateSP, resignedDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
         }
-
-//        contractEndSP.setEditor(new JSpinner.DateEditor(contractEndSP, "dd/MM/yyyy"));
-//        Util.addFocusSelectAllAction(contractEndSP);
 
         contractLenCB.setAction(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ComboItem citm = (ComboItem) contractLenCB.getSelectedItem();
-                setEndDateVisible(citm.getId() > 0);
+                adjustEndDate();
             }
         });
 
@@ -263,13 +249,34 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 resignedDateSP.setVisible(resignedCb.isSelected());
             }
         });
+        contractStartSP.addChangeListener(new ChangeListener() {
 
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                adjustEndDate();
+            }
+        });
+        
         add(getDetailsPanel(), BorderLayout.CENTER);
+    }
+
+    private void adjustEndDate() {
+        ComboItem citm = (ComboItem) contractLenCB.getSelectedItem();
+        setEndDateVisible(citm.getId() > 0);
+        if (citm.getId() > 0) {
+            Date startDate = (Date) contractStartSP.getValue();
+            if (startDate != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(startDate);
+                cal.add(Calendar.MONTH, citm.getId());
+                contractEndSP.setValue(cal.getTime());
+            }
+        }
     }
 
     private JTabbedPane getDetailsPanel() {
         JTabbedPane tp = new JTabbedPane();
-        tp.setPreferredSize(new Dimension(tp.getPreferredSize().width, 300));
+        tp.setPreferredSize(new Dimension(tp.getPreferredSize().width, 200));
 
         try {
             Xemployee emp = (Xemployee) getDbObject();
@@ -308,7 +315,15 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             relation1Field.setText(emp.getRelation1());
             relation2Field.setText(emp.getRelation2());
             addressField.setText(emp.getAddress());
-            bankDetailsTF.setText(emp.getBankDetails());
+            bankNameTF.setText(emp.getBankName());
+            bankAccNrTF.setText(emp.getBankAccount());
+            bankBranchCodeTF.setText(emp.getBranchCodeName());
+            bankName2TF.setText(emp.getBankName2());
+            bankAccNr2TF.setText(emp.getBankAccount2());
+            bankBranchCode2TF.setText(emp.getBranchCodeName2());
+            bankName3TF.setText(emp.getBankName3());
+            bankAccNr3TF.setText(emp.getBankAccount3());
+            bankBranchCode3TF.setText(emp.getBranchCodeName3());
             selectComboItem(positionCB, emp.getXpositionId());
             selectComboItem(contractLenCB, emp.getContractLen());
             selectComboItem(wageCategoryCB, emp.getWageCategory());
@@ -358,6 +373,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             setImage(imageData);
             imageData2 = (byte[]) emp.getPhoto2();
             setImage2(imageData2);
+            imageData3 = (byte[]) emp.getPhoto3();
+            setImage3(imageData3);
         }
     }
 
@@ -383,6 +400,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             }
         } else {
             try {
+                java.util.Date dt;
                 emp.setXpositionId(itm.getId());
                 emp.setNew(isNew);
                 emp.setAddress(addressField.getText());
@@ -407,7 +425,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhone0Num(phone0NumField.getText());
                 emp.setPhone1Num(phone1NumField.getText());
                 emp.setPhone2Num(phone2NumField.getText());
-                emp.setRate((Integer) rateSP.getValue());
+                emp.setRate((Double) rateSP.getValue());
                 emp.setRelation1(relation1Field.getText());
                 emp.setRelation2(relation2Field.getText());
                 itm = (ComboItem) positionCB.getSelectedItem();
@@ -417,32 +435,47 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     emp.setXpositionId(null);
                 }
                 emp.setDeceased(deceasedCb.isSelected() ? 1 : 0);
+
                 if (deceasedCb.isSelected() && deceasedDateSP.getValue() != null) {
-                    emp.setDeceasedDate(new java.sql.Date(((java.util.Date) deceasedDateSP.getValue()).getTime()));
+                    dt = (Date) deceasedDateSP.getValue();
+                    emp.setDeceasedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setDeceasedDate(null);
                 }
                 emp.setDismissed(dismissedCb.isSelected() ? 1 : 0);
                 if (dismissedCb.isSelected() && dismissedDateSP.getValue() != null) {
-                    emp.setDismissedDate(new java.sql.Date(((java.util.Date) dismissedDateSP.getValue()).getTime()));
+                    dt = (Date) dismissedDateSP.getValue();
+                    emp.setDismissedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setDismissedDate(null);
                 }
                 emp.setAbsconded(abscondedCb.isSelected() ? 1 : 0);
                 if (abscondedCb.isSelected() && abscondedDateSP.getValue() != null) {
-                    emp.setAbscondedDate(new java.sql.Date(((java.util.Date) abscondedDateSP.getValue()).getTime()));
+                    dt = (Date) abscondedDateSP.getValue();
+                    emp.setAbscondedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setAbscondedDate(null);
                 }
                 emp.setResigned(resignedCb.isSelected() ? 1 : 0);
                 if (resignedCb.isSelected() && resignedDateSP.getValue() != null) {
-                    emp.setResignedDate(new java.sql.Date(((java.util.Date) resignedDateSP.getValue()).getTime()));
+                    dt = (Date) resignedDateSP.getValue();
+                    emp.setResignedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setResignedDate(null);
                 }
-                emp.setBankDetails(bankDetailsTF.getText());
+                emp.setBankName(bankNameTF.getText());
+                emp.setBankAccount(bankAccNrTF.getText());
+                emp.setBranchCodeName(bankBranchCodeTF.getText());
+                emp.setBankName2(bankName2TF.getText());
+                emp.setBankAccount2(bankAccNr2TF.getText());
+                emp.setBranchCodeName2(bankBranchCode2TF.getText());
+                emp.setBankName3(bankName3TF.getText());
+                emp.setBankAccount3(bankAccNr3TF.getText());
+                emp.setBranchCodeName3(bankBranchCode3TF.getText());
+
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
+                emp.setPhoto3(imageData3);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {
@@ -466,11 +499,21 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         return rightPanel;
     }
 
+    private JComponent getRightUpperPanel3() {
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        if (picPanel3 == null) {
+            rightPanel.add(getPicPanel3(), BorderLayout.CENTER);
+            picPanel3.setPreferredSize(new Dimension(500, picPanel3.getPreferredSize().height));
+        }
+        return rightPanel;
+    }
+
     @Override
     protected JComponent getRightUpperPanel() {
         JTabbedPane picsTabs = new JTabbedPane();
         picsTabs.add(super.getRightUpperPanel(), "Photo 1");
         picsTabs.add(getRightUpperPanel2(), "Photo 2");
+        picsTabs.add(getRightUpperPanel3(), "Photo 3");
         return picsTabs;
     }
 
@@ -505,6 +548,37 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         return picturePopMenu2;
     }
 
+    private JPopupMenu getPhotoPopupMenu3() {
+        if (null == picturePopMenu3) {
+            picturePopMenu3 = new JPopupMenu();
+            picturePopMenu3.add(new AbstractAction("Open in window") {
+
+                public void actionPerformed(ActionEvent e) {
+                    viewDocumentImage(currentPicture3);
+                }
+            });
+            picturePopMenu3.add(new AbstractAction("Replace image") {
+
+                public void actionPerformed(ActionEvent e) {
+                    loadDocImageFromFile3();
+                }
+            });
+            picturePopMenu3.add(new AbstractAction("Save image to file") {
+
+                public void actionPerformed(ActionEvent e) {
+                    exportDocImage(imageData3);
+                }
+            });
+            picturePopMenu3.add(new AbstractAction("Remove image from DB") {
+
+                public void actionPerformed(ActionEvent e) {
+                    noImage3();
+                }
+            });
+        }
+        return picturePopMenu3;
+    }
+
     public JPanel getPicPanel2() {
         if (picPanel2 == null) {
             picPanel2 = new JPanel(new BorderLayout());
@@ -513,12 +587,31 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         return picPanel2;
     }
 
+    public JPanel getPicPanel3() {
+        if (picPanel3 == null) {
+            picPanel3 = new JPanel(new BorderLayout());
+            noImage3();
+        }
+        return picPanel3;
+    }
+
     private JButton getLoadPictureButton2() {
         JButton loadButton = new JButton("Choose picture...");
         loadButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile2();
+            }
+        });
+        return loadButton;
+    }
+
+    private JButton getLoadPictureButton3() {
+        JButton loadButton = new JButton("Choose picture...");
+        loadButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                loadDocImageFromFile3();
             }
         });
         return loadButton;
@@ -536,6 +629,18 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         }
     }
 
+    private void loadDocImageFromFile3() {
+        JFileChooser chooser = new JFileChooser(DashBoard.readProperty("imagedir", "./"));
+        chooser.setFileFilter(new PagesPanel.PagesDocFileFilter());
+        chooser.setDialogTitle("Import File");
+        chooser.setApproveButtonText("Import");
+        int retVal = chooser.showOpenDialog(null);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File f = chooser.getSelectedFile();
+            setImage3(Util.readFile(f.getAbsolutePath()));
+        }
+    }
+
     private void noImage2() {
         imageData2 = null;
         picPanel2.setVisible(false);
@@ -547,10 +652,28 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         currentPicture2 = null;
     }
 
+    private void noImage3() {
+        imageData3 = null;
+        picPanel3.setVisible(false);
+        picPanel3.removeAll();
+        JPanel insPanel = new JPanel();
+        insPanel.add(getLoadPictureButton3());
+        picPanel3.add(insPanel);
+        picPanel3.setVisible(true);
+        currentPicture3 = null;
+    }
+
     protected void setImage2(byte[] imageData) {
         this.imageData2 = imageData;
         if (imageData2 != null) {
             setPhoto2();
+        }
+    }
+
+    protected void setImage3(byte[] imageData) {
+        this.imageData3 = imageData;
+        if (imageData3 != null) {
+            setPhoto3();
         }
     }
 
@@ -594,6 +717,46 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         picPanel2.setVisible(true);
     }
 
+    private void setPhoto3() {
+        picPanel3.setVisible(false);
+        picPanel3.removeAll();
+        String tmpImgFile = "$$$3.img";
+        currentPicture3 = new ImageIcon(imageData3);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension d = new Dimension(screenSize.width / 3, screenSize.height / 3);
+        JScrollPane sp = null;
+        int height = 1;
+        int wscale = 1;
+        int hscale = 1;
+        int width = 0;
+        Util.writeFile(new File(tmpImgFile), imageData3);
+        width = currentPicture3.getImage().getWidth(null);
+        height = currentPicture3.getImage().getHeight(null);
+        wscale = width / (d.width - 70);
+        hscale = height / (d.height - 70);
+        wscale = wscale <= 0 ? 1 : wscale;
+        hscale = hscale <= 0 ? 1 : hscale;
+        int scale = wscale < hscale ? wscale : hscale;
+        StringBuffer html = new StringBuffer("<html>");
+        html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width="
+                + width / scale + " height=" + height / scale + "></img>");
+        JEditorPane ed = new JEditorPane("text/html", html.toString());
+        ed.setEditable(false);
+        picPanel3.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+        sp.setPreferredSize(new Dimension(300, 250));
+        ed.addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    viewDocumentImage(currentPicture3);
+                }
+            }
+        });
+        ed.addMouseListener(new PopupListener(getPhotoPopupMenu3()));
+        new File(tmpImgFile).deleteOnExit();
+        picPanel3.setVisible(true);
+    }
+
     private AbstractAction updateEndContract() {
         return new AbstractAction() {
 
@@ -614,8 +777,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             calendar.add(Calendar.MONTH, ci.getId());
             Date dt2 = calendar.getTime();
             contractEndSP.setValue(dt2);
-//        } else {
-//            contractEndSP.setValue(null);
         }
     }
 
@@ -626,8 +787,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             public void stateChanged(ChangeEvent e) {
                 SpinnerModel dateModel = contractStartSP.getModel();
                 if (dateModel instanceof SpinnerDateModel) {
-//                    setSeasonalColor(((SpinnerDateModel) dateModel).getDate());
-//                    System.out.println("!! "+((SpinnerDateModel) dateModel).getDate());
                     syncEndContract();
                 }
             }

@@ -185,8 +185,12 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
+        return loadAllEmployees(exchanger, null);
+    }
+
+    public static ComboItem[] loadAllEmployees(IMessageSender exchanger, String whereCond) {
         try {
-            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, null, "clock_num");
+            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, whereCond, "clock_num");
             ComboItem[] itms = new ComboItem[employees.length];
             int i = 0;
             for (DbObject o : employees) {
@@ -447,7 +451,7 @@ public class XlendWorks {
     }
 
     public static ComboItem loadEmployeeExcept(IMessageSender exchanger, String excepts) {
-        ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_EMPLOYEE_EXCLUDING.replace("#", excepts));
+        ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
         return (clist != null && clist.length > 0 ? clist[0] : null);
     }
 
@@ -825,5 +829,15 @@ public class XlendWorks {
             log(ex);
         }
         return null;
+    }
+
+    public static int getWageCategory(Integer xemployeeID) {
+        try {
+            Xemployee emp = (Xemployee) DashBoard.getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeID);
+            return emp == null ? 0 : (emp.getWageCategory()==null?1:emp.getWageCategory());
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return 0;
     }
 }

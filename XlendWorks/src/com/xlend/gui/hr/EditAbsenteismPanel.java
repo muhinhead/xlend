@@ -12,6 +12,8 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -27,6 +29,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -68,6 +72,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
     private JRadioButton[] reasonRBgroup;
     private JCheckBox medicalCertCB;
     private JCheckBox deathCertCB;
+    private JLabel permGrantedLabel;
 
     public EditAbsenteismPanel(DbObject dbObject) {
         super(dbObject);
@@ -121,7 +126,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 funeralRB = new JRadioButton("Funeral")
             }),
             getGridPanel(new JComponent[]{
-                dateSP = new SelectedDateSpinner(),
+                getBorderPanel(new JComponent[]{dateSP = new SelectedDateSpinner()}),
                 new JPanel(),
                 familyProblemRB = new JRadioButton("Family Problems")
             }),
@@ -158,7 +163,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
             getGridPanel(new JComponent[]{
                 notCommunicatedCB = new JCheckBox(),
                 new JPanel(),
-                drunkOnSiteRB = new JRadioButton("Wage Dispute")
+                drunkOnSiteRB = new JRadioButton("Drunk on site")
             }),
             getGridPanel(new JComponent[]{
                 getGridPanel(new JComponent[]{
@@ -179,6 +184,9 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(dateSP);
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
+        
+        permGrantedLabel = labels[9];
+        
         JPanel downPanel = new JPanel(new GridLayout(1, 2));
         JScrollPane sp;
         downPanel.add(sp = new JScrollPane(reasonTextArea = new JTextArea(5, 30),
@@ -205,6 +213,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         ButtonGroup yesNoGroup2 = new ButtonGroup();
         yesNoGroup2.add(permGrantedYesRB);
         yesNoGroup2.add(permGrantedNoRB);
+        permGrantedNoRB.setSelected(true);
 
         reasonRBgroup = new JRadioButton[]{
             medicalCondRB, funeralRB, familyProblemRB, inJailRB, pdpExpiredRB,
@@ -216,6 +225,17 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         for (JRadioButton rb : reasonRBgroup) {
             reasonGroup.add(rb);
         }
+        
+        employeeCB.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean isSalesCategory = (XlendWorks.getWageCategory(getSelectedCbItem(employeeCB)) == 1); 
+                permGrantedYesRB.setVisible(isSalesCategory);
+                permGrantedNoRB.setVisible(isSalesCategory);
+                permGrantedLabel.setEnabled(isSalesCategory);
+            }
+        });
     }
 
     @Override

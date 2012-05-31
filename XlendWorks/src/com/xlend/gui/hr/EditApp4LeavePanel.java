@@ -10,6 +10,8 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.util.Calendar;
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -60,6 +62,8 @@ public class EditApp4LeavePanel extends RecordEditPanel {
         approvedByCbModel.addElement(new ComboItem(0, "--"));
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             applicantCbModel.addElement(ci);
+        }
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "coalesce(wage_category,1)=1")) {
             approvedByCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -68,13 +72,14 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                 new JLabel("From:", SwingConstants.RIGHT),
                 fromDateSP = new SelectedDateSpinner()}),
             getBorderPanel(new JComponent[]{
-                comboPanelWithLookupBtn(applicantCB = new JComboBox(applicantCbModel), new EmployeeLookupAction(applicantCB)),
+                comboPanelWithLookupBtn(applicantCB = new JComboBox(applicantCbModel),
+                new EmployeeLookupAction(applicantCB)),
                 new JLabel("To:", SwingConstants.RIGHT),
                 toDateSP = new SelectedDateSpinner()}),
             getBorderPanel(new JComponent[]{sickRB = new JRadioButton("Sick Leave"),
                 new JLabel("Total days:", SwingConstants.RIGHT),
-                totDaysSP = new SelectedNumberSpinner(0, 0, 365, 1)}),
-            //            getBorderPanel(new JComponent[]{sickCB = new JCheckBox("Sick Leave")}),
+                totDaysSP = new SelectedNumberSpinner(0, 0, 365, 1)
+            }),
             getBorderPanel(new JComponent[]{annualRB = new JRadioButton("Annual Leave")}),
             getBorderPanel(new JComponent[]{specRB = new JRadioButton("Special Leave")}),
             getBorderPanel(new JComponent[]{unpaidRB = new JRadioButton("Unpaid Leave")}),
@@ -84,7 +89,7 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                 getGridPanel(new JComponent[]{approvedRB = new JRadioButton("Y"), notApprovedRB = new JRadioButton("No")}),
                 getBorderPanel(new JComponent[]{new JPanel(), new JLabel("Approved by:", SwingConstants.RIGHT),
                     comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel),
-                    approvedLookupAction = new EmployeeLookupAction(approvedByCB))})
+                    approvedLookupAction = new EmployeeLookupAction(approvedByCB, "COALESCE(wage_category,1)=1"))})
             })
         };
         for (JSpinner sp : new JSpinner[]{appDateSP, fromDateSP, toDateSP}) {
@@ -114,6 +119,10 @@ public class EditApp4LeavePanel extends RecordEditPanel {
         add(sp, BorderLayout.CENTER);
 
         approvedRB.addChangeListener(yesNoApprovedAction());
+        fromDateSP.addChangeListener(calcDaysAction());
+        toDateSP.addChangeListener(calcDaysAction());
+        fromDateSP.setValue(Calendar.getInstance().getTime());
+        toDateSP.setValue(Calendar.getInstance().getTime());
     }
 
     @Override
@@ -212,5 +221,32 @@ public class EditApp4LeavePanel extends RecordEditPanel {
         if (!enable) {
             approvedByCB.setSelectedIndex(0);
         }
+    }
+
+    private ChangeListener calcDaysAction() {
+        return new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                Date dtStart = (Date) fromDateSP.getValue();
+                Date dtEnd = (Date) toDateSP.getValue();
+                if (dtStart != null && dtEnd != null) {
+                    Calendar calStart = Calendar.getInstance();
+                    Calendar calEnd = Calendar.getInstance();
+                    calStart.setTime(dtStart);
+                    calEnd.setTime(dtEnd);
+                    calStart.set(Calendar.HOUR_OF_DAY, 0);
+                    calEnd.set(Calendar.HOUR_OF_DAY, 0);
+                    calStart.set(Calendar.MINUTE, 0);
+                    calEnd.set(Calendar.MINUTE, 0);
+                    calStart.set(Calendar.SECOND, 0);
+                    calEnd.set(Calendar.SECOND, 0);
+                    calStart.set(Calendar.MILLISECOND, 0);
+                    calEnd.set(Calendar.MILLISECOND, 0);
+                    int diffDays = (int) ((calEnd.getTimeInMillis() - calStart.getTimeInMillis()) / (24.0 * 60.0 * 60.0 * 1000.0));
+                    totDaysSP.setValue(diffDays);
+                }
+            }
+        };
     }
 }

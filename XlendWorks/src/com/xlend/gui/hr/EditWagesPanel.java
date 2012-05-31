@@ -97,7 +97,7 @@ class EditWagesPanel extends RecordEditPanel {
         JPanel wagesgridPanel = new JPanel(new BorderLayout());
         wagesgridPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Empoyee List"));
         try {
-            DbObject[] emplRecs = DashBoard.getExchanger().getDbObjects(Xemployee.class, null, null);
+            DbObject[] emplRecs = DashBoard.getExchanger().getDbObjects(Xemployee.class, "wage_category in (2,3)", null);
             JPanel uppanel = new JPanel(new GridLayout(emplRecs.length + 1, 6));
             for (String hdr : hdrs) {
                 uppanel.add(new JLabel(hdr));

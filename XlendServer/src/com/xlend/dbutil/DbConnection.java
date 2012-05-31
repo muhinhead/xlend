@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 20;
-    public static final String DB_VERSION = "0.20";
+    private static final int DB_VERSION_ID = 21;
+    public static final String DB_VERSION = "0.21";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -146,11 +146,23 @@ public class DbConnection {
         //        + "    contract_len    int not null,"
         //        + "    contract_start  date not null,"
         //        + "    contract_end    date,"
-        //        + "    rate            int not null,"
+        //        + "    rate            double not null,"
         //        + "    xposition_id    int,"
         //        + "    taxnum          varchar(32),
         //        + "    photo           other,"
         //        + "    photo2          other,"
+        //        + "    deceased        bit,"
+        //        + "    dismissed       bit,"
+        //        + "    absconded       bit,"
+        //        + "    resigned        bit,"
+        //        + "    deceased_date   date,"
+        //        + "    dismissed_date  date,"
+        //        + "    absconded_date  date,"
+        //        + "    resigned_date   date,"
+        //        + "    wage_category   int,"
+        //        + "    bank_name       varchar(128),"
+        //        + "    bank_account    varchar(32),"
+        //        + "    branch_code_name varchar(32),"
         //        + "    constraint xemployee_pk primary key (xemployee_id),"
         //        + "    constraint xemployeer_xposition_fk foreign key (xposition_id) references xposition"
         //        + ")",
@@ -1163,15 +1175,20 @@ public class DbConnection {
         + "    invn               double,"
         + "    constraint xhourcompareday_pk primary key (xhourcompareday_id),"
         + "    constraint xhourcompareday_xhourcompare_fk foreign key (xhourcompare_id) references xhourcompare"
-        + ")"
-//            ,
-//        "alter table xhourcompareday alter column ocs double",
-//        "alter table xhourcompareday alter column hm double",
-//        "alter table xhourcompareday alter column dr double",
-//        "alter table xhourcompareday alter column std double",
-//        "alter table xhourcompareday alter column tsh double",
-//        "alter table xhourcompareday alter column tsn double",
-//        "alter table xhourcompareday alter column invn double"
+        + ")",
+        //version 20->21
+        "alter table xemployee alter column rate double",
+        "alter table xemployee alter column bank_details rename to bank_name",
+        "alter table xemployee add bank_account    varchar(32)",
+        "alter table xemployee add branch_code_name varchar(32)",
+        "alter table xemployee add bank_name2    varchar(128)",
+        "alter table xemployee add bank_account2    varchar(32)",
+        "alter table xemployee add branch_code_name2 varchar(32)",
+        "alter table xemployee add bank_name3    varchar(128)",
+        "alter table xemployee add bank_account3    varchar(32)",
+        "alter table xemployee add branch_code_name3 varchar(32)",
+        "alter table xemployee add photo3 other",
+        "update xemployee set wage_category=2 where wage_category is null"
     };
 
     public static Connection getConnection() throws RemoteException {

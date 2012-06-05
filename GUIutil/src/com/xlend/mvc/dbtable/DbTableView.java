@@ -167,8 +167,6 @@ public class DbTableView extends JTable implements IView, ITableView {
             setSelectedRow(row);
             Rectangle rect = getCellRect(row, 0, true);
             scrollRectToVisible(rect);
-            //@TODO: real selection with scrolling
-            //selectionModel.setSelectionInterval(row, row);
         }
     }
 

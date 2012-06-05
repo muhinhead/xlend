@@ -4,6 +4,7 @@ import com.xlend.gui.fleet.LowBedGrid;
 import com.xlend.gui.fleet.MachineGrid;
 import com.xlend.gui.fleet.TrackGrid;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import java.util.Properties;
@@ -42,7 +43,7 @@ public class FleetFrame extends GeneralFrame {
     }
 
     protected JTabbedPane getMainPanel() {
-        JTabbedPane fleetTab = new JTabbedPane();
+        JTabbedPane fleetTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             fleetTab.add(getMachinesPanel(), sheets()[0]);
         }

@@ -1,7 +1,9 @@
 package com.xlend.gui;
 
+import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.gui.work.*;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -39,7 +41,7 @@ public class DocFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane workTab = new JTabbedPane();
+        JTabbedPane workTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             workTab.add(getContractsPanel(), sheets()[0]);
         }
@@ -62,6 +64,10 @@ public class DocFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
             workTab.add(getHourComparePanel(), sheets()[6]);
         }
+//        workTab.setShowTabButtons(true);
+//        workTab.setBoldActiveTab(true);
+//        workTab.setColorTheme(JideTabbedPane.COLOR_THEME_OFFICE2003);
+//        workTab.setTabShape(JideTabbedPane.SHAPE_EXCEL);
         return workTab;
     }
 
@@ -136,7 +142,7 @@ public class DocFrame extends GeneralFrame {
         }
         return paymentsPanel;
     }
-    
+
     private JPanel getHourComparePanel() {
         if (hourComparePanel == null) {
             try {

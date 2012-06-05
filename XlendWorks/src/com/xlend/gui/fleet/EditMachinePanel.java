@@ -10,6 +10,7 @@ import com.xlend.orm.Xmachtype;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.orm.dbobject.ForeignKeyViolationException;
+import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
@@ -298,7 +299,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
     }
 
     private JComponent getTabbedPanel() {
-        tabbedPane = new JTabbedPane();
+        tabbedPane = new MyJideTabbedPane();
         tabbedPane.add(getPicPanel(), "Photo");
         tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 400));
         return tabbedPane;

@@ -1,10 +1,12 @@
 package com.xlend.gui.admin;
 
+import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -22,7 +24,7 @@ public class AdminFrame extends GeneralFrame {
     }
 
     protected JTabbedPane getMainPanel() {
-        JTabbedPane admTab = new JTabbedPane();
+        MyJideTabbedPane admTab = new MyJideTabbedPane();
         admTab.add(getUsersPanel(), getSheetList()[0]);
         return admTab;
     }

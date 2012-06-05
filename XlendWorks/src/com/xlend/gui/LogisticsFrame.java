@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.gui.logistics.TripSheetGrid;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -34,7 +35,7 @@ public class LogisticsFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane workTab = new JTabbedPane();
+        JTabbedPane workTab = new MyJideTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             workTab.add(getTreepSheetPanel(), sheets()[0]);

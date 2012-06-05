@@ -20,6 +20,7 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
@@ -315,7 +316,7 @@ public class EditOrderPanel extends RecordEditPanel {
     }
 
     private JTabbedPane getTabbedPanel() {
-        JTabbedPane tp = new JTabbedPane();
+        JTabbedPane tp = new MyJideTabbedPane();
         OrderItemsGrid ordItemGrid = null;
         OrderSitesGrid ordSitesGrid = null;
         Xorder xorder = (Xorder) getDbObject();

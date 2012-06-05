@@ -86,7 +86,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             supplierCbModel.addElement(ci);
         }
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), false)) {
+        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger())) {
             machineCbModel.addElement(ci);
         }
         authorizedCbModel = new DefaultComboBoxModel();

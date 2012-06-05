@@ -49,7 +49,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                     if (esd.okPressed) {
                         Xorder xorder = (Xorder) esd.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xorder.getXcontractId());
+                                xorder.getXorderId());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

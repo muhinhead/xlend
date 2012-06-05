@@ -4,6 +4,7 @@ import com.xlend.gui.site.*;
 import com.xlend.gui.work.DieselCardsGrid;
 import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -46,7 +47,7 @@ public class SitesFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane workTab = new JTabbedPane();
+        JTabbedPane workTab = new MyJideTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             workTab.add(getSitesPanel(), sheets()[0]);

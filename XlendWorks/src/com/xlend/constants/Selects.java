@@ -99,9 +99,9 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surename\", phone0_num \"Phone Nr\", "
-            + "(select val from cbitems where name='wage_category' "
-            + " and id=coalesce(xemployee.wage_category,1)) \"Wage Cat.\" "
-            + "from xemployee order by clock_num";
+            + "val \"Wage Cat.\" "
+            + "from xemployee, cbitems where cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
+            + "order by clock_num";
     public static final String SELECT_FROM_SALEMPLOYEE_EXCLUDING = 
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
@@ -149,7 +149,7 @@ public class Selects {
             + "classify+tmvnr \"Fleet Nr\", "
             + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine\", "
             + "(select machtype from xmachtype where xmachtype2_id=xmachine.xmachtype_id) \"Type\", xmachine.reg_nr \"Reg.Nr\", "
-            + "substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name \"Operator\", "
+            + "xemployee.clock_num+' '+substr(xemployee.first_name,0,1)+'.'+xemployee.sur_name \"Operator\", "
             + "estdate \"Est.Date\", deestdate \"De-Est.Date\" "
             + "from xmachineonsite,xmachine,xemployee "
             + "where xmachine.xmachine_id=xmachineonsite.xmachine_id "
@@ -165,14 +165,14 @@ public class Selects {
             + "and xmachine_id not in (select xmachine_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by classify+tmvnr";
     public static final String EMPLOYEES = 
-            "Select xemployee_id, clock_num+' '+first_name \"Operator\" "
+            "Select xemployee_id, clock_num+' '+first_name+' '+sur_name \"Operator\" "
 //            + "substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
             + "from xemployee order by sur_name";
     public static final String FREEEMPLOYEES = 
             "Select xemployee_id, clock_num+' '+first_name \"Operator\" "
             //substr(first_name,0,1)+'.'+sur_name+' ('+clock_num+')' \"Operator\" "
             + "from xemployee where xemployee_id not in (select xemployee_id from xmachineonsite "
-            + "where deestdate is null or deestdate > CURDATE()) order by sur_name";
+            + "where deestdate is null or deestdate > CURDATE()) order by clock_num";
     public static final String SELECT_MASCHINES4LOOKUP =
             "Select xmachine_id \"Id\", classify+tmvnr \"Fleet Nr\", reg_nr \"Reg.Nr\", "
             + "t1.machtype \"Machine\",t2.machtype \"Type\" "
@@ -319,7 +319,7 @@ public class Selects {
     public static final String SELECT_FROM_LOANS = 
             "Select xloans_id \"Id\", to_char(loandate,'DD/MM/YYYY') \"Date\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.requestedby_id) \"Requested by\", "
-            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.represent_id) \"Representative\", "
+//            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.represent_id) \"Representative\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xloans.authorizedby_id) \"Authorized by\", "
             + "to_char(issueddate,'DD/MM/YYYY') \"Date issued\", amount \"Amount\" from xloans";
     public static final String SELECT_FROM_INCIDENTS = 
@@ -346,6 +346,11 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xhourcompare.operator_id) \"Operator\", "
             + "(Select classify+tmvnr from xmachine where xmachine_id=xhourcompare.xmachine_id) \"Machine\" "
             + "from xhourcompare";
+    public static final String SELECT_BREAKDOWNCONSUMES = 
+            "Select xbreakconsume.xbreakconsume_id \"Id\", xsupplier.companyname \"Supplier\", "
+            + " xconsume.invoicedate \"Inv.Date\", xconsume.invoicenumber \"Inv.Nr\", amount_liters \"Amt.liters\",amount_rands \"Amt.R\" "
+            + " from xbreakconsume,xconsume,xsupplier where xconsume.xconsume_id=xbreakconsume.xconsume_id "
+            + " and xsupplier.xsupplier_id=xconsume.xsupplier_id and xbreakconsume.xbreakdown_id = #";
     
     public static final String[] getStringArray(String select) {
         try {

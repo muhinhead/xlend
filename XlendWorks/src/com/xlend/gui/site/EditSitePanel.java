@@ -12,6 +12,7 @@ import com.xlend.orm.Xorder;
 import com.xlend.orm.Xsite;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -128,7 +129,7 @@ public class EditSitePanel extends RecordEditPanel {
     }
 
     private JComponent getTabbedPanel() {
-        JTabbedPane tp = new JTabbedPane();
+        JTabbedPane tp = new MyJideTabbedPane();
         MachinesOnSitesGrid msg = null;
         Xsite xsite = (Xsite) getDbObject();
         int xsite_id = xsite != null ? xsite.getXsiteId() : 0;

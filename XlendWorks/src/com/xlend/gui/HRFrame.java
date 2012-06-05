@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.gui.hr.*;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -43,7 +44,7 @@ public class HRFrame extends GeneralFrame {
     }
 
     protected JTabbedPane getMainPanel() {
-        JTabbedPane hrTab = new JTabbedPane();
+        JTabbedPane hrTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             hrTab.add(getOperatorsPanel(), sheets()[0]);
         }

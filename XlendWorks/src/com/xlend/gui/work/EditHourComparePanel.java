@@ -119,7 +119,7 @@ class EditHourComparePanel extends RecordEditPanel {
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             operatorCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), false)) {
+        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger())) {
             machineCbModel.addElement(ci);
         }
         dowLabels = new JLabel[31];

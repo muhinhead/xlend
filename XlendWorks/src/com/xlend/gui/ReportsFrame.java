@@ -1,13 +1,11 @@
 package com.xlend.gui;
 
-import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -39,7 +37,7 @@ public class ReportsFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        reportsTab = new JTabbedPane();
+        reportsTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             reportsTab.add(getSuppliersCreditorsPanel(), sheets()[0]);
         }

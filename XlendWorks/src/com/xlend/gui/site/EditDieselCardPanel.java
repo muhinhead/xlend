@@ -64,7 +64,7 @@ public class EditDieselCardPanel extends RecordEditPanel {
             operatorCbModel.addElement(ci);
         }
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), false)) {
+        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger())) {
             machineCbModel.addElement(ci);
         }
         siteCbModel = new DefaultComboBoxModel();

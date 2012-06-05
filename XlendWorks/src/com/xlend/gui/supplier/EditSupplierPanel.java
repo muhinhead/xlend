@@ -11,6 +11,7 @@ import com.xlend.gui.work.PaymentsGrid;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.EmailFocusAdapter;
+import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedNumberSpinner;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -138,7 +139,7 @@ class EditSupplierPanel extends RecordEditPanel {
 
     @Override
     protected JComponent getRightUpperPanel() {
-        JTabbedPane detailPanel = new JTabbedPane(JTabbedPane.TOP);
+        JTabbedPane detailPanel = new MyJideTabbedPane();
         JPanel paymentPanel = new JPanel(new BorderLayout());
         JPanel fuelPanel = new JPanel(new BorderLayout());
         JPanel consPanel = new JPanel(new BorderLayout());
@@ -164,7 +165,6 @@ class EditSupplierPanel extends RecordEditPanel {
                         sup.getXsupplierId().toString()), true));
                 sp3.setPreferredSize(new Dimension(400, 300));
                 consPanel.add(sp3, BorderLayout.NORTH);
-
 
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);

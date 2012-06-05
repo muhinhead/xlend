@@ -15,10 +15,7 @@ import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.PopupListener;
-import com.xlend.util.SelectedDateSpinner;
-import com.xlend.util.SelectedNumberSpinner;
-import com.xlend.util.Util;
+import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -275,7 +272,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     }
 
     private JTabbedPane getDetailsPanel() {
-        JTabbedPane tp = new JTabbedPane();
+        JTabbedPane tp = new MyJideTabbedPane();
         tp.setPreferredSize(new Dimension(tp.getPreferredSize().width, 200));
 
         try {
@@ -510,7 +507,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     @Override
     protected JComponent getRightUpperPanel() {
-        JTabbedPane picsTabs = new JTabbedPane();
+        JTabbedPane picsTabs = new MyJideTabbedPane();
         picsTabs.add(super.getRightUpperPanel(), "Photo 1");
         picsTabs.add(getRightUpperPanel2(), "Photo 2");
         picsTabs.add(getRightUpperPanel3(), "Photo 3");

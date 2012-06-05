@@ -7,6 +7,7 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -126,7 +127,7 @@ public class EditClientPanel extends RecordEditPanel {
     }
 
     private JComponent getTabbedPanel() {
-        JTabbedPane tp = new JTabbedPane();
+        JTabbedPane tp = new MyJideTabbedPane();
         try {
             Xclient xclient = (Xclient) getDbObject();
             int client_id = xclient == null ? 0 : xclient.getXclientId();

@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.41";
+    public static final String version = "0.42";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -360,9 +360,12 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadMachines(IMessageSender exchanger, boolean freeOnly) {
+    public static ComboItem[] loadMachines(IMessageSender exchanger) {
         try {
-            Vector[] tab = exchanger.getTableBody(freeOnly ? Selects.FREEMACHINETVMS : Selects.MACHINETVMS);
+            String select = //freeOnly ? Selects.FREEMACHINETVMS : 
+                    Selects.MACHINETVMS;
+            System.out.println("!!"+select);
+            Vector[] tab = exchanger.getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -434,8 +437,9 @@ public class XlendWorks {
         return new ComboItem[]{new ComboItem(0, "")};
     }
 
-    public static ComboItem[] loadEmployees(IMessageSender exchanger, boolean freeOnly) {
-        return loadOnSelect(exchanger, freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES);
+    public static ComboItem[] loadEmployees(IMessageSender exchanger) { //, boolean freeOnly) {
+//        String select = freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES;
+        return loadOnSelect(exchanger, Selects.EMPLOYEES);
     }
 
     public static ComboItem[] loadAllSuppliers(IMessageSender exchanger) {
@@ -632,6 +636,11 @@ public class XlendWorks {
                 + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
     }
 
+    public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
+        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume");
+    }
+    
+    
     /*
      * Select xmachine_id \"Id\", tmvnr \"TMVnr\", " + "t1.machtype \"Machine
      * Type\", reg_nr \"Reg.Nr\", " + "expdate \"License Exp.Date\",

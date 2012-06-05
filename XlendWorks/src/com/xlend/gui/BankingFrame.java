@@ -1,9 +1,11 @@
 package com.xlend.gui;
 
+import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JTabbedPane;
@@ -36,7 +38,7 @@ public class BankingFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane bankTab = new JTabbedPane();
+        MyJideTabbedPane bankTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
             bankTab.add(getAccountsPanel(), sheets()[0]);
         }

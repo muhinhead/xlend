@@ -4,6 +4,7 @@
  */
 package com.xlend.gui.site;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
@@ -15,17 +16,13 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
 import java.util.Date;
-import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
 
 /**
  *
@@ -61,7 +58,7 @@ class EditBreakdownPanel extends RecordEditPanel {
     private JSpinner timeBackSP;
     private JCheckBox stayedOverCb;
     private JSpinner accomPriceSP;
-    private JTextField invoiceNumberField;
+//    private JTextField invoiceNumberField;
     private JSpinner amountSP;
     private static final String UNKNOWN = "--Unknown--";
 
@@ -82,14 +79,13 @@ class EditBreakdownPanel extends RecordEditPanel {
             "Repair Date:",
             "Problem Repaired?:",
             //            "Description of breakdown:",
-            "Operator at fault?:",
+            //            "Operator at fault?:",
             "Operator Clock Number:",
-            "Purchases for repair:",
+            //            "Purchases for repair:",
             "Kilometers to site (one way):",// "Hours on job:",
             "Time left:", //   "Time Back:",
             "Stayed Over?:",
-            "Accomodation Price:",
-            "Invoice Nr:"
+            "Accomodation Price:", //            "Invoice Nr:"
         };
         machineCbModel = new DefaultComboBoxModel();
         vehicleByCbModel = new DefaultComboBoxModel();
@@ -134,11 +130,11 @@ class EditBreakdownPanel extends RecordEditPanel {
             comboPanelWithLookupBtn(attendedByCB = new JComboBox(attendedByCbModel), new EmployeeLookupAction(attendedByCB)),
             comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
             getGridPanel(repairDateSP = new SelectedDateSpinner(), 3),
-            getGridPanel(problemRepairedCb = new JCheckBox(), 3),
+            getGridPanel(new JComponent[]{problemRepairedCb = new JCheckBox(), new JLabel("Operator at fault?:", SwingConstants.RIGHT), operatorFaultCb = new JCheckBox()}),
             //            descrOfBreakdownField = new JTextField(40),
-            getGridPanel(operatorFaultCb = new JCheckBox(), 3),
+            //            getGridPanel(operatorFaultCb = new JCheckBox(), 3),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
-            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
+            //            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
             getGridPanel(new JComponent[]{
                 km2siteSP = new SelectedNumberSpinner(0, 0, 10000, 1),
                 new JLabel("Hours on job:", SwingConstants.RIGHT),
@@ -150,8 +146,8 @@ class EditBreakdownPanel extends RecordEditPanel {
                 timeBackSP = new SelectedNumberSpinner(0, 0, 12, 1)
             }),
             getGridPanel(stayedOverCb = new JCheckBox(), 3),
-            getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3),
-            getGridPanel(new JComponent[]{invoiceNumberField = new JTextField(),
+            //            getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3),
+            getGridPanel(new JComponent[]{accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1),//invoiceNumberField = new JTextField(),
                 new JLabel("Amount:", SwingConstants.RIGHT),
                 amountSP = new SelectedNumberSpinner(0.0, 0.0, 100000, .01)})
         };
@@ -162,12 +158,38 @@ class EditBreakdownPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(repairDateSP);
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
+//        add(new JButton("!!!!"));
+//        add(getPurchasesPanel());
+    }
+
+    private JComponent getPurchasesPanel(int xbreakdown_id) {
+        JComponent purPanel;
+        String title = "Purchases";
+        try {
+            purPanel = new BreakdownConsumesGrid(DashBoard.getExchanger(),
+                    Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id), getSelectedCbItem(machineCB));
+            purPanel.setPreferredSize(new Dimension(purPanel.getPreferredSize().width, 200));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+            JTextArea ta;
+            purPanel = new JScrollPane(ta = new JTextArea(ex.getMessage(), 5, 40),
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            ta.setEditable(false);
+            ta.setWrapStyleWord(true);
+            ta.setLineWrap(true);
+            title = "Error!";
+        }
+        purPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title));
+        return purPanel;
     }
 
     @Override
     public void loadData() {
         Xbreakdown xbr = (Xbreakdown) getDbObject();
+        int xbreakdownID = 0;
         if (xbr != null) {
+            xbreakdownID = xbr.getXbreakdownId();
             idField.setText(xbr.getXbreakdownId().toString());
             if (xbr.getBreakdowndate() != null) {
                 breakdownDateSP.setValue(new Date(xbr.getBreakdowndate().getTime()));
@@ -199,18 +221,19 @@ class EditBreakdownPanel extends RecordEditPanel {
             if (xbr.getOperatorId() != null) {
                 selectComboItem(operatorCB, xbr.getOperatorId());
             }
-            if (xbr.getXconsumeId() != null) {
-                selectComboItem(purchasesCB, xbr.getXconsumeId());
-            }
+//            if (xbr.getXconsumeId() != null) {
+//                selectComboItem(purchasesCB, xbr.getXconsumeId());
+//            }
             km2siteSP.setValue(xbr.getKm2site1way() == null ? 0 : xbr.getKm2site1way());
             timeLeftSP.setValue(xbr.getTimeleft() == null ? 0 : xbr.getTimeleft());
             timeBackSP.setValue(xbr.getTimeback() == null ? 0 : xbr.getTimeback());
             stayedOverCb.setSelected(xbr.getStayedover() != null && xbr.getStayedover() == 1);
             hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
-            invoiceNumberField.setText(xbr.getInvoicenumber());
+//            invoiceNumberField.setText(xbr.getInvoicenumber());
             amountSP.setValue(xbr.getAmount() == null ? 0 : xbr.getAmount());
         }
+        add(getPurchasesPanel(xbreakdownID));
         syncPurchases();
     }
 
@@ -242,14 +265,14 @@ class EditBreakdownPanel extends RecordEditPanel {
 //        xbr.setDescription(descrOfBreakdownField.getText());
         xbr.setOperatorfault(operatorFaultCb.isSelected() ? 1 : 0);
         xbr.setOperatorId(getSelectedCbItem(operatorCB));
-        xbr.setXconsumeId(getSelectedCbItem(purchasesCB));
+//        xbr.setXconsumeId(getSelectedCbItem(purchasesCB));
         xbr.setKm2site1way((Integer) km2siteSP.getValue());
         xbr.setHoursonjob((Integer) hrsOnJobSP.getValue());
         xbr.setTimeback((Integer) timeBackSP.getValue());
         xbr.setTimeleft((Integer) timeLeftSP.getValue());
         xbr.setStayedover(stayedOverCb.isSelected() ? 1 : 0);
         xbr.setAccomprice((Integer) accomPriceSP.getValue());
-        xbr.setInvoicenumber(invoiceNumberField.getText());
+//        xbr.setInvoicenumber(invoiceNumberField.getText());
         xbr.setAmount((Double) amountSP.getValue());
         return saveDbRecord(xbr, isNew);
     }

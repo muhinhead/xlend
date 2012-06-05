@@ -13,6 +13,7 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -175,7 +176,7 @@ public class EditContractPanel extends RecordEditPanel {
     }
 
     private JTabbedPane getDetailsPanel() {
-        JTabbedPane tp = new JTabbedPane();
+        JTabbedPane tp = new MyJideTabbedPane();
         OrdersGrid ordGrid = null;
         Xcontract xcontract = (Xcontract) getDbObject();
         int contract_id = xcontract == null ? 0 : xcontract.getXcontractId();

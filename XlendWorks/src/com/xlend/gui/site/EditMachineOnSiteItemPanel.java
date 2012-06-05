@@ -49,11 +49,11 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
     @Override
     protected void fillContent() {
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadMachines(DashBoard.getExchanger(), getDbObject() == null)) {
+        for (ComboItem itm : XlendWorks.loadMachines(DashBoard.getExchanger())) {//, getDbObject() != null)) {
             machineCbModel.addElement(itm);
         }
         employeeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadEmployees(DashBoard.getExchanger(), getDbObject() == null)) {
+        for (ComboItem itm : XlendWorks.loadEmployees(DashBoard.getExchanger())) {//, getDbObject() != null)) {
             employeeCbModel.addElement(itm);
         }
         String titles[] = new String[]{
@@ -61,10 +61,15 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
         };
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 3),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), 
-                new MachineLookupAction(machineCB, "m.classify in ('M','T')")),
+            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
+            new MachineLookupAction(machineCB,
+            "m.classify in ('M','T')")),
+            //                + " and xmachine_id not in "
+            //                + "(select xmachine_id from xmachineonsite where deestdate is null or deestdate > CURDATE()) order by classify+tmvnr")),
             comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel),
-                new EmployeeLookupAction(employeeCB)),
+            new EmployeeLookupAction(employeeCB)),
+            //                ,"xemployee_id not in (select xemployee_id from xmachineonsite "
+            //                + "where deestdate is null or deestdate > CURDATE())")),
             getGridPanel(estDateSpin = new SelectedDateSpinner(), 2),
             workingCB = new JCheckBox(),
             getGridPanel(deestDateSpin = new SelectedDateSpinner(), 2)
@@ -147,24 +152,30 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
                     throw new Exception("Est.date couldn't be after De-Est.date!");
                 }
             }
-            if (!isNew) {
+//            if (!isNew) {
+                Xmachineonsite other;
+                Xsite otherSite;
                 DbObject[] others = DashBoard.getExchanger().getDbObjects(
                         Xmachineonsite.class,
-                        "xmachineonsate_id<>" + idField.getText()
-                        + " and xemployee_id=" + mos.getXemployeeId(), null);
+                        (!isNew?"xmachineonsate_id<>" + idField.getText() + " and ":"")
+                        + "xemployee_id=" + mos.getXemployeeId(), null);
                 if (others.length > 0) {
+                    other = (Xmachineonsite) others[0];
+                    otherSite = (Xsite) DashBoard.getExchanger().loadDbObjectOnID(Xsite.class, other.getXsiteId());
                     valid = false;
-                    throw new Exception("Operator " + employeeCB.getSelectedItem() + " already works on another site or machine");
+                    throw new Exception("Operator " + employeeCB.getSelectedItem() + " already works on site " + otherSite.getName());
                 }
                 others = DashBoard.getExchanger().getDbObjects(
                         Xmachineonsite.class,
-                        "xmachineonsate_id<>" + idField.getText()
-                        + " and xmachine_id=" + mos.getXmachineId(), null);
+                        (!isNew?"xmachineonsate_id<>" + idField.getText() + " and ":"")
+                        + "xmachine_id=" + mos.getXmachineId(), null);
                 if (others.length > 0) {
+                    other = (Xmachineonsite) others[0];
+                    otherSite = (Xsite) DashBoard.getExchanger().loadDbObjectOnID(Xsite.class, other.getXsiteId());
                     valid = false;
-                    throw new Exception("Machine " + machineCB.getSelectedItem() + " already works on another site");
+                    throw new Exception("Machine " + machineCB.getSelectedItem() + " already works on site " + otherSite.getName());
                 }
-            }
+//            }
             DbObject saved = DashBoard.getExchanger().saveDbObject(mos);
             setDbObject(saved);
             return true;
@@ -191,7 +202,6 @@ class EditMachineOnSiteItemPanel extends RecordEditPanel {
             }
         };
     }
-
 //    private AbstractAction machinesLookup() {
 //        return new AbstractAction("...") {
 //

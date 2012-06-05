@@ -53,7 +53,7 @@ class EditDieselPurchasePanel extends RecordEditPanel {
             "Authorized by:",
             "Amount in Liters:",
             "Amount in Rands:",
-            "Paied by (Employee):",
+            "Paid by (Employee):",
             "Paid by (Method):"
         };
         supplierCbModel = new DefaultComboBoxModel();

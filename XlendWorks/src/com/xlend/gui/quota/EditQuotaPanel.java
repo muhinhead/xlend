@@ -17,6 +17,7 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xquotation;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
@@ -294,7 +295,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
     }
 
     private JComponent getTabbedPanel() throws RemoteException {
-        tabbedPane = new JTabbedPane();
+        tabbedPane = new MyJideTabbedPane();
 
         try {
             Xquotation q = (Xquotation) getDbObject();

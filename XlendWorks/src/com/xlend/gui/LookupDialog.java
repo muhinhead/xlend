@@ -44,7 +44,7 @@ public class LookupDialog extends PopupDialog {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         Object[] params = (Object[]) getObject();
         comboBox = (JComboBox) params[0];
-        if (comboBox.getSelectedItem()!=null) {
+        if (comboBox.getSelectedItem() != null) {
             choosedID = ((ComboItem) comboBox.getSelectedItem()).getId();
             grid = (GeneralGridPanel) params[1];
             grid.selectRowOnId(choosedID);
@@ -67,8 +67,9 @@ public class LookupDialog extends PopupDialog {
                 @Override
                 public void keyReleased(KeyEvent e) {
                     String select = originalSelect;
-                    int w = select.toLowerCase().indexOf(" where");
-                    int o = select.toLowerCase().indexOf(" order by");
+                    int w = select.toLowerCase().lastIndexOf(" where");
+                    int o = select.toLowerCase().lastIndexOf(" order by");
+                    o = o < w ? -1 : o;
                     StringBuilder addWhereCond = new StringBuilder();
                     for (String col : filteredColumns) {
                         addWhereCond.append(addWhereCond.length() > 0 ? " or " : "(").append("upper(").append(col).append(") like '%").append(filterField.getText().toUpperCase()).append("%'");
@@ -79,12 +80,10 @@ public class LookupDialog extends PopupDialog {
 
                     if (w < 0 && o < 0) {
                         select += (" where " + addWhereCond.toString());
-                    } else if (w > 0 && o < 0) {
-                        select = select.substring(0, w + 7) + addWhereCond.toString() + " aNd " + select.substring(w + 7);
                     } else if (w < 0 && o > 0) {
                         select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
                     } else {
-                        select = select.substring(0, w + 7) + addWhereCond.toString() + select.substring(o);
+                        select = select.substring(0, w + 7) + addWhereCond.toString() + " aNd " + select.substring(w + 7);//select.substring(o);
                     }
                     grid.setSelect(select);
                     try {
@@ -125,7 +124,6 @@ public class LookupDialog extends PopupDialog {
         }
     }
 
-
     private AbstractAction selectionAction(String title) {
         return new AbstractAction(title) {
 
@@ -161,11 +159,13 @@ public class LookupDialog extends PopupDialog {
 
     @Override
     public void freeResources() {
-        if(okBtn!=null && okAction!=null) 
+        if (okBtn != null && okAction != null) {
             okBtn.removeActionListener(okAction);
+        }
         okAction = null;
-        if(cancelBtn!=null && cancelAction!=null) 
+        if (cancelBtn != null && cancelAction != null) {
             cancelBtn.removeActionListener(cancelAction);
+        }
         cancelAction = null;
     }
 }

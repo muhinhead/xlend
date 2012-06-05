@@ -11,6 +11,8 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import javax.swing.*;
 
@@ -22,15 +24,14 @@ class EditLoanPanel extends RecordEditPanel {
 
     private DefaultComboBoxModel requestedByCbModel, authorizedByCbModel,
             representedByCbModel, deductTimeModeCbModel;
-    private JComboBox requestedByCB, authorizedByCB, representedByCB, deductTimeModeCB;
+    private JComboBox requestedByCB, authorizedByCB, //representedByCB, 
+            deductTimeModeCB;
     private JTextField idField;
     private JSpinner dateSP, issuedDateSP, deductStartDateSP;
     private JRadioButton isLoanRB, isAdvanceRB, isTransportRB;
     private JSpinner amountSP, deductSP;
     private JRadioButton signedRB, unSignedRB;
-    private JLabel lblIss, lblDst;
-//    private ButtonGroup isGrp;
-//    private ButtonGroup signedGrp;
+    private JLabel lblIss, lblDedStart, lblDedAmt, lblAt;
 
     public EditLoanPanel(DbObject dbObject) {
         super(dbObject);
@@ -45,8 +46,8 @@ class EditLoanPanel extends RecordEditPanel {
             "Authorized by:",//"Dediction start:"
             "Amount R:",
             "Deduction R:", //  "@"
-            "Signed:",
-            "Representative:"
+            "Signed:"//,
+//            "Representative:"
         };
         requestedByCbModel = new DefaultComboBoxModel();
         authorizedByCbModel = new DefaultComboBoxModel();
@@ -56,8 +57,11 @@ class EditLoanPanel extends RecordEditPanel {
         authorizedByCbModel.addElement(new ComboItem(0, "---"));
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             requestedByCbModel.addElement(ci);
-            authorizedByCbModel.addElement(ci);
+//            authorizedByCbModel.addElement(ci);
             representedByCbModel.addElement(ci);
+        }
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "coalesce(wage_category,1)=1")) {
+            authorizedByCbModel.addElement(ci);
         }
 
         deductTimeModeCbModel.addElement(new ComboItem(1, "Weekly"));
@@ -78,33 +82,37 @@ class EditLoanPanel extends RecordEditPanel {
                 })
             }),
             getBorderPanel(new JComponent[]{
-                comboPanelWithLookupBtn(requestedByCB = new JComboBox(requestedByCbModel), new EmployeeLookupAction(requestedByCB)),
+                comboPanelWithLookupBtn(requestedByCB = new JComboBox(requestedByCbModel),
+                new EmployeeLookupAction(requestedByCB)),
+                new JPanel(),
                 getBorderPanel(new JComponent[]{
                     getGridPanel(new JComponent[]{lblIss = new JLabel("Date issued:", SwingConstants.RIGHT),
                         issuedDateSP = new SelectedDateSpinner()})
                 })
             }),
             getBorderPanel(new JComponent[]{
-                comboPanelWithLookupBtn(authorizedByCB = new JComboBox(authorizedByCbModel), new EmployeeLookupAction(authorizedByCB)),
+                comboPanelWithLookupBtn(authorizedByCB = new JComboBox(authorizedByCbModel),
+                new EmployeeLookupAction(authorizedByCB, "coalesce(wage_category,1)=1")),
+                new JPanel(),
                 getBorderPanel(new JComponent[]{
-                    getGridPanel(new JComponent[]{lblDst = new JLabel(" Deduction start:", SwingConstants.RIGHT),
+                    getGridPanel(new JComponent[]{lblDedStart = new JLabel(" Deduction start:", SwingConstants.RIGHT),
                         deductStartDateSP = new SelectedDateSpinner()})
                 })
             }),
             getBorderPanel(new JComponent[]{amountSP = new SelectedNumberSpinner(0, 0, 1000000, 1)}),
             getGridPanel(getBorderPanel(new JComponent[]{
                 deductSP = new SelectedNumberSpinner(0, 0, 1000000, 1),
-                new JLabel("@", SwingConstants.RIGHT),
+                lblAt = new JLabel("@", SwingConstants.RIGHT),
                 deductTimeModeCB = new JComboBox(deductTimeModeCbModel)
             }), 2),
             getBorderPanel(new JComponent[]{getGridPanel(new JComponent[]{
                     signedRB = new JRadioButton("Y"),
                     unSignedRB = new JRadioButton("N")
-                })}),
-            getBorderPanel(new JComponent[]{
-                comboPanelWithLookupBtn(
-                representedByCB = new JComboBox(representedByCbModel), new EmployeeLookupAction(representedByCB))
-            })
+                })})
+//            getBorderPanel(new JComponent[]{
+//                comboPanelWithLookupBtn(
+//                representedByCB = new JComboBox(representedByCbModel), new EmployeeLookupAction(representedByCB))
+//            })
         };
         for (JSpinner sp : new JSpinner[]{dateSP, issuedDateSP, deductStartDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
@@ -118,10 +126,16 @@ class EditLoanPanel extends RecordEditPanel {
         signedGrp.add(signedRB);
         signedGrp.add(unSignedRB);
 
-        lblIss.setPreferredSize(new Dimension(lblDst.getPreferredSize().width, lblIss.getPreferredSize().height));
+        lblIss.setPreferredSize(new Dimension(lblDedStart.getPreferredSize().width, lblIss.getPreferredSize().height));
 
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
+
+        lblDedAmt = labels[5];
+
+        isTransportRB.addActionListener(checkTransport());
+        isAdvanceRB.addActionListener(checkTransport());
+        isLoanRB.addActionListener(checkTransport());
     }
 
     @Override
@@ -150,9 +164,9 @@ class EditLoanPanel extends RecordEditPanel {
             if (xl.getRequestedbyId() != null) {
                 selectComboItem(requestedByCB, xl.getRequestedbyId());
             }
-            if (xl.getRepresentId() != null) {
-                selectComboItem(representedByCB, xl.getRepresentId());
-            }
+//            if (xl.getRepresentId() != null) {
+//                selectComboItem(representedByCB, xl.getRepresentId());
+//            }
             if (xl.getDeducttime() != null) {
                 selectComboItem(deductTimeModeCB, xl.getDeducttime());
             }
@@ -162,6 +176,7 @@ class EditLoanPanel extends RecordEditPanel {
             unSignedRB.setSelected(xl.getIsSigned() == null || xl.getIsSigned() == 0);
             signedRB.setSelected(xl.getIsSigned() != null && xl.getIsSigned() == 1);
         }
+        deductEnable();
     }
 
     @Override
@@ -194,7 +209,27 @@ class EditLoanPanel extends RecordEditPanel {
         xl.setDeduction(new Double((Integer) deductSP.getValue()));
         xl.setDeducttime(getSelectedCbItem(deductTimeModeCB));
         xl.setIsSigned(signedRB.isSelected() ? 1 : 0);
-        xl.setRepresentId(getSelectedCbItem(representedByCB));
+//        xl.setRepresentId(getSelectedCbItem(representedByCB));
         return saveDbRecord(xl, isNew);
+    }
+
+    private ActionListener checkTransport() {
+        return new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deductEnable();
+            }
+        };
+    }
+
+    private void deductEnable() {
+        boolean deductActive = !isTransportRB.isSelected();
+        deductSP.setEnabled(deductActive);
+        deductStartDateSP.setEnabled(deductActive);
+        lblDedAmt.setEnabled(deductActive);
+        lblDedStart.setEnabled(deductActive);
+        lblAt.setEnabled(deductActive);
+        deductTimeModeCB.setEnabled(deductActive);
     }
 }

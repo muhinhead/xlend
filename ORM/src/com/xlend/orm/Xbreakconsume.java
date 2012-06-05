@@ -8,44 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xmachtype extends DbObject  {
+public class Xbreakconsume extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xmachtypeId = null;
-    private String machtype = null;
-    private Integer parenttypeId = null;
-    private String classify = null;
+    private Integer xbreakconsumeId = null;
+    private Integer xconsumeId = null;
+    private Integer xbreakdownId = null;
 
-    public Xmachtype(Connection connection) {
-        super(connection, "xmachtype", "xmachtype_id");
-        setColumnNames(new String[]{"xmachtype_id", "machtype", "parenttype_id", "classify"});
+    public Xbreakconsume(Connection connection) {
+        super(connection, "xbreakconsume", "xbreakconsume_id");
+        setColumnNames(new String[]{"xbreakconsume_id", "xconsume_id", "xbreakdown_id"});
     }
 
-    public Xmachtype(Connection connection, Integer xmachtypeId, String machtype, Integer parenttypeId, String classify) {
-        super(connection, "xmachtype", "xmachtype_id");
-        setNew(xmachtypeId.intValue() <= 0);
-//        if (xmachtypeId.intValue() != 0) {
-            this.xmachtypeId = xmachtypeId;
+    public Xbreakconsume(Connection connection, Integer xbreakconsumeId, Integer xconsumeId, Integer xbreakdownId) {
+        super(connection, "xbreakconsume", "xbreakconsume_id");
+        setNew(xbreakconsumeId.intValue() <= 0);
+//        if (xbreakconsumeId.intValue() != 0) {
+            this.xbreakconsumeId = xbreakconsumeId;
 //        }
-        this.machtype = machtype;
-        this.parenttypeId = parenttypeId;
-        this.classify = classify;
+        this.xconsumeId = xconsumeId;
+        this.xbreakdownId = xbreakdownId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xmachtype xmachtype = null;
+        Xbreakconsume xbreakconsume = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id,machtype,parenttype_id,classify FROM xmachtype WHERE xmachtype_id=" + id;
+        String stmt = "SELECT xbreakconsume_id,xconsume_id,xbreakdown_id FROM xbreakconsume WHERE xbreakconsume_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xmachtype = new Xmachtype(getConnection());
-                xmachtype.setXmachtypeId(new Integer(rs.getInt(1)));
-                xmachtype.setMachtype(rs.getString(2));
-                xmachtype.setParenttypeId(new Integer(rs.getInt(3)));
-                xmachtype.setClassify(rs.getString(4));
-                xmachtype.setNew(false);
+                xbreakconsume = new Xbreakconsume(getConnection());
+                xbreakconsume.setXbreakconsumeId(new Integer(rs.getInt(1)));
+                xbreakconsume.setXconsumeId(new Integer(rs.getInt(2)));
+                xbreakconsume.setXbreakdownId(new Integer(rs.getInt(3)));
+                xbreakconsume.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +51,7 @@ public class Xmachtype extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xmachtype;
+        return xbreakconsume;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +60,27 @@ public class Xmachtype extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xmachtype ("+(getXmachtypeId().intValue()!=0?"xmachtype_id,":"")+"machtype,parenttype_id,classify) values("+(getXmachtypeId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xbreakconsume ("+(getXbreakconsumeId().intValue()!=0?"xbreakconsume_id,":"")+"xconsume_id,xbreakdown_id) values("+(getXbreakconsumeId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXmachtypeId().intValue()!=0) {
-                 ps.setObject(++n, getXmachtypeId());
+             if (getXbreakconsumeId().intValue()!=0) {
+                 ps.setObject(++n, getXbreakconsumeId());
              }
-             ps.setObject(++n, getMachtype());
-             ps.setObject(++n, getParenttypeId());
-             ps.setObject(++n, getClassify());
+             ps.setObject(++n, getXconsumeId());
+             ps.setObject(++n, getXbreakdownId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXmachtypeId().intValue()==0) {
-             stmt = "SELECT max(xmachtype_id) FROM xmachtype";
+         if (getXbreakconsumeId().intValue()==0) {
+             stmt = "SELECT max(xbreakconsume_id) FROM xbreakconsume";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXmachtypeId(new Integer(rs.getInt(1)));
+                     setXbreakconsumeId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +106,13 @@ public class Xmachtype extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xmachtype " +
-                    "SET machtype = ?, parenttype_id = ?, classify = ?" + 
-                    " WHERE xmachtype_id = " + getXmachtypeId();
+                    "UPDATE xbreakconsume " +
+                    "SET xconsume_id = ?, xbreakdown_id = ?" + 
+                    " WHERE xbreakconsume_id = " + getXbreakconsumeId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getMachtype());
-                ps.setObject(2, getParenttypeId());
-                ps.setObject(3, getClassify());
+                ps.setObject(1, getXconsumeId());
+                ps.setObject(2, getXbreakdownId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,40 +125,34 @@ public class Xmachtype extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xorderitem.exists(getConnection(),"xmachtype_id = " + getXmachtypeId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xorderitem_xmachtype_fk");
-        }
-        if (Xmachine.exists(getConnection(),"xmachtype_id = " + getXmachtypeId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xmachine_xmachtype_fk");
-        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xmachtype " +
-                "WHERE xmachtype_id = " + getXmachtypeId();
+                "DELETE FROM xbreakconsume " +
+                "WHERE xbreakconsume_id = " + getXbreakconsumeId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXmachtypeId(new Integer(-getXmachtypeId().intValue()));
+        setXbreakconsumeId(new Integer(-getXbreakconsumeId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXmachtypeId().intValue() < 0);
+        return (getXbreakconsumeId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id,machtype,parenttype_id,classify FROM xmachtype " +
+        String stmt = "SELECT xbreakconsume_id,xconsume_id,xbreakdown_id FROM xbreakconsume " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -173,7 +162,7 @@ public class Xmachtype extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xmachtype(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3)),rs.getString(4)));
+                lst.add(dbObj=new Xbreakconsume(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -183,10 +172,10 @@ public class Xmachtype extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xmachtype[] objects = new Xmachtype[lst.size()];
+        Xbreakconsume[] objects = new Xbreakconsume[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xmachtype xmachtype = (Xmachtype) lst.get(i);
-            objects[i] = xmachtype;
+            Xbreakconsume xbreakconsume = (Xbreakconsume) lst.get(i);
+            objects[i] = xbreakconsume;
         }
         return objects;
     }
@@ -198,7 +187,7 @@ public class Xmachtype extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xmachtype_id FROM xmachtype " +
+        String stmt = "SELECT xbreakconsume_id FROM xbreakconsume " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -216,53 +205,47 @@ public class Xmachtype extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXmachtypeId() + getDelimiter();
+    //    return getXbreakconsumeId() + getDelimiter();
     //}
 
-    public Integer getXmachtypeId() {
-        return xmachtypeId;
+    public Integer getXbreakconsumeId() {
+        return xbreakconsumeId;
     }
 
-    public void setXmachtypeId(Integer xmachtypeId) throws ForeignKeyViolationException {
-        setWasChanged(this.xmachtypeId != null && this.xmachtypeId != xmachtypeId);
-        this.xmachtypeId = xmachtypeId;
-        setNew(xmachtypeId.intValue() == 0);
+    public void setXbreakconsumeId(Integer xbreakconsumeId) throws ForeignKeyViolationException {
+        setWasChanged(this.xbreakconsumeId != null && this.xbreakconsumeId != xbreakconsumeId);
+        this.xbreakconsumeId = xbreakconsumeId;
+        setNew(xbreakconsumeId.intValue() == 0);
     }
 
-    public String getMachtype() {
-        return machtype;
+    public Integer getXconsumeId() {
+        return xconsumeId;
     }
 
-    public void setMachtype(String machtype) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.machtype != null && !this.machtype.equals(machtype));
-        this.machtype = machtype;
+    public void setXconsumeId(Integer xconsumeId) throws SQLException, ForeignKeyViolationException {
+        if (xconsumeId!=null && !Xconsume.exists(getConnection(),"xconsume_id = " + xconsumeId)) {
+            throw new ForeignKeyViolationException("Can't set xconsume_id, foreign key violation: xbreakconsume_xconsume_fk");
+        }
+        setWasChanged(this.xconsumeId != null && !this.xconsumeId.equals(xconsumeId));
+        this.xconsumeId = xconsumeId;
     }
 
-    public Integer getParenttypeId() {
-        return parenttypeId;
+    public Integer getXbreakdownId() {
+        return xbreakdownId;
     }
 
-    public void setParenttypeId(Integer parenttypeId) throws SQLException, ForeignKeyViolationException {
-        if (null != parenttypeId)
-            parenttypeId = parenttypeId == 0 ? null : parenttypeId;
-        setWasChanged(this.parenttypeId != null && !this.parenttypeId.equals(parenttypeId));
-        this.parenttypeId = parenttypeId;
-    }
-
-    public String getClassify() {
-        return classify;
-    }
-
-    public void setClassify(String classify) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.classify != null && !this.classify.equals(classify));
-        this.classify = classify;
+    public void setXbreakdownId(Integer xbreakdownId) throws SQLException, ForeignKeyViolationException {
+        if (xbreakdownId!=null && !Xbreakdown.exists(getConnection(),"xbreakdown_id = " + xbreakdownId)) {
+            throw new ForeignKeyViolationException("Can't set xbreakdown_id, foreign key violation: xbreakconsume_xbreakdown_fk");
+        }
+        setWasChanged(this.xbreakdownId != null && !this.xbreakdownId.equals(xbreakdownId));
+        this.xbreakdownId = xbreakdownId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getXmachtypeId();
-        columnValues[1] = getMachtype();
-        columnValues[2] = getParenttypeId();
-        columnValues[3] = getClassify();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getXbreakconsumeId();
+        columnValues[1] = getXconsumeId();
+        columnValues[2] = getXbreakdownId();
         return columnValues;
     }
 
@@ -279,16 +262,19 @@ public class Xmachtype extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXmachtypeId(Integer.parseInt(flds[0]));
+            setXbreakconsumeId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXmachtypeId(null);
+            setXbreakconsumeId(null);
         }
-        setMachtype(flds[1]);
         try {
-            setParenttypeId(Integer.parseInt(flds[2]));
+            setXconsumeId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setParenttypeId(null);
+            setXconsumeId(null);
         }
-        setClassify(flds[3]);
+        try {
+            setXbreakdownId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setXbreakdownId(null);
+        }
     }
 }

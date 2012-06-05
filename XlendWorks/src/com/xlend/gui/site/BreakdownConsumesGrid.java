@@ -13,13 +13,14 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Nick Mukhin
  */
 public class BreakdownConsumesGrid extends GeneralGridPanel {
-    
+
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
     private static final String whereId = "xbreakconsume.xbreakdown_id = #";
     private static Integer xbreakdownID = null;
@@ -42,7 +43,7 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
     public static void setXmachineID(Integer aXmachineID) {
         xmachineID = aXmachineID;
     }
-    
+
     public BreakdownConsumesGrid(IMessageSender exchanger, String slct, Integer xmachineID) throws RemoteException {
         super(exchanger, slct, maxWidths, false);
         int p = Selects.SELECT_BREAKDOWNCONSUMES.indexOf(whereId);
@@ -83,7 +84,22 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xbreakconsume xbc = (Xbreakconsume) exchanger.loadDbObjectOnID(Xbreakconsume.class, id);
+                        EditBreakConsumeDialog.setXmachineID(xmachineID);
+                        EditBreakConsumeDialog.setXbreakdownID(xbreakdownID);
+                        new EditBreakConsumeDialog("Edit Purchase", xbc);
+                        if (EditBreakConsumeDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(),
+                                    getTableDoc(), getSelect(), id);
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
             }
         };
     }
@@ -95,9 +111,19 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                int id = getSelectedID();
+                try {
+                    Xbreakconsume xbc = (Xbreakconsume) exchanger.loadDbObjectOnID(Xbreakconsume.class, id);
+                    if (xbc!=null && GeneralFrame.yesNo("Attention!", 
+                            "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(xbc);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());                    
+                }
             }
         };
     }
-    
 }

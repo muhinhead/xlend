@@ -39,7 +39,7 @@ class EditBreakConsumeDialog extends EditRecordDialog {
     
     private void setDependentIDs() {
         EditBreakConsumePanel editPanel = (EditBreakConsumePanel) getEditPanel();
-        editPanel.setXmachineID(getXmachineID());
+//        editPanel.setXmachineID(getXmachineID());
         editPanel.setXbreakdownID(getXbreakdownID());
     }
     

@@ -637,7 +637,7 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
-        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume");
+        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id="+xmachineID);
     }
     
     

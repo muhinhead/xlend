@@ -37,7 +37,7 @@ public class LogisticsFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new MyJideTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
-        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             workTab.add(getTreepSheetPanel(), sheets()[0]);
         }
         return workTab;

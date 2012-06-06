@@ -648,7 +648,7 @@ public class XlendWorks {
      * \"License Status\" " + "from xmachine m, xmachtype t1 " + "where
      * m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
      */
-    public static boolean availableForCurrentUsder(String sheetName) {
+    public static boolean availableForCurrentUser(String sheetName) {
         try {
             DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
                     + " and sheet_id=(select min(sheet_id) from sheet where sheetname='" + sheetName + "')", null);

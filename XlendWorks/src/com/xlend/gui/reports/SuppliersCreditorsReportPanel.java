@@ -6,13 +6,9 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -21,7 +17,6 @@ import javax.swing.text.MaskFormatter;
 public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
 
     private double total, total30, total60, total90, total120, total0;
-    private JEditorPane editorPanel;
 
     public SuppliersCreditorsReportPanel(IMessageSender exchanger) {
         super(exchanger);
@@ -38,36 +33,34 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
         p.setCaretPosition(0);
     }
 
-    public JEditorPane getEditorPanel() {
-        return editorPanel;
-    }
-
-    private JEditorPane createEditorPanel() {
+    @Override
+    protected JEditorPane createEditorPanel() {
         StringBuffer html = new StringBuffer("<html>"
                 + "<table>"
                 + "<tr>"
-                + "<td><img margin=20 src='file:./images/XlendCost.jpg'/></td>"
-                + "<td vallign=\"center\"><H1 allign=\"left\">Supplier and Creditor Report</H1><BR>"
-                + "<H2 allign=\"left\">Outstanding Ammounts</H2>"
+                + "<td><img src='file:./images/XlendCost.jpg'/></td>"
+                + "<td style=\"font-size: 80%; font-family: sans-serif\" vallign=\"middle\" allign=\"left\" >"
+                + "<h3>Supplier and Creditor Report</h3><BR/>"
+                + "<h4>Outstanding Ammounts</h4><BR/>"
                 + Calendar.getInstance().getTime().toString() + "</td>"
                 + "</tr>"
                 + "</table>"
-                + "<table frame=\"abowe\" width=\"800\"><tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 90%; font-family: sans-serif\">Supplier Name</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">30 Days</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">60 Days</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">90 Days</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">120 Days</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">&gt 120</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: 90%; font-family: sans-serif\">Total</th>"
+                + "<table frame=\"abowe\" width=\"500\"><tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 80%; font-family: sans-serif\">Supplier Name</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">30 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">60 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">90 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">120 Days</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">&gt 120</th>"
+                + "<th width=\"10%\" align=\"right\" style=\"font-size: 80%; font-family: sans-serif\">Total</th>"
                 + getSupplierInfoHTML()
                 + "</tr>"
-                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 90%; font-family: sans-serif\">Total:</th>"
-                + "<th align=\"right\" " + getColor(total30) + ">R " + stdFormat(total30) + "</th>"
-                + "<th align=\"right\" " + getColor(total60) + ">R " + stdFormat(total60) + "</th>"
-                + "<th align=\"right\" " + getColor(total90) + ">R " + stdFormat(total90) + "</th>"
-                + "<th align=\"right\" " + getColor(total120) + ">R " + stdFormat(total120) + "</th>"
-                + "<th align=\"right\" " + getColor(total0) + ">R " + stdFormat(total0) + "</th>"
-                + "<th align=\"right\" " + getColor(total) + ">R " + stdFormat(total) + "</th></tr>"
+                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: 80%; font-family: sans-serif\">Total:</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total30) + ">R " + stdFormat(total30) + "</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total60) + ">R " + stdFormat(total60) + "</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total90) + ">R " + stdFormat(total90) + "</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total120) + ">R " + stdFormat(total120) + "</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total0) + ">R " + stdFormat(total0) + "</th>"
+                + "<th align=\"right\" style=\"font-size: 80%; font-family: sans-serif\" " + getColor(total) + ">R " + stdFormat(total) + "</th></tr>"
                 + "</table>"
                 + "</html>");
 
@@ -77,7 +70,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     }
 
     private String getColor(double sum) {//style=\"font-size: 160%; font-family: sans-serif\"
-        return (sum>0.0?"color=\"#ff0000\"":sum<0.0?"color=\"#0000ff\"":"")+"style=\"font-size: 90%; font-family: arial\"";
+        return (sum>0.0?"color=\"#ff0000\"":sum<0.0?"color=\"#0000ff\"":"")+"style=\"font-size: 70%; font-family: arial\"";
     }
     
     private String getSupplierInfoHTML() {
@@ -90,7 +83,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 Xsupplier sup = (Xsupplier) rec;
                 int supplier_id = sup.getXsupplierId();
                 if (XlendWorks.calcOutstandingAmtSum(exchanger, sup.getXsupplierId()) != 0) {
-                    line = "<tr><td style=\"font-size: 90%; font-family: sans-serif\">" + sup.getCompanyname() + "</td>"
+                    line = "<tr><td style=\"font-size: 80%; font-family: sans-serif\">" + sup.getCompanyname() + "</td>"
                             + get30OutstandingAmount(supplier_id)
                             + get60OutstandingAmount(supplier_id)
                             + get90OutstandingAmount(supplier_id)

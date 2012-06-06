@@ -44,19 +44,19 @@ public class FleetFrame extends GeneralFrame {
 
     protected JTabbedPane getMainPanel() {
         JTabbedPane fleetTab = new MyJideTabbedPane();
-        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             fleetTab.add(getMachinesPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
             fleetTab.add(getTrackPanel(), sheets()[1]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
             fleetTab.add(getLowBedsPanel(), sheets()[2]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
             fleetTab.add(new JPanel(), sheets()[3]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
             fleetTab.add(new JPanel(), sheets()[4]);
         }
         return fleetTab;

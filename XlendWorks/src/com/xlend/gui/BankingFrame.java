@@ -39,10 +39,10 @@ public class BankingFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         MyJideTabbedPane bankTab = new MyJideTabbedPane();
-        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             bankTab.add(getAccountsPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
             bankTab.add(getBalancePanel(), sheets()[1]);
         }
         return bankTab;

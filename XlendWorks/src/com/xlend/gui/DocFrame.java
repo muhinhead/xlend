@@ -42,26 +42,26 @@ public class DocFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new MyJideTabbedPane();
-        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             workTab.add(getContractsPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
             workTab.add(getQuotasPanel(), sheets()[1]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
             workTab.add(getOrdersPanel(), sheets()[2]);
         }
 //        workTab.add(getSitesPanel(), "Sites");
-        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
             workTab.add(getClientsPanel(), sheets()[3]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
             workTab.add(getSuppliersPanel(), sheets()[4]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
             workTab.add(getPaymentsPanel(), sheets()[5]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
             workTab.add(getHourComparePanel(), sheets()[6]);
         }
 //        workTab.setShowTabButtons(true);

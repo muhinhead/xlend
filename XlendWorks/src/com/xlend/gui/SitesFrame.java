@@ -49,34 +49,34 @@ public class SitesFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         JTabbedPane workTab = new MyJideTabbedPane();
 //        workTab.add(getContractsPanel(), "Contracts");
-        if (XlendWorks.availableForCurrentUsder(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             workTab.add(getSitesPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[1])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
             workTab.add(getDieselPrchsPanel(), sheets()[1]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[2])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
             workTab.add(getDieselCardsPanel(), sheets()[2]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[3])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
             workTab.add(getConsumablesPanel(), sheets()[3]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[4])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
             workTab.add(getBreakdownsPanel(), sheets()[4]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[5])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
             workTab.add(getFuelPanel(), sheets()[5]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[6])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
             workTab.add(getIssuesPanel(), sheets()[6]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[7])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[7])) {
             workTab.add(getSiteDiaryPanel(), sheets()[7]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[8])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
             workTab.add(getIncidentsPanel(), sheets()[8]);
         }
-        if (XlendWorks.availableForCurrentUsder(sheets()[9])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
             workTab.add(getOperatorClockSheetPanel(), sheets()[9]);
         }
         return workTab;

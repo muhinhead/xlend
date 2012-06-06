@@ -171,8 +171,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
         exitButton.setToolTipText("Close thiw window");
 
-
-
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
         mainPanel = getMainPanel();

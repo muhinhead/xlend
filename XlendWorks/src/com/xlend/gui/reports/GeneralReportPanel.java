@@ -2,6 +2,7 @@ package com.xlend.gui.reports;
 
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 
 /**
@@ -10,6 +11,7 @@ import javax.swing.JPanel;
  */
 public abstract class GeneralReportPanel extends JPanel {
     protected static IMessageSender exchanger;
+    protected JEditorPane editorPanel;
     
     public GeneralReportPanel(IMessageSender exchanger) {
         super(new BorderLayout());
@@ -21,4 +23,9 @@ public abstract class GeneralReportPanel extends JPanel {
     }
 
     public abstract void updateReport();
+    protected abstract JEditorPane createEditorPanel();
+
+    public JEditorPane getEditorPanel() {
+        return editorPanel;
+    }
 }

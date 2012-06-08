@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.jidesoft.plaf.LookAndFeelFactory;
 import com.xlend.constants.Selects;
 import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
@@ -57,6 +58,7 @@ public class XlendWorks {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
         String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
         IMessageSender exchanger;
         while (true) {
@@ -640,14 +642,6 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id="+xmachineID);
     }
     
-    
-    /*
-     * Select xmachine_id \"Id\", tmvnr \"TMVnr\", " + "t1.machtype \"Machine
-     * Type\", reg_nr \"Reg.Nr\", " + "expdate \"License Exp.Date\",
-     * CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal'))
-     * \"License Status\" " + "from xmachine m, xmachtype t1 " + "where
-     * m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
-     */
     public static boolean availableForCurrentUser(String sheetName) {
         try {
             DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()

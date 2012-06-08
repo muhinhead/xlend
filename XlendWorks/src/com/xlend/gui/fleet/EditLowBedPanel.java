@@ -1,6 +1,7 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.MyJideTabbedPane;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
@@ -8,7 +9,6 @@ import com.xlend.orm.Xlowbed;
 import com.xlend.orm.Xmachine;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;

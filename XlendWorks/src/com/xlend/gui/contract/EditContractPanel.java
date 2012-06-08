@@ -1,11 +1,7 @@
 package com.xlend.gui.contract;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
 import com.xlend.gui.work.OrdersGrid;
@@ -13,7 +9,6 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xcontract;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;

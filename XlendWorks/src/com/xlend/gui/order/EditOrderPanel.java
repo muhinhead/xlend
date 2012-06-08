@@ -5,12 +5,7 @@
 package com.xlend.gui.order;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
-import com.xlend.gui.PagesPanel;
-import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.work.ClientsGrid;
 import com.xlend.gui.work.ContractsGrid;
@@ -20,7 +15,6 @@ import com.xlend.orm.Xclient;
 import com.xlend.orm.Xorder;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;

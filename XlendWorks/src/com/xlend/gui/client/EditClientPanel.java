@@ -1,13 +1,9 @@
 package com.xlend.gui.client;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.*;
 import com.xlend.orm.Xclient;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;

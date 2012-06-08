@@ -4,7 +4,6 @@ import com.xlend.gui.fleet.LowBedGrid;
 import com.xlend.gui.fleet.MachineGrid;
 import com.xlend.gui.fleet.TrackGrid;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import java.util.Properties;
@@ -43,21 +42,21 @@ public class FleetFrame extends GeneralFrame {
     }
 
     protected JTabbedPane getMainPanel() {
-        JTabbedPane fleetTab = new MyJideTabbedPane();
+        MyJideTabbedPane fleetTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            fleetTab.add(getMachinesPanel(), sheets()[0]);
+            fleetTab.addTab(getMachinesPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            fleetTab.add(getTrackPanel(), sheets()[1]);
+            fleetTab.addTab(getTrackPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
-            fleetTab.add(getLowBedsPanel(), sheets()[2]);
+            fleetTab.addTab(getLowBedsPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            fleetTab.add(new JPanel(), sheets()[3]);
+            fleetTab.addTab(new JPanel(), sheets()[3]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            fleetTab.add(new JPanel(), sheets()[4]);
+            fleetTab.addTab(new JPanel(), sheets()[4]);
         }
         return fleetTab;
     }

@@ -7,6 +7,7 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ public class EmployeeReportPanel extends GeneralReportPanel {
     private final JComboBox categoryCB;
     private JScrollPane scrollPane;
     private static Hashtable<Integer, String> durationMap = new Hashtable<Integer, String>();
+
     static {
         durationMap.put(0, "Permanent");
         durationMap.put(1, "1 month");
@@ -47,7 +49,9 @@ public class EmployeeReportPanel extends GeneralReportPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 updateReport();
+                setCursor(Cursor.getDefaultCursor());
             }
         });
     }

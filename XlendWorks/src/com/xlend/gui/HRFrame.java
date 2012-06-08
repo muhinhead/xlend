@@ -2,9 +2,8 @@ package com.xlend.gui;
 
 import com.xlend.gui.hr.*;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.MyJideTabbedPane;
-import java.awt.Component;
 import java.rmi.RemoteException;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -44,36 +43,36 @@ public class HRFrame extends GeneralFrame {
     }
 
     protected JTabbedPane getMainPanel() {
-        JTabbedPane hrTab = new MyJideTabbedPane();
+        MyJideTabbedPane hrTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            hrTab.add(getOperatorsPanel(), sheets()[0]);
+            hrTab.addTab(getOperatorsPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            hrTab.add(getWeeklyWagesPanel(), sheets()[1]);
+            hrTab.addTab(getWeeklyWagesPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
-            hrTab.add(getSalaryListPanel(), sheets()[2]);
+            hrTab.addTab(getSalaryListPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            hrTab.add(getWagesSummaryPanel(), sheets()[3]);
+            hrTab.addTab(getWagesSummaryPanel(), sheets()[3]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            hrTab.add(new JPanel(), sheets()[4]);
+            hrTab.addTab(new JPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
-            hrTab.add(new JPanel(), sheets()[5]);
+            hrTab.addTab(new JPanel(), sheets()[5]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
-            hrTab.add(getAbsenteismPanel(), sheets()[6]);
+            hrTab.addTab(getAbsenteismPanel(), sheets()[6]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[7])) {
-            hrTab.add(getApp4LeavePanel(), sheets()[7]);
+            hrTab.addTab(getApp4LeavePanel(), sheets()[7]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[8])) {
-            hrTab.add(getLoansPanel(), sheets()[8]);
+            hrTab.addTab(getLoansPanel(), sheets()[8]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[9])) {
-            hrTab.add(getОobCardListrPanel(), sheets()[9]);
+            hrTab.addTab(getОobCardListrPanel(), sheets()[9]);
         }
         return hrTab;
     }

@@ -3,15 +3,14 @@ package com.xlend.gui;
 import com.xlend.gui.reports.EmployeeReportPanel;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.MyJideTabbedPane;
+import com.xlend.util.PopupDialog;
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -23,11 +22,11 @@ public class ReportsFrame extends GeneralFrame {
 
     private JComponent selectedTab;
     private static String[] sheetList = new String[]{
-        "Supplier and Creditor", "Employee"
+        "Creditor Age Analysis", "Employee Summary"
     };
     private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
     private EmployeeReportPanel employeePanel;
-    private JTabbedPane reportsTab;
+    private MyJideTabbedPane reportsTab;
 
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
@@ -44,12 +43,38 @@ public class ReportsFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
+        new PopupDialog(this, "Choose reports to show", null) {
+
+            private JButton okButton;
+            private AbstractAction okAction;
+
+            @Override
+            protected void fillContent() {
+                super.fillContent();
+                JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                btnPanel.add(okButton = new JButton(okAction = new AbstractAction("Ok") {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                }));
+                add(btnPanel, BorderLayout.SOUTH);
+            }
+
+            @Override
+            public void freeResources() {
+                okButton.removeActionListener(okAction);
+                okAction = null;
+            }
+        };
+
         reportsTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            reportsTab.add(getSuppliersCreditorsPanel(), sheets()[0]);
+            reportsTab.addTab(getSuppliersCreditorsPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            reportsTab.add(getEmployeePanel(), sheets()[1]);
+            reportsTab.addTab(getEmployeePanel(), sheets()[1]);
         }
         reportsTab.addChangeListener(new ChangeListener() {
 
@@ -68,7 +93,7 @@ public class ReportsFrame extends GeneralFrame {
         return suppliersCreditorsPanel;
     }
 
-    private Component getEmployeePanel() {
+    private JPanel getEmployeePanel() {
         if (employeePanel == null) {
             registerGrid(employeePanel = new EmployeeReportPanel(getExchanger()));
         }
@@ -82,19 +107,17 @@ public class ReportsFrame extends GeneralFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedTab instanceof SuppliersCreditorsReportPanel) {
-//                    if (suppliersCreditorsPanel.getEditorPanel() != null) {
-                        try {
-                            suppliersCreditorsPanel.getEditorPanel().print();
-                        } catch (PrinterException ex) {
-                            XlendWorks.log(ex);
-                        }
-//                    }
+                    try {
+                        suppliersCreditorsPanel.getEditorPanel().print();
+                    } catch (PrinterException ex) {
+                        XlendWorks.log(ex);
+                    }
                 } else if (selectedTab instanceof EmployeeReportPanel) {
-                        try {
-                            employeePanel.getEditorPanel().print();
-                        } catch (PrinterException ex) {
-                            XlendWorks.log(ex);
-                        }
+                    try {
+                        employeePanel.getEditorPanel().print();
+                    } catch (PrinterException ex) {
+                        XlendWorks.log(ex);
+                    }
                 }
             }
         };

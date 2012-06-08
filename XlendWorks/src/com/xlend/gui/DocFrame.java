@@ -3,7 +3,6 @@ package com.xlend.gui;
 import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.gui.work.*;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -41,28 +40,28 @@ public class DocFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        JTabbedPane workTab = new MyJideTabbedPane();
+        MyJideTabbedPane workTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            workTab.add(getContractsPanel(), sheets()[0]);
+            workTab.addTab(getContractsPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            workTab.add(getQuotasPanel(), sheets()[1]);
+            workTab.addTab(getQuotasPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
-            workTab.add(getOrdersPanel(), sheets()[2]);
+            workTab.addTab(getOrdersPanel(), sheets()[2]);
         }
-//        workTab.add(getSitesPanel(), "Sites");
+//        workTab.addTab(getSitesPanel(), "Sites");
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            workTab.add(getClientsPanel(), sheets()[3]);
+            workTab.addTab(getClientsPanel(), sheets()[3]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            workTab.add(getSuppliersPanel(), sheets()[4]);
+            workTab.addTab(getSuppliersPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
-            workTab.add(getPaymentsPanel(), sheets()[5]);
+            workTab.addTab(getPaymentsPanel(), sheets()[5]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
-            workTab.add(getHourComparePanel(), sheets()[6]);
+            workTab.addTab(getHourComparePanel(), sheets()[6]);
         }
 //        workTab.setShowTabButtons(true);
 //        workTab.setBoldActiveTab(true);
@@ -83,7 +82,7 @@ public class DocFrame extends GeneralFrame {
         return contractsPanel;
     }
 
-    private Component getClientsPanel() {
+    private JPanel getClientsPanel() {
         if (clientsPanel == null) {
             try {
                 registerGrid(clientsPanel = new ClientsGrid(getExchanger()));
@@ -95,7 +94,7 @@ public class DocFrame extends GeneralFrame {
         return clientsPanel;
     }
 
-    private Component getOrdersPanel() {
+    private JPanel getOrdersPanel() {
         if (ordersPanel == null) {
             try {
                 registerGrid(ordersPanel = new OrdersGrid(getExchanger()));
@@ -107,7 +106,7 @@ public class DocFrame extends GeneralFrame {
         return ordersPanel;
     }
 
-    private Component getQuotasPanel() {
+    private JPanel getQuotasPanel() {
         if (quotasPanel == null) {
             try {
                 registerGrid(quotasPanel = new QuotationsGrid(getExchanger()));

@@ -1,17 +1,13 @@
 package com.xlend.gui.supplier;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.RecordEditPanel;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.gui.site.ConsumablesGrid;
 import com.xlend.gui.site.FuelGrid;
 import com.xlend.gui.work.PaymentsGrid;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.EmailFocusAdapter;
-import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedNumberSpinner;
 import java.awt.BorderLayout;
 import java.awt.Color;

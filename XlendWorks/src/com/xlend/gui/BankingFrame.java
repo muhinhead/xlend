@@ -5,9 +5,9 @@ import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
 import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.MyJideTabbedPane;
 import java.awt.Component;
 import java.rmi.RemoteException;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
@@ -40,15 +40,15 @@ public class BankingFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         MyJideTabbedPane bankTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            bankTab.add(getAccountsPanel(), sheets()[0]);
+            bankTab.addTab(getAccountsPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            bankTab.add(getBalancePanel(), sheets()[1]);
+            bankTab.addTab(getBalancePanel(), sheets()[1]);
         }
         return bankTab;
     }
 
-    private Component getAccountsPanel() {
+    private JPanel getAccountsPanel() {
         if (accountsPanel == null) {
             try {
                 registerGrid(accountsPanel = new AccountsGrid(getExchanger()));
@@ -60,7 +60,7 @@ public class BankingFrame extends GeneralFrame {
         return accountsPanel;
     }
 
-    private Component getBalancePanel() {
+    private JPanel getBalancePanel() {
          if (balancePanel == null) {
             try {
                 registerGrid(balancePanel = new BankBalanceGrid(getExchanger()));

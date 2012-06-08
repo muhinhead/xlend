@@ -1,16 +1,12 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.EditPanelWithPhoto;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.orm.Xmachine;
 import com.xlend.orm.Xmachtype;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.orm.dbobject.ForeignKeyViolationException;
-import com.xlend.util.MyJideTabbedPane;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;

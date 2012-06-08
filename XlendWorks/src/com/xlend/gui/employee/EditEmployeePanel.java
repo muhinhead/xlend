@@ -5,11 +5,7 @@
 package com.xlend.gui.employee;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.EditPanelWithPhoto;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.PagesPanel;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xposition;

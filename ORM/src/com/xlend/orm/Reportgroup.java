@@ -8,44 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Cbitems extends DbObject  {
+public class Reportgroup extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer cbitemId = null;
-    private String name = null;
-    private Integer id = null;
-    private String val = null;
+    private Integer reportgroupId = null;
+    private Integer sheetgroupId = null;
+    private Integer sheetId = null;
 
-    public Cbitems(Connection connection) {
-        super(connection, "cbitems", "cbitem_id");
-        setColumnNames(new String[]{"cbitem_id", "name", "id", "val"});
+    public Reportgroup(Connection connection) {
+        super(connection, "reportgroup", "reportgroup_id");
+        setColumnNames(new String[]{"reportgroup_id", "sheetgroup_id", "sheet_id"});
     }
 
-    public Cbitems(Connection connection, Integer cbitemId, String name, Integer id, String val) {
-        super(connection, "cbitems", "cbitem_id");
-        setNew(cbitemId.intValue() <= 0);
-//        if (cbitemId.intValue() != 0) {
-            this.cbitemId = cbitemId;
+    public Reportgroup(Connection connection, Integer reportgroupId, Integer sheetgroupId, Integer sheetId) {
+        super(connection, "reportgroup", "reportgroup_id");
+        setNew(reportgroupId.intValue() <= 0);
+//        if (reportgroupId.intValue() != 0) {
+            this.reportgroupId = reportgroupId;
 //        }
-        this.name = name;
-        this.id = id;
-        this.val = val;
+        this.sheetgroupId = sheetgroupId;
+        this.sheetId = sheetId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Cbitems cbitems = null;
+        Reportgroup reportgroup = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems WHERE cbitem_id=" + id;
+        String stmt = "SELECT reportgroup_id,sheetgroup_id,sheet_id FROM reportgroup WHERE reportgroup_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                cbitems = new Cbitems(getConnection());
-                cbitems.setCbitemId(new Integer(rs.getInt(1)));
-                cbitems.setName(rs.getString(2));
-                cbitems.setId(new Integer(rs.getInt(3)));
-                cbitems.setVal(rs.getString(4));
-                cbitems.setNew(false);
+                reportgroup = new Reportgroup(getConnection());
+                reportgroup.setReportgroupId(new Integer(rs.getInt(1)));
+                reportgroup.setSheetgroupId(new Integer(rs.getInt(2)));
+                reportgroup.setSheetId(new Integer(rs.getInt(3)));
+                reportgroup.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +51,7 @@ public class Cbitems extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return cbitems;
+        return reportgroup;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +60,27 @@ public class Cbitems extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO cbitems ("+(getCbitemId().intValue()!=0?"cbitem_id,":"")+"name,id,val) values("+(getCbitemId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO reportgroup ("+(getReportgroupId().intValue()!=0?"reportgroup_id,":"")+"sheetgroup_id,sheet_id) values("+(getReportgroupId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getCbitemId().intValue()!=0) {
-                 ps.setObject(++n, getCbitemId());
+             if (getReportgroupId().intValue()!=0) {
+                 ps.setObject(++n, getReportgroupId());
              }
-             ps.setObject(++n, getName());
-             ps.setObject(++n, getId());
-             ps.setObject(++n, getVal());
+             ps.setObject(++n, getSheetgroupId());
+             ps.setObject(++n, getSheetId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getCbitemId().intValue()==0) {
-             stmt = "SELECT max(cbitem_id) FROM cbitems";
+         if (getReportgroupId().intValue()==0) {
+             stmt = "SELECT max(reportgroup_id) FROM reportgroup";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setCbitemId(new Integer(rs.getInt(1)));
+                     setReportgroupId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +106,13 @@ public class Cbitems extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE cbitems " +
-                    "SET name = ?, id = ?, val = ?" + 
-                    " WHERE cbitem_id = " + getCbitemId();
+                    "UPDATE reportgroup " +
+                    "SET sheetgroup_id = ?, sheet_id = ?" + 
+                    " WHERE reportgroup_id = " + getReportgroupId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getName());
-                ps.setObject(2, getId());
-                ps.setObject(3, getVal());
+                ps.setObject(1, getSheetgroupId());
+                ps.setObject(2, getSheetId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,31 +125,34 @@ public class Cbitems extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (getTriggers() != null) {
+            getTriggers().beforeDelete(this);
+        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM cbitems " +
-                "WHERE cbitem_id = " + getCbitemId();
+                "DELETE FROM reportgroup " +
+                "WHERE reportgroup_id = " + getReportgroupId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setCbitemId(new Integer(-getCbitemId().intValue()));
+        setReportgroupId(new Integer(-getReportgroupId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getCbitemId().intValue() < 0);
+        return (getReportgroupId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id,name,id,val FROM cbitems " +
+        String stmt = "SELECT reportgroup_id,sheetgroup_id,sheet_id FROM reportgroup " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -164,7 +162,7 @@ public class Cbitems extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Cbitems(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3)),rs.getString(4)));
+                lst.add(dbObj=new Reportgroup(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -174,10 +172,10 @@ public class Cbitems extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Cbitems[] objects = new Cbitems[lst.size()];
+        Reportgroup[] objects = new Reportgroup[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Cbitems cbitems = (Cbitems) lst.get(i);
-            objects[i] = cbitems;
+            Reportgroup reportgroup = (Reportgroup) lst.get(i);
+            objects[i] = reportgroup;
         }
         return objects;
     }
@@ -189,7 +187,7 @@ public class Cbitems extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT cbitem_id FROM cbitems " +
+        String stmt = "SELECT reportgroup_id FROM reportgroup " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -207,51 +205,47 @@ public class Cbitems extends DbObject  {
     }
 
     //public String toString() {
-    //    return getCbitemId() + getDelimiter();
+    //    return getReportgroupId() + getDelimiter();
     //}
 
-    public Integer getCbitemId() {
-        return cbitemId;
+    public Integer getReportgroupId() {
+        return reportgroupId;
     }
 
-    public void setCbitemId(Integer cbitemId) throws ForeignKeyViolationException {
-        setWasChanged(this.cbitemId != null && this.cbitemId != cbitemId);
-        this.cbitemId = cbitemId;
-        setNew(cbitemId.intValue() == 0);
+    public void setReportgroupId(Integer reportgroupId) throws ForeignKeyViolationException {
+        setWasChanged(this.reportgroupId != null && this.reportgroupId != reportgroupId);
+        this.reportgroupId = reportgroupId;
+        setNew(reportgroupId.intValue() == 0);
     }
 
-    public String getName() {
-        return name;
+    public Integer getSheetgroupId() {
+        return sheetgroupId;
     }
 
-    public void setName(String name) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.name != null && !this.name.equals(name));
-        this.name = name;
+    public void setSheetgroupId(Integer sheetgroupId) throws SQLException, ForeignKeyViolationException {
+        if (sheetgroupId!=null && !Sheet.exists(getConnection(),"sheet_id = " + sheetgroupId)) {
+            throw new ForeignKeyViolationException("Can't set sheetgroup_id, foreign key violation: reportgroup_sheet_fk");
+        }
+        setWasChanged(this.sheetgroupId != null && !this.sheetgroupId.equals(sheetgroupId));
+        this.sheetgroupId = sheetgroupId;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getSheetId() {
+        return sheetId;
     }
 
-    public void setId(Integer id) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.id != null && !this.id.equals(id));
-        this.id = id;
-    }
-
-    public String getVal() {
-        return val;
-    }
-
-    public void setVal(String val) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.val != null && !this.val.equals(val));
-        this.val = val;
+    public void setSheetId(Integer sheetId) throws SQLException, ForeignKeyViolationException {
+        if (sheetId!=null && !Sheet.exists(getConnection(),"sheet_id = " + sheetId)) {
+            throw new ForeignKeyViolationException("Can't set sheet_id, foreign key violation: reportgroup_sheet_fk2");
+        }
+        setWasChanged(this.sheetId != null && !this.sheetId.equals(sheetId));
+        this.sheetId = sheetId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[4];
-        columnValues[0] = getCbitemId();
-        columnValues[1] = getName();
-        columnValues[2] = getId();
-        columnValues[3] = getVal();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getReportgroupId();
+        columnValues[1] = getSheetgroupId();
+        columnValues[2] = getSheetId();
         return columnValues;
     }
 
@@ -268,16 +262,19 @@ public class Cbitems extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setCbitemId(Integer.parseInt(flds[0]));
+            setReportgroupId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setCbitemId(null);
+            setReportgroupId(null);
         }
-        setName(flds[1]);
         try {
-            setId(Integer.parseInt(flds[2]));
+            setSheetgroupId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setId(null);
+            setSheetgroupId(null);
         }
-        setVal(flds[3]);
+        try {
+            setSheetId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setSheetId(null);
+        }
     }
 }

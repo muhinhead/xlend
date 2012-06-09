@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.gui.reports.EmployeeReportPanel;
+import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.PopupDialog;
@@ -43,37 +44,13 @@ public class ReportsFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
-        new PopupDialog(this, "Choose reports to show", null) {
-
-            private JButton okButton;
-            private AbstractAction okAction;
-
-            @Override
-            protected void fillContent() {
-                super.fillContent();
-                JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-                btnPanel.add(okButton = new JButton(okAction = new AbstractAction("Ok") {
-
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        dispose();
-                    }
-                }));
-                add(btnPanel, BorderLayout.SOUTH);
-            }
-
-            @Override
-            public void freeResources() {
-                okButton.removeActionListener(okAction);
-                okAction = null;
-            }
-        };
+//        new ReportsMenuDialog();
 
         reportsTab = new MyJideTabbedPane();
-        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[0]) && ReportsMenuDialog.isCheckedReport(sheets()[0])) {
             reportsTab.addTab(getSuppliersCreditorsPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+        if (XlendWorks.availableForCurrentUser(sheets()[1]) && ReportsMenuDialog.isCheckedReport(sheets()[1])) {
             reportsTab.addTab(getEmployeePanel(), sheets()[1]);
         }
         reportsTab.addChangeListener(new ChangeListener() {

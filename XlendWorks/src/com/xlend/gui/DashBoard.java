@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.gui.admin.AdminFrame;
+import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.orm.Sheet;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -74,7 +75,6 @@ public class DashBoard extends JFrame {
     private GeneralFrame reportsFrame = null;
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
-    
     private ToolBarButton adminButton = null;
     private final JButton reportsButton;
 
@@ -292,16 +292,9 @@ public class DashBoard extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                GeneralFrame.notImplementedYet();
-                if (reportsFrame == null) {
+                new ReportsMenuDialog();
+                if (ReportsMenuDialog.okPressed) {
                     reportsFrame = new ReportsFrame(getExchanger());
-                } else {
-                    try {
-                        reportsFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                UIManager.getSystemLookAndFeelClassName()));
-                    } catch (Exception ex) {
-                    }
-                    reportsFrame.setVisible(true);
                 }
             }
         });
@@ -353,7 +346,7 @@ public class DashBoard extends JFrame {
                 }
             }
         });
-        
+
         bankingbutton.addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {

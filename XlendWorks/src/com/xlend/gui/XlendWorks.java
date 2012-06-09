@@ -366,7 +366,7 @@ public class XlendWorks {
         try {
             String select = //freeOnly ? Selects.FREEMACHINETVMS : 
                     Selects.MACHINETVMS;
-            System.out.println("!!"+select);
+            System.out.println("!!" + select);
             Vector[] tab = exchanger.getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
@@ -628,6 +628,12 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select distinct 0,accname from xaccounts");
     }
 
+    public static ComboItem[] loadReportGroup(IMessageSender exchanger, Integer sheetId) {
+        return loadOnSelect(exchanger, 
+                "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet where sheet_id=sheet.sheet_id and profile_id="+XlendWorks.currentUser.getProfileId()+"), sheet.sheetname from sheet, reportgroup "
+                + "where reportgroup.sheet_id=sheet.sheet_id and sheetgroup_id=" + sheetId);
+    }
+
     public static ComboItem[] loadAllAccounts(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select xaccount_id,accname from xaccounts");
     }
@@ -639,9 +645,9 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
-        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id="+xmachineID);
+        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id=" + xmachineID);
     }
-    
+
     public static boolean availableForCurrentUser(String sheetName) {
         try {
             DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
@@ -837,10 +843,21 @@ public class XlendWorks {
     public static int getWageCategory(Integer xemployeeID) {
         try {
             Xemployee emp = (Xemployee) DashBoard.getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeID);
-            return emp == null ? 0 : (emp.getWageCategory()==null?1:emp.getWageCategory());
+            return emp == null ? 0 : (emp.getWageCategory() == null ? 1 : emp.getWageCategory());
         } catch (RemoteException ex) {
             log(ex);
         }
         return 0;
+    }
+
+    public static DbObject[] loadReportGrpSheets(IMessageSender exchanger) {
+        try {
+            return exchanger.getDbObjects(Sheet.class,
+                    "parent_id is null and sheetname<>'REPORTS' and sheet_id in(select sheet_id from usersheet where profile_id="
+                    + currentUser.getProfileId() + ")", null);
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return null;
     }
 }

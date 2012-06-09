@@ -5,6 +5,7 @@ import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import javax.swing.JEditorPane;
@@ -24,39 +25,26 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     }
 
     @Override
-    public void updateReport() {
-//        removeAll();
-//        editorPanel = null;
-//        JEditorPane p;
-//        JScrollPane sp = new JScrollPane(p = createEditorPanel());
-//        add(sp, BorderLayout.CENTER);
-//        p.setCaretPosition(0);
-        if (scrollPane != null && editorPanel != null) {
-            scrollPane.remove(scrollPane);
-            remove(scrollPane);
-        }
-        editorPanel = null;
-        JEditorPane p;
-        scrollPane = new JScrollPane(p = createEditorPanel());
-        setVisible(false);
-        add(scrollPane, BorderLayout.CENTER);
-        p.setCaretPosition(0);
-        setVisible(true);
-
-    }
-
-    @Override
     protected JEditorPane createEditorPanel() {
         StringBuffer html = new StringBuffer("<html>"
-                + "<table>"
+//                + "<table>"
+//                + "<tr>"
+//                + "<td><img src='file:./images/XlendCost.jpg'/></td>"
+//                + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" vallign=\"middle\" allign=\"left\" >"
+//                + "<h3>Supplier and Creditor Report</h3><BR/>"
+//                + "<h4>Outstanding Ammounts</h4><BR/>"
+//                + Calendar.getInstance().getTime().toString() + "</td>"
+//                + "</tr>"
+//                + "</table>"
+                + "<table border=\"0\">"
+                + "<tr><table>"
                 + "<tr>"
-                + "<td><img src='file:./images/XlendCost.jpg'/></td>"
-                + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" vallign=\"middle\" allign=\"left\" >"
-                + "<h3>Supplier and Creditor Report</h3><BR/>"
-                + "<h4>Outstanding Ammounts</h4><BR/>"
-                + Calendar.getInstance().getTime().toString() + "</td>"
+                + "<td rowspan=\"3\" style=\"font-size: " + (zoomer.getValue()-10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                + "<th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\" allign=\"left\">Supplier and Creditor Report</th>"
                 + "</tr>"
-                + "</table>"
+                + "<tr><th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\">Outstanding Ammounts</th>"
+                + "</tr><tr> </tr>"
+                + "</table></tr>"
                 + "<table frame=\"abowe\" ><tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Supplier Name</th>"
                 + "<th width=\"10%\" align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">30 Days</th>"
                 + "<th width=\"10%\" align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">60 Days</th>"
@@ -73,6 +61,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                 + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total120) + ">R " + stdFormat(total120) + "</th>"
                 + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total0) + ">R " + stdFormat(total0) + "</th>"
                 + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total) + ">R " + stdFormat(total) + "</th></tr>"
+                + "</table></tr>"
                 + "</table>"
                 + "</html>");
 

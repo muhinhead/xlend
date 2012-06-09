@@ -19,16 +19,19 @@ public abstract class GeneralReportPanel extends JPanel {
     protected JSlider zoomer;
     protected JPanel upperPane;
     protected JScrollPane scrollPane;
+    private JLabel procLbl;
 
     public GeneralReportPanel(IMessageSender exchanger) {
         super(new BorderLayout());
         upperPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         add(upperPane, BorderLayout.NORTH);
         upperPane.add(zoomer = new JSlider(50, 120));
+        upperPane.add(procLbl = new JLabel("%"));
         zoomer.addChangeListener(new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent e) {
+                procLbl.setText(""+zoomer.getValue()+"%");
                 updateReport();
             }
         });
@@ -39,7 +42,21 @@ public abstract class GeneralReportPanel extends JPanel {
         this.exchanger = exchanger;
     }
 
-    public abstract void updateReport();
+    public void updateReport() {
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        if (scrollPane != null && editorPanel != null) {
+            scrollPane.remove(scrollPane);
+            remove(scrollPane);
+        }
+        editorPanel = null;
+        JEditorPane p;
+        scrollPane = new JScrollPane(p = createEditorPanel());
+        setVisible(false);
+        add(scrollPane, BorderLayout.CENTER);
+        p.setCaretPosition(0);
+        setVisible(true);
+        setCursor(Cursor.getDefaultCursor());
+    }
 
     protected abstract JEditorPane createEditorPanel();
 

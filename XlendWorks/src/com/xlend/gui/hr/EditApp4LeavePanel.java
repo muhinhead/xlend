@@ -243,7 +243,7 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                     calEnd.set(Calendar.SECOND, 0);
                     calStart.set(Calendar.MILLISECOND, 0);
                     calEnd.set(Calendar.MILLISECOND, 0);
-                    int diffDays = (int) ((calEnd.getTimeInMillis() - calStart.getTimeInMillis()) / (24.0 * 60.0 * 60.0 * 1000.0));
+                    int diffDays = 1 + (int) ((calEnd.getTimeInMillis() - calStart.getTimeInMillis()) / (24.0 * 60.0 * 60.0 * 1000.0));
                     totDaysSP.setValue(diffDays);
                 }
             }

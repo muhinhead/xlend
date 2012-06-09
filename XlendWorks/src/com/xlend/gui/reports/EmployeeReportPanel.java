@@ -48,52 +48,37 @@ public class EmployeeReportPanel extends GeneralReportPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 updateReport();
-                setCursor(Cursor.getDefaultCursor());
             }
         });
     }
 
     @Override
-    public void updateReport() {
-        if (scrollPane != null && editorPanel != null) {
-            scrollPane.remove(scrollPane);
-            remove(scrollPane);
-        }
-        editorPanel = null;
-        JEditorPane p;
-        scrollPane = new JScrollPane(p = createEditorPanel());
-        setVisible(false);
-        add(scrollPane, BorderLayout.CENTER);
-        p.setCaretPosition(0);
-        setVisible(true);
-    }
-
-    @Override
     protected JEditorPane createEditorPanel() {
         StringBuffer html = new StringBuffer("<html>"
-                + "<table>"
+                + "<table border=\"0\">"
+                + "<tr><table>"
                 + "<tr>"
-                + "<td><img margin=20 src='file:./images/XlendCost.jpg'/></td>"
-                + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" vallign=\"center\"><H3 allign=\"left\">Employee Report</H3><BR>"
-                + "<H4 allign=\"left\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</H4>"
-                + Calendar.getInstance().getTime().toString() + "</td>"
+                + "<td rowspan=\"3\" style=\"font-size: " + (zoomer.getValue()-10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                + "<th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
                 + "</tr>"
-                + "</table>"
-                + "<table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
-                + "<th width=\"15%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Name</th>"
-                + "<th width=\"15%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Surname</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">ID Number</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Tel Number 1</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Tel Number 1</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Work Position</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Rate of Pay</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Contract Duration</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Start Date</th>"
+                + "<tr><th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString()+"</th>"
+                + "</tr><tr> </tr>"
+                + "</table></tr>"
+                + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
+                + "<th width=\"15%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Name</th>"
+                + "<th width=\"15%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Surname</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">ID Number</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Tel Number 1</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Tel Number 2</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Work Position</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Rate of Pay</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Contract Duration</th>"
+                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Start Date</th>"
                 + getEmployeeListHTML()
                 + "</tr>"
-                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\"> </th>"
+                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\"> </th>"
+                + "</table></tr>"
                 + "</table>"
                 + "</html>");
 
@@ -109,15 +94,15 @@ public class EmployeeReportPanel extends GeneralReportPanel {
             for (DbObject rec : recs) {
                 Xemployee emp = (Xemployee) rec;
                 Xposition pos = (Xposition) exchanger.loadDbObjectOnID(Xposition.class, emp.getXpositionId());
-                String line = "<tr><td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + ifNull(emp.getFirstName()) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + ifNull(emp.getSurName()) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + ifNull(emp.getClockNum()) + "</td><"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + ifNull(emp.getPhone0Num()) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + ifNull(emp.getPhone1Num()) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + (pos == null ? "" : ifNull(pos.getPos())) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + String.format("%.02f", emp.getRate()) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + (emp.getContractLen() == null ? "" : durationMap.get(emp.getContractLen())) + "</td>"
-                        + "<td style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">" + (emp.getContractStart() == null ? "" : emp.getContractStart().toString()) + "</td>"
+                String line = "<tr><td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getFirstName()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getSurName()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getClockNum()) + "</td><"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getPhone0Num()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getPhone1Num()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (pos == null ? "" : ifNull(pos.getPos())) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + String.format("%.02f", emp.getRate()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (emp.getContractLen() == null ? "" : durationMap.get(emp.getContractLen())) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (emp.getContractStart() == null ? "" : emp.getContractStart().toString()) + "</td>"
                         + "</tr>";
                 body.append(line);
             }

@@ -58,14 +58,11 @@ create cached table sheet
     constraint sheet_pk primary key (sheet_id)
 );
 
-insert into sheet (sheetname,classname) values('DOCS','com.xlend.gui.work.DocFrame');
-insert into sheet (sheetname,classname) values('SITES','com.xlend.gui.work.SitesFrame');
-insert into sheet (sheetname,classname) values('REPORTS',null);
-insert into sheet (sheetname,classname) values('HR','com.xlend.gui.HRFrame');
-insert into sheet (sheetname,classname) values('FLEET','package com.xlend.gui.FleetFrame');
-
---setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
---setCursor(Cursor.getDefaultCursor());
+--insert into sheet (sheetname,classname) values('DOCS','com.xlend.gui.work.DocFrame');
+--insert into sheet (sheetname,classname) values('SITES','com.xlend.gui.work.SitesFrame');
+--insert into sheet (sheetname,classname) values('REPORTS',null);
+--insert into sheet (sheetname,classname) values('HR','com.xlend.gui.HRFrame');
+--insert into sheet (sheetname,classname) values('FLEET','package com.xlend.gui.FleetFrame');
 
 
 create cached table usersheet

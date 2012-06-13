@@ -28,7 +28,6 @@ public class DbTableGridPanel extends JPanel {
         }
         return maxWidths;
     }
-
     private DbTableView tableView = null;
     private DbTableDocument tableDoc = null;
     private JScrollPane sp = null;
@@ -39,6 +38,7 @@ public class DbTableGridPanel extends JPanel {
     private JButton editButton = null;
     private JButton delButton = null;
     private MouseAdapter doubleClickAdapter;
+    private Controller controller;
 
     public DbTableGridPanel(
             AbstractAction addAction,
@@ -58,23 +58,22 @@ public class DbTableGridPanel extends JPanel {
             AbstractAction delAction,
             Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
         this();
-        init(new AbstractAction[]{addAction, editAction, delAction}, tableBody, maxWidths);
+        init(new AbstractAction[]{addAction, editAction, delAction}, null, tableBody, maxWidths, null);
     }
 
-//    protected void init(AbstractAction add, AbstractAction edit,
-//            AbstractAction del, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
-    protected void init(AbstractAction[] acts, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
+    protected void init(AbstractAction[] acts, String select, Vector[] tableBody, HashMap<Integer, Integer> maxWidths, DbTableView tabView) {
         this.setAddAction(acts.length > 0 ? acts[0] : null);
         this.setEditAction(acts.length > 1 ? acts[1] : null);
         this.setDelAction(acts.length > 2 ? acts[2] : null);
-        tableView = new DbTableView();
+        tableView = (tabView == null ? new DbTableView() : tabView);
         if (maxWidths != null) {
             tableView.setMaxColWidths(maxWidths);
         } else {
             tableView.setMaxColWidth(0, 40);
         }
         tableDoc = new DbTableDocument(toString(), tableBody);
-        new Controller(getTableDoc(), getTableView());
+        tableDoc.setSelectStatement(select);
+        controller = new Controller(getTableDoc(), getTableView());
         JPanel btnPanel = new JPanel(new GridLayout(acts.length, 1, 5, 5));
         if (getAddAction() != null) {
             btnPanel.add(addButton = new JButton(getAddAction()));
@@ -85,7 +84,7 @@ public class DbTableGridPanel extends JPanel {
         if (getDelAction() != null) {
             btnPanel.add(delButton = new JButton(getDelAction()));
         }
-        for (int i=3; i<acts.length; i++) {
+        for (int i = 3; i < acts.length; i++) {
             btnPanel.add(new JButton(acts[i]));
         }
         add(sp = new JScrollPane(getTableView()), BorderLayout.CENTER);
@@ -245,5 +244,12 @@ public class DbTableGridPanel extends JPanel {
      */
     public void setDelAction(AbstractAction delAction) {
         this.delAction = delAction;
+    }
+
+    /**
+     * @return the controller
+     */
+    public Controller getController() {
+        return controller;
     }
 }

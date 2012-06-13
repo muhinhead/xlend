@@ -22,7 +22,7 @@ public class DbTableView extends JTable implements IView, ITableView {
     private Controller controller = null;
     private Vector colName = new Vector();
     private Vector rowData = new Vector();
-    private int selectedRow;
+    protected int selectedRow;
     private int idRowNum;
     private HashMap<Integer, Integer> maxColWidths = new HashMap<Integer, Integer>();
     private TableCellRenderer myCellRenderer = new MyColorRenderer(this);

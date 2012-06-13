@@ -10,11 +10,11 @@ import java.util.Vector;
  * @author Nick Mukhin
  */
 public class DbMasterTableView extends DbTableView {
-    private ArrayList<DbTableDocument> detailsDocument = new ArrayList<DbTableDocument>();
-    private ArrayList<Controller> detailControler = new ArrayList<Controller>();
-    private ArrayList<String> detailSelect = new ArrayList<String>();
-    private ArrayList<String> dependFiled = new ArrayList<String>();
-    private ArrayList<Integer> masterColNum = new ArrayList<Integer>();
+    protected ArrayList<DbTableDocument> detailsDocument = new ArrayList<DbTableDocument>();
+    protected ArrayList<Controller> detailControler = new ArrayList<Controller>();
+    protected ArrayList<String> detailSelect = new ArrayList<String>();
+    protected ArrayList<String> dependFiled = new ArrayList<String>();
+    protected ArrayList<Integer> masterColNum = new ArrayList<Integer>();
 
     public DbMasterTableView(Controller detailController, String dependFiled, 
             int masterColNum) {
@@ -49,7 +49,7 @@ public class DbMasterTableView extends DbTableView {
         }
     }
 
-    private void updateSelect(int n, String addWhere) {
+    protected void updateSelect(int n, String addWhere) {
         String newSelect = "";
         int p = detailSelect.get(n).toUpperCase().indexOf("WHERE");
         if (p > 0) {

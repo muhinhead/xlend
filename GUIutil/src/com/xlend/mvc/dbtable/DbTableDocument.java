@@ -49,10 +49,10 @@ public class DbTableDocument extends Document {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Object[] arr = (Object[]) initObject;
-        selectStatement = (String) arr[0];
+        setSelectStatement((String) arr[0]);
         connection = (Connection) arr[1];
         try {
-            ps = connection.prepareStatement(selectStatement);
+            ps = connection.prepareStatement(getSelectStatement());
             if (arr.length > 2) {
                 selectParams = (Object[]) arr[2];
                 int n = 1;
@@ -92,7 +92,7 @@ public class DbTableDocument extends Document {
         try {
             Vector line;
             int i;
-            ps = connection.prepareStatement(selectStatement);
+            ps = connection.prepareStatement(getSelectStatement());
             if (selectParams != null) {
                 int n = 1;
                 for (Object param : selectParams) {
@@ -177,5 +177,12 @@ public class DbTableDocument extends Document {
 
     public void setFilter(String text) {
         filterText = text;
+    }
+
+    /**
+     * @param selectStatement the selectStatement to set
+     */
+    public void setSelectStatement(String selectStatement) {
+        this.selectStatement = selectStatement;
     }
 }

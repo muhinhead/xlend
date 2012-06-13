@@ -4,6 +4,8 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.mvc.dbtable.DbTableDocument;
+import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.orm.Xmachineonsite;
 import com.xlend.orm.Xsite;
 import com.xlend.remote.IMessageSender;
@@ -41,13 +43,14 @@ public class MachinesOnSitesGrid extends GeneralGridPanel {
         }
     }
 
-    protected void init(AbstractAction[] acts, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
+    @Override
+    protected void init(AbstractAction[] acts, String select, Vector[] tableBody, HashMap<Integer, Integer> maxWidths, DbTableView tabView) {
         AbstractAction[] superActs = new AbstractAction[acts.length + 1];
         for (int i = 0; i < acts.length; i++) {
             superActs[i] = acts[i];
         }
         superActs[acts.length] = deEstablishAction();
-        super.init(superActs, tableBody, maxWidths);
+        super.init(superActs, select, tableBody, maxWidths, tabView);
         enableActions();
     }
 

@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.mvc.dbtable.DbTableGridPanel;
+import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -18,13 +19,19 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
     protected IMessageSender exchanger;
 
     public GeneralGridPanel(IMessageSender exchanger, String select,
-            HashMap<Integer, Integer> maxWidths, boolean readOnly) throws RemoteException {
+            HashMap<Integer, Integer> maxWidths, boolean readOnly, DbTableView tabView) throws RemoteException {
         super();
         this.select = select;
         this.exchanger = exchanger;
         init(new AbstractAction[]{readOnly ? null : addAction(),
                     readOnly ? null : editAction(),
-                    readOnly ? null : delAction()}, exchanger.getTableBody(select), maxWidths);
+                    readOnly ? null : delAction()}, 
+                select, exchanger.getTableBody(select), maxWidths, tabView);
+    }
+    
+    public GeneralGridPanel(IMessageSender exchanger, String select,
+            HashMap<Integer, Integer> maxWidths, boolean readOnly) throws RemoteException {
+        this(exchanger, select, maxWidths, readOnly, null);
     }
 
     protected abstract AbstractAction addAction();
@@ -33,8 +40,8 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
 
     protected abstract AbstractAction delAction();
 
-    protected void init(AbstractAction[] acts, Vector[] tableBody, HashMap<Integer, Integer> maxWidths) {
-        super.init(acts, tableBody, maxWidths);
+    protected void init(AbstractAction[] acts, String select, Vector[] tableBody, HashMap<Integer, Integer> maxWidths, DbTableView tabView) {
+        super.init(acts, select, tableBody, maxWidths, tabView);
         enableActions();
     }
 

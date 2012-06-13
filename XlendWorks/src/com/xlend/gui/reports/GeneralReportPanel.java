@@ -26,7 +26,7 @@ public abstract class GeneralReportPanel extends JPanel {
         upperPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         add(upperPane, BorderLayout.NORTH);
         upperPane.add(zoomer = new JSlider(50, 120));
-        upperPane.add(procLbl = new JLabel("%"));
+        upperPane.add(procLbl = new JLabel("%"+zoomer.getValue()));
         zoomer.addChangeListener(new ChangeListener() {
 
             @Override

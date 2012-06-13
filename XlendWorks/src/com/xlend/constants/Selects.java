@@ -351,6 +351,12 @@ public class Selects {
             + " xconsume.invoicedate \"Inv.Date\", xconsume.invoicenumber \"Inv.Nr\", amount_liters \"Amt.liters\",amount_rands \"Amt.R\" "
             + " from xbreakconsume,xconsume,xsupplier where xconsume.xconsume_id=xbreakconsume.xconsume_id "
             + " and xsupplier.xsupplier_id=xconsume.xsupplier_id and xbreakconsume.xbreakdown_id = #";
+    public static final String SELECT_MACHTYPES = 
+            "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\""
+            + " from xmachtype where parenttype_id is null ";
+    public static final String SELECT_MACHSUBTYPES = 
+            "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\""
+            + " from xmachtype where not parenttype_id is null ";
     
     public static final String[] getStringArray(String select) {
         try {

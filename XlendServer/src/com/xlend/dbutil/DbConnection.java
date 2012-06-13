@@ -1255,7 +1255,14 @@ public class DbConnection {
         + "select min(sheet_id) from sheet "
         + " where sheetname='Employee Summary' "
         + "   and parent_id=(select min(sheet_id) from sheet where sheetname='REPORTS')"
-        + ")"
+        + ")",
+        "delete from xmachtype where parenttype_id in "
+            + "(select xmachtype_id from xmachtype where machtype='FrontEnd Loader' "
+            + "   and xmachtype_id>(select min(xmachtype_id) from xmachtype where machtype='FrontEnd Loader'))",
+        "delete from xmachtype where machtype='FrontEnd Loader' "
+            + "and xmachtype_id>(select min(xmachtype_id) from xmachtype where machtype='FrontEnd Loader')",
+        "delete from xmachtype where (not parenttype_id is null) and xmachtype_id not in "
+            + "(select min(xmachtype_id) from xmachtype group by machtype,parenttype_id,classify having count(*)>1)"
     };
 
     public static Connection getConnection() throws RemoteException {

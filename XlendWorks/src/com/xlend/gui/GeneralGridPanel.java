@@ -17,12 +17,14 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
     private String select;
 //    private String originalSelect;
     protected IMessageSender exchanger;
+    public boolean isExternalView = false;
 
     public GeneralGridPanel(IMessageSender exchanger, String select,
             HashMap<Integer, Integer> maxWidths, boolean readOnly, DbTableView tabView) throws RemoteException {
         super();
         this.select = select;
         this.exchanger = exchanger;
+        isExternalView = (tabView != null);
         init(new AbstractAction[]{readOnly ? null : addAction(),
                     readOnly ? null : editAction(),
                     readOnly ? null : delAction()}, 

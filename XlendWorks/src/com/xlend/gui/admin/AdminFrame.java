@@ -78,11 +78,16 @@ public class AdminFrame extends GeneralFrame {
             bottomPanel.add(machineSubTypesPanel);
             sp.setTopComponent(topPanel);
             sp.setBottomComponent(bottomPanel);
+            sp.setDividerLocation(400);
             topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Types"));
             bottomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Subtypes"));
             dictionaryPanel.addTab("Machine Types", sp);
-            DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
-            tv.gotoRow(0);
+            final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    tv.gotoRow(0);
+                }
+            });
         }
         return dictionaryPanel;
     }

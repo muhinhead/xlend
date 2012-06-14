@@ -39,6 +39,7 @@ public class XlendMasterTableView extends DbMasterTableView {
             }
         }
         try {
+            detailsDocument.get(n).setSelectStatement(newSelect);
             detailsDocument.get(n).setBody(exchanger.getTableBody(newSelect));
         } catch (RemoteException ex) {
             Vector[] body = new Vector[] {

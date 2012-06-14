@@ -356,7 +356,7 @@ public class Selects {
             + " from xmachtype where parenttype_id is null ";
     public static final String SELECT_MACHSUBTYPES = 
             "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\""
-            + " from xmachtype where not parenttype_id is null ";
+            + " from xmachtype where not parenttype_id is null";
     
     public static final String[] getStringArray(String select) {
         try {

@@ -1262,7 +1262,9 @@ public class DbConnection {
         "delete from xmachtype where machtype='FrontEnd Loader' "
             + "and xmachtype_id>(select min(xmachtype_id) from xmachtype where machtype='FrontEnd Loader')",
         "delete from xmachtype where (not parenttype_id is null) and xmachtype_id not in "
-            + "(select min(xmachtype_id) from xmachtype group by machtype,parenttype_id,classify having count(*)>1)"
+            + "(select min(xmachtype_id) from xmachtype group by machtype,parenttype_id,classify having count(*)>1)",
+        "drop index cbitems_uniq_idx",
+        "create unique index cbitems_uniq_idx on cbitems (name, id)"
     };
 
     public static Connection getConnection() throws RemoteException {

@@ -25,6 +25,7 @@ public class AdminFrame extends GeneralFrame {
     private MachineTypeGrid machineTypesPanel;
     private MachineTypeGrid machineSubTypesPanel;
     private JideTabbedPane dictionaryPanel;
+    private PaidMethodsGrid paidMathodsPanel;
 
     public AdminFrame(IMessageSender exch) {
         super("Admin Console", exch);
@@ -61,6 +62,7 @@ public class AdminFrame extends GeneralFrame {
                 Controller detailController = machineSubTypesPanel.getController();
                 XlendMasterTableView masterView = new XlendMasterTableView(getExchanger(), detailController, "parenttype_id", 0);
                 registerGrid(machineTypesPanel = new MachineTypeGrid(getExchanger(), masterView));
+                registerGrid(paidMathodsPanel = new PaidMethodsGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -71,24 +73,31 @@ public class AdminFrame extends GeneralFrame {
             dictionaryPanel.setColorTheme(JideTabbedPane.COLOR_THEME_OFFICE2003);
             dictionaryPanel.setTabShape(JideTabbedPane.SHAPE_BOX);
 
-            JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-            JPanel topPanel = new JPanel(new BorderLayout());
-            JPanel bottomPanel = new JPanel(new BorderLayout());
-            topPanel.add(machineTypesPanel);
-            bottomPanel.add(machineSubTypesPanel);
-            sp.setTopComponent(topPanel);
-            sp.setBottomComponent(bottomPanel);
-            sp.setDividerLocation(400);
-            topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Types"));
-            bottomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Subtypes"));
-            dictionaryPanel.addTab("Machine Types", sp);
+            dictionaryPanel.addTab("Machine Types", getMachineTypeSplitPanel());//machitypeSplitPanel);
+            dictionaryPanel.addTab("Paid Methods",paidMathodsPanel);
+            
             final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
             SwingUtilities.invokeLater(new Runnable() {
+
                 public void run() {
                     tv.gotoRow(0);
                 }
             });
         }
         return dictionaryPanel;
+    }
+
+    private JSplitPane getMachineTypeSplitPanel() {
+        JSplitPane machitypeSplitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        topPanel.add(machineTypesPanel);
+        bottomPanel.add(machineSubTypesPanel);
+        machitypeSplitPanel.setTopComponent(topPanel);
+        machitypeSplitPanel.setBottomComponent(bottomPanel);
+        machitypeSplitPanel.setDividerLocation(400);
+        topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Types"));
+        bottomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Subtypes"));
+        return machitypeSplitPanel;
     }
 }

@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 22;
-    public static final String DB_VERSION = "0.22";
+    private static final int DB_VERSION_ID = 23;
+    public static final String DB_VERSION = "0.23";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -1264,7 +1264,8 @@ public class DbConnection {
         "delete from xmachtype where (not parenttype_id is null) and xmachtype_id not in "
             + "(select min(xmachtype_id) from xmachtype group by machtype,parenttype_id,classify having count(*)>1)",
         "drop index cbitems_uniq_idx",
-        "create unique index cbitems_uniq_idx on cbitems (name, id)"
+        "create unique index cbitems_uniq_idx on cbitems (name, id)",
+        "alter table userprofile add supervisor smallint"
     };
 
     public static Connection getConnection() throws RemoteException {

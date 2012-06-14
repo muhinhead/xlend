@@ -26,6 +26,8 @@ public class AdminFrame extends GeneralFrame {
     private MachineTypeGrid machineSubTypesPanel;
     private JideTabbedPane dictionaryPanel;
     private PaidMethodsGrid paidMathodsPanel;
+    private PayFromGrid payFromPanel;
+    private WageCategoryGrid wageCategoryPanel;
 
     public AdminFrame(IMessageSender exch) {
         super("Admin Console", exch);
@@ -33,8 +35,8 @@ public class AdminFrame extends GeneralFrame {
 
     protected JTabbedPane getMainPanel() {
         MyJideTabbedPane admTab = new MyJideTabbedPane();
-        admTab.add(getUsersPanel(), getSheetList()[0]);
-        admTab.add(getDictionariesPanel(), getSheetList()[1]);
+        admTab.addTab(getUsersPanel(), getSheetList()[0]);
+        admTab.addTab(getDictionariesPanel(), getSheetList()[1]);
         return admTab;
     }
 
@@ -58,11 +60,13 @@ public class AdminFrame extends GeneralFrame {
     private JComponent getDictionariesPanel() {
         if (dictionaryPanel == null) {
             try {
-                registerGrid(machineSubTypesPanel = new MachineTypeGrid(getExchanger(), Selects.SELECT_MACHSUBTYPES, null));
+                machineSubTypesPanel = new MachineTypeGrid(getExchanger(), Selects.SELECT_MACHSUBTYPES, null);
                 Controller detailController = machineSubTypesPanel.getController();
                 XlendMasterTableView masterView = new XlendMasterTableView(getExchanger(), detailController, "parenttype_id", 0);
                 registerGrid(machineTypesPanel = new MachineTypeGrid(getExchanger(), masterView));
                 registerGrid(paidMathodsPanel = new PaidMethodsGrid(getExchanger()));
+                registerGrid(payFromPanel = new PayFromGrid(getExchanger()));
+                registerGrid(wageCategoryPanel = new WageCategoryGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -74,8 +78,10 @@ public class AdminFrame extends GeneralFrame {
             dictionaryPanel.setTabShape(JideTabbedPane.SHAPE_BOX);
 
             dictionaryPanel.addTab("Machine Types", getMachineTypeSplitPanel());//machitypeSplitPanel);
-            dictionaryPanel.addTab("Paid Methods",paidMathodsPanel);
-            
+            dictionaryPanel.addTab("Pay Methods", paidMathodsPanel);
+            dictionaryPanel.addTab("Pay From", payFromPanel);
+            dictionaryPanel.addTab("Wage Category", wageCategoryPanel);
+
             final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
             SwingUtilities.invokeLater(new Runnable() {
 

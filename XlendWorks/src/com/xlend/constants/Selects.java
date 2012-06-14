@@ -359,6 +359,11 @@ public class Selects {
             + " from xmachtype where not parenttype_id is null";
     public static final String SELECT_FROM_PAIDMETHODS = 
             "Select xpaidmethod_id \"Id\", method \"Method\" from xpaidmethod order by xpaidmethod_id";
+    public static final String SELECT_FROM_PAYFROM = 
+            "select cbitem_id \"Id\", id \"Code\", val \"Pay From\" from cbitems where name='paidfrom'";
+    public static final String SELECT_FROM_WAGECATEGORY = 
+            "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\", name from cbitems where name='wage_category'";
+    
     
     public static final String[] getStringArray(String select) {
         try {

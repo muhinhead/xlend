@@ -366,7 +366,7 @@ public class XlendWorks {
         try {
             String select = //freeOnly ? Selects.FREEMACHINETVMS : 
                     Selects.MACHINETVMS;
-            System.out.println("!!" + select);
+//            System.out.println("!!" + select);
             Vector[] tab = exchanger.getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
@@ -629,8 +629,8 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadReportGroup(IMessageSender exchanger, Integer sheetId) {
-        return loadOnSelect(exchanger, 
-                "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet where sheet_id=sheet.sheet_id and profile_id="+XlendWorks.currentUser.getProfileId()+"), sheet.sheetname from sheet, reportgroup "
+        return loadOnSelect(exchanger,
+                "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet where sheet_id=sheet.sheet_id and profile_id=" + XlendWorks.currentUser.getProfileId() + "), sheet.sheetname from sheet, reportgroup "
                 + "where reportgroup.sheet_id=sheet.sheet_id and sheetgroup_id=" + sheetId);
     }
 
@@ -642,6 +642,19 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "
                 + "from xmachine m, xmachtype t1 "
                 + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
+    }
+
+    public static boolean existsEmployeeWithWageCategory(IMessageSender exchanger, Integer wageCatID) {
+        try {
+            Vector[] tab = exchanger.getTableBody(
+                    "select xemployee_id from xemployee where xemployee_id="
+                    + "(select min(xemployee_id) from xemployee where wage_category=" + wageCatID + ") and wage_category=" + wageCatID);
+            Vector rows = tab[1];
+            return rows.size() > 0;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return true;
     }
 
     public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {

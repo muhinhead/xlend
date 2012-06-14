@@ -5,13 +5,15 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.employee.EditEmployeeDialog;
+import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.orm.Xemployee;
 import com.xlend.remote.IMessageSender;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  *
@@ -24,13 +26,42 @@ public class EmployeesGrid extends GeneralGridPanel {
     static {
         maxWidths.put(0, 40);
     }
+    private JCheckBox showDisappearedCB;
 
     public EmployeesGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_EMPLOYEE, maxWidths, false);
+        super(exchanger, Selects.selectActiveEmployees(), maxWidths, false);
+        addTopControls();
     }
 
     public EmployeesGrid(IMessageSender exchanger, String select, boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, readOnly);
+    }
+
+    private void addTopControls() {
+        JPanel upperPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        upperPanel.add(showDisappearedCB = new JCheckBox("Show dismissed/resigned/absconded/deceased"));
+        showDisappearedCB.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                String newSelect = showDisappearedCB.isSelected()
+                        ? Selects.SELECT_FROM_EMPLOYEE
+                        : Selects.selectActiveEmployees();
+                DbTableDocument td = (DbTableDocument) getController().getDocument();//.setSelectStatement(newSelect);
+                setSelect(newSelect);
+                td.setSelectStatement(newSelect);
+                try {
+                    td.setBody(exchanger.getTableBody(newSelect));
+                    GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                } catch (RemoteException ex) {
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    XlendWorks.log(ex);
+                }
+            }
+        });
+
+        add(upperPanel, BorderLayout.NORTH);
     }
 
     @Override
@@ -88,7 +119,7 @@ public class EmployeesGrid extends GeneralGridPanel {
                 try {
                     Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
                     if (emp != null && GeneralFrame.yesNo("Attention!", "Do you want to delete employee  ["
-                            + emp.getFirstName()+" "+emp.getSurName() + "]?") == JOptionPane.YES_OPTION) {
+                            + emp.getFirstName() + " " + emp.getSurName() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(emp);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
                     }

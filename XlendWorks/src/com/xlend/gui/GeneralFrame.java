@@ -432,7 +432,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
             targetPanel = new DbTableGridPanel(
                     add, edit, del, exchanger.getTableBody(select), maxWidths);
             if (del != null) {
-                targetPanel.getDelAction().setEnabled(XlendWorks.getCurrentUser().getManager() == 1);
+                targetPanel.getDelAction().setEnabled(XlendWorks.getCurrentUser().getManager() == 1 || XlendWorks.getCurrentUser().getSupervisor() == 1);
             }
         } catch (RemoteException ex) {
             ex.printStackTrace();

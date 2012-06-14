@@ -156,7 +156,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 ppeAndSafetyRB = new JRadioButton("PPE & Safety")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new EmployeeLookupAction(reportedToCB)),
+                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new ClercLookupAction(reportedToCB)),
                 new JPanel(),
                 wageDisputeRB = new JRadioButton("Wage Dispute")
             }),
@@ -175,7 +175,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 workAccidentRB = new JRadioButton("Work Accident")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel), new EmployeeLookupAction(grantedByCB)),
+                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel), new ClercLookupAction(grantedByCB)),
                 new JPanel(),
                 noReasonRB = new JRadioButton("No Reason")
             })

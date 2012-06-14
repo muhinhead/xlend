@@ -16,7 +16,7 @@ import javax.swing.JComboBox;
 public class EmployeeLookupAction extends AbstractAction {
 
     protected JComboBox employeeCB;
-    private String whereCond;
+    protected String whereCond;
 
     public EmployeeLookupAction(JComboBox cBox) {
         this(cBox, null);
@@ -33,7 +33,8 @@ public class EmployeeLookupAction extends AbstractAction {
         try {
             String select = Selects.SELECT_FROM_EMPLOYEE;
             if (whereCond != null) {
-                select = select.replace("order by", "where " + whereCond + " order by");
+                select = select.replace("order by", (select.indexOf("where") > 0 ? " and " : " where ")
+                        + whereCond + " order by");
             }
             LookupDialog ld = new LookupDialog("Employee Lookup", employeeCB,
                     new EmployeesGrid(DashBoard.getExchanger(), select, true),

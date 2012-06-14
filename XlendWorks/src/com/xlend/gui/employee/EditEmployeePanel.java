@@ -155,7 +155,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 contractEndSP = new SelectedDateSpinner()
             }),
             getGridPanel(new JComponent[]{
-                rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
+                //                rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
+                rateField(),
                 new JLabel("Wage Category:", SwingConstants.RIGHT),
                 wageCategoryCB = new JComboBox(wageCategoryDbModel)
             }, 5),
@@ -249,8 +250,19 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 adjustEndDate();
             }
         });
-        
+
         add(getDetailsPanel(), BorderLayout.CENTER);
+    }
+
+    private JComponent rateField() {
+        rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1);
+        if (XlendWorks.getCurrentUser().getSupervisor() == 1) {
+            return rateSP;
+        } else {
+            JLabel lbl = new JLabel("*********", SwingConstants.LEFT);
+            lbl.setBorder(BorderFactory.createEtchedBorder());
+            return lbl;
+        }
     }
 
     private void adjustEndDate() {

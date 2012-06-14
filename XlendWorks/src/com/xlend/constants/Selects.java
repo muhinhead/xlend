@@ -364,6 +364,11 @@ public class Selects {
     public static final String SELECT_FROM_WAGECATEGORY = 
             "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\", name from cbitems where name='wage_category'";
     
+    public static String selectActiveEmployees() {
+        return Selects.SELECT_FROM_EMPLOYEE.replace("where", 
+                "where coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
+    }
+    
     
     public static final String[] getStringArray(String select) {
         try {

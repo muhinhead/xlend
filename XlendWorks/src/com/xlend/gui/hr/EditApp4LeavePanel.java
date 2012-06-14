@@ -1,5 +1,6 @@
 package com.xlend.gui.hr;
 
+import com.jgoodies.clearlook.ClearLookManager;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
@@ -89,7 +90,9 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                 getGridPanel(new JComponent[]{approvedRB = new JRadioButton("Y"), notApprovedRB = new JRadioButton("No")}),
                 getBorderPanel(new JComponent[]{new JPanel(), new JLabel("Approved by:", SwingConstants.RIGHT),
                     comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel),
-                    approvedLookupAction = new EmployeeLookupAction(approvedByCB, "COALESCE(wage_category,1)=1"))})
+                        //approvedLookupAction = new EmployeeLookupAction(approvedByCB, "COALESCE(wage_category,1)=1")
+                        approvedLookupAction = new ClercLookupAction(approvedByCB)
+                    )})
             })
         };
         for (JSpinner sp : new JSpinner[]{appDateSP, fromDateSP, toDateSP}) {

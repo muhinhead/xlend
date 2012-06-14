@@ -39,6 +39,7 @@ public class DbTableGridPanel extends JPanel {
     private JButton delButton = null;
     private MouseAdapter doubleClickAdapter;
     private Controller controller;
+    
 
     public DbTableGridPanel(
             AbstractAction addAction,
@@ -65,6 +66,7 @@ public class DbTableGridPanel extends JPanel {
         this.setAddAction(acts.length > 0 ? acts[0] : null);
         this.setEditAction(acts.length > 1 ? acts[1] : null);
         this.setDelAction(acts.length > 2 ? acts[2] : null);
+        
         tableView = (tabView == null ? new DbTableView() : tabView);
         if (maxWidths != null) {
             tableView.setMaxColWidths(maxWidths);

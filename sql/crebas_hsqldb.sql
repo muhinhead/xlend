@@ -319,8 +319,7 @@ create cached table xmachtype
     constraint xmachtype_pk primary key (xmachtype_id)
     --,constraint xmachtype_xmachtype_fk foreign key (parenttype_id) references xmachtype
 );
-
-create unique index xmachtype_uniq_idx on xmachtype(machtype,parent_id,classify);
+create unique index xmachtype_parenttype_idx on xmachtype(machtype,parenttype_id);
 
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(1,'Buldozer',null,'M');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(2,'TLB',null,'M');
@@ -337,7 +336,7 @@ create unique index xmachtype_uniq_idx on xmachtype(machtype,parent_id,classify)
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(13,'INTERNATIONAL S-LINE',null,'L');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(14,'SINGLE AXLE MERCEDES',null,'L');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(15,'VOLVO F12',null,'L');
---insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(16,'PICK-UP',null,'P');
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(16,'PICK-UP',null(machtype,,'P');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(17,'BREAK-DOWN',null,'P');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(18,'PANELVAN',null,'P');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(19,'BUS',null,'P');
@@ -345,78 +344,78 @@ create unique index xmachtype_uniq_idx on xmachtype(machtype,parent_id,classify)
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(21,'LAND ROVER',null,'V');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(22,'SEDAN',null,'V');
 --insert into xmachtype (xmachtype_id,machtype,parenttype_id,classify) values(23,'BIKE',null,'V');
---insert into xmachtype (machtype,parenttype_id) values('D31', 1);
---insert into xmachtype (machtype,parenttype_id) values('D41', 1);
---insert into xmachtype (machtype,parenttype_id) values('D4H', 1);
---insert into xmachtype (machtype,parenttype_id) values('D65', 1);
---insert into xmachtype (machtype,parenttype_id) values('D6H', 1);
---insert into xmachtype (machtype,parenttype_id) values('D6R', 1);
---insert into xmachtype (machtype,parenttype_id) values('428B 4X4',2);
---insert into xmachtype (machtype,parenttype_id) values('428B 4X2',2);
---insert into xmachtype (machtype,parenttype_id) values('428C 4X4',2);
---insert into xmachtype (machtype,parenttype_id) values('428C 4X2',2);
---insert into xmachtype (machtype,parenttype_id) values('428E 4X4',2);
---insert into xmachtype (machtype,parenttype_id) values('428E HAMMER',2);
---insert into xmachtype (machtype,parenttype_id) values('428E 4X2',2);
---insert into xmachtype (machtype,parenttype_id) values('422E 4X4',2);
---insert into xmachtype (machtype,parenttype_id) values('422E 4X2',2);
---insert into xmachtype (machtype,parenttype_id) values('434E 4X4',2);
---insert into xmachtype (machtype,parenttype_id) values('434E HAMMER',2);
---insert into xmachtype (machtype,parenttype_id) values('PADFOOT ROLLER',3);
---insert into xmachtype (machtype,parenttype_id) values('SMOOTH DRUM ROLLER',3);
---insert into xmachtype (machtype,parenttype_id) values('2.5TON ROLLER',3);
---insert into xmachtype (machtype,parenttype_id) values('PNEUMATIC ROLLER',3);
---insert into xmachtype (machtype,parenttype_id) values('320 CAT',4);
---insert into xmachtype (machtype,parenttype_id) values('322 CAT',4);
---insert into xmachtype (machtype,parenttype_id) values('322 CAT HAMMER',4);
---insert into xmachtype (machtype,parenttype_id) values('325 CAT',4);
---insert into xmachtype (machtype,parenttype_id) values('330 CAT',4);
---insert into xmachtype (machtype,parenttype_id) values('PC200',4);
---insert into xmachtype (machtype,parenttype_id) values('PC300',4);
---insert into xmachtype (machtype,parenttype_id) values('216B',5);
---insert into xmachtype (machtype,parenttype_id) values('EXCAVATING ATTACHMENT',5);
---insert into xmachtype (machtype,parenttype_id) values('BROOM ATTACHMENT',5);
---insert into xmachtype (machtype,parenttype_id) values('HAMMER ATTACHMENT',5);
---insert into xmachtype (machtype,parenttype_id) values('140H',6);
---insert into xmachtype (machtype,parenttype_id) values('140G',6);
---insert into xmachtype (machtype,parenttype_id) values('TRACTOR WITH SLASHER',7);
---insert into xmachtype (machtype,parenttype_id) values('TELESCOPIC HANDLER',7);
---insert into xmachtype (machtype,parenttype_id) values('BELL 225A LOGGER',7);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES 1414',8);
---insert into xmachtype (machtype,parenttype_id) values('TOYOTA 6000',8);
---insert into xmachtype (machtype,parenttype_id) values('TATA LPT',8);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES ATEGO',8);
---insert into xmachtype (machtype,parenttype_id) values('OTHER',8);
---insert into xmachtype (machtype,parenttype_id) values('TATA NOVUS 3434',9);
---insert into xmachtype (machtype,parenttype_id) values('MITCHUBISHI FUSO',9);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES ACTROS',9);
---insert into xmachtype (machtype,parenttype_id) values('SAMAG',9);
---insert into xmachtype (machtype,parenttype_id) values('BLUNT NOSE MERCEDES',9);
---insert into xmachtype (machtype,parenttype_id) values('NISSAN CW46',9);
---insert into xmachtype (machtype,parenttype_id) values('OTHER',9);
---insert into xmachtype (machtype,parenttype_id) values('6000L',6);
---insert into xmachtype (machtype,parenttype_id) values('12000L',6);
---insert into xmachtype (machtype,parenttype_id) values('HILUX',16);
---insert into xmachtype (machtype,parenttype_id) values('HILUX HIGH RIDER',16);
---insert into xmachtype (machtype,parenttype_id) values('NISSAN 1400',16);
---insert into xmachtype (machtype,parenttype_id) values('OTHER',16);
---insert into xmachtype (machtype,parenttype_id) values('TOYOTA DYNA',17);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES VITO',18);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES SPRINTER',18);
---insert into xmachtype (machtype,parenttype_id) values('9 SEATER SPRINTER',19);
---insert into xmachtype (machtype,parenttype_id) values('12 SEATER SPRINTER',19);
---insert into xmachtype (machtype,parenttype_id) values('VOLKSWAGEN MICROBUS',20);
---insert into xmachtype (machtype,parenttype_id) values('KIA PREGIO',20);
---insert into xmachtype (machtype,parenttype_id) values('DEFENDER 100',21);
---insert into xmachtype (machtype,parenttype_id) values('DEFENDER 110',21);
---insert into xmachtype (machtype,parenttype_id) values('DISCOVERY 2',21);
---insert into xmachtype (machtype,parenttype_id) values('BMW 318',22);
---insert into xmachtype (machtype,parenttype_id) values('BMW 328',22);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES C220',22);
---insert into xmachtype (machtype,parenttype_id) values('MERCEDES C280',22);
---insert into xmachtype (machtype,parenttype_id) values('AUDI',22);
---insert into xmachtype (machtype,parenttype_id) values('HONDA',23);
---insert into xmachtype (machtype,parenttype_id) values('BMW',23);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(24,'D31', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(25,'D41', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(26,'D4H', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(27,'D65', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(28,'D6H', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(29,'D6R', 1);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(30,'428B 4X4',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(31,'428B 4X2',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(32,'428C 4X4',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(33,'428C 4X2',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(34,'428E 4X4',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(35,'428E HAMMER',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(36,'428E 4X2',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(37,'422E 4X4',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(38,'422E 4X2',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(39,'434E 4X4',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(40,'434E HAMMER',2);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(41,'PADFOOT ROLLER',3);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(42,'SMOOTH DRUM ROLLER',3);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(43,'2.5TON ROLLER',3);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(44,'PNEUMATIC ROLLER',3);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(45,'320 CAT',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(46,'322 CAT',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(47,'322 CAT HAMMER',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(48,'325 CAT',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(49,'330 CAT',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(50,'PC200',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(51,'PC300',4);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(52,'216B',5);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(53,'EXCAVATING ATTACHMENT',5);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(54,'BROOM ATTACHMENT',5);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(55,'HAMMER ATTACHMENT',5);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(56,'140H',6);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(57,'140G',6);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(58,'TRACTOR WITH SLASHER',7);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(59,'TELESCOPIC HANDLER',7);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(60,'BELL 225A LOGGER',7);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(61,'MERCEDES 1414',8);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(62,'TOYOTA 6000',8);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(63,'TATA LPT',8);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(64,'MERCEDES ATEGO',8);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(65,'OTHER',8);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(66,'TATA NOVUS 3434',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(67,'MITCHUBISHI FUSO',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(68,'MERCEDES ACTROS',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(69,'SAMAG',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(70,'BLUNT NOSE MERCEDES',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(71,'NISSAN CW46',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(72,'OTHER',9);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(73,'6000L',6);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(74,'12000L',6);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(75,'HILUX',16);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(76,'HILUX HIGH RIDER',16);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(77,'NISSAN 1400',16);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(78,'OTHER',16);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(79,'TOYOTA DYNA',17);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(80,'MERCEDES VITO',18);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(81,'MERCEDES SPRINTER',18);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(82,'9 SEATER SPRINTER',19);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(83,'12 SEATER SPRINTER',19);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(84,'VOLKSWAGEN MICROBUS',20);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(85,'KIA PREGIO',20);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(86,'DEFENDER 100',21);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(87,'DEFENDER 110',21);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(88,'DISCOVERY 2',21);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(89,'BMW 318',22);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(90,'BMW 328',22);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(91,'MERCEDES C220',22);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(92,'MERCEDES C280',22);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(93,'AUDI',22);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(94,'HONDA',23);
+--insert into xmachtype (xmachtype_id,machtype,parenttype_id) values(95,'BMW',23);
 --
 --insert into xmachtype(machtype,parenttype_id,classify) values('FrontEnd Loader',null,'M');
 --insert into xmachtype(machtype,parenttype_id) select 'Kamatsu FEL',xmachtype_id from xmachtype where machtype='FrontEnd Loader';
@@ -1244,6 +1243,7 @@ create cached table xhourcompareday
     constraint xhourcompareday_xhourcompare_fk foreign key (xhourcompare_id) references xhourcompare
 );
 
+
 ---------------------------------------------------------------------------------------
 create table cbitems
 (
@@ -1266,6 +1266,52 @@ insert into cbitems values(7,'wage_category',1,'Xlend Salaries');
 insert into cbitems values(8,'wage_category',2,'Xlend Wages');
 insert into cbitems values(9,'wage_category',3,'T&F Wages');
 insert into cbitems values(10,'wage_category',4,'Casual Wages');
+
+insert into cbitems values(11,'rated_machines',1,'6m Tipper');
+insert into cbitems values(12,'rated_machines',2,'10m Tipper');
+insert into cbitems values(13,'rated_machines',3,'Dumper Truck');
+insert into cbitems values(14,'rated_machines',4,'10 000L Watercart');
+insert into cbitems values(15,'rated_machines',5,'14 000L Watercart');
+insert into cbitems values(16,'rated_machines',6,'Lowbed 3 axle');
+insert into cbitems values(17,'rated_machines',7,'Lowbed 2 axle');
+insert into cbitems values(18,'rated_machines',8,'Lowbed 1 axle');
+insert into cbitems values(19,'rated_machines',9,'Bobcat');
+insert into cbitems values(20,'rated_machines',10,'Bobcat With Broom Attachment');
+insert into cbitems values(21,'rated_machines',11,'Bobcat With Excavator Attachment');
+insert into cbitems values(22,'rated_machines',12,'Small Roller');
+insert into cbitems values(23,'rated_machines',13,'Smooth Drum Roller');
+insert into cbitems values(24,'rated_machines',14,'Padfoot Roller');
+insert into cbitems values(25,'rated_machines',15,'D4 Dozer');
+insert into cbitems values(26,'rated_machines',17,'D65 Dozer');
+insert into cbitems values(27,'rated_machines',18,'TLB');
+insert into cbitems values(28,'rated_machines',19,'TLB with Pecker');
+insert into cbitems values(29,'rated_machines',20,'Front End Loader');
+insert into cbitems values(30,'rated_machines',21,'Excavator 20T');
+insert into cbitems values(31,'rated_machines',22,'Excavator 30T');
+insert into cbitems values(32,'rated_machines',23,'Grader');
+
+create cached table xmachrentalrate
+(
+    xmachrentalrate_id int generated by default as identity (start with 1),
+    actual_date        date,
+    diesel_price       decimal(6,2),
+    factor             decimal(6,2),
+    constraint xmachinerentalrate_pk primary key (xmachrentalrate_id)
+);
+
+create cached table xmachrentalrateitm
+(
+    xmachrentalrateitm_id  int generated by default as identity (start with 1),
+    xmachrentalrate_id     int not null,
+    cbitem_id              int not null,
+    litres_hour            decimal(8,2) not null,
+    dry                    decimal(8,2) not null,
+    real_wet               decimal(8,2) not null,
+    good_wet               decimal(8,2) not null,
+    constraint xmachrentalrateitm_pk primary key (xmachrentalrateitm_id),
+    constraint xmachrentalrateitm_xmachrentalrate_fk foreign key (xmachrentalrate_id) references xmachrentalrate on delete cascade,
+    constraint xmachrentalrateitm_cbitem_fk foreign key (cbitem_id) references cbitems
+);
 
 ----------------- auxiliary tables -------------------
 

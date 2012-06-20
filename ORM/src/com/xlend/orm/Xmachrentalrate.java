@@ -8,41 +8,44 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xbankbalance extends DbObject  {
+public class Xmachrentalrate extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xbankbalanceId = null;
-    private Timestamp balancedate = null;
-    private Double totalvalue = null;
+    private Integer xmachrentalrateId = null;
+    private Date actualDate = null;
+    private Double dieselPrice = null;
+    private Double factor = null;
 
-    public Xbankbalance(Connection connection) {
-        super(connection, "xbankbalance", "xbankbalance_id");
-        setColumnNames(new String[]{"xbankbalance_id", "balancedate", "totalvalue"});
+    public Xmachrentalrate(Connection connection) {
+        super(connection, "xmachrentalrate", "xmachrentalrate_id");
+        setColumnNames(new String[]{"xmachrentalrate_id", "actual_date", "diesel_price", "factor"});
     }
 
-    public Xbankbalance(Connection connection, Integer xbankbalanceId, Timestamp balancedate, Double totalvalue) {
-        super(connection, "xbankbalance", "xbankbalance_id");
-        setNew(xbankbalanceId.intValue() <= 0);
-//        if (xbankbalanceId.intValue() != 0) {
-            this.xbankbalanceId = xbankbalanceId;
+    public Xmachrentalrate(Connection connection, Integer xmachrentalrateId, Date actualDate, Double dieselPrice, Double factor) {
+        super(connection, "xmachrentalrate", "xmachrentalrate_id");
+        setNew(xmachrentalrateId.intValue() <= 0);
+//        if (xmachrentalrateId.intValue() != 0) {
+            this.xmachrentalrateId = xmachrentalrateId;
 //        }
-        this.balancedate = balancedate;
-        this.totalvalue = totalvalue;
+        this.actualDate = actualDate;
+        this.dieselPrice = dieselPrice;
+        this.factor = factor;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xbankbalance xbankbalance = null;
+        Xmachrentalrate xmachrentalrate = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xbankbalance_id,balancedate,totalvalue FROM xbankbalance WHERE xbankbalance_id=" + id;
+        String stmt = "SELECT xmachrentalrate_id,actual_date,diesel_price,factor FROM xmachrentalrate WHERE xmachrentalrate_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xbankbalance = new Xbankbalance(getConnection());
-                xbankbalance.setXbankbalanceId(new Integer(rs.getInt(1)));
-                xbankbalance.setBalancedate(rs.getTimestamp(2));
-                xbankbalance.setTotalvalue(rs.getDouble(3));
-                xbankbalance.setNew(false);
+                xmachrentalrate = new Xmachrentalrate(getConnection());
+                xmachrentalrate.setXmachrentalrateId(new Integer(rs.getInt(1)));
+                xmachrentalrate.setActualDate(rs.getDate(2));
+                xmachrentalrate.setDieselPrice(rs.getDouble(3));
+                xmachrentalrate.setFactor(rs.getDouble(4));
+                xmachrentalrate.setNew(false);
             }
         } finally {
             try {
@@ -51,7 +54,7 @@ public class Xbankbalance extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xbankbalance;
+        return xmachrentalrate;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -60,27 +63,28 @@ public class Xbankbalance extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xbankbalance ("+(getXbankbalanceId().intValue()!=0?"xbankbalance_id,":"")+"balancedate,totalvalue) values("+(getXbankbalanceId().intValue()!=0?"?,":"")+"?,?)";
+                "INSERT INTO xmachrentalrate ("+(getXmachrentalrateId().intValue()!=0?"xmachrentalrate_id,":"")+"actual_date,diesel_price,factor) values("+(getXmachrentalrateId().intValue()!=0?"?,":"")+"?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXbankbalanceId().intValue()!=0) {
-                 ps.setObject(++n, getXbankbalanceId());
+             if (getXmachrentalrateId().intValue()!=0) {
+                 ps.setObject(++n, getXmachrentalrateId());
              }
-             ps.setObject(++n, getBalancedate());
-             ps.setObject(++n, getTotalvalue());
+             ps.setObject(++n, getActualDate());
+             ps.setObject(++n, getDieselPrice());
+             ps.setObject(++n, getFactor());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXbankbalanceId().intValue()==0) {
-             stmt = "SELECT max(xbankbalance_id) FROM xbankbalance";
+         if (getXmachrentalrateId().intValue()==0) {
+             stmt = "SELECT max(xmachrentalrate_id) FROM xmachrentalrate";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXbankbalanceId(new Integer(rs.getInt(1)));
+                     setXmachrentalrateId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -106,13 +110,14 @@ public class Xbankbalance extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xbankbalance " +
-                    "SET balancedate = ?, totalvalue = ?" + 
-                    " WHERE xbankbalance_id = " + getXbankbalanceId();
+                    "UPDATE xmachrentalrate " +
+                    "SET actual_date = ?, diesel_price = ?, factor = ?" + 
+                    " WHERE xmachrentalrate_id = " + getXmachrentalrateId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getBalancedate());
-                ps.setObject(2, getTotalvalue());
+                ps.setObject(1, getActualDate());
+                ps.setObject(2, getDieselPrice());
+                ps.setObject(3, getFactor());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -128,38 +133,38 @@ public class Xbankbalance extends DbObject  {
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from xbankbalancepart
-            Xbankbalancepart[] records = (Xbankbalancepart[])Xbankbalancepart.load(getConnection(),"xbankbalance_id = " + getXbankbalanceId(),null);
+        {// delete cascade from xmachrentalrateitm
+            Xmachrentalrateitm[] records = (Xmachrentalrateitm[])Xmachrentalrateitm.load(getConnection(),"xmachrentalrate_id = " + getXmachrentalrateId(),null);
             for (int i = 0; i<records.length; i++) {
-                Xbankbalancepart xbankbalancepart = records[i];
-                xbankbalancepart.delete();
+                Xmachrentalrateitm xmachrentalrateitm = records[i];
+                xmachrentalrateitm.delete();
             }
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xbankbalance " +
-                "WHERE xbankbalance_id = " + getXbankbalanceId();
+                "DELETE FROM xmachrentalrate " +
+                "WHERE xmachrentalrate_id = " + getXmachrentalrateId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXbankbalanceId(new Integer(-getXbankbalanceId().intValue()));
+        setXmachrentalrateId(new Integer(-getXmachrentalrateId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXbankbalanceId().intValue() < 0);
+        return (getXmachrentalrateId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xbankbalance_id,balancedate,totalvalue FROM xbankbalance " +
+        String stmt = "SELECT xmachrentalrate_id,actual_date,diesel_price,factor FROM xmachrentalrate " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -169,7 +174,7 @@ public class Xbankbalance extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xbankbalance(con,new Integer(rs.getInt(1)),rs.getTimestamp(2),rs.getDouble(3)));
+                lst.add(dbObj=new Xmachrentalrate(con,new Integer(rs.getInt(1)),rs.getDate(2),rs.getDouble(3),rs.getDouble(4)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -179,10 +184,10 @@ public class Xbankbalance extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xbankbalance[] objects = new Xbankbalance[lst.size()];
+        Xmachrentalrate[] objects = new Xmachrentalrate[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xbankbalance xbankbalance = (Xbankbalance) lst.get(i);
-            objects[i] = xbankbalance;
+            Xmachrentalrate xmachrentalrate = (Xmachrentalrate) lst.get(i);
+            objects[i] = xmachrentalrate;
         }
         return objects;
     }
@@ -194,7 +199,7 @@ public class Xbankbalance extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xbankbalance_id FROM xbankbalance " +
+        String stmt = "SELECT xmachrentalrate_id FROM xmachrentalrate " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -212,41 +217,51 @@ public class Xbankbalance extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXbankbalanceId() + getDelimiter();
+    //    return getXmachrentalrateId() + getDelimiter();
     //}
 
-    public Integer getXbankbalanceId() {
-        return xbankbalanceId;
+    public Integer getXmachrentalrateId() {
+        return xmachrentalrateId;
     }
 
-    public void setXbankbalanceId(Integer xbankbalanceId) throws ForeignKeyViolationException {
-        setWasChanged(this.xbankbalanceId != null && this.xbankbalanceId != xbankbalanceId);
-        this.xbankbalanceId = xbankbalanceId;
-        setNew(xbankbalanceId.intValue() == 0);
+    public void setXmachrentalrateId(Integer xmachrentalrateId) throws ForeignKeyViolationException {
+        setWasChanged(this.xmachrentalrateId != null && this.xmachrentalrateId != xmachrentalrateId);
+        this.xmachrentalrateId = xmachrentalrateId;
+        setNew(xmachrentalrateId.intValue() == 0);
     }
 
-    public Timestamp getBalancedate() {
-        return balancedate;
+    public Date getActualDate() {
+        return actualDate;
     }
 
-    public void setBalancedate(Timestamp balancedate) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.balancedate != null && !this.balancedate.equals(balancedate));
-        this.balancedate = balancedate;
+    public void setActualDate(Date actualDate) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.actualDate != null && !this.actualDate.equals(actualDate));
+        this.actualDate = actualDate;
     }
 
-    public Double getTotalvalue() {
-        return totalvalue;
+    public Double getDieselPrice() {
+        return dieselPrice;
     }
 
-    public void setTotalvalue(Double totalvalue) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.totalvalue != null && !this.totalvalue.equals(totalvalue));
-        this.totalvalue = totalvalue;
+    public void setDieselPrice(Double dieselPrice) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.dieselPrice != null && !this.dieselPrice.equals(dieselPrice));
+        this.dieselPrice = dieselPrice;
+    }
+
+    public Double getFactor() {
+        return factor;
+    }
+
+    public void setFactor(Double factor) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.factor != null && !this.factor.equals(factor));
+        this.factor = factor;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[3];
-        columnValues[0] = getXbankbalanceId();
-        columnValues[1] = getBalancedate();
-        columnValues[2] = getTotalvalue();
+        Object[] columnValues = new Object[4];
+        columnValues[0] = getXmachrentalrateId();
+        columnValues[1] = getActualDate();
+        columnValues[2] = getDieselPrice();
+        columnValues[3] = getFactor();
         return columnValues;
     }
 
@@ -263,15 +278,20 @@ public class Xbankbalance extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXbankbalanceId(Integer.parseInt(flds[0]));
+            setXmachrentalrateId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXbankbalanceId(null);
+            setXmachrentalrateId(null);
         }
-        setBalancedate(toTimeStamp(flds[1]));
+        setActualDate(toDate(flds[1]));
         try {
-            setTotalvalue(Double.parseDouble(flds[2]));
+            setDieselPrice(Double.parseDouble(flds[2]));
         } catch(NumberFormatException ne) {
-            setTotalvalue(null);
+            setDieselPrice(null);
+        }
+        try {
+            setFactor(Double.parseDouble(flds[3]));
+        } catch(NumberFormatException ne) {
+            setFactor(null);
         }
     }
 }

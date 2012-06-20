@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.45.1";
+    public static final String version = "0.46";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -644,6 +644,11 @@ public class XlendWorks {
                 + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
     }
 
+    public static ComboItem[] loadRatedMachines(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "Select cbitem_id, val "
+                + "from cbitems where name='rated_machines' order by id");
+    }
+    
     public static boolean existsEmployeeWithWageCategory(IMessageSender exchanger, Integer wageCatID) {
         try {
             Vector[] tab = exchanger.getTableBody(

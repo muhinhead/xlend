@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.fleet.MachineRentalRatesGrid;
 import com.xlend.gui.fleet.LowBedGrid;
 import com.xlend.gui.fleet.MachineGrid;
 import com.xlend.gui.fleet.TrackGrid;
@@ -25,8 +26,10 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel machinesPanel;
     private GeneralGridPanel trackPanel;
     private GeneralGridPanel lowbedsPanel;
+    private GeneralGridPanel machineRentalRatesPanel;
     private static String[] sheetList = new String[]{
-        "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", "Company Vehicles"};
+        "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", 
+        "Company Vehicles", "Machine Rental Rates"};
 
     public FleetFrame(IMessageSender exch) {
         super("Fleet", exch);
@@ -57,6 +60,9 @@ public class FleetFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
             fleetTab.addTab(new JPanel(), sheets()[4]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
+            fleetTab.addTab(getMachineRentalRates(), sheets()[5]);
         }
         return fleetTab;
     }
@@ -95,5 +101,17 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         return lowbedsPanel;
+    }
+    
+    private JPanel getMachineRentalRates() {
+        if (machineRentalRatesPanel == null) {
+            try {
+                registerGrid(machineRentalRatesPanel = new MachineRentalRatesGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return machineRentalRatesPanel;
     }
 }

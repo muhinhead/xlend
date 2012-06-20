@@ -362,7 +362,11 @@ public class Selects {
     public static final String SELECT_FROM_PAYFROM = 
             "select cbitem_id \"Id\", id \"Code\", val \"Pay From\" from cbitems where name='paidfrom'";
     public static final String SELECT_FROM_WAGECATEGORY = 
-            "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\", name from cbitems where name='wage_category'";
+            "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\" from cbitems where name='wage_category'";
+    public static final String SELECT_FROM_RATEDMACHINES = 
+            "select cbitem_id \"Id\", id \"Code\", val \"Machine\" from cbitems where name='rated_machines'";
+    public static final String SELECT_FROM_MACHINERANTALRATE = 
+            "select xmachrentalrate_id \"Id\", actual_date \"Date\", ROUND(diesel_price,2) \"Diesel Price\", ROUND(factor,2) \"Factor\" from xmachrentalrate";
     
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where", 

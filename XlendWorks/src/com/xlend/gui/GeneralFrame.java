@@ -418,27 +418,30 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //        }
 //        return contractsPanel;
 //    }
-    protected DbTableGridPanel createAndRegisterGrid(String select,
-            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
-        DbTableGridPanel panel = createGridPanel(getExchanger(), select, add, edit, del, maxWidths);
-        grids.put(panel, select);
-        return panel;
-    }
+    
+//    protected DbTableGridPanel createAndRegisterGrid(String select,
+//            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
+//        DbTableGridPanel panel = createGridPanel(getExchanger(), select, add, edit, del, maxWidths);
+//        grids.put(panel, select);
+//        return panel;
+//    }
 
-    public static DbTableGridPanel createGridPanel(IMessageSender exchanger, String select,
-            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
-        DbTableGridPanel targetPanel = null;
-        try {
-            targetPanel = new DbTableGridPanel(
-                    add, edit, del, exchanger.getTableBody(select), maxWidths);
-            if (del != null) {
-                targetPanel.getDelAction().setEnabled(XlendWorks.getCurrentUser().getManager() == 1 || XlendWorks.getCurrentUser().getSupervisor() == 1);
-            }
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
-        return targetPanel;
-    }
+//    public static DbTableGridPanel createGridPanel(IMessageSender exchanger, String select,
+//            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
+//        DbTableGridPanel targetPanel = null;
+//        try {
+//            targetPanel = new DbTableGridPanel(
+//                    add, edit, del, exchanger.getTableBody(select), maxWidths);
+//            if (del != null) {
+//                boolean enableDel = (XlendWorks.getCurrentUser().getManager() == 1 
+//                        || XlendWorks.getCurrentUser().getSupervisor() == 1);
+//                targetPanel.getDelAction().setEnabled(enableDel);
+//            }
+//        } catch (RemoteException ex) {
+//            ex.printStackTrace();
+//        }
+//        return targetPanel;
+//    }
 
     protected void registerGrid(GeneralGridPanel grid) {
         grids.put(grid, grid.getSelect());

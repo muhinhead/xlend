@@ -24,7 +24,6 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     private JTextField idField;
     private SelectedDateSpinner dateSP;
-//    private JLabel totalAmtLbl;
     private JPanel downGridPanel;
     private ArrayList<SalaryPanel> childRows;
     private ArrayList<SalaryPanel> toDelete;
@@ -34,34 +33,6 @@ class EditSalaryListPanel extends RecordEditPanel {
     private JPanel hdrPanel;
     private JCheckBox selectAllCB;
     private JScrollPane scrollPane;
-
-//    private class SpecEmployeeLookupAction extends EmployeeLookupAction {
-//
-//        public SpecEmployeeLookupAction(JComboBox cBox) {
-//            super(cBox);
-//        }
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            try {
-//                String alreadyAdded = getAddedList();
-//                LookupDialog ld = new LookupDialog("Spec Employee Lookup", employeeCB,
-//                        new EmployeesGrid(DashBoard.getExchanger(),
-//                        Selects.SELECT_FROM_EMPLOYEE_EXCLUDING.replace("#", alreadyAdded), true),
-//                        new String[]{"id_num", "first_name", "sur_name", "clock_num"});
-//            } catch (RemoteException ex) {
-//                GeneralFrame.errMessageBox("Error:", ex.getMessage());
-//            }
-//        }
-////        private String getAddedList() {
-////            StringBuffer sb = new StringBuffer();
-////            for (SalaryPanel p : childRows) {
-////                sb.append(sb.length() == 0 ? "" : ",");
-////                sb.append(p.getXsalary().getXemployeeId().toString());
-////            }
-////            return sb.toString();
-////        }
-//    }
 
     private class SalaryPanel extends JPanel {
 

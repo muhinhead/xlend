@@ -7,11 +7,9 @@ import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.MyJideTabbedPane;
 import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.Controller;
-import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.*;
 
@@ -28,6 +26,7 @@ public class AdminFrame extends GeneralFrame {
     private PaidMethodsGrid paidMathodsPanel;
     private PayFromGrid payFromPanel;
     private WageCategoryGrid wageCategoryPanel;
+    private RatedMachinesGrid ratedMachinesPanel;
 
     public AdminFrame(IMessageSender exch) {
         super("Admin Console", exch);
@@ -67,6 +66,7 @@ public class AdminFrame extends GeneralFrame {
                 registerGrid(paidMathodsPanel = new PaidMethodsGrid(getExchanger()));
                 registerGrid(payFromPanel = new PayFromGrid(getExchanger()));
                 registerGrid(wageCategoryPanel = new WageCategoryGrid(getExchanger()));
+                registerGrid(ratedMachinesPanel = new RatedMachinesGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -81,6 +81,7 @@ public class AdminFrame extends GeneralFrame {
             dictionaryPanel.addTab("Pay Methods", paidMathodsPanel);
             dictionaryPanel.addTab("Pay From", payFromPanel);
             dictionaryPanel.addTab("Wage Category", wageCategoryPanel);
+            dictionaryPanel.addTab("Rated Machines", ratedMachinesPanel);
 
             final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
             SwingUtilities.invokeLater(new Runnable() {

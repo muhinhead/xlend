@@ -1,6 +1,7 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachrentalrate;
@@ -234,7 +235,8 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
                 itm.setDry((Double) drySPs[i].getValue());
                 itm.setRealWet((Double) realWetSPs[i].getValue());
                 itm.setGoodWet((Double) goodWetSPs[i].getValue());
-                saveDbRecord(itm, isNew);
+                itm.setNew(isNew);
+                DashBoard.getExchanger().saveDbObject(itm);
             }
             //to remove obsolete items (if any)
             obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,

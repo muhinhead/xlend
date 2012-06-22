@@ -1,6 +1,7 @@
 package com.xlend.gui.logistics;
 
 import com.xlend.gui.EditRecordDialog;
+import com.xlend.orm.dbobject.DbObject;
 
 /**
  *
@@ -15,7 +16,7 @@ class EditTransscheduleitmDialog extends EditRecordDialog {
 
     @Override
     protected void fillContent() {
-        super.fillContent(new EditTransscheduleitmPanel((Object[]) getObject()));
+        super.fillContent(new EditTransscheduleitmPanel((DbObject[]) getObject()));
     }
 
     @Override

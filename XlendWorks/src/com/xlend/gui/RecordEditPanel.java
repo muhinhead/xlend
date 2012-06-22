@@ -39,7 +39,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected PagesPanel pagesdPanel;
     protected JComponent[] edits;
     protected JLabel[] labels;
-    protected final Object[] params;
+    protected final DbObject[] params;
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -96,7 +96,7 @@ public abstract class RecordEditPanel extends JPanel {
         loadData();
     }
 
-    public RecordEditPanel(Object[] params) {
+    public RecordEditPanel(DbObject[] params) {
         super(new BorderLayout());
         this.params = params;
         fillContent();

@@ -5,11 +5,11 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.orm.Xtransscheduleitm;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.rmi.RemoteException;
 import java.util.Vector;
 import javax.swing.*;
@@ -47,8 +47,17 @@ public class GroupTableGridPanel extends JPanel {
             add(createCenterPanel(), BorderLayout.CENTER);
             add(createRightButtonPanel(new JComponent[]{
                         new JButton(getAddAction("New schedule line")),
-                        new JButton("Edit schedule")
+                        new JButton(getEditAction("Edit schedule"))
                     }), BorderLayout.EAST);
+
+            tableView.addMouseListener(new MouseAdapter() {
+
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        editSchedule("Edit schedule");
+                    }
+                }
+            });
         } catch (RemoteException ex) {
             XlendWorks.logAndShowMessage(ex);
         }
@@ -59,8 +68,43 @@ public class GroupTableGridPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                addSchedule(title);
+            }
+        };
+    }
+
+    private void addSchedule(String title) {
+        try {
+            EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, null);
+            if (EditTransscheduleitmDialog.okPressed) {
+                updateGrid();
+            }
+        } catch (RemoteException ex) {
+            XlendWorks.logAndShowMessage(ex);
+        }
+    }
+
+    private AbstractAction getEditAction(final String title) {
+        return new AbstractAction(title) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                editSchedule(title);
+            }
+        };
+    }
+
+    private void editSchedule(String title) {
+        if (dateCB.isSelected()) {
+            Vector data = tableView.getRowData();
+            int row = tableView.getSelectedRow();
+            if (row >= 0 && row < tableView.getRowCount()) {
                 try {
-                    EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, null);
+                    Vector line = (Vector) data.get(row);
+                    String dateReq = (String) line.get(0);
+                    DbObject[] recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                            "date_required='" + dateReq + "'", null);
+                    EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, recs);
                     if (EditTransscheduleitmDialog.okPressed) {
                         updateGrid();
                     }
@@ -68,8 +112,7 @@ public class GroupTableGridPanel extends JPanel {
                     XlendWorks.logAndShowMessage(ex);
                 }
             }
-        };
-
+        }
     }
 
     private JComponent createUpperPanel() {

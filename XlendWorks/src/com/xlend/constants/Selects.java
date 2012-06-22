@@ -367,6 +367,18 @@ public class Selects {
             "select cbitem_id \"Id\", id \"Code\", val \"Machine\" from cbitems where name='rated_machines'";
     public static final String SELECT_FROM_MACHINERANTALRATE = 
             "select xmachrentalrate_id \"Id\", actual_date \"Date\", ROUND(diesel_price,2) \"Diesel Price\", ROUND(factor,2) \"Factor\" from xmachrentalrate";
+
+    public static final String SELECT_TRANSSCHEDULE_BY_DATE = 
+            "select date_required \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
+    public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_MACHINE = 
+            "select i.date_required \"Date\", m.classify+m.tmvnr \"Machine\", count(*) \"Qty\" "
+            + "from xtransscheduleitm i,xmachine m where m.xmachine_id=i.machine_id group by \"Date\",\"Machine\"";
+    public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_FROMSITE = 
+            "select i.date_required \"Date\", s.name \"Site (source)\", count(*) \"Qty\" "
+            + "from xtransscheduleitm i,xsite s where i.site_from_id=s.xsite_id group by i.date_required,s.name";
+    public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_TOSITE = 
+            "select i.date_required \"Date\", s.name \"Site (target)\", count(*) \"Qty\" "
+            + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where", 

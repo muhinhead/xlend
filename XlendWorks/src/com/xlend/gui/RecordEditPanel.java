@@ -39,7 +39,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected PagesPanel pagesdPanel;
     protected JComponent[] edits;
     protected JLabel[] labels;
-//    protected ArrayList<JComponent[]> componentRows = new ArrayList<JComponent[]>();
+    protected final Object[] params;
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -91,10 +91,19 @@ public abstract class RecordEditPanel extends JPanel {
     public RecordEditPanel(DbObject dbObject) {
         super(new BorderLayout());
         this.dbObject = dbObject;
+        this.params = null;
         fillContent();
         loadData();
     }
 
+    public RecordEditPanel(Object[] params) {
+        super(new BorderLayout());
+        this.params = params;
+        fillContent();
+        loadData();
+    }
+    
+    
     protected abstract void fillContent();
 
     public abstract void loadData();
@@ -177,7 +186,7 @@ public abstract class RecordEditPanel extends JPanel {
     }
 
     protected JComponent getGridPanel(JComponent[] comps) {
-        JPanel ans = new JPanel(new GridLayout(1, comps.length));
+        JPanel ans = new JPanel(new GridLayout(1, comps.length,5,1));
         for (int i = 0; i < comps.length; i++) {
             ans.add(comps[i]);
         }

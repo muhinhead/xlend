@@ -1,9 +1,12 @@
 package com.xlend.gui;
 
+import com.xlend.constants.Selects;
+import com.xlend.gui.logistics.GroupTableGridPanel;
 import com.xlend.gui.logistics.TripSheetGrid;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
 import java.rmi.RemoteException;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -16,7 +19,7 @@ public class LogisticsFrame extends GeneralFrame {
     private GeneralGridPanel tripSheetPanel = null;
 
     private static String[] sheetList = new String[]{
-        "Treep Sheets"
+        "Treep Sheets", "Transport Schedule"
     };
 
     public LogisticsFrame(IMessageSender exch) {
@@ -39,6 +42,9 @@ public class LogisticsFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             workTab.addTab(getTreepSheetPanel(), sheets()[0]);
         }
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+            workTab.addTab(getTransportSchedulePanel(), sheets()[1]);
+        }
         return workTab;
     }
 
@@ -52,5 +58,9 @@ public class LogisticsFrame extends GeneralFrame {
             }
         }
         return tripSheetPanel;
+    }
+
+    private JComponent getTransportSchedulePanel() {
+        return new GroupTableGridPanel(getExchanger(), Selects.SELECT_TRANSSCHEDULE_BY_DATE);
     }
 }

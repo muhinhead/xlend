@@ -1401,7 +1401,7 @@ public class DbConnection {
         + "    constraint xtransscheduleitm_xmachine_fk foreign key (machine_id) references xmachine,"
         + "    constraint xtransscheduleitm_xsite_fk foreign key (site_from_id) references xsite,"
         + "    constraint xtransscheduleitm_xsite_fk2 foreign key (site_to_id) references xsite,"
-        + "    constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine,"
+        + "    constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xlowbed,"
         + "    constraint xtransscheduleitm_xemployee_fk foreign key (operator_id) references xemployee"
         + ")"
     };

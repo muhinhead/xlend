@@ -1,6 +1,7 @@
 package com.xlend.gui.logistics;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.LowbedLookupAction;
@@ -12,10 +13,8 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -25,27 +24,161 @@ import javax.swing.*;
  */
 class EditTransscheduleitmPanel extends RecordEditPanel {
 
+    private JPanel downGridPanel;
+    private JPanel hdrPanel;
+    private JScrollPane scrollPane;
+    private ArrayList<RowPanel> childRows;
+    private ArrayList<RowPanel> toDelete;
+    private JCheckBox selectAllCB;
+
+    private void redrawRows() {
+        downGridPanel.setVisible(false);
+        downGridPanel.removeAll();
+        downGridPanel.add(hdrPanel);
+        for (RowPanel p : childRows) {
+            downGridPanel.add(p);
+        }
+        downGridPanel.repaint();
+        downGridPanel.setVisible(true);
+    }
+
+    private class RowPanel extends JPanel {
+
+        private JCheckBox markCB;
+        private JComboBox machineCB;
+        private JComboBox fromSiteCB;
+        private JComboBox toSiteCB;
+        private JSpinner dateReqSP;
+        private JSpinner dateMoveSP;
+        private JComboBox lowbedCB;
+        private JComboBox operatorCB;
+        private JCheckBox completedCB;
+        private DefaultComboBoxModel machineCbModel;
+        private DefaultComboBoxModel operatorCbModel;
+        private DefaultComboBoxModel siteFromCbModel;
+        private DefaultComboBoxModel siteToCbModel;
+        private DefaultComboBoxModel lowbedCbModel;
+        private Xtransscheduleitm rec;
+
+        RowPanel(Xtransscheduleitm xtransscheduleitm) {
+            super(new GridLayout(1, 4, 5, 5));
+            this.rec = xtransscheduleitm;
+            markCB = new JCheckBox();
+            machineCbModel = new DefaultComboBoxModel();
+            operatorCbModel = new DefaultComboBoxModel();
+            siteFromCbModel = new DefaultComboBoxModel();
+            siteToCbModel = new DefaultComboBoxModel();
+            lowbedCbModel = new DefaultComboBoxModel();
+            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+                machineCbModel.addElement(ci);
+            }
+            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+                operatorCbModel.addElement(ci);
+            }
+            for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+                siteFromCbModel.addElement(ci);
+                siteToCbModel.addElement(ci);
+            }
+            for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
+                lowbedCbModel.addElement(ci);
+            }
+            add(getBorderPanel(new JComponent[]{
+                        markCB,
+                        comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
+                        comboPanelWithLookupBtn(fromSiteCB = new JComboBox(siteFromCbModel), new SiteLookupAction(fromSiteCB))
+                    }));
+            add(getGridPanel(new JComponent[]{
+                        comboPanelWithLookupBtn(toSiteCB = new JComboBox(siteToCbModel), new SiteLookupAction(toSiteCB)),
+                        dateReqSP = new SelectedDateSpinner()
+                    }));
+            add(getGridPanel(new JComponent[]{
+                        dateMoveSP = new SelectedDateSpinner(),
+                        comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowbedLookupAction(lowbedCB, null))
+                    }));
+            add(getBorderPanel(new JComponent[]{
+                        new JPanel(),
+                        comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
+                        completedCB = new JCheckBox()
+                    }));
+            dateReqSP.setEditor(new JSpinner.DateEditor(dateReqSP, "dd/MM/yyyy"));
+            Util.addFocusSelectAllAction(dateReqSP);
+            dateMoveSP.setEditor(new JSpinner.DateEditor(dateMoveSP, "dd/MM/yyyy"));
+            Util.addFocusSelectAllAction(dateMoveSP);
+
+            load();
+        }
+
+        public void mark(boolean m) {
+            markCB.setSelected(m);
+        }
+
+        public boolean isMarked() {
+            return markCB.isSelected();
+        }
+
+        private void load() {
+            if (rec != null) {
+                selectComboItem(machineCB, rec.getMachineId());
+                selectComboItem(fromSiteCB, rec.getSiteFromId());
+                selectComboItem(toSiteCB, rec.getSiteToId());
+                if (rec.getDateRequired() != null) {
+                    dateReqSP.setValue(new java.util.Date(rec.getDateRequired().getTime()));
+                }
+                if (rec.getDateMove() != null) {
+                    dateMoveSP.setValue(new java.util.Date(rec.getDateMove().getTime()));
+                }
+                selectComboItem(lowbedCB, rec.getLowbedId());
+                selectComboItem(operatorCB, rec.getOperatorId());
+                completedCB.setSelected(rec.getIsCompleted() != null && rec.getIsCompleted() == 1);
+            }
+        }
+
+        public boolean save() throws Exception {
+            boolean isNew = false;
+            if (rec == null) {
+                rec = new Xtransscheduleitm(null);
+                rec.setXtransscheduleitmId(0);
+                isNew = true;
+            }
+            rec.setMachineId(getSelectedCbItem(machineCB));
+            rec.setSiteFromId(getSelectedCbItem(fromSiteCB));
+            rec.setSiteToId(getSelectedCbItem(toSiteCB));
+            java.util.Date dt = (java.util.Date) dateReqSP.getValue();
+            if (dt != null) {
+                rec.setDateRequired(new java.sql.Date(dt.getTime()));
+            }
+            dt = (java.util.Date) dateMoveSP.getValue();
+            if (dt != null) {
+                rec.setDateMove(new java.sql.Date(dt.getTime()));
+            }
+            rec.setLowbedId(getSelectedCbItem(lowbedCB));
+            rec.setOperatorId(getSelectedCbItem(operatorCB));
+            rec.setIsCompleted(completedCB.isSelected() ? 1 : 0);
+            rec = (Xtransscheduleitm) DashBoard.getExchanger().saveDbObject(rec);
+
+            return saveDbRecord(rec, isNew);
+        }
+
+        private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
+            try {
+                dbOb.setNew(isNew);
+                rec = (Xtransscheduleitm) DashBoard.getExchanger().saveDbObject(dbOb);
+                return true;
+            } catch (Exception ex) {
+                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+            }
+            return false;
+        }
+    };
     private ArrayList<Xtransscheduleitm> records;
-    private ArrayList<JComboBox> machineCBs;
-    private ArrayList<JComboBox> fromSiteCBs;
-    private JComboBox[] toSiteCBs;
-    private JSpinner[] dateReqSPs;
-    private JSpinner[] dateMoveSPs;
-    private JComboBox[] lowbedCBs;
-    private JComboBox[] operatorCBs;
-    private JCheckBox[] completedCBs;
-    private DefaultComboBoxModel[] machineCbModel;
-    private DefaultComboBoxModel[] operatorCbModel;
-    private DefaultComboBoxModel[] siteFromCbModel;
-    private DefaultComboBoxModel[] siteToCbModel;
-    private DefaultComboBoxModel[] lowbedCbModel;
 
     public EditTransscheduleitmPanel(DbObject[] params) {
         super(params);
     }
 
-    @Override
     protected void fillContent() {
+        childRows = new ArrayList<RowPanel>();
+        toDelete = new ArrayList<RowPanel>();
         records = new ArrayList<Xtransscheduleitm>();
         if (params != null) {
             for (DbObject o : params) {
@@ -62,145 +195,56 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
             records.add(rec);
         }
 
-        int lines = (params == null ? 2 : (params.length + 1));
+        JPanel downShellPanel = new JPanel(new BorderLayout());
+        downGridPanel = new JPanel();
+        downShellPanel.add(downGridPanel, BorderLayout.NORTH);
+        downGridPanel.setLayout(new BoxLayout(downGridPanel, BoxLayout.Y_AXIS));
+        hdrPanel = new JPanel(new GridLayout(1, 7));
 
-        JPanel centerPanel = new JPanel(new GridLayout(lines, 4, 5, 5));
-        centerPanel.add(getGridPanel(new JComponent[]{new JLabel("Machine/Truck", SwingConstants.CENTER), new JLabel("From", SwingConstants.CENTER)}));
-        centerPanel.add(getGridPanel(new JComponent[]{new JLabel("To", SwingConstants.CENTER), new JLabel("Date Required", SwingConstants.CENTER)}));
-        centerPanel.add(getGridPanel(new JComponent[]{new JLabel("Date for Move", SwingConstants.CENTER), new JLabel("Lowbed", SwingConstants.CENTER)}));
-        centerPanel.add(getGridPanel(new JComponent[]{new JLabel("Operator", SwingConstants.CENTER), new JLabel("Completed", SwingConstants.RIGHT)}));
+        hdrPanel.add(getGridPanel(new JComponent[]{getBorderPanel(new JComponent[]{selectAllCB = new JCheckBox(),new JLabel("Machine/Truck", SwingConstants.CENTER)}), new JLabel("From", SwingConstants.CENTER)}));
+        hdrPanel.add(getGridPanel(new JComponent[]{new JLabel("To", SwingConstants.CENTER), new JLabel("Date Required", SwingConstants.CENTER)}));
+        hdrPanel.add(getGridPanel(new JComponent[]{new JLabel("Date for Move", SwingConstants.CENTER), new JLabel("Lowbed", SwingConstants.CENTER)}));
+        hdrPanel.add(getGridPanel(new JComponent[]{new JLabel("Operator", SwingConstants.CENTER), new JLabel("Completed", SwingConstants.RIGHT)}));
 
-        machineCBs = new ArrayList<JComboBox>();//new JComboBox[lines - 1];
-        fromSiteCBs = new ArrayList<JComboBox>();
-        toSiteCBs = new JComboBox[lines - 1];
-        dateReqSPs = new JSpinner[lines - 1];
-        dateMoveSPs = new JSpinner[lines - 1];
-        lowbedCBs = new JComboBox[lines - 1];
-        operatorCBs = new JComboBox[lines - 1];
-        completedCBs = new JCheckBox[lines - 1];
+        selectAllCB.setAction(new AbstractAction() {
 
-        machineCbModel = new DefaultComboBoxModel[lines - 1];
-        operatorCbModel = new DefaultComboBoxModel[lines - 1];
-        siteFromCbModel = new DefaultComboBoxModel[lines - 1];
-        siteToCbModel = new DefaultComboBoxModel[lines - 1];
-        lowbedCbModel = new DefaultComboBoxModel[lines - 1];
-
-        for (int i = 0; i < lines - 1; i++) {
-            machineCbModel[i] = new DefaultComboBoxModel();
-            operatorCbModel[i] = new DefaultComboBoxModel();
-            siteFromCbModel[i] = new DefaultComboBoxModel();
-            siteToCbModel[i] = new DefaultComboBoxModel();
-            lowbedCbModel[i] = new DefaultComboBoxModel();
-        }
-        
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
-            for (int i = 0; i < lines - 1; i++) {
-                machineCbModel[i].addElement(ci);
-            }
-        }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
-            for (int i = 0; i < lines - 1; i++) {
-                operatorCbModel[i].addElement(ci);
-            }
-        }
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
-            if (!ci.getValue().startsWith("--")) {
-                for (int i = 0; i < lines - 1; i++) {
-                    siteFromCbModel[i].addElement(ci);
-                    siteToCbModel[i].addElement(ci);
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (RowPanel p : childRows) {
+                    p.mark(selectAllCB.isSelected());
                 }
             }
-        }
-        for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
-            for (int i = 0; i < lines - 1; i++) {
-                lowbedCbModel[i].addElement(ci);
-            }
-        }
+        });
+        
+        downGridPanel.add(hdrPanel, BorderLayout.NORTH);
+        add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
 
-        for (int i = 0; i < lines - 1; i++) {
-            JComboBox mcb = new JComboBox(machineCbModel[i]);
-            machineCBs.add(mcb);
-            JComboBox fsb = new JComboBox(siteFromCbModel[i]);
-            fromSiteCBs.add(fsb);
-            centerPanel.add(getGridPanel(new JComponent[]{
-                        comboPanelWithLookupBtn(mcb, new MachineLookupAction(mcb, null)),
-                        comboPanelWithLookupBtn(fsb, new SiteLookupAction(fsb))
-                    }));
-            centerPanel.add(getGridPanel(new JComponent[]{
-                        comboPanelWithLookupBtn(toSiteCBs[i] = new JComboBox(siteToCbModel[i]), new SiteLookupAction(toSiteCBs[i])),
-                        dateReqSPs[i] = new SelectedDateSpinner()
-                    }));
-            centerPanel.add(getGridPanel(new JComponent[]{
-                        dateMoveSPs[i] = new SelectedDateSpinner(),
-                        comboPanelWithLookupBtn(lowbedCBs[i] = new JComboBox(lowbedCbModel[i]), new LowbedLookupAction(lowbedCBs[i], null))
-                    }));
-            centerPanel.add(getBorderPanel(new JComponent[]{
-                        new JPanel(),
-                        comboPanelWithLookupBtn(operatorCBs[i] = new JComboBox(operatorCbModel[i]), new EmployeeLookupAction(operatorCBs[i])),
-                        completedCBs[i] = new JCheckBox()
-                    }));
-            dateReqSPs[i].setEditor(new JSpinner.DateEditor(dateReqSPs[i], "dd/MM/yyyy"));
-            Util.addFocusSelectAllAction(dateReqSPs[i]);
-            dateMoveSPs[i].setEditor(new JSpinner.DateEditor(dateMoveSPs[i], "dd/MM/yyyy"));
-            Util.addFocusSelectAllAction(dateMoveSPs[i]);
-        }
-        if (params != null) {
-            JPanel upperBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            upperBtnPanel.add(new JButton("Add"));
-            upperBtnPanel.add(new JButton("Delete"));
-            add(upperBtnPanel, BorderLayout.NORTH);
-        }
-        JPanel centerShellPanel = new JPanel(new BorderLayout());
-        JScrollPane sp;
-        centerShellPanel.add(centerPanel, BorderLayout.NORTH);
-        if (params != null) {
-            add(sp = new JScrollPane(centerShellPanel), BorderLayout.CENTER);
-            sp.setPreferredSize(new Dimension(sp.getPreferredSize().width, 400));
-        } else {
-            add(centerShellPanel, BorderLayout.CENTER);
-        }
+        JPanel upperBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        upperBtnPanel.add(new JButton("Add"));
+        upperBtnPanel.add(new JButton("Delete"));
+        add(upperBtnPanel, BorderLayout.NORTH);
     }
 
     @Override
     public void loadData() {
         int i = 0;
         for (Xtransscheduleitm rec : records) {
-            selectComboItem(machineCBs.get(i), rec.getMachineId());
-            selectComboItem(fromSiteCBs.get(i), rec.getSiteFromId());
-            selectComboItem(toSiteCBs[i], rec.getSiteToId());
-            if (rec.getDateRequired() != null) {
-                dateReqSPs[i].setValue(new java.util.Date(rec.getDateRequired().getTime()));
-            }
-            if (rec.getDateMove() != null) {
-                dateMoveSPs[i].setValue(new java.util.Date(rec.getDateMove().getTime()));
-            }
-            selectComboItem(lowbedCBs[i], rec.getLowbedId());
-            selectComboItem(operatorCBs[i], rec.getOperatorId());
-            completedCBs[i].setSelected(rec.getIsCompleted() != null && rec.getIsCompleted() == 1);
-            i++;
+            childRows.add(new RowPanel(rec));
         }
+        redrawRows();
     }
 
     @Override
     public boolean save() throws Exception {
-        int i = 0;
-        for (Xtransscheduleitm rec : records) {
-            rec.setMachineId(getSelectedCbItem(machineCBs.get(i)));
-            rec.setSiteFromId(getSelectedCbItem(fromSiteCBs.get(i)));
-            rec.setSiteToId(getSelectedCbItem(toSiteCBs[i]));
-            java.util.Date dt = (java.util.Date) dateReqSPs[i].getValue();
-            if (dt != null) {
-                rec.setDateRequired(new java.sql.Date(dt.getTime()));
+        for (RowPanel p : childRows) {
+            if (!p.save()) {
+                return false;
             }
-            dt = (java.util.Date) dateMoveSPs[i].getValue();
-            if (dt != null) {
-                rec.setDateMove(new java.sql.Date(dt.getTime()));
+        }
+        for (RowPanel d : toDelete) {
+            if (d.rec != null) {
+                DashBoard.getExchanger().deleteObject(d.rec);
             }
-            rec.setLowbedId(getSelectedCbItem(lowbedCBs[i]));
-            rec.setOperatorId(getSelectedCbItem(operatorCBs[i]));
-            rec.setIsCompleted(completedCBs[i].isSelected() ? 1 : 0);
-            rec = (Xtransscheduleitm) DashBoard.getExchanger().saveDbObject(rec);
-            i++;
         }
         return true;
     }

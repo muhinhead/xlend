@@ -95,22 +95,40 @@ public class GroupTableGridPanel extends JPanel {
     }
 
     private void editSchedule(String title) {
-        if (dateCB.isSelected()) {
-            Vector data = tableView.getRowData();
-            int row = tableView.getSelectedRow();
-            if (row >= 0 && row < tableView.getRowCount()) {
-                try {
-                    Vector line = (Vector) data.get(row);
-                    String dateReq = (String) line.get(0);
-                    DbObject[] recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+        Vector data = tableView.getRowData();
+        int row = tableView.getSelectedRow();
+        if (row >= 0 && row < tableView.getRowCount()) {
+            try {
+                Vector line = (Vector) data.get(row);
+                String dateReq = (String) line.get(0);
+                DbObject[] recs = null;
+                if (dateCB.isSelected()) {
+                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
                             "date_required='" + dateReq + "'", null);
+                } else if (dateMachineCB.isSelected()) {
+                    String machineName = (String) line.get(1);
+                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                            "date_required='" + dateReq + "' and machine_id="
+                            + "(select max(xmachine_id) from xmachine where classify+tmvnr='"+machineName+"')", null);
+                } else if (dateFromSiteCB.isSelected()) {
+                    String siteName = (String) line.get(1);
+                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                            "date_required='" + dateReq + "' and site_from_id="
+                            + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
+                } else if (dateToSiteCB.isSelected()) {
+                    String siteName = (String) line.get(1);
+                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                            "date_required='" + dateReq + "' and site_to_id="
+                            + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
+                }
+                if (recs != null) {
                     EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, recs);
                     if (EditTransscheduleitmDialog.okPressed) {
                         updateGrid();
                     }
-                } catch (RemoteException ex) {
-                    XlendWorks.logAndShowMessage(ex);
                 }
+            } catch (RemoteException ex) {
+                XlendWorks.logAndShowMessage(ex);
             }
         }
     }

@@ -8,6 +8,7 @@ import com.xlend.gui.MyJideTabbedPane;
 import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.mvc.dbtable.DbTableViewMarked;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;

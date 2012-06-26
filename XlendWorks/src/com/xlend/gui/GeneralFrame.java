@@ -4,6 +4,7 @@ import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.mvc.dbtable.ITableView;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import com.xlend.util.Util;
@@ -352,7 +353,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     }
 
     public static void updateGrid(IMessageSender exchanger,
-            DbTableView view, DbTableDocument doc, String select, Integer id)
+            ITableView view, DbTableDocument doc, String select, Integer id)
             throws RemoteException {
         int row = view.getSelectedRow();
         if (select != null) {

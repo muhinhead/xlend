@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.mvc.dbtable.ITableView;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import java.util.HashMap;

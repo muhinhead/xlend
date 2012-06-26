@@ -17,7 +17,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Nick Mukhin
  */
-public class DbTableView extends JTable implements IView, ITableView {
+public class DbTableView extends JTable implements ITableView {
 
     private Controller controller = null;
     private Vector colName = new Vector();
@@ -155,11 +155,12 @@ public class DbTableView extends JTable implements IView, ITableView {
         return selectedRow;
     }
 
-    protected void setSelectedRow(int selectedRow) {
+    @Override
+    public void setSelectedRow(int selectedRow) {
         this.selectedRow = selectedRow;
-        if (selectedRow >= 0 && selectedRow < getRowCount()) {
-            setRowSelectionInterval(selectedRow, selectedRow);
-        }
+//        if (selectedRow >= 0 && selectedRow < getRowCount()) {
+//            setRowSelectionInterval(selectedRow, selectedRow);
+//        }
     }
 
     public void gotoRow(int row) {

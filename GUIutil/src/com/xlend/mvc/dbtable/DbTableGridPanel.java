@@ -9,11 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Vector;
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 /**
  *
@@ -89,7 +85,7 @@ public class DbTableGridPanel extends JPanel {
         for (int i = 3; i < acts.length; i++) {
             btnPanel.add(new JButton(acts[i]));
         }
-        add(sp = new JScrollPane(getTableView()), BorderLayout.CENTER);
+        add(sp = new JScrollPane((JComponent)getTableView()), BorderLayout.CENTER);
         add(getRightPanel(btnPanel), BorderLayout.EAST);
         tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
 
@@ -124,7 +120,7 @@ public class DbTableGridPanel extends JPanel {
         selectRowOnId(tableView, id);
     }
 
-    public static void selectRowOnId(DbTableView view, int id) {
+    public static void selectRowOnId(ITableView view, int id) {
         for (int row = 0; row < view.getRowData().size(); row++) {
             Vector line = (Vector) view.getRowData().get(row);
             try {
@@ -155,6 +151,17 @@ public class DbTableGridPanel extends JPanel {
         return 0;
     }
 
+    public int[] getSelectedIDs() {
+        int rows[] = tableView.getSelectedRows();
+        int ids[] = new int[rows.length];
+        int r=0;
+        for (int row : rows) {
+            Vector line = (Vector) tableView.getRowData().get(row);
+            ids[r++] = Integer.parseInt((String) line.get(0));
+        }
+        return ids;
+    }
+    
     public String getSelectedRowCeil(int col) {
         int row = tableView.getSelectedRow();
         if (row >= 0) {//&& row < tableView.getSelectedRow()) {

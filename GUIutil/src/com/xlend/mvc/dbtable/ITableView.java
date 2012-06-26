@@ -4,13 +4,16 @@
  */
 package com.xlend.mvc.dbtable;
 
+import com.xlend.mvc.IView;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
  *
  * @author nick
  */
-public interface ITableView {
+public interface ITableView extends IView {
 
     Vector getRowData();
 
@@ -23,4 +26,16 @@ public interface ITableView {
     void setSearchString(String find);
  
     String getSearchString();
+    
+    void setMaxColWidth(int col, int width);
+
+    void setMaxColWidths(HashMap<Integer, Integer> maxColWidths);
+    
+    void addMouseListener(MouseListener l);
+    
+    void removeMouseListener(MouseListener l);
+
+    void setSelectedRow(int row);
+    
+    void setRowSelectionInterval(int index0, int index1);
 }

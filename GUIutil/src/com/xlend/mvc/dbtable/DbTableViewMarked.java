@@ -4,15 +4,11 @@ import com.xlend.mvc.Controller;
 import com.xlend.mvc.Document;
 import com.xlend.mvc.IView;
 import com.xlend.util.PopupListener;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.AbstractAction;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -26,7 +22,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Admin
  */
-public class DbTableViewMarked extends JTable implements IView, ITableView {
+public class DbTableViewMarked extends JTable implements ITableView {
 
     protected Controller controller;
     private boolean withCopyMark;

@@ -105,21 +105,25 @@ public class GroupTableGridPanel extends JPanel {
                 if (dateCB.isSelected()) {
                     recs = exchanger.getDbObjects(Xtransscheduleitm.class,
                             "date_required='" + dateReq + "'", null);
+                    EditTransscheduleitmPanel.resetFixedAttribute();
                 } else if (dateMachineCB.isSelected()) {
                     String machineName = (String) line.get(1);
                     recs = exchanger.getDbObjects(Xtransscheduleitm.class,
                             "date_required='" + dateReq + "' and machine_id="
                             + "(select max(xmachine_id) from xmachine where classify+tmvnr='"+machineName+"')", null);
+                    EditTransscheduleitmPanel.setFixedAttribute("machine_id");
                 } else if (dateFromSiteCB.isSelected()) {
                     String siteName = (String) line.get(1);
                     recs = exchanger.getDbObjects(Xtransscheduleitm.class,
                             "date_required='" + dateReq + "' and site_from_id="
                             + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
+                    EditTransscheduleitmPanel.setFixedAttribute("site_from_id");
                 } else if (dateToSiteCB.isSelected()) {
                     String siteName = (String) line.get(1);
                     recs = exchanger.getDbObjects(Xtransscheduleitm.class,
                             "date_required='" + dateReq + "' and site_to_id="
                             + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
+                    EditTransscheduleitmPanel.setFixedAttribute("site_to_id");
                 }
                 if (recs != null) {
                     EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, recs);
@@ -136,7 +140,7 @@ public class GroupTableGridPanel extends JPanel {
     private JComponent createUpperPanel() {
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
-        fiilUpperPanel(upperPanel);
+        fillUpperPanel(upperPanel);
         return new JScrollPane(upperPanel);
     }
 
@@ -161,7 +165,7 @@ public class GroupTableGridPanel extends JPanel {
         return controller;
     }
 
-    protected void fiilUpperPanel(JPanel upperPanel) {
+    protected void fillUpperPanel(JPanel upperPanel) {
         JLabel lbl;
         upperPanel.add(lbl = new JLabel(" Schedule on:", SwingConstants.RIGHT));
         lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));

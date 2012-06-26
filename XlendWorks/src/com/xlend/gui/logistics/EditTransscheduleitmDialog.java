@@ -2,6 +2,7 @@ package com.xlend.gui.logistics;
 
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.orm.dbobject.DbObject;
+import java.awt.Dimension;
 
 /**
  *
@@ -17,6 +18,7 @@ class EditTransscheduleitmDialog extends EditRecordDialog {
     @Override
     protected void fillContent() {
         super.fillContent(new EditTransscheduleitmPanel((DbObject[]) getObject()));
+        setPreferredSize(new Dimension(getPreferredSize().width,500));
     }
 
     @Override

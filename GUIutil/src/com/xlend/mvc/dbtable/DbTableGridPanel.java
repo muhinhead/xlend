@@ -35,7 +35,6 @@ public class DbTableGridPanel extends JPanel {
     private JButton delButton = null;
     private MouseAdapter doubleClickAdapter;
     private Controller controller;
-    
 
     public DbTableGridPanel(
             AbstractAction addAction,
@@ -62,7 +61,7 @@ public class DbTableGridPanel extends JPanel {
         this.setAddAction(acts.length > 0 ? acts[0] : null);
         this.setEditAction(acts.length > 1 ? acts[1] : null);
         this.setDelAction(acts.length > 2 ? acts[2] : null);
-        
+
         tableView = (tabView == null ? new DbTableView() : tabView);
         if (maxWidths != null) {
             tableView.setMaxColWidths(maxWidths);
@@ -85,7 +84,7 @@ public class DbTableGridPanel extends JPanel {
         for (int i = 3; i < acts.length; i++) {
             btnPanel.add(new JButton(acts[i]));
         }
-        add(sp = new JScrollPane((JComponent)getTableView()), BorderLayout.CENTER);
+        add(sp = new JScrollPane((JComponent) getTableView()), BorderLayout.CENTER);
         add(getRightPanel(btnPanel), BorderLayout.EAST);
         tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
 
@@ -154,14 +153,14 @@ public class DbTableGridPanel extends JPanel {
     public int[] getSelectedIDs() {
         int rows[] = tableView.getSelectedRows();
         int ids[] = new int[rows.length];
-        int r=0;
+        int r = 0;
         for (int row : rows) {
             Vector line = (Vector) tableView.getRowData().get(row);
             ids[r++] = Integer.parseInt((String) line.get(0));
         }
         return ids;
     }
-    
+
     public String getSelectedRowCeil(int col) {
         int row = tableView.getSelectedRow();
         if (row >= 0) {//&& row < tableView.getSelectedRow()) {

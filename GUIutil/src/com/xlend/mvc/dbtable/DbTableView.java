@@ -27,6 +27,7 @@ public class DbTableView extends JTable implements ITableView {
     private HashMap<Integer, Integer> maxColWidths = new HashMap<Integer, Integer>();
     private TableCellRenderer myCellRenderer = new MyColorRenderer(this);
     private String string2find;
+    private boolean isMultilineSelection = false;
 
     public TableCellRenderer getCellRenderer(int row, int column) {
 //        return column > 0 ? myCellRenderer : super.getCellRenderer(row, column);
@@ -158,9 +159,11 @@ public class DbTableView extends JTable implements ITableView {
     @Override
     public void setSelectedRow(int selectedRow) {
         this.selectedRow = selectedRow;
-//        if (selectedRow >= 0 && selectedRow < getRowCount()) {
-//            setRowSelectionInterval(selectedRow, selectedRow);
-//        }
+        if (!isMultilineSelection) {
+            if (selectedRow >= 0 && selectedRow < getRowCount()) {
+                setRowSelectionInterval(selectedRow, selectedRow);
+            }
+        }
     }
 
     public void gotoRow(int row) {
@@ -206,5 +209,24 @@ public class DbTableView extends JTable implements ITableView {
     @Override
     public String getSearchString() {
         return string2find;
+    }
+
+    /**
+     * @return the isMultilineSelection
+     */
+    public boolean isIsMultilineSelection() {
+        return isMultilineSelection;
+    }
+
+    /**
+     * @param isMultilineSelection the isMultilineSelection to set
+     */
+    public void setIsMultilineSelection(boolean isMultilineSelection) {
+        if (isMultilineSelection) {
+            setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        } else {
+            setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        }
+        this.isMultilineSelection = isMultilineSelection;
     }
 }

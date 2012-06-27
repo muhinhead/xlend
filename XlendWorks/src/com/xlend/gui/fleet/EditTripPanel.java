@@ -261,6 +261,7 @@ public class EditTripPanel extends RecordEditPanel {
                 : movingRB.isSelected() ? 2 : exchangingRB.isSelected() ? 3 : 0);
         boolean ok = saveDbRecord(xtr, isNew);
         if (ok) {
+            xtr = (Xtrip) getDbObject();
             EditTripEstablishingPanel.setXtrip_id(xtr.getXtripId());
             EditTripDeEstablishingPanel.setXtrip_id(xtr.getXtripId());
             EditTripMovinganel.setXtrip_id(xtr.getXtripId());

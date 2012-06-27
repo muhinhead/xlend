@@ -122,7 +122,7 @@ public class EditLowBedPanel extends RecordEditPanel {
     private Component getTabbedPanel() {
         JTabbedPane tp = new MyJideTabbedPane();
         try {
-            JScrollPane sp = new JScrollPane(new TripsGrid(DashBoard.getExchanger(), (Xlowbed) getDbObject()));
+            JScrollPane sp = new JScrollPane(new TripsGrid(DashBoard.getExchanger(), (Xlowbed) getDbObject(), this));
             sp.setPreferredSize(new Dimension(700,200));
             tp.add(sp, "Trips");
         } catch (RemoteException ex) {

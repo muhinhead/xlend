@@ -30,6 +30,7 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
                     readOnly ? null : editAction(),
                     readOnly ? null : delAction()}, 
                 select, exchanger.getTableBody(select), maxWidths, tabView);
+        setIsMultilineSelection(false);
     }
     
     public GeneralGridPanel(IMessageSender exchanger, String select,
@@ -95,4 +96,9 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
             XlendWorks.log(ex);
         }
     }
+
+
+    public void setIsMultilineSelection(boolean b) {
+        getTableView().setIsMultilineSelection(b);
+    }    
 }

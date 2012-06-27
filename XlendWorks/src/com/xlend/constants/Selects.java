@@ -19,19 +19,19 @@ public class Selects {
     public static final String SELECT_FROM_SITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
-            + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
+            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite order by upper(name)";
     public static final String SELECT_ORDERISITES = 
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
             + "CASEWHEN(sitetype='W','Work Site',CASEWHEN(sitetype='A','Additional','unknown')) \"Type of Site\" "
-            + "from xsite where xorder_id = #";
+            + "from xsite where xorder_id = # or xorder2_id = # or xorder3_id = #";
     public static final String SELECT_FROM_CLIENTS = "Select xclient_id \"Id\","
             + "clientcode \"Client Code\", companyname \"Company name\", "
             + "contactname \"Contact Name\", phonenumber \"Tel Nr.\", vatnumber \"Vat Nr.\" "
             + "from xclient order by upper(clientcode)";
     public static final String SELECT_CLIENTS4LOOKUP = "Select xclient_id \"Id\","
-            + "clientcode \"Client Code\", companyname \"Company name\" "
+            + "clientcode \"Client Code\", companyname \"Company name\", contactname \"Contact person\" "
             + "from xclient order by upper(clientcode)";
     public static final String SELECT_FROM_CONTRACTS =
             "Select xcontract_id \"Id\", "
@@ -363,6 +363,8 @@ public class Selects {
             "select cbitem_id \"Id\", id \"Code\", val \"Pay From\" from cbitems where name='paidfrom'";
     public static final String SELECT_FROM_WAGECATEGORY = 
             "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\" from cbitems where name='wage_category'";
+    public static final String SELECT_FROM_SITETYPES = 
+            "select cbitem_id \"Id\", substr(val,0,1) \"Code\", val \"Site Type\" from cbitems where name='site_types'";
     public static final String SELECT_FROM_RATEDMACHINES = 
             "select cbitem_id \"Id\", id \"Code\", val \"Machine\" from cbitems where name='rated_machines'";
     public static final String SELECT_FROM_MACHINERANTALRATE = 
@@ -385,9 +387,12 @@ public class Selects {
             "select i.date_required \"Date\", s.name \"Site (target)\", count(*) \"Qty\" "
             + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     
+    public static final String activeEmployeeCondition = "clock_num!='000' and "
+                + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0"; 
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where", 
-                "where coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
+                "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
     }
     
     

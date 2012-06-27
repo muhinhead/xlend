@@ -25,7 +25,7 @@ public class MachineTypeGrid extends GeneralGridPanel {
 
     public MachineTypeGrid(IMessageSender exchanger, String select, DbTableView masterView) throws RemoteException {
         super(exchanger, select, null, false, masterView);
-        getTableView().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        setIsMultilineSelection(true);
     }
 
     public MachineTypeGrid(IMessageSender exchanger, DbTableView masterView) throws RemoteException {

@@ -38,5 +38,7 @@ public class EditSiteDialog extends EditRecordDialog {
     public void dispose() {
         super.dispose();
         EditSiteDialog.xorder = null;
+        EditSitePanel editPanel = (EditSitePanel) getEditPanel();
+        editPanel.setXorder(null);
     }
 }

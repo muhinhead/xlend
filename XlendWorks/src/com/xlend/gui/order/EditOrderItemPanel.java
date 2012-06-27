@@ -22,6 +22,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -56,7 +58,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             "Item Nr:", //"Material Number:", 
             "Machine Type:", //"Description:",
             "Required:", "Delivery Date:", "Order Quantity:",
-            "Measure Item", "Price per Unit:","Total Value for item:"
+            "Measure Item", "Price per Unit:", "Total Value for item:"
         };
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
@@ -65,16 +67,19 @@ public class EditOrderItemPanel extends RecordEditPanel {
             requiredDateSpin = new SelectedDateSpinner(),
             deliverDateSpin = new SelectedDateSpinner(),
             quantitySpin = new JSpinner(new SpinnerNumberModel()),
-            measureItemCB = new JComboBox(new String[] {"HRS","RANDS"}),
+            measureItemCB = new JComboBox(new String[]{"HRS", "RANDS"}),
             priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),
             totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1)
         };
-
+        totalValSpin.setEnabled(false);
         requiredDateSpin.setEditor(new JSpinner.DateEditor(requiredDateSpin, "dd/MM/yyyy"));
         deliverDateSpin.setEditor(new JSpinner.DateEditor(deliverDateSpin, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(requiredDateSpin);
         Util.addFocusSelectAllAction(deliverDateSpin);
         organizePanels(titles, edits);
+
+        priceOneSpin.addChangeListener(calcTotalValueAction());
+        quantitySpin.addChangeListener(calcTotalValueAction());
     }
 
     protected void organizePanels(String[] titles, JComponent[] edits) {
@@ -100,8 +105,6 @@ public class EditOrderItemPanel extends RecordEditPanel {
         if (xorditem != null) {
             idField.setText(xorditem.getXorderitemId().toString());
             itemNumberField.setText(xorditem.getItemnumber());
-//            descriptionField.setText(xorditem.getDescription());
-//            materialNumberField.setText(xorditem.getMaterialnumber());
             if (xorditem.getXmachtypeId() != null) {
                 selectComboItem(machineTypeCB, xorditem.getXmachtypeId());
             }
@@ -143,7 +146,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             xorditem.setQuantity((Integer) quantitySpin.getValue());
             xorditem.setMeasureitem((String) measureItemCB.getSelectedItem());
             xorditem.setPriceperone((Double) priceOneSpin.getValue());
-            xorditem.setTotalvalue((Double)totalValSpin.getValue());
+            xorditem.setTotalvalue((Double) totalValSpin.getValue());
 
             DbObject saved = DashBoard.getExchanger().saveDbObject(xorditem);
             setDbObject(saved);
@@ -157,5 +160,21 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     protected void setXorder(Xorder xorder) {
         this.xorder = xorder;
+    }
+
+    private ChangeListener calcTotalValueAction() {
+        return new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (priceOneSpin.getValue() != null && quantitySpin.getValue() != null) {
+                    Integer qty = (Integer) quantitySpin.getValue();
+                    Double prc = (Double) priceOneSpin.getValue();
+                    totalValSpin.setValue(new Double(qty.intValue() * prc.doubleValue()));
+                } else {
+                    totalValSpin.setValue(0);
+                }
+            }
+        };
     }
 }

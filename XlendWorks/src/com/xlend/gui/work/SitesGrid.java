@@ -44,6 +44,7 @@ public class SitesGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    EditSiteDialog.xorder = null;
                     EditSiteDialog ed = new EditSiteDialog("New Site", null);
                     if (EditSiteDialog.okPressed) {
                         Xsite xsite = (Xsite) ed.getEditPanel().getDbObject();
@@ -67,6 +68,7 @@ public class SitesGrid extends GeneralGridPanel {
                 if (id > 0) {
                     try {
                         Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
+                        EditSiteDialog.xorder = null;
                         new EditSiteDialog("Edit Site", xsite);
                         if (EditSiteDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
@@ -89,7 +91,7 @@ public class SitesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, id);
-                    if (xsite !=null && GeneralFrame.yesNo("Attention!", "Do you want to delete site ["
+                    if (xsite != null && GeneralFrame.yesNo("Attention!", "Do you want to delete site ["
                             + xsite.getName() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xsite);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);

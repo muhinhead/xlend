@@ -1,5 +1,6 @@
 package com.xlend.gui.hr;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
@@ -100,6 +101,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         reportedToCbModel = new DefaultComboBoxModel();
         reportedByCbModel = new DefaultComboBoxModel();
         grantedByCbModel = new DefaultComboBoxModel();
+        machineCbModel.addElement(new ComboItem(0, "NO MACHINE"));
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
             machineCbModel.addElement(ci);
         }
@@ -108,7 +110,9 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 siteCbModel.addElement(ci);
             }
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+//        String activeEmployeeCondition = "clock_num!='000' and "
+//                + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0"; 
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(),Selects.activeEmployeeCondition)) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
             employeeCbModel.addElement(ci);
@@ -121,7 +125,8 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 medicalCondRB = new JRadioButton("Medical Conditions")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel), new EmployeeLookupAction(employeeCB)),
+                comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel), 
+                    new EmployeeLookupAction(employeeCB)),
                 new JPanel(),
                 funeralRB = new JRadioButton("Funeral")
             }),
@@ -151,12 +156,14 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 licenseProblemRB = new JRadioButton("License problem")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), new EmployeeLookupAction(reportedByCB)),
+                comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), 
+                    new EmployeeLookupAction(reportedByCB)),
                 new JPanel(),
                 ppeAndSafetyRB = new JRadioButton("PPE & Safety")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new ClercLookupAction(reportedToCB)),
+                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), 
+                    new ClercLookupAction(reportedToCB)),
                 new JPanel(),
                 wageDisputeRB = new JRadioButton("Wage Dispute")
             }),
@@ -175,7 +182,8 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 workAccidentRB = new JRadioButton("Work Accident")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel), new ClercLookupAction(grantedByCB)),
+                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel), 
+                    new ClercLookupAction(grantedByCB)),
                 new JPanel(),
                 noReasonRB = new JRadioButton("No Reason")
             })

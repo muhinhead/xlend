@@ -31,9 +31,10 @@ public class OrderSitesGrid extends GeneralGridPanel {
     public OrderSitesGrid(IMessageSender exchanger, String slct) throws RemoteException {
         super(exchanger, slct, maxWidths, false);
         int p = Selects.SELECT_ORDERISITES.indexOf(whereId);
+        int p1 = Selects.SELECT_ORDERISITES.indexOf(" or ");
         if (getSelect().startsWith(Selects.SELECT_ORDERISITES.substring(0, p))) {
             xorder = (Xorder) exchanger.loadDbObjectOnID(
-                    Xorder.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
+                    Xorder.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1,p1).trim()));
         }
     }
 

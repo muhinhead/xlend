@@ -52,9 +52,9 @@ public class EditConsumablePanel extends RecordEditPanel {
     private JComboBox paidByCB;
     private JComboBox paidMethodCB;
     private JComboBox machineCB;
+    private JComboBox siteCB;
     private JTextField cheqNumberField;
     private JTextField accNumField;
-    
 
     public EditConsumablePanel(DbObject dbObject) {
         super(dbObject);
@@ -66,6 +66,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             "ID:",
             "Supplier:",
             "Machine/Truck/Other:",
+            "Site:",
             "Requested by:",
             "Invoice Date:",
             "Invoice Nr:",
@@ -99,10 +100,17 @@ public class EditConsumablePanel extends RecordEditPanel {
             collectedByCbModel.addElement(ci);
             paidByCbModel.addElement(ci);
         }
+        siteCbModel = new DefaultComboBoxModel();
+        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+            if (!ci.getValue().startsWith("--")) {
+                siteCbModel.addElement(ci);
+            }
+        }
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel), new SupplierLookupAction(supplierCB)),
             comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
+            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
             comboPanelWithLookupBtn(requesterCB = new JComboBox(requestedByCbModel), new EmployeeLookupAction(requesterCB)),
             getGridPanel(invoiceDateSP = new SelectedDateSpinner(), 3),
             getGridPanel(invoiceNumField = new JTextField(), 3),
@@ -130,25 +138,15 @@ public class EditConsumablePanel extends RecordEditPanel {
         Xconsume xcns = (Xconsume) getDbObject();
         if (xcns != null) {
             idField.setText(xcns.getXconsumeId().toString());
-            if (xcns.getXsupplierId() != null) {
-                selectComboItem(supplierCB, xcns.getXsupplierId());
-            }
-            if (xcns.getXmachineId() != null) {
-                selectComboItem(machineCB, xcns.getXmachineId());
-            }
-            if (xcns.getRequesterId() != null) {
-                selectComboItem(requesterCB, xcns.getRequesterId());
-            }
+            selectComboItem(supplierCB, xcns.getXsupplierId());
+            selectComboItem(machineCB, xcns.getXmachineId());
+            selectComboItem(requesterCB, xcns.getRequesterId());
             if (xcns.getInvoicedate() != null) {
                 invoiceDateSP.setValue(new Date(xcns.getInvoicedate().getTime()));
             }
             invoiceNumField.setText(xcns.getInvoicenumber());
-            if (xcns.getAuthorizerId() != null) {
-                selectComboItem(authorizerCB, xcns.getAuthorizerId());
-            }
-            if (xcns.getCollectorId() != null) {
-                selectComboItem(collectorCB, xcns.getCollectorId());
-            }
+            selectComboItem(authorizerCB, xcns.getAuthorizerId());
+            selectComboItem(collectorCB, xcns.getCollectorId());
             descrField.setText(xcns.getDescription());
             partNumberField.setText(xcns.getPartnumber());
             if (xcns.getAmountLiters() != null) {
@@ -157,12 +155,9 @@ public class EditConsumablePanel extends RecordEditPanel {
             if (xcns.getAmountRands() != null) {
                 amtRandsSP.setValue(xcns.getAmountRands());
             }
-            if (xcns.getPayerId() != null) {
-                selectComboItem(paidByCB, xcns.getPayerId());
-            }
-            if (xcns.getXpaidmethodId() != null) {
-                selectComboItem(paidMethodCB, xcns.getXpaidmethodId());
-            }
+            selectComboItem(paidByCB, xcns.getPayerId());
+            selectComboItem(paidMethodCB, xcns.getXpaidmethodId());
+            selectComboItem(siteCB, xcns.getXsiteId());
             accNumField.setText(xcns.getAccnum());
             cheqNumberField.setText(xcns.getChequenumber());
         }
@@ -208,6 +203,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             xcns.setXpaidmethodId(getSelectedCbItem(paidMethodCB));
             xcns.setChequenumber(cheqNumberField.isVisible() ? cheqNumberField.getText() : null);
             xcns.setAccnum(accNumField.getText());
+            xcns.setXsiteId(getSelectedCbItem(siteCB));
             return saveDbRecord(xcns, isNew);
         }
         return false;

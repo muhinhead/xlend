@@ -61,6 +61,7 @@ class EditJobCardPanel extends RecordEditPanel {
         }
         for (int i = 0; i < ARRLEN; i++) {
             machineCbModels[i] = new DefaultComboBoxModel();
+            machineCbModels[i].addElement(new ComboItem(0, "NO MACHINE"));
             commentsTAs[i] = new JTextArea();
         }
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
@@ -114,7 +115,7 @@ class EditJobCardPanel extends RecordEditPanel {
         JPanel[] panels = new JPanel[5];
         for (int i = 0; i < 5; i++) {
             panels[i] = new JPanel(new BorderLayout());
-            panels[i].add(new JScrollPane(commentsTAs[offset] = new JTextArea(3, 10)));
+            panels[i].add(new JScrollPane(commentsTAs[offset] = new JTextArea(2, 10)));
             panels[i].add(getBorderPanel(new JComponent[]{
                         new JLabel("machine:"),
                         comboPanelWithLookupBtn(machineCBs[offset], new MachineLookupAction(machineCBs[offset], null))

@@ -231,7 +231,7 @@ public class EditOrderPanel extends RecordEditPanel {
                     if (clientRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
                                 new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
-                                new String[]{"clientcode", "companyname"});
+                                new String[]{"clientcode", "companyname", "contactname"});
                     } else {
                         GeneralFrame.errMessageBox("Warning:", "Choose client first");
                     }
@@ -323,7 +323,7 @@ public class EditOrderPanel extends RecordEditPanel {
             JScrollPane sp;
             tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
             ordSitesGrid = new OrderSitesGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_ORDERISITES.replace("#", "" + order_id));
+                    Selects.SELECT_ORDERISITES.replaceAll("#", "" + order_id));
             tp.add(ordSitesGrid, "Order Sites");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);

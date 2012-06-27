@@ -78,6 +78,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JTextField bankName3TF;
     private JTextField bankAccNr3TF;
     private JTextField bankBranchCode3TF;
+    private JSpinner emplStartSP;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -158,7 +159,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 //                rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
                 rateField(),
                 new JLabel("Wage Category:", SwingConstants.RIGHT),
-                wageCategoryCB = new JComboBox(wageCategoryDbModel)
+                wageCategoryCB = new JComboBox(wageCategoryDbModel),
+                new JLabel(" Employment Start Date:", SwingConstants.RIGHT),
+                emplStartSP = new SelectedDateSpinner()
             }, 5),
             new JLabel("Bank Accounts:", SwingConstants.CENTER),
             getGridPanel(new JComponent[]{
@@ -202,7 +205,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         abscondedDateSP.setVisible(false);
         resignedDateSP.setVisible(false);
         for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
-                    deceasedDateSP, dismissedDateSP, abscondedDateSP, resignedDateSP}) {
+                    emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP, 
+                    resignedDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
         }
@@ -250,7 +254,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 adjustEndDate();
             }
         });
-
+        
         add(getDetailsPanel(), BorderLayout.CENTER);
     }
 
@@ -340,6 +344,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 dt = new java.util.Date(emp.getContractEnd().getTime());
                 contractEndSP.setValue(dt);
             }
+            if (emp.getEmploymentStart()!=null) {
+                dt =  new java.util.Date(emp.getEmploymentStart().getTime());
+                emplStartSP.setValue(dt);
+            }
             if (emp.getDeceasedDate() != null) {
                 dt = new java.util.Date(emp.getDeceasedDate().getTime());
                 deceasedDateSP.setValue(dt);
@@ -380,6 +388,11 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             setImage2(imageData2);
             imageData3 = (byte[]) emp.getPhoto3();
             setImage3(imageData3);
+            if (emp.getClockNum().equals("000") && emp.getFirstName().equals("NO OPERATOR")) {
+                clockNumField.setEnabled(false);
+                firstNameField.setEnabled(false);
+                surNameField.setEnabled(false);
+            }
         }
     }
 
@@ -421,6 +434,11 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     emp.setContractStart(new java.sql.Date(((java.util.Date) contractStartSP.getValue()).getTime()));
                 } else {
                     emp.setContractStart(null);
+                }
+                if (emplStartSP.getValue()!=null) {
+                    emp.setEmploymentStart(new java.sql.Date(((java.util.Date) emplStartSP.getValue()).getTime()));
+                } else {
+                    emp.setEmploymentStart(null);
                 }
                 emp.setFirstName(firstNameField.getText());
                 emp.setIdNum(idNumField.getText());

@@ -1,5 +1,6 @@
 package com.xlend.gui.hr;
 
+import com.xlend.constants.Selects;
 import javax.swing.JComboBox;
 
 /**
@@ -13,7 +14,7 @@ public class ClercLookupAction extends EmployeeLookupAction {
     }
     
     public ClercLookupAction(JComboBox cBox) {
-        this(cBox, null);
+        this(cBox, Selects.activeEmployeeCondition);
     }
 
     private static String adjustWhereCond(String whereCond) {

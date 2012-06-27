@@ -281,7 +281,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
                 try {
                     LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
                             new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
-                            new String[]{"clientcode", "companyname"});
+                            new String[]{"clientcode", "companyname", "contactname"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }

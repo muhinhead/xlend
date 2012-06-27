@@ -19,7 +19,7 @@ public class EmployeeLookupAction extends AbstractAction {
     protected String whereCond;
 
     public EmployeeLookupAction(JComboBox cBox) {
-        this(cBox, null);
+        this(cBox, Selects.activeEmployeeCondition);
     }
 
     public EmployeeLookupAction(JComboBox cBox, String whereCond) {

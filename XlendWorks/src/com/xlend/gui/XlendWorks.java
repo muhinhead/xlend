@@ -187,7 +187,7 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
-        return loadAllEmployees(exchanger, null);
+        return loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
     }
 
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger, String whereCond) {
@@ -608,6 +608,10 @@ public class XlendWorks {
         return sum;
     }
 
+    public static ComboItem[] loadSiteTypes(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select id,val from cbitems where name='site_types'");
+    }
+
     public static ComboItem[] loadWageCategories(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select id,val from cbitems where name='wage_category'");
     }
@@ -648,7 +652,19 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "Select cbitem_id, val "
                 + "from cbitems where name='rated_machines' order by id");
     }
-    
+
+    public static boolean existsSiteOfType(IMessageSender exchanger, String siteType) {
+        try {
+            Vector[] tab = exchanger.getTableBody(
+                    "select xsite_id from xsite where substring(sitetype,1,1)='" + siteType.substring(0, 1) + "'");
+            Vector rows = tab[1];
+            return rows.size() > 0;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return true;
+    }
+
     public static boolean existsEmployeeWithWageCategory(IMessageSender exchanger, Integer wageCatID) {
         try {
             Vector[] tab = exchanger.getTableBody(

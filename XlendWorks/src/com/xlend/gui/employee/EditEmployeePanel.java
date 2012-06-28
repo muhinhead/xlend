@@ -6,15 +6,17 @@ package com.xlend.gui.employee;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
+import com.xlend.gui.assign.EmployeeAssignmentDialog;
+import com.xlend.gui.assign.EmployeeAssignmentPanel;
 import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xemployee;
+import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +26,8 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -79,6 +83,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JTextField bankAccNr3TF;
     private JTextField bankBranchCode3TF;
     private JSpinner emplStartSP;
+    private JLabel siteAssignLbl;
+    private JLabel machineAssignLbl;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -97,7 +103,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             "Work Position:",
             "Contract Duration:", //"Contract Start:","Contract End:"
             "Rate of Pay (R/hour):",//Wage category:
-            "",
+            "Assigned to site:", "",
             "", "", "",
             "", "", ""
         };
@@ -156,13 +162,17 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 contractEndSP = new SelectedDateSpinner()
             }),
             getGridPanel(new JComponent[]{
-                //                rateSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .1),
                 rateField(),
                 new JLabel("Wage Category:", SwingConstants.RIGHT),
                 wageCategoryCB = new JComboBox(wageCategoryDbModel),
                 new JLabel(" Employment Start Date:", SwingConstants.RIGHT),
                 emplStartSP = new SelectedDateSpinner()
             }, 5),
+            getGridPanel(new JComponent[]{
+                siteAssignLbl = new JLabel(),
+                getBorderPanel(new JComponent[]{new JLabel("machine:"), machineAssignLbl = new JLabel()}),
+                new JButton(getAssignmentsAction("Assignments..."))
+            }),
             new JLabel("Bank Accounts:", SwingConstants.CENTER),
             getGridPanel(new JComponent[]{
                 new JLabel("Bank Name", SwingConstants.CENTER),
@@ -197,6 +207,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 resignedDateSP = new SelectedDateSpinner()
             })
         };
+        siteAssignLbl.setBorder(BorderFactory.createEtchedBorder());
+        machineAssignLbl.setBorder(BorderFactory.createEtchedBorder());
+
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
 
@@ -205,7 +218,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         abscondedDateSP.setVisible(false);
         resignedDateSP.setVisible(false);
         for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
-                    emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP, 
+                    emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP,
                     resignedDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
@@ -254,8 +267,35 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 adjustEndDate();
             }
         });
-        
+
         add(getDetailsPanel(), BorderLayout.CENTER);
+    }
+
+    private AbstractAction getAssignmentsAction(String title) {
+        return new AbstractAction(title) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean ok = true;
+                if (getDbObject() == null) {
+                    ok = false;
+                    if (JOptionPane.showConfirmDialog(null, "Do you want to save employee before assign him?",
+                            "Attention!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        try {
+                            ok = save();
+                        } catch (Exception ex) {
+                            XlendWorks.logAndShowMessage(ex);
+                        }
+                    }
+                }
+                if (ok) {
+                    EmployeeAssignmentPanel.setXemployee((Xemployee) getDbObject());
+                    new EmployeeAssignmentDialog("Assignments of employee", getDbObject());
+                    fillAssignmentInfo();
+                    EmployeeAssignmentPanel.setXemployee(null);
+                }
+            }
+        };
     }
 
     private JComponent rateField() {
@@ -344,8 +384,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 dt = new java.util.Date(emp.getContractEnd().getTime());
                 contractEndSP.setValue(dt);
             }
-            if (emp.getEmploymentStart()!=null) {
-                dt =  new java.util.Date(emp.getEmploymentStart().getTime());
+            if (emp.getEmploymentStart() != null) {
+                dt = new java.util.Date(emp.getEmploymentStart().getTime());
                 emplStartSP.setValue(dt);
             }
             if (emp.getDeceasedDate() != null) {
@@ -393,6 +433,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 firstNameField.setEnabled(false);
                 surNameField.setEnabled(false);
             }
+            fillAssignmentInfo();
         }
     }
 
@@ -435,7 +476,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setContractStart(null);
                 }
-                if (emplStartSP.getValue()!=null) {
+                if (emplStartSP.getValue() != null) {
                     emp.setEmploymentStart(new java.sql.Date(((java.util.Date) emplStartSP.getValue()).getTime()));
                 } else {
                     emp.setEmploymentStart(null);
@@ -814,5 +855,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 }
             }
         };
+    }
+
+    private void fillAssignmentInfo() {
+        String[] lbls = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), (Xemployee) getDbObject());
+        if (lbls != null && lbls.length > 1) {
+            siteAssignLbl.setText(lbls[0]);
+            machineAssignLbl.setText(lbls[1]);
+        } else {
+            siteAssignLbl.setText("unassigned yet");
+            machineAssignLbl.setText("unassigned yet");
+        }
     }
 }

@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.46";
+    public static final String version = "0.47";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -363,10 +363,11 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadMachines(IMessageSender exchanger) {
+        return loadMachines(exchanger, Selects.MACHINETVMS);
+    }
+
+    public static ComboItem[] loadMachines(IMessageSender exchanger, String select) {
         try {
-            String select = //freeOnly ? Selects.FREEMACHINETVMS : 
-                    Selects.MACHINETVMS;
-//            System.out.println("!!" + select);
             Vector[] tab = exchanger.getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
@@ -382,7 +383,7 @@ public class XlendWorks {
         }
         return null;
     }
-
+    
     public static ComboItem[] loadAllMachines(IMessageSender exchanger) {
         try {
             Vector[] tab = exchanger.getTableBody(Selects.ALLMACHINETVMS);
@@ -891,6 +892,27 @@ public class XlendWorks {
                     + currentUser.getProfileId() + ")", null);
         } catch (RemoteException ex) {
             log(ex);
+        }
+        return null;
+    }
+
+    public static String[] findCurrentAssignment(IMessageSender exchanger, Xemployee xemployee) {
+        if (xemployee != null) {
+            try {
+                DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class,
+                        "xemployee_id=" + xemployee.getXemployeeId() + " and date_end is null", null);
+                if (obs.length > 0) {
+                    String[] ans = new String[2];
+                    Xopmachassing assign = (Xopmachassing) obs[0];
+                    Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, assign.getXsiteId());
+                    Xmachine xmachine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, assign.getXmachineId());
+                    ans[0] = xsite == null ? "unassigned" : xsite.getName();
+                    ans[1] = xmachine == null ? "unassigned" : (xmachine.getClassify() + xmachine.getTmvnr());
+                    return ans;
+                }
+            } catch (RemoteException ex) {
+                logAndShowMessage(ex);
+            }
         }
         return null;
     }

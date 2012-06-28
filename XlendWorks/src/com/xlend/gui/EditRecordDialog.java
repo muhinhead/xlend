@@ -14,7 +14,7 @@ import javax.swing.JPanel;
  */
 public abstract class EditRecordDialog extends PopupDialog {
 
-    private JButton saveButton;
+    protected JButton saveButton;
     private AbstractAction saveAction;
     private JButton cancelButton;
     private AbstractAction cancelAction;

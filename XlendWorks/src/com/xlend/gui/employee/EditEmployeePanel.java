@@ -289,8 +289,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     }
                 }
                 if (ok) {
-                    EmployeeAssignmentPanel.setXemployee((Xemployee) getDbObject());
-                    new EmployeeAssignmentDialog("Assignments of employee", getDbObject());
+                    Xemployee emp = (Xemployee) getDbObject();
+                    EmployeeAssignmentPanel.setXemployee(emp);
+                    new EmployeeAssignmentDialog("Assignments of "
+                            + emp.getFirstName() + " " + emp.getSurName() + " (" + emp.getClockNum() + ")", getDbObject());
                     fillAssignmentInfo();
                     EmployeeAssignmentPanel.setXemployee(null);
                 }

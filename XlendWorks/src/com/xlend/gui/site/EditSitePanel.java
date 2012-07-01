@@ -176,7 +176,6 @@ public class EditSitePanel extends RecordEditPanel {
                     typeBox.setSelectedIndex(i);
                 }
             }
-//            typeBox.setSelectedIndex(xsite.getSitetype().equals("W") ? 0 : 1);
             clientSuppliedDieselRB.setSelected(xsite.getDieselsponsor() != null && xsite.getDieselsponsor() == 1);
             xlendSuppliedDieselRB.setSelected(xsite.getDieselsponsor() == null || xsite.getDieselsponsor() == 0);
         }

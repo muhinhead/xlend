@@ -2,6 +2,8 @@ package com.xlend.gui.fleet;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
+import com.xlend.gui.assign.MachineAssignmentDialog;
+import com.xlend.gui.assign.MachineAssignmentPanel;
 import com.xlend.orm.Xmachine;
 import com.xlend.orm.Xmachtype;
 import com.xlend.orm.dbobject.ComboItem;
@@ -21,18 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -69,6 +60,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
     private SelectedDateSpinner payEndDateSP;
     private JTabbedPane tabbedPane;
     private boolean licensed;
+    private JLabel siteAssignLbl;
+    private JLabel operatorAssignLbl;
 
     public EditMachinePanel(DbObject dbObject) {
         super(dbObject);
@@ -93,7 +86,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             "Vehicle Nr:", "Engine Nr:", "Chassis Nr:",
             "Insurance Nr:", "Insurance Type:", "Insurance Amt:",
             "Deposit Amt:", "Contract Fee:", "Monthly Pay:",
-            "Pay Start Date:", "Pay End Date:"
+            "Pay Start Date:", "Pay End Date:", "Assigned to site:"
         };
         labels = createLabelsArray(titles);
         insurabceAmtSP = new SelectedNumberSpinner(0, 0, 100000, 10);
@@ -150,12 +143,21 @@ class EditMachinePanel extends EditPanelWithPhoto {
         regNrPanel.add(regNrField, BorderLayout.WEST);
 
         componentRows.add(new JComponent[]{labels[idx++], idPanel, labels[idx++], tmvnrPanel, labels[idx++], regNrPanel});
-        componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, new JPanel(), new JPanel()
+//            new JButton(getAssignmentsAction("Assignments..."))
+                });
         componentRows.add(new JComponent[]{labels[idx++], licensedChB, labels[idx++], expDateSP, labels[idx++], licenseStatusLBL});
         componentRows.add(new JComponent[]{labels[idx++], vehicleNrField, labels[idx++], engineNrField, labels[idx++], chassisNrField});
         componentRows.add(new JComponent[]{labels[idx++], insuranceNrField, labels[idx++], insuranceTypeCB, labels[idx++], insurabceAmtSP});
         componentRows.add(new JComponent[]{labels[idx++], depositAmtSP, labels[idx++], contractFeeSP, new JPanel(), new JPanel()});
         componentRows.add(new JComponent[]{labels[idx++], monthlyPaySP, labels[idx++], payStartDateSP, labels[idx++], payEndDateSP});
+        componentRows.add(new JComponent[]{labels[idx++], siteAssignLbl = new JLabel("site"), 
+            new JLabel("operator:",SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
+            new JButton(getAssignmentsAction("Assignments..."))});
+
+        siteAssignLbl.setBorder(BorderFactory.createEtchedBorder());
+        operatorAssignLbl.setBorder(BorderFactory.createEtchedBorder());
+
         idField.setPreferredSize(tmvnrTextSP.getPreferredSize());
         regNrField.setPreferredSize(tmvnrTextSP.getPreferredSize());
         organizePanels(componentRows);
@@ -230,6 +232,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             licensedChB.setSelected(licensed = (machine.getExpdate() != null));
             adjustLicenseFierlds();
             repaintLicFields();
+            fillAssignmentInfo();
         }
         syncTypes();
         if (machine != null && machine.getXmachtype2Id() != null) {
@@ -379,4 +382,43 @@ class EditMachinePanel extends EditPanelWithPhoto {
             }
         };
     }
+
+    private AbstractAction getAssignmentsAction(String title) {
+        return new AbstractAction(title) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean ok = true;
+                if (getDbObject() == null) {
+                    ok = false;
+                    if (JOptionPane.showConfirmDialog(null, "Do you want to save machine before assign it?",
+                            "Attention!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        try {
+                            ok = save();
+                        } catch (Exception ex) {
+                            XlendWorks.logAndShowMessage(ex);
+                        }
+                    }
+                }
+                if (ok) {
+                    MachineAssignmentPanel.setXmachine((Xmachine) getDbObject());
+                    new MachineAssignmentDialog("Assignments of machine", getDbObject());
+                    fillAssignmentInfo();
+                    MachineAssignmentPanel.setXmachine(null);
+                }
+            }
+        };
+    }
+    
+        private void fillAssignmentInfo() {
+        String[] lbls = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), (Xmachine) getDbObject());
+        if (lbls != null && lbls.length > 1) {
+            siteAssignLbl.setText(lbls[0]);
+            operatorAssignLbl.setText(lbls[1]);
+        } else {
+            siteAssignLbl.setText("unassigned yet");
+            operatorAssignLbl.setText("unassigned yet");
+        }
+    }
+
 }

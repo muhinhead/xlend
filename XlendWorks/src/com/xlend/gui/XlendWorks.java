@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.47";
+    public static final String version = "0.47.1";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -383,7 +383,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static ComboItem[] loadAllMachines(IMessageSender exchanger) {
         try {
             Vector[] tab = exchanger.getTableBody(Selects.ALLMACHINETVMS);
@@ -908,6 +908,29 @@ public class XlendWorks {
                     Xmachine xmachine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, assign.getXmachineId());
                     ans[0] = xsite == null ? "unassigned" : xsite.getName();
                     ans[1] = xmachine == null ? "unassigned" : (xmachine.getClassify() + xmachine.getTmvnr());
+                    return ans;
+                }
+            } catch (RemoteException ex) {
+                logAndShowMessage(ex);
+            }
+        }
+        return null;
+    }
+
+    public static String[] findCurrentAssignment(IMessageSender exchanger, Xmachine xmachine) {
+        if (xmachine != null) {
+            try {
+                DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class,
+                        "xmachine_id=" + xmachine.getXmachineId() + " and date_end is null", null);
+                if (obs.length > 0) {
+                    String[] ans = new String[2];
+                    Xopmachassing assign = (Xopmachassing) obs[0];
+                    Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, assign.getXsiteId());
+                    Xemployee xemployee = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, assign.getXemployeeId());
+                    ans[0] = xsite == null ? "unassigned" : xsite.getName();
+                    ans[1] = xemployee == null ? "unassigned" : (xemployee.getFirstName() 
+                            + " " + xemployee.getSurName() 
+                            + " (" + xemployee.getClockNum() + ")");
                     return ans;
                 }
             } catch (RemoteException ex) {

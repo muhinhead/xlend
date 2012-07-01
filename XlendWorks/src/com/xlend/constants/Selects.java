@@ -159,6 +159,8 @@ public class Selects {
             "Select xmachine_id,classify+tmvnr from xmachine where classify in ('M','T') order by classify+tmvnr";
     public static final String notAssignedMachinesCondition = "xmachine_id not in (select xmachine_id from xopmachassing where date_end is null "
             + " and xsite_id not in(select xsite_id from xsite where sitetype='D'))";
+    public static final String notAssignedOperatorCondition = "xemployee_id not in (select xemployee_id from xopmachassing where date_end is null "
+            + " and xsite_id not in(select xsite_id from xsite where sitetype='D'))";
     public static final String NOT_ASSIGNED_MACHINES =
             "Select xmachine_id,classify+tmvnr from xmachine where classify in ('M','T') "
             + "and " + notAssignedMachinesCondition + " order by classify+tmvnr";
@@ -388,10 +390,15 @@ public class Selects {
             "select i.date_required \"Date\", s.name \"Site (target)\", count(*) \"Qty\" "
             + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     public static final String SELECT_EMPLOYEE_ASSIGNMENTS =
-            "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY HH:MI') \"from\", to_char(date_end,'DD/MM/YYYY HH:MI') \"to\","
+            "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
             + "(Select name+'('+(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types')+')' from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
             + "(Select classify+tmvnr from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\" "
             + "from xopmachassing where xemployee_id=# order by xopmachassing_id desc";
+    public static final String SELECT_MACHINE_ASSIGNMENTS =
+            "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
+            + "(Select name+'('+(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types')+')' from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
+            + "from xopmachassing where xmachine_id=# order by xopmachassing_id desc";
     public static final String activeEmployeeCondition = "clock_num!='000' and "
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
 

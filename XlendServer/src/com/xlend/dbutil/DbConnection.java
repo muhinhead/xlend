@@ -19,8 +19,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 25;
-    public static final String DB_VERSION = "0.25";
+    private static final int DB_VERSION_ID = 26;
+    public static final String DB_VERSION = "0.26";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -1432,7 +1432,13 @@ public class DbConnection {
         + "    constraint xopmachassing_xemployee_fk foreign key (xemployee_id) references xemployee on delete cascade,"
         + "    constraint xopmachassing_xmachine_fk foreign key (xmachine_id) references xmachine"
         + ")",
-        "create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_id, xemployee_id, xmachine_id)"
+        "create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_id, xemployee_id, xmachine_id)",
+        "alter table xopmachassing drop constraint xopmachassing_xemployee_fk",
+        "alter table xopmachassing drop constraint xopmachassing_xmachine_fk",
+        "alter table xopmachassing alter xmachine_id int null",
+        "alter table xopmachassing alter xemployee_id int null",
+        "alter table xopmachassing add constraint xopmachassing_xemployee_fk foreign key (xemployee_id) references xemployee on delete cascade",
+        "alter table xopmachassing add constraint xopmachassing_xmachine_fk foreign key (xmachine_id) references xmachine"
     };
 
     public static Connection getConnection() throws RemoteException {

@@ -59,11 +59,11 @@ public class EditLowBedPanel extends RecordEditPanel {
             assistantCbModel.addElement(itm);
         }
         JComponent[] edits = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 5),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-            new MachineLookupAction(machineCB, "m.classify='T'")),
-            comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),
-            comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB))
+            getGridPanel(idField = new JTextField(), 7),
+            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
+                new MachineLookupAction(machineCB, "m.classify='T'")),4),
+            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),2)
         };
 
         idField.setEnabled(false);

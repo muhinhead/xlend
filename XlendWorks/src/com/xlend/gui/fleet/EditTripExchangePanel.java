@@ -66,11 +66,11 @@ public class EditTripExchangePanel extends RecordEditPanel {
         }
         edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 5),
-            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
-            comboPanelWithLookupBtn(withMachineCB = new JComboBox(withMachineCbModel), new MachineLookupAction(withMachineCB, null)),
-            getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3)
+            getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),2),
+            getGridPanel(comboPanelWithLookupBtn(withMachineCB = new JComboBox(withMachineCbModel), new MachineLookupAction(withMachineCB, null)),2),
+            getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
+            getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
         idField.setEnabled(false);
         organizePanels(titles, edits, null);

@@ -1,6 +1,7 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
@@ -19,18 +20,7 @@ import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  *
@@ -104,14 +94,14 @@ public class EditTripPanel extends RecordEditPanel {
             assistantCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 5),
+            getGridPanel(idField = new JTextField(), 7),
             getGridPanel(dateSP = new SelectedDateSpinner(), 3),
-            comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),
-            comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),
+            getGridPanel(comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),2),
             getGridPanel(loadedCB = new JCheckBox(), 3),
-            getGridPanel(distanceSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),
-            comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),
+            getGridPanel(distanceSP = new SelectedNumberSpinner(0, 0, 10000, 1), 7),
+            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),2),
             getGridPanel(new JComponent[]{
                 establishRB = new JRadioButton("Establishing"),
                 deEstablishRB = new JRadioButton("De-Establishing"),
@@ -239,6 +229,13 @@ public class EditTripPanel extends RecordEditPanel {
 
     @Override
     public boolean save() throws Exception {
+        int fromSiteID = getSelectedCbItem(fromSiteCB);
+        int toSiteID = getSelectedCbItem(toSiteCB);
+        if (fromSiteID==toSiteID) {
+            GeneralFrame.errMessageBox("Attention1", "Source and target sites couldn't be the same");
+            fromSiteCB.requestFocus();
+            return false;
+        }
         boolean isNew = false;
         Xtrip xtr = (Xtrip) getDbObject();
         if (xtr == null) {

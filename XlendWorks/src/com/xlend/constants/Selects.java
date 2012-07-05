@@ -289,7 +289,10 @@ public class Selects {
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xfuel.issuedto_id) \"Issued To\" "
             + "from xfuel where xsupplier_id=#";
     public static final String SELECT_TRIPS =
-            "Select xtrip_id \"Id\", trip_date,fromsite_id, tosite_id from xtrip where xlowbed_id=# order by trip_date desc";
+            "Select xtrip_id \"Id\", trip_date \"Date\" ,"
+            + "(Select name from xsite where xsite_id=xtrip.fromsite_id) \"From Site\", "
+            + "(Select name from xsite where xsite_id=xtrip.tosite_id) \"To Site\" "
+            + "from xtrip where xlowbed_id=# order by trip_date desc";
     public static final String SELECT_FROM_ABSENTEISM =
             "Select xabsenteeism_id \"Id\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xabsenteeism.xemployee_id) \"Employee\", "
@@ -399,6 +402,12 @@ public class Selects {
             + "(Select name+'('+(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types')+')' from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
             + "from xopmachassing where xmachine_id=# order by xopmachassing_id desc";
+    public static final String SELECT_SITE_ASSIGNMENTS =
+            "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", "
+//            + "to_char(date_end,'DD/MM/YYYY') \"to\","
+            + "(Select classify+tmvnr from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\", "
+            + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
+            + "from xopmachassing where xsite_id=# and date_end is null order by xopmachassing_id desc";
     public static final String activeEmployeeCondition = "clock_num!='000' and "
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
 

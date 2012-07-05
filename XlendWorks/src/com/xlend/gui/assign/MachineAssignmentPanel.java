@@ -84,7 +84,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
         Integer prevOperatorID = null;
         try {
             java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
-            System.out.println("CONDITION: xmachine_id=" + xmachine.getXmachineId());
+//            System.out.println("CONDITION: xmachine_id=" + xmachine.getXmachineId());
             DbObject[] oldAssigns = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
                     "xmachine_id=" + xmachine.getXmachineId() + " and date_end is null", null);
             for (DbObject rec : oldAssigns) {
@@ -98,23 +98,19 @@ public class MachineAssignmentPanel extends RecordEditPanel {
             assign.setXopmachassingId(0);
             assign.setXmachineId(xmachine.getXmachineId());
             assign.setXsiteId(getSelectedCbItem(siteCB));
-            if (operatorCB.getSelectedIndex() > 0) {
-                assign.setXemployeeId(getSelectedCbItem(operatorCB));
-            } else {
-                assign.setXmachineId(null);
-            }
+            assign.setXemployeeId(getSelectedCbItem(operatorCB));
             boolean ok = false;
             assign.setDateStart(now);
             assign.setNew(true);
             if (prevOperatorID != null && prevOperatorID.intValue() != assign.getXemployeeId().intValue()) {
                 DbObject[] prev = DashBoard.getExchanger().getDbObjects(Xemployee.class, "xemployee_id=" + prevOperatorID, null);
                 if (prev.length > 0) {
-                    GeneralFrame.infoMessageBox("Attention!", "Now you have to choose assignment for previous operatorof this machine");
+                    GeneralFrame.infoMessageBox("Attention!", "Now you have to choose assignment for previous operator of this machine");
                     Xemployee prevOperator = (Xemployee) prev[0];
                     EmployeeAssignmentPanel.setXemployee(prevOperator);
                     new EmployeeAssignmentDialog("Assignments of "
                             + prevOperator.getFirstName() + " "
-                            + prevOperator.getSurName() + " (" 
+                            + prevOperator.getSurName() + " ("
                             + prevOperator.getClockNum() + ")", prevOperator);
                     if (EmployeeAssignmentDialog.okPressed) {
                         ok = true;
@@ -122,6 +118,8 @@ public class MachineAssignmentPanel extends RecordEditPanel {
                 } else {
                     ok = true;
                 }
+            } else {
+                ok = true;
             }
             if (ok) {
                 DashBoard.getExchanger().saveDbObject(assign);
@@ -134,7 +132,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
 
     private JComponent getHistoryPanel() {
         JPanel historyPanel = new JPanel(new BorderLayout());
-        historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Previous Assignments"));
+        historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
             historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
                     Selects.SELECT_MACHINE_ASSIGNMENTS.replace("#", xmachine.getXmachineId().toString())));

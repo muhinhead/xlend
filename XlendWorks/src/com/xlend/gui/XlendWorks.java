@@ -644,7 +644,7 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "Select xmachine_id, tmvnr+reg_nr "
+        return loadOnSelect(exchanger, "Select xmachine_id, classify+tmvnr "
                 + "from xmachine m, xmachtype t1 "
                 + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
     }
@@ -896,6 +896,27 @@ public class XlendWorks {
         return null;
     }
 
+    public static Xopmachassing findCurrentAssignment(IMessageSender exchanger, int machine_id, int operator_id) {
+        Xopmachassing curAss = null;
+        try {
+            StringBuffer whereCond = new StringBuffer("");
+            if (machine_id!=0) {
+                whereCond.append("xmachine_id="+machine_id).append(" and ");
+            }
+            if (operator_id!=0) {
+                whereCond.append("xemployee_id="+operator_id).append(" and ");
+            }
+            whereCond.append("date_end is null");
+            DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class, whereCond.toString(), null);
+            if (obs.length > 0) {
+                curAss = (Xopmachassing) obs[0];
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return curAss;
+    }
+
     public static String[] findCurrentAssignment(IMessageSender exchanger, Xemployee xemployee) {
         if (xemployee != null) {
             try {
@@ -928,8 +949,8 @@ public class XlendWorks {
                     Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, assign.getXsiteId());
                     Xemployee xemployee = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, assign.getXemployeeId());
                     ans[0] = xsite == null ? "unassigned" : xsite.getName();
-                    ans[1] = xemployee == null ? "unassigned" : (xemployee.getFirstName() 
-                            + " " + xemployee.getSurName() 
+                    ans[1] = xemployee == null ? "unassigned" : (xemployee.getFirstName()
+                            + " " + xemployee.getSurName()
                             + " (" + xemployee.getClockNum() + ")");
                     return ans;
                 }

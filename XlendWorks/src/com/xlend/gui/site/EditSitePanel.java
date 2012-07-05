@@ -2,6 +2,7 @@ package com.xlend.gui.site;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
+import com.xlend.gui.assign.AssignmentsGrid;
 import com.xlend.gui.order.EditOrderDialog;
 import com.xlend.gui.work.OrdersGrid;
 import com.xlend.orm.Xorder;
@@ -13,19 +14,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import javax.swing.AbstractAction;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 /**
  *
@@ -145,15 +134,29 @@ public class EditSitePanel extends RecordEditPanel {
 
     private JComponent getTabbedPanel() {
         JTabbedPane tp = new MyJideTabbedPane();
-        MachinesOnSitesGrid msg = null;
-        Xsite xsite = (Xsite) getDbObject();
-        int xsite_id = xsite != null ? xsite.getXsiteId() : 0;
+//        MachinesOnSitesGrid msg = null;
+//        Xsite xsite = (Xsite) getDbObject();
+//        int xsite_id = xsite != null ? xsite.getXsiteId() : 0;
+//        try {
+//            msg = new MachinesOnSitesGrid(DashBoard.getExchanger(),
+//                    Selects.SELECTMACHINESONSITE.replace("#", "" + xsite_id));
+//            Dimension pref = new Dimension(800, 200);
+//            msg.setPreferredSize(pref);
+//            tp.add(msg, "Machines/Trucks on site");
+//        } catch (RemoteException ex) {
+//            XlendWorks.log(ex);
+//        }
+        JPanel historyPanel = new JPanel(new BorderLayout());
         try {
-            msg = new MachinesOnSitesGrid(DashBoard.getExchanger(),
-                    Selects.SELECTMACHINESONSITE.replace("#", "" + xsite_id));
-            Dimension pref = new Dimension(800, 200);
-            msg.setPreferredSize(pref);
-            tp.add(msg, "Machines/Trucks on site");
+            Xsite xsite = (Xsite) getDbObject();
+            if (xsite != null) {
+                historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
+                        Selects.SELECT_SITE_ASSIGNMENTS.replace("#",
+                        xsite.getXsiteId().toString())));
+            } else {
+                historyPanel.add(new JLabel("No assignment yet",SwingConstants.CENTER));
+            }
+            tp.add(historyPanel, "Current Assignments");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
@@ -170,7 +173,7 @@ public class EditSitePanel extends RecordEditPanel {
             selectComboItem(order2Box, xsite.getXorder2Id() == null ? -1 : xsite.getXorder2Id());
             selectComboItem(order3Box, xsite.getXorder3Id() == null ? -1 : xsite.getXorder3Id());
             descriptionField.setText(xsite.getDescription());
-            for (int i=0; i<typeCBmodel.getSize(); i++) {
+            for (int i = 0; i < typeCBmodel.getSize(); i++) {
                 String itm = typeCBmodel.getElementAt(i).toString();
                 if (itm.startsWith(xsite.getSitetype())) {
                     typeBox.setSelectedIndex(i);

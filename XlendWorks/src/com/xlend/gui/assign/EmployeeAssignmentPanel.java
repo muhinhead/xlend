@@ -62,7 +62,7 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             getGridPanel(dateSP = new SelectedDateSpinner(), 9),
             getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-            new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)), 3)
+                new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)), 3)
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
@@ -108,7 +108,7 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
 
     private JComponent getHistoryPanel() {
         JPanel historyPanel = new JPanel(new BorderLayout());
-        historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Previous Assignments"));
+        historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
             historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
                     Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", xemployee.getXemployeeId().toString())));

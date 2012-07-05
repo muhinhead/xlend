@@ -65,11 +65,11 @@ public class EditTripMovinganel extends RecordEditPanel {
         }
         edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 5),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
-            comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),
-            comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),
-            getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3)
+            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),2),
+            getGridPanel(comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),2),
+            getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
+            getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
         idField.setEnabled(false);
         organizePanels(titles, edits, null);

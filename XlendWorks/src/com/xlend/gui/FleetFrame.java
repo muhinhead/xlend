@@ -1,9 +1,6 @@
 package com.xlend.gui;
 
-import com.xlend.gui.fleet.MachineRentalRatesGrid;
-import com.xlend.gui.fleet.LowBedGrid;
-import com.xlend.gui.fleet.MachineGrid;
-import com.xlend.gui.fleet.TrackGrid;
+import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
 import java.rmi.RemoteException;
@@ -27,6 +24,8 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel trackPanel;
     private GeneralGridPanel lowbedsPanel;
     private GeneralGridPanel machineRentalRatesPanel;
+    private GeneralGridPanel poolVehiclesPanel;
+    private GeneralGridPanel companyVehiclesPanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", 
         "Company Vehicles", "Machine Rental Rates"};
@@ -56,10 +55,10 @@ public class FleetFrame extends GeneralFrame {
             fleetTab.addTab(getLowBedsPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            fleetTab.addTab(new JPanel(), sheets()[3]);
+            fleetTab.addTab(getPoolVehiclesPanel(), sheets()[3]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            fleetTab.addTab(new JPanel(), sheets()[4]);
+            fleetTab.addTab(getCompanyVehiclesPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
             fleetTab.addTab(getMachineRentalRates(), sheets()[5]);
@@ -114,4 +113,28 @@ public class FleetFrame extends GeneralFrame {
         }
         return machineRentalRatesPanel;
     }
+    
+    private JPanel getPoolVehiclesPanel() {
+        if (poolVehiclesPanel == null) {
+            try {
+                registerGrid(poolVehiclesPanel = new PoolVehicleGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return poolVehiclesPanel;
+    }
+
+    private JPanel getCompanyVehiclesPanel() {
+        if (companyVehiclesPanel == null) {
+            try {
+                registerGrid(companyVehiclesPanel = new CompanyVehicleGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return companyVehiclesPanel;
+    }    
 }

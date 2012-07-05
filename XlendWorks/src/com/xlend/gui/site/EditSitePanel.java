@@ -150,9 +150,11 @@ public class EditSitePanel extends RecordEditPanel {
         try {
             Xsite xsite = (Xsite) getDbObject();
             if (xsite != null) {
-                historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
+                AssignmentsGrid agreed;
+                historyPanel.add(agreed = new AssignmentsGrid(DashBoard.getExchanger(),
                         Selects.SELECT_SITE_ASSIGNMENTS.replace("#",
                         xsite.getXsiteId().toString())));
+                agreed.setPreferredSize(new Dimension(agreed.getPreferredSize().width, 300));
             } else {
                 historyPanel.add(new JLabel("No assignment yet",SwingConstants.CENTER));
             }

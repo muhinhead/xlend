@@ -1438,7 +1438,8 @@ public class DbConnection {
         "alter table xopmachassing alter xmachine_id int null",
         "alter table xopmachassing alter xemployee_id int null",
         "alter table xopmachassing add constraint xopmachassing_xemployee_fk foreign key (xemployee_id) references xemployee on delete cascade",
-        "alter table xopmachassing add constraint xopmachassing_xmachine_fk foreign key (xmachine_id) references xmachine"
+        "alter table xopmachassing add constraint xopmachassing_xmachine_fk foreign key (xmachine_id) references xmachine",
+        "update sheet set sheetname='Trip Sheets' where sheetname='Treep Sheets'"
     };
 
     public static Connection getConnection() throws RemoteException {

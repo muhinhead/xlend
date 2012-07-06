@@ -33,6 +33,12 @@ public class TripsGrid extends GeneralGridPanel {
                 maxWidths, false);
         this.editLowBedPanel = lowBedPanel;
     }
+    
+    public TripsGrid(IMessageSender exchanger, EditLowBedPanel lowBedPanel) throws RemoteException {
+        super(exchanger,Selects.SELECT_ALL_TRIPS,maxWidths, false);
+        xlowbed_id = null;
+        this.editLowBedPanel = lowBedPanel;
+    }
 
     @Override
     protected AbstractAction addAction() {

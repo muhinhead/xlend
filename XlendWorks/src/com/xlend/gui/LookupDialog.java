@@ -60,8 +60,8 @@ public class LookupDialog extends PopupDialog {
                 @Override
                 public void keyReleased(KeyEvent e) {
                     String select = originalSelect;
-                    int w = select.toLowerCase().lastIndexOf(" where");
-                    int o = select.toLowerCase().lastIndexOf(" order by");
+                    int w = findNotInParents(select.toLowerCase()," where");//select.toLowerCase().lastIndexOf(" where");
+                    int o = findNotInParents(select.toLowerCase()," order by");
                     o = o < w ? -1 : o;
                     StringBuilder addWhereCond = new StringBuilder();
                     for (String col : filteredColumns) {
@@ -115,6 +115,21 @@ public class LookupDialog extends PopupDialog {
             GeneralFrame.errMessageBox("Sorry!", "Empty combobox, couldn't build lookup dialog");
             dispose();
         }
+    }
+
+    private static int findNotInParents(String source, String search) {
+        int level = 0;
+        for (int i = 0; i < source.length(); i++) {
+            String sub = source.substring(i);
+            if (sub.startsWith("(")) {
+                level++;
+            } else if (sub.startsWith(")")) {
+                level--;
+            } else if (sub.startsWith(search) && level == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private AbstractAction selectionAction(String title) {

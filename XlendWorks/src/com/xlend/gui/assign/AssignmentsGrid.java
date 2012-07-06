@@ -7,6 +7,7 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xhourcompare;
 import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.Xsite;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -72,11 +73,17 @@ public class AssignmentsGrid extends GeneralGridPanel {
                 public void actionPerformed(ActionEvent e) {
                     int id = getSelectedID();
                     try {
+                        boolean ok = false;
                         Xopmachassing assign = (Xopmachassing) exchanger.loadDbObjectOnID(Xopmachassing.class, id);
                         if (assign != null) {
                             if (assign.getDateEnd() == null) {
-                                GeneralFrame.errMessageBox("Attention!", "Current assignment couldn't be deleted. Just reassign it");
-                            } else if (GeneralFrame.yesNo("Attention!",
+                                if (getTableView().getSelectedRow()>0) {
+                                    ok = true;
+                                } else {
+                                    GeneralFrame.errMessageBox("Attention!", "Current assignment couldn't be deleted. Just reassign it");
+                                }
+                            }
+                            if (ok && GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(assign);
                                 GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);

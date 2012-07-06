@@ -293,6 +293,21 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xtrip.fromsite_id) \"From Site\", "
             + "(Select name from xsite where xsite_id=xtrip.tosite_id) \"To Site\" "
             + "from xtrip where xlowbed_id=# order by trip_date desc";
+    public static final String SELECT_ALL_TRIPS =
+            "Select t.xtrip_id \"Id\", to_char(t.trip_date,'DD/MM/YYYY') \"Date\", "
+            + "m.classify+m.tmvnr \"Machine\", "
+            + "d.clock_num+' '+d.first_name \"Driver\", "
+            + "a.clock_num+' '+a.first_name \"Assistant\", "
+            + "s1.name \"From Site\", s2.name \"To Site\" "
+            + "from xtrip t, xlowbed l, xmachine m, xemployee d, xemployee a, xsite s1, xsite s2 "
+            + "where t.xlowbed_id=l.xlowbed_id and m.xmachine_id=l.xmachine_id "
+            + "and d.xemployee_id=l.driver_id and a.xemployee_id=l.assistant_id and s1.xsite_id=t.fromsite_id and s2.xsite_id=t.tosite_id";
+//            "Select xtrip_id \"Id\", trip_date \"Date\" ,"
+//            + "(Select m.classify+m.tmvnr from xmachine m,xlowbed l where l.xmachine_id=m.xmachine_id and l.xlowbed_id=xtrip.xlowbed_id) \"Machine\", "
+//            + "(Select e.clock_num+' '+e.first_name from xemployee e, where xemployee_id=) \"Driver\", "
+//            + "(Select name from xsite where xsite_id=xtrip.fromsite_id) \"From Site\", "
+//            + "(Select name from xsite where xsite_id=xtrip.tosite_id) \"To Site\" "
+//            + "from xtrip where xlowbed_id=# order by trip_date desc";
     public static final String SELECT_FROM_ABSENTEISM =
             "Select xabsenteeism_id \"Id\", "
             + "(Select clock_num+' '+first_name from xemployee where xemployee_id=xabsenteeism.xemployee_id) \"Employee\", "

@@ -16,7 +16,7 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     protected JButton saveButton;
     private AbstractAction saveAction;
-    private JButton cancelButton;
+    protected JButton cancelButton;
     private AbstractAction cancelAction;
     private RecordEditPanel editPanel;
 

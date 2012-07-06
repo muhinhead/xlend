@@ -21,6 +21,7 @@ public class EmployeeAssignmentDialog extends EditRecordDialog {
     protected void fillContent() {
         super.fillContent(new EmployeeAssignmentPanel((Xemployee) getObject()));
         saveButton.setText("Assign");
+        cancelButton.setText("Close");
     }
 
     @Override

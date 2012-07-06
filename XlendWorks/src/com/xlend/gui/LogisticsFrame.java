@@ -19,7 +19,7 @@ public class LogisticsFrame extends GeneralFrame {
     private GeneralGridPanel tripSheetPanel = null;
 
     private static String[] sheetList = new String[]{
-        "Treep Sheets", "Transport Schedule"
+        "Trip Sheets", "Transport Schedule"
     };
 
     public LogisticsFrame(IMessageSender exch) {

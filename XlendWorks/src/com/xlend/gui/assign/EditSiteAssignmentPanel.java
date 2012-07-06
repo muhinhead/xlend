@@ -100,8 +100,8 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
         if (machine_id == 0 && operator_id == 0) {
             GeneralFrame.errMessageBox("Attention!", "Choose operator and/or machine please!");
         } else {
-            assign.setXemployeeId(operator_id);
-            assign.setXmachineId(machine_id);
+            assign.setXemployeeId(operator_id == 0 ? null : operator_id);
+            assign.setXmachineId(machine_id == 0 ? null : machine_id);
             assign.setXsiteId(xsiteID);
             Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machine_id, operator_id);
             if (previous != null) { //just move operator/machine pair to another site
@@ -109,6 +109,7 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                     GeneralFrame.errMessageBox("Attention!", "This operator on this machine are already here");
                 } else {
                     previous.setDateEnd(new java.sql.Date(dt.getTime()));
+                    previous.setXemployeeId(previous.getXemployeeId());
                     previous = (Xopmachassing) DashBoard.getExchanger().saveDbObject(previous);
                     ok = true;
                 }
@@ -132,8 +133,10 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                             Xmachine prevMachine = (Xmachine) DashBoard.getExchanger().loadDbObjectOnID(
                                     Xmachine.class, previous.getXmachineId());
                             if (prevMachine != null) {
-                                new MachineAssignmentDialog("Assignments of machine", prevMachine);
-                                if (MachineAssignmentDialog.okPressed) {
+                                if (GeneralFrame.yesNo("Attention!", "Previous machine "
+                                        +prevMachine.getClassify()+prevMachine.getTmvnr()+" will stay on its site w/o operator. Agree?")==JOptionPane.YES_OPTION) {
+                                    previous.setDateEnd(new java.sql.Date(dt.getTime()));
+                                    previous.setXemployeeId(null);
                                     ok = true;
                                 }
                             } else {

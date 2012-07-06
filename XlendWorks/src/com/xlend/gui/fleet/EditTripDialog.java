@@ -11,21 +11,14 @@ import com.xlend.orm.Xtrip;
 public class EditTripDialog extends EditRecordDialog {
 
     public static boolean okPressed;
-    public static Integer xlowbed_id;;
 
     public EditTripDialog(String title, Object obj) {
         super(title, obj);
     }
     
-    private void setXlowbed() {
-        EditTripPanel editPanel = (EditTripPanel) getEditPanel();
-        editPanel.setXlowbed(xlowbed_id);
-    }
-
     @Override
     protected void fillContent() {
         super.fillContent(new EditTripPanel((Xtrip) getObject()));
-        setXlowbed();
     }
 
     @Override
@@ -36,9 +29,7 @@ public class EditTripDialog extends EditRecordDialog {
     @Override
     public void dispose() {
         super.dispose();
-        EditTripDialog.xlowbed_id = null;
+        EditTripPanel.setXlowbed(null);
     }
-    
-    
 }
 

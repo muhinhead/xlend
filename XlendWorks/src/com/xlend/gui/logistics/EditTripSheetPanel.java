@@ -4,16 +4,14 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.fleet.LowbedLookupAction;
+import com.xlend.gui.fleet.LowBedLookupAction;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
-import com.xlend.orm.Xsite;
 import com.xlend.orm.Xtripsheet;
 import com.xlend.orm.Xtripsheetpart;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
@@ -26,8 +24,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -258,7 +254,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
                     new JButton(getAddLineAction())})
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowbedLookupAction(lowbedCB, null)),
+                comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowBedLookupAction(lowbedCB)),
                 new JLabel("Authorized By:", SwingConstants.RIGHT),
                 comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel), new EmployeeLookupAction(authorizedCB)),
                 getGridPanel(new JComponent[]{new JPanel(),

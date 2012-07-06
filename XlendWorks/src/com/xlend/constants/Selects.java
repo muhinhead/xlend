@@ -134,10 +134,15 @@ public class Selects {
             + "(select clock_num+' '+first_name from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
             + "from xlowbed, xmachine m, xmachtype t1 "
             + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
-    public static final String SELECT_LOWBEDS4LOOKUP =
-            "Select xlowbed_id \"Id\", m.tmvnr+' ('+m.reg_nr+')' "
-            + "from xlowbed, xmachine m, xmachtype t1 "
-            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
+//    public static final String SELECT_LOWBEDS4LOOKUP =
+//            "Select xlowbed_id \"Id\", m.tmvnr+' ('+m.reg_nr+')' "
+//            + "from xlowbed, xmachine m, xmachtype t1 "
+//            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
+    public static final String SELECT_ALL_LOWBEDS =
+            "select l.xlowbed_id \"Id\",m.classify+m.tmvnr \"Machine\", "
+                + "d.clock_num+' '+d.first_name \"Driver\", a.clock_num+' '+a.first_name \"Assistant\" "
+                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id";
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"Id\", tmvnr \"TMVnr\", "
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "

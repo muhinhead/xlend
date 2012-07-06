@@ -4,7 +4,7 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.fleet.LowbedLookupAction;
+import com.xlend.gui.fleet.LowBedLookupAction;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
@@ -102,7 +102,7 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
                     }));
             add(getGridPanel(new JComponent[]{
                         dateMoveSP = new SelectedDateSpinner(),
-                        comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowbedLookupAction(lowbedCB, null))
+                        comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowBedLookupAction(lowbedCB))
                     }));
             add(getBorderPanel(new JComponent[]{
                         new JPanel(),

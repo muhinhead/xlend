@@ -54,7 +54,7 @@ public class TripsGrid extends GeneralGridPanel {
                             boolean ok = editLowBedPanel.save();
                             if (ok) {
                                 Xlowbed lb = (Xlowbed) editLowBedPanel.getDbObject();
-                                EditTripDialog.xlowbed_id = lb.getXlowbedId();
+                                EditTripPanel.setXlowbed(lb.getXlowbedId());
                                 String newSelect = 
                                         Selects.SELECT_TRIPS.replace("#", lb == null ? "0" : (xlowbed_id = lb.getXlowbedId()).toString());
                                 setSelect(newSelect);
@@ -62,7 +62,7 @@ public class TripsGrid extends GeneralGridPanel {
                             }
                         }
                     } else {
-                        EditTripDialog.xlowbed_id = xlowbed_id;
+                        EditTripPanel.setXlowbed(xlowbed_id);
                     }
                     EditTripDialog ed = new EditTripDialog("New Trip", null);
                     if (EditTripDialog.okPressed) {
@@ -87,7 +87,7 @@ public class TripsGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        EditTripDialog.xlowbed_id = xlowbed_id;
+                        EditTripPanel.setXlowbed(xlowbed_id);
                         Xtrip xtr = (Xtrip) exchanger.loadDbObjectOnID(Xtrip.class, id);
                         new EditTripDialog("Edit Trip", xtr);
                         if (EditTripDialog.okPressed) {

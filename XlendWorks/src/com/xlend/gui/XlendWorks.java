@@ -453,9 +453,9 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.PAYMETHODS);
     }
 
-    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
-    }
+//    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
+//        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
+//    }
 
     public static ComboItem loadEmployeeExcept(IMessageSender exchanger, String excepts) {
         ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
@@ -678,7 +678,15 @@ public class XlendWorks {
         }
         return true;
     }
-
+                              
+    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, 
+                "select l.xlowbed_id,'Machine:'+m.classify+m.tmvnr+"
+                + "'; Driver:'+d.clock_num+' '+d.first_name+'; Assistant:'+a.clock_num+' '+a.first_name "
+                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id");
+    }
+    
     public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
         return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id=" + xmachineID);
     }

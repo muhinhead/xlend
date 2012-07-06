@@ -20,6 +20,8 @@ import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -35,6 +37,7 @@ public class EditTripPanel extends RecordEditPanel {
         "Exchanging"
     };
     private static Integer xlowbed_id;
+    private DefaultComboBoxModel lowbedCbModel;
     private DefaultComboBoxModel fromSiteCbModel;
     private DefaultComboBoxModel driverCbModel;
     private DefaultComboBoxModel assistantCbModel;
@@ -43,6 +46,7 @@ public class EditTripPanel extends RecordEditPanel {
     private JSpinner dateSP;
     private JCheckBox loadedCB;
     private JSpinner distanceSP;
+    private JComboBox lowbedCB;
     private JComboBox fromSiteCB;
     private JComboBox toSiteCB;
     private JComboBox driverCB;
@@ -57,6 +61,7 @@ public class EditTripPanel extends RecordEditPanel {
     private RecordEditPanel deEstablishPanel;
     private RecordEditPanel movingPanel;
     private RecordEditPanel exchangePanel;
+    private LowBedLookupAction lbLookupAction;
 
     public EditTripPanel(DbObject dbObject) {
         super(dbObject);
@@ -70,6 +75,7 @@ public class EditTripPanel extends RecordEditPanel {
     protected void fillContent() {
         String titles[] = new String[]{
             "ID:",
+            "Low Bed:",
             "Date:",
             "Leawing From:",
             "Traveling To:",
@@ -79,6 +85,11 @@ public class EditTripPanel extends RecordEditPanel {
             "Assistant:",
             "Trip Type:"
         };
+        lowbedCbModel = new DefaultComboBoxModel();
+        for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
+            lowbedCbModel.addElement(ci);
+        }
+                
         fromSiteCbModel = new DefaultComboBoxModel();
         toSiteCbModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
@@ -95,7 +106,8 @@ public class EditTripPanel extends RecordEditPanel {
         }
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 7),
-            getGridPanel(dateSP = new SelectedDateSpinner(), 3),
+            comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), lbLookupAction = new LowBedLookupAction(lowbedCB)),
+            getGridPanel(dateSP = new SelectedDateSpinner(), 7),
             getGridPanel(comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),2),
             getGridPanel(comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),2),
             getGridPanel(loadedCB = new JCheckBox(), 3),
@@ -127,6 +139,23 @@ public class EditTripPanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
 
+        lowbedCB.addActionListener(new AbstractAction(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboItem itm = (ComboItem) lowbedCB.getSelectedItem();
+                if (itm!=null) {
+                    try {
+                        Xlowbed lowbed = (Xlowbed) DashBoard.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
+                        selectComboItem(driverCB, lowbed.getDriverId());
+                        selectComboItem(assistantCB, lowbed.getAssistantId());
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                    }
+                }
+            }
+        });
+        
         add(detailsPanel());
     }
 
@@ -170,10 +199,14 @@ public class EditTripPanel extends RecordEditPanel {
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
+            lowbedCB.setEnabled(false);
+            lbLookupAction.setEnabled(false);
+            selectComboItem(lowbedCB, xlowbed_id);
         }
         Xtrip xtr = (Xtrip) getDbObject();
         if (xtr != null) {
             idField.setText(xtr.getXtripId().toString());
+//            selectComboItem(lowbedCB, xtr.getXlowbedId());
             if (xtr.getTripDate() != null) {
                 java.util.Date dt = new java.util.Date(xtr.getTripDate().getTime());
                 dateSP.setValue(dt);
@@ -247,7 +280,7 @@ public class EditTripPanel extends RecordEditPanel {
             java.util.Date dt = (java.util.Date) dateSP.getValue();
             xtr.setTripDate(new java.sql.Date(dt.getTime()));
         }
-        xtr.setXlowbedId(xlowbed_id);
+        xtr.setXlowbedId(getSelectedCbItem(lowbedCB));
         xtr.setAssistantId(getSelectedCbItem(assistantCB));
         xtr.setDriverId(getSelectedCbItem(driverCB));
         xtr.setLoaded(loadedCB.isSelected() ? 1 : 0);

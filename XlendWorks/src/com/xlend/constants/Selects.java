@@ -127,6 +127,8 @@ public class Selects {
             "Select xsite_id \"Id\", name \"Site Name\","
             + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite order by sitetype,upper(name)";
+    public static final String SELECT_DEPOTS4LOOKUP = 
+            "Select xsite_id \"Id\", name \"Site Name\" from xsite order by upper(name)";
     public static final String SELECT_FROM_LOWBEDS =
             "Select xlowbed_id \"Id\", "
             + "m.tmvnr \"TMVnr\", t1.machtype \"Machine Type\", m.reg_nr \"Reg.Nr\", "
@@ -414,7 +416,7 @@ public class Selects {
             + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     public static final String SELECT_EMPLOYEE_ASSIGNMENTS =
             "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
-            + "(Select name+'('+(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types')+')' from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
+            + "(Select name+' ('+(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types')+')' from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
             + "(Select classify+tmvnr from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\" "
             + "from xopmachassing where xemployee_id=# order by xopmachassing_id desc";
     public static final String SELECT_MACHINE_ASSIGNMENTS =

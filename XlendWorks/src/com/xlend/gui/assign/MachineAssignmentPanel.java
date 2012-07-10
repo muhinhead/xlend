@@ -12,6 +12,7 @@ import com.xlend.orm.Xmachine;
 import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.remote.IMessageSender;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
@@ -81,50 +82,50 @@ public class MachineAssignmentPanel extends RecordEditPanel {
 
     @Override
     public boolean save() throws Exception {
+        IMessageSender exchanger = DashBoard.getExchanger();
         Integer prevOperatorID = null;
         try {
             java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
 //            System.out.println("CONDITION: xmachine_id=" + xmachine.getXmachineId());
-            DbObject[] oldAssigns = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+            DbObject[] oldAssigns = exchanger.getDbObjects(Xopmachassing.class,
                     "xmachine_id=" + xmachine.getXmachineId() + " and date_end is null", null);
             for (DbObject rec : oldAssigns) {
                 Xopmachassing oldAssign = (Xopmachassing) rec;
                 prevOperatorID = oldAssign.getXemployeeId();
                 oldAssign.setDateEnd(now);
                 oldAssign.setXmachineId(oldAssign.getXmachineId() == 0 ? null : oldAssign.getXmachineId());
-                DashBoard.getExchanger().saveDbObject(oldAssign);
+                exchanger.saveDbObject(oldAssign);
             }
             Xopmachassing assign = new Xopmachassing(null);
             assign.setXopmachassingId(0);
             assign.setXmachineId(xmachine.getXmachineId());
             assign.setXsiteId(getSelectedCbItem(siteCB));
             assign.setXemployeeId(getSelectedCbItem(operatorCB));
-            boolean ok = false;
+//            boolean ok = false;
             assign.setDateStart(now);
             assign.setNew(true);
-            if (prevOperatorID != null && prevOperatorID.intValue() != assign.getXemployeeId().intValue()) {
-                DbObject[] prev = DashBoard.getExchanger().getDbObjects(Xemployee.class, "xemployee_id=" + prevOperatorID, null);
+            if (prevOperatorID != null && (assign.getXemployeeId() == null || prevOperatorID.intValue() != assign.getXemployeeId().intValue())) {
+                DbObject[] prev = exchanger.getDbObjects(Xemployee.class, "xemployee_id=" + prevOperatorID, null);
                 if (prev.length > 0) {
-                    GeneralFrame.infoMessageBox("Attention!", "Now you have to choose assignment for previous operator of this machine");
                     Xemployee prevOperator = (Xemployee) prev[0];
-                    EmployeeAssignmentPanel.setXemployee(prevOperator);
-                    new EmployeeAssignmentDialog("Assignments of "
-                            + prevOperator.getFirstName() + " "
-                            + prevOperator.getSurName() + " ("
-                            + prevOperator.getClockNum() + ")", prevOperator);
-                    if (EmployeeAssignmentDialog.okPressed) {
-                        ok = true;
-                    }
-                } else {
-                    ok = true;
+                    new ChooseDepotForOperatorDialog(prevOperator);
+                    Xopmachassing assignPrevOperator = new Xopmachassing(null);
+                    assignPrevOperator.setXopmachassingId(0);
+                    assignPrevOperator.setNew(true);
+                    assignPrevOperator.setXemployeeId(prevOperatorID);
+                    assignPrevOperator.setXmachineId(null);
+                    assignPrevOperator.setDateStart(now);
+                    assignPrevOperator.setXsiteId(ChooseDepotForOperatorDialog.getDepot_id());
+                    exchanger.saveDbObject(assignPrevOperator);
                 }
-            } else {
-                ok = true;
+//                ok = true;
+//            } else {
+//                ok = true;
             }
-            if (ok) {
-                DashBoard.getExchanger().saveDbObject(assign);
-            }
-            return ok;
+//            if (ok) {
+            exchanger.saveDbObject(assign);
+//            }
+            return true;//ok;
         } catch (Exception ex) {
             throw ex;
         }

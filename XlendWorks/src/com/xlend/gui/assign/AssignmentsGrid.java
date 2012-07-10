@@ -34,7 +34,7 @@ public class AssignmentsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-        if (getSelect().indexOf("from xopmachassing where xsite_id=") > 0) {
+        if (getSelect().indexOf(MARK) > 0) {
             return new AbstractAction("Add new assignment") {
 
                 @Override
@@ -66,7 +66,7 @@ public class AssignmentsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        if (getSelect().indexOf("from xopmachassing where xsite_id=") < 0) {
+        if (getSelect().indexOf(MARK) < 0) {
             return new AbstractAction("Delete record") {
 
                 @Override
@@ -77,11 +77,13 @@ public class AssignmentsGrid extends GeneralGridPanel {
                         Xopmachassing assign = (Xopmachassing) exchanger.loadDbObjectOnID(Xopmachassing.class, id);
                         if (assign != null) {
                             if (assign.getDateEnd() == null) {
-                                if (getTableView().getSelectedRow()>0) {
+                                if (getTableView().getSelectedRow() > 0) {
                                     ok = true;
                                 } else {
                                     GeneralFrame.errMessageBox("Attention!", "Current assignment couldn't be deleted. Just reassign it");
                                 }
+                            } else {
+                                ok = true;
                             }
                             if (ok && GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {

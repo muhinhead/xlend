@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.47.4";
+    public static final String version = "0.48";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -242,9 +242,9 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadAllSites(IMessageSender exchanger) {
+    public static ComboItem[] loadSites(IMessageSender exchanger, String whereCond) {
         try {
-            DbObject[] orders = exchanger.getDbObjects(Xsite.class, null, "name");
+            DbObject[] orders = exchanger.getDbObjects(Xsite.class, whereCond, "name");
             ComboItem[] itms = new ComboItem[orders.length + 1];
             itms[0] = new ComboItem(0, "--Add new site --");
             int i = 1;
@@ -257,6 +257,10 @@ public class XlendWorks {
             log(ex);
         }
         return null;
+    }
+    
+    public static ComboItem[] loadAllSites(IMessageSender exchanger) {
+        return loadSites(exchanger, null);
     }
 
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {

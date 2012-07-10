@@ -134,7 +134,8 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                                     Xmachine.class, previous.getXmachineId());
                             if (prevMachine != null) {
                                 if (GeneralFrame.yesNo("Attention!", "Previous machine "
-                                        +prevMachine.getClassify()+prevMachine.getTmvnr()+" will stay on its site w/o operator. Agree?")==JOptionPane.YES_OPTION) {
+                                        + prevMachine.getClassify() + prevMachine.getTmvnr()
+                                        + " will stay on its site w/o operator. Agree?") == JOptionPane.YES_OPTION) {
                                     previous.setDateEnd(new java.sql.Date(dt.getTime()));
                                     previous.setXemployeeId(null);
                                     ok = true;

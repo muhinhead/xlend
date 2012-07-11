@@ -1453,7 +1453,9 @@ public class DbConnection {
         "alter table xtrip add constraint xtrip_xmachine_fk2 foreign key (withmachine_id) references xmachine",
         "alter table xtrip add insite_id int",
         "alter table xtrip add constraint xtrip_xsite_fk3 foreign key (insite_id) references xsite",
-        "alter table xtrip add is_copmplete bit default 0"
+        "alter table xtrip add is_copmplete bit default 0",
+        "alter table xtrip drop column distance",
+        "alter table xtrip drop column loaded"
     };
 
     public static Connection getConnection() throws RemoteException {

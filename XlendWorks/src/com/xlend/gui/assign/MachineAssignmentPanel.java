@@ -92,13 +92,15 @@ public class MachineAssignmentPanel extends RecordEditPanel {
             for (DbObject rec : oldAssigns) {
                 Xopmachassing oldAssign = (Xopmachassing) rec;
                 prevOperatorID = oldAssign.getXemployeeId();
+                prevOperatorID = (prevOperatorID == 0 ? null : prevOperatorID);
                 oldAssign.setDateEnd(now);
                 oldAssign.setXmachineId(oldAssign.getXmachineId() == 0 ? null : oldAssign.getXmachineId());
+                oldAssign.setXemployeeId(prevOperatorID);
                 exchanger.saveDbObject(oldAssign);
             }
             Xopmachassing assign = new Xopmachassing(null);
             assign.setXopmachassingId(0);
-            assign.setXmachineId(xmachine.getXmachineId());
+            assign.setXmachineId(xmachine.getXmachineId() == 0 ? null : xmachine.getXmachineId());
             assign.setXsiteId(getSelectedCbItem(siteCB));
             assign.setXemployeeId(getSelectedCbItem(operatorCB));
 //            boolean ok = false;

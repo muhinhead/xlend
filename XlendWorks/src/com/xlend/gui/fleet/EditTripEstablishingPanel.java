@@ -4,7 +4,8 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.site.SiteLookupAction;
-import com.xlend.orm.Xtripestablish;
+import com.xlend.orm.Xtrip;
+//import com.xlend.orm.Xtripestablish;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedNumberSpinner;
@@ -18,10 +19,8 @@ import javax.swing.JTextField;
  *
  * @author Nick Mukhin
  */
-public class EditTripEstablishingPanel extends RecordEditPanel {
-    
-    private static int xtrip_id = 0;
-    private JTextField idField;
+public class EditTripEstablishingPanel extends RecordEditPanel implements EditSubPanel {
+
     private DefaultComboBoxModel siteCbModel;
     private JComboBox siteCB;
     private JSpinner distanceEmptySP;
@@ -29,21 +28,14 @@ public class EditTripEstablishingPanel extends RecordEditPanel {
     private DefaultComboBoxModel machineCbModel;
     private JComboBox machineCB;
 
-    /**
-     * @param aXtrip_id the xtrip_id to set
-     */
-    public static void setXtrip_id(int aXtrip_id) {
-        xtrip_id = aXtrip_id;
-    }
-    
     public EditTripEstablishingPanel(DbObject dbObject) {
         super(dbObject);
     }
-    
+
     @Override
     protected void fillContent() {
         String titles[] = new String[]{
-            "ID:",
+            //            "ID:",
             "Site:",
             "Machine:",
             "Distance Travelled Empty (km):",
@@ -60,57 +52,49 @@ public class EditTripEstablishingPanel extends RecordEditPanel {
             machineCbModel.addElement(ci);
         }
         edits = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 5),
-            getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),2),
-            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),2),
+            getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
+            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)), 2),
             getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
             getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
-        idField.setEnabled(false);
         organizePanels(titles, edits, null);
-        prepareFields();
+//        prepareFields();
     }
-    
+
     @Override
     public void loadData() {
-        Xtripestablish xtre = (Xtripestablish) getDbObject();
-        if (xtre != null) {
-            idField.setText(xtre.getXtripestablishId().toString());
-            if (xtre.getXsiteId() != null) {
-                selectComboItem(siteCB, xtre.getXsiteId());
+        Xtrip trip = (Xtrip) getDbObject();
+        if (trip != null) {
+            if (trip.getTositeId() != null) {
+                selectComboItem(siteCB, trip.getTositeId());
             }
-            if (xtre.getXmachineId() != null) {
-                selectComboItem(machineCB, xtre.getXmachineId());
+            if (trip.getMachineId() != null) {
+                selectComboItem(machineCB, trip.getMachineId());
             }
-            if (xtre.getDistanceEmpty() != null) {
-                distanceEmptySP.setValue(xtre.getDistanceEmpty());
+            if (trip.getDistanceEmpty() != null) {
+                distanceEmptySP.setValue(trip.getDistanceEmpty());
             }
-            if (xtre.getDistanceLoaded() != null) {
-                distanceLoadedSP.setValue(xtre.getDistanceLoaded());
-            }            
+            if (trip.getDistanceLoaded() != null) {
+                distanceLoadedSP.setValue(trip.getDistanceLoaded());
+            }
         }
     }
-    
+
     @Override
     public boolean save() throws Exception {
-        boolean isNew = false;
-        Xtripestablish xtre = (Xtripestablish) getDbObject();
-        if (xtre == null) {
-            xtre = new Xtripestablish(null);
-            xtre.setXtripestablishId(0);
-            isNew = true;
+        Xtrip trip = (Xtrip) getDbObject();
+        if (trip != null) {
+            trip.setTositeId(getSelectedCbItem(siteCB));
+            trip.setMachineId(getSelectedCbItem(machineCB));
+            trip.setDistanceEmpty((Integer)distanceEmptySP.getValue());
+            trip.setDistanceLoaded((Integer)distanceLoadedSP.getValue());
+            return true;
         }
-        xtre.setXtripId(xtrip_id);
-        xtre.setXsiteId(getSelectedCbItem(siteCB));
-        xtre.setXmachineId(getSelectedCbItem(machineCB));
-        xtre.setDistanceEmpty((Integer) distanceEmptySP.getValue());
-        xtre.setDistanceLoaded((Integer) (distanceLoadedSP.isVisible() ? distanceLoadedSP.getValue() : null));
-        xtrip_id = 0;
-        return saveDbRecord(xtre, isNew);
+        return false;
     }
-    
-    protected void prepareFields() {
-        labels[labels.length - 1].setVisible(false);
-        edits[edits.length - 1].setVisible(false);
+
+    @Override
+    public void setMachineID(Integer machineID) {
+        selectComboItem(machineCB, machineID);
     }
 }

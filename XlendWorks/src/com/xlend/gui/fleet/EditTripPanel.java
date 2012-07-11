@@ -4,22 +4,22 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.assign.ChooseDepotForOperatorDialog;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
+import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xlowbed;
+import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.Xtrip;
-import com.xlend.orm.Xtripestablish;
-import com.xlend.orm.Xtripexchange;
-import com.xlend.orm.Xtripmoving;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
-import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -44,23 +44,21 @@ public class EditTripPanel extends RecordEditPanel {
     private DefaultComboBoxModel toSiteCbModel;
     private JTextField idField;
     private JSpinner dateSP;
-    private JCheckBox loadedCB;
-    private JSpinner distanceSP;
     private JComboBox lowbedCB;
     private JComboBox fromSiteCB;
-    private JComboBox toSiteCB;
     private JComboBox driverCB;
     private JComboBox assistantCB;
+    private JCheckBox completeCB;
     private JRadioButton establishRB;
     private JRadioButton deEstablishRB;
     private JRadioButton movingRB;
     private JRadioButton exchangingRB;
-//    private int tripType = 0;
     private JPanel detailInfoPanel;
-    private RecordEditPanel establishPanel;
-    private RecordEditPanel deEstablishPanel;
-    private RecordEditPanel movingPanel;
-    private RecordEditPanel exchangePanel;
+    private EditTripEstablishingPanel establishPanel;
+    private EditTripDeEstablishingPanel deEstablishPanel;
+    private EditTripMovinganel movingPanel;
+    private EditTripExchangePanel exchangePanel;
+    private EditSubPanel[] subPanels;
     private LowBedLookupAction lbLookupAction;
 
     public EditTripPanel(DbObject dbObject) {
@@ -77,19 +75,17 @@ public class EditTripPanel extends RecordEditPanel {
             "ID:",
             "Low Bed:",
             "Date:",
-            "Leawing From:",
-            "Traveling To:",
-            "Loaded:",
-            "Distance (km):",
+            "Leaving From:",
             "Driver:",
             "Assistant:",
+            //            "Trip Complete:",
             "Trip Type:"
         };
         lowbedCbModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
             lowbedCbModel.addElement(ci);
         }
-                
+
         fromSiteCbModel = new DefaultComboBoxModel();
         toSiteCbModel = new DefaultComboBoxModel();
         for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
@@ -108,17 +104,15 @@ public class EditTripPanel extends RecordEditPanel {
             getGridPanel(idField = new JTextField(), 7),
             comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), lbLookupAction = new LowBedLookupAction(lowbedCB)),
             getGridPanel(dateSP = new SelectedDateSpinner(), 7),
-            getGridPanel(comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)),2),
-            getGridPanel(comboPanelWithLookupBtn(toSiteCB = new JComboBox(toSiteCbModel), new SiteLookupAction(toSiteCB)),2),
-            getGridPanel(loadedCB = new JCheckBox(), 3),
-            getGridPanel(distanceSP = new SelectedNumberSpinner(0, 0, 10000, 1), 7),
-            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),2),
-            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),2),
+            getGridPanel(comboPanelWithLookupBtn(fromSiteCB = new JComboBox(fromSiteCbModel), new SiteLookupAction(fromSiteCB)), 2),
+            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)), 2),
+            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)), 2),
             getGridPanel(new JComponent[]{
                 establishRB = new JRadioButton("Establishing"),
                 deEstablishRB = new JRadioButton("De-Establishing"),
                 movingRB = new JRadioButton("Moving:"),
-                exchangingRB = new JRadioButton("Exchanging:")
+                exchangingRB = new JRadioButton("Exchanging:"),
+                completeCB = new JCheckBox("Completed")
             })
         };
         ButtonGroup group = new ButtonGroup();
@@ -139,54 +133,49 @@ public class EditTripPanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
 
-        lowbedCB.addActionListener(new AbstractAction(){
+        lowbedCB.addActionListener(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ComboItem itm = (ComboItem) lowbedCB.getSelectedItem();
-                if (itm!=null) {
-                    try {
-                        Xlowbed lowbed = (Xlowbed) DashBoard.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
-                        selectComboItem(driverCB, lowbed.getDriverId());
-                        selectComboItem(assistantCB, lowbed.getAssistantId());
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                    }
-                }
+                syncDriverAndAssistant();
             }
         });
-        
+
         add(detailsPanel());
+    }
+
+    private void syncDriverAndAssistant() {
+        ComboItem itm = (ComboItem) lowbedCB.getSelectedItem();
+        if (itm == null) {
+            itm = (ComboItem) lowbedCbModel.getElementAt(0);
+        }
+        try {
+            Xlowbed lowbed = (Xlowbed) DashBoard.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
+            selectComboItem(driverCB, lowbed.getDriverId());
+            selectComboItem(assistantCB, lowbed.getAssistantId());
+            for (EditSubPanel sp : subPanels) {
+                sp.setMachineID(lowbed.getXmachineId());
+            }
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+        }
+
     }
 
     private JPanel detailsPanel() {
         Xtrip xtr = (Xtrip) getDbObject();
         detailInfoPanel = new JPanel(new CardLayout());
-        try {
-            detailInfoPanel.add(establishPanel = new EditTripEstablishingPanel(XlendWorks.getTripEstablish(xtr)), detailPanelLabels[0]);
-            establishPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[0]));
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-        try {
-            detailInfoPanel.add(deEstablishPanel = new EditTripDeEstablishingPanel(XlendWorks.getTripDeEstablish(xtr)), detailPanelLabels[1]);
-            deEstablishPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[1]));
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-        try {
-            detailInfoPanel.add(movingPanel = new EditTripMovinganel(XlendWorks.getTripMove(xtr)), detailPanelLabels[2]);
-            movingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[2]));
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-        try {
-            detailInfoPanel.add(exchangePanel = new EditTripExchangePanel(XlendWorks.getTripExchange(xtr)), detailPanelLabels[3]);
-            exchangePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[3]));
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-
+        detailInfoPanel.add(establishPanel = new EditTripEstablishingPanel(xtr), detailPanelLabels[0]);
+        establishPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[0]));
+        detailInfoPanel.add(deEstablishPanel = new EditTripDeEstablishingPanel(xtr), detailPanelLabels[1]);
+        deEstablishPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[1]));
+        detailInfoPanel.add(movingPanel = new EditTripMovinganel(xtr), detailPanelLabels[2]);
+        movingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[2]));
+        detailInfoPanel.add(exchangePanel = new EditTripExchangePanel(xtr), detailPanelLabels[3]);
+        exchangePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), detailPanelLabels[3]));
+        subPanels = new EditSubPanel[]{
+            establishPanel, deEstablishPanel, movingPanel, exchangePanel
+        };
         return detailInfoPanel;
     }
 
@@ -206,7 +195,8 @@ public class EditTripPanel extends RecordEditPanel {
         Xtrip xtr = (Xtrip) getDbObject();
         if (xtr != null) {
             idField.setText(xtr.getXtripId().toString());
-//            selectComboItem(lowbedCB, xtr.getXlowbedId());
+
+            selectComboItem(lowbedCB, xtr.getXlowbedId());
             if (xtr.getTripDate() != null) {
                 java.util.Date dt = new java.util.Date(xtr.getTripDate().getTime());
                 dateSP.setValue(dt);
@@ -214,13 +204,7 @@ public class EditTripPanel extends RecordEditPanel {
             if (xtr.getFromsiteId() != null) {
                 selectComboItem(fromSiteCB, xtr.getFromsiteId());
             }
-            if (xtr.getTositeId() != null) {
-                selectComboItem(toSiteCB, xtr.getTositeId());
-            }
-            loadedCB.setSelected(xtr.getLoaded() != null && xtr.getLoaded() != 0);
-            if (xtr.getDistance() != null) {
-                distanceSP.setValue(xtr.getDistance());
-            }
+
             if (xtr.getDriverId() != null) {
                 selectComboItem(driverCB, xtr.getDriverId());
             } else if (xlb != null) {
@@ -249,26 +233,26 @@ public class EditTripPanel extends RecordEditPanel {
             } else {
                 establishRB.setSelected(true);
             }
+            completeCB.setSelected(xtr.getIsCopmplete() != null && xtr.getIsCopmplete() == 1);
+            completeCB.setEnabled(!completeCB.isSelected());
             switchDetailPanel();
         } else {
-            if (xlb != null) {
-                selectComboItem(driverCB, xlb.getDriverId());
-            }
-            if (xlb != null) {
-                selectComboItem(assistantCB, xlb.getAssistantId());
-            }
+            establishRB.setSelected(true);
         }
+        syncDriverAndAssistant();
     }
 
     @Override
     public boolean save() throws Exception {
-        int fromSiteID = getSelectedCbItem(fromSiteCB);
-        int toSiteID = getSelectedCbItem(toSiteCB);
-        if (fromSiteID==toSiteID) {
-            GeneralFrame.errMessageBox("Attention1", "Source and target sites couldn't be the same");
-            fromSiteCB.requestFocus();
-            return false;
+        boolean toAssign = false;
+        if (completeCB.isEnabled() && completeCB.isSelected()) {
+            toAssign = (GeneralFrame.yesNo("Attention!",
+                    "Do you want to assign operator/machine pair to the site?") == JOptionPane.YES_OPTION);
+            if (!toAssign) {
+                return false;
+            }
         }
+//        int fromSiteID = getSelectedCbItem(fromSiteCB);
         boolean isNew = false;
         Xtrip xtr = (Xtrip) getDbObject();
         if (xtr == null) {
@@ -276,6 +260,10 @@ public class EditTripPanel extends RecordEditPanel {
             xtr.setXtripId(0);
             isNew = true;
         }
+        establishPanel.setDbObject(xtr);
+        deEstablishPanel.setDbObject(xtr);
+        movingPanel.setDbObject(xtr);
+        exchangePanel.setDbObject(xtr);
         if (dateSP.getValue() != null) {
             java.util.Date dt = (java.util.Date) dateSP.getValue();
             xtr.setTripDate(new java.sql.Date(dt.getTime()));
@@ -283,44 +271,63 @@ public class EditTripPanel extends RecordEditPanel {
         xtr.setXlowbedId(getSelectedCbItem(lowbedCB));
         xtr.setAssistantId(getSelectedCbItem(assistantCB));
         xtr.setDriverId(getSelectedCbItem(driverCB));
-        xtr.setLoaded(loadedCB.isSelected() ? 1 : 0);
-        xtr.setDistance((Integer) distanceSP.getValue());
         xtr.setFromsiteId(getSelectedCbItem(fromSiteCB));
-        xtr.setTositeId(getSelectedCbItem(toSiteCB));
         xtr.setTripType(deEstablishRB.isSelected() ? 1
                 : movingRB.isSelected() ? 2 : exchangingRB.isSelected() ? 3 : 0);
-        boolean ok = saveDbRecord(xtr, isNew);
-        if (ok) {
-            xtr = (Xtrip) getDbObject();
-            EditTripEstablishingPanel.setXtrip_id(xtr.getXtripId());
-            EditTripDeEstablishingPanel.setXtrip_id(xtr.getXtripId());
-            EditTripMovinganel.setXtrip_id(xtr.getXtripId());
-            EditTripExchangePanel.setXtrip_id(xtr.getXtripId());
-            if (xtr.getTripType() < 2) {
-                if (xtr.getTripType() == 0) {
-                    if (establishPanel.save()) {
-                        deleteDeEstablishOnlyInfo(xtr.getXtripId());
+        xtr.setIsCopmplete(completeCB.isSelected() ? 1 : 0);
+        boolean ok = subPanels[xtr.getTripType()].save();
+        if (toAssign) {
+            try {
+                java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+                Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), xtr.getMachineId(), xtr.getDriverId());
+                if (previous == null) {
+                    previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), 0, xtr.getDriverId());
+                    if (previous == null) {
+                        previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), xtr.getMachineId(), 0);
+                        if (previous != null) {
+                            Xemployee prevOperator = getOperator(previous.getXemployeeId());
+                            if (prevOperator != null) {
+                                new ChooseDepotForOperatorDialog(prevOperator);
+                                Xopmachassing assignPrevOperator = new Xopmachassing(null);
+                                assignPrevOperator.setXopmachassingId(0);
+                                assignPrevOperator.setNew(true);
+                                assignPrevOperator.setXemployeeId(prevOperator.getXemployeeId());
+                                assignPrevOperator.setXmachineId(null);
+                                assignPrevOperator.setDateStart(now);
+                                assignPrevOperator.setXsiteId(ChooseDepotForOperatorDialog.getDepot_id());
+                                DashBoard.getExchanger().saveDbObject(assignPrevOperator);
+                            }
+                        }
+                    } else {
+                        Xopmachassing assignPrevMachine = new Xopmachassing(null);
+                        assignPrevMachine.setXopmachassingId(0);
+                        assignPrevMachine.setNew(true);
+                        assignPrevMachine.setXmachineId(previous.getXmachineId());
+                        assignPrevMachine.setXemployeeId(null);
+                        assignPrevMachine.setDateStart(now);
+                        assignPrevMachine.setXsiteId(previous.getXsiteId());
+                        DashBoard.getExchanger().saveDbObject(assignPrevMachine);
                     }
-                } else {
-                    if (deEstablishPanel.save()) {
-                        deleteEstablishOnlyInfo(xtr.getXtripId());
-                    }
                 }
-                deleteMovingInfo(xtr.getXtripId());
-                deleteExchangeInfo(xtr.getXtripId());
-            } else if (xtr.getTripType() == 2) {
-                if (movingPanel.save()) {
-                    deleteExchangeInfo(xtr.getXtripId());
-                    deleteEstablishInfo(xtr.getXtripId());
+                if (previous != null) {
+                    previous.setDateEnd(now);
+                    DashBoard.getExchanger().saveDbObject(previous);
                 }
-            } else if (xtr.getTripType() == 3) {
-                if (exchangePanel.save()) {
-                    deleteMovingInfo(xtr.getXtripId());
-                    deleteEstablishInfo(xtr.getXtripId());
-                }
+                Xopmachassing assign = new Xopmachassing(null);
+                assign.setXopmachassingId(0);
+                assign.setNew(true);
+                assign.setXsiteId(xtr.getTositeId());
+                assign.setXmachineId(xtr.getMachineId());
+                assign.setXemployeeId(xtr.getDriverId());
+                assign.setDateStart(now);
+                DashBoard.getExchanger().saveDbObject(assign);
+
+            } catch (Exception ex) {
+                XlendWorks.logAndShowMessage(ex);
+                ok = false;
             }
         }
-        return ok;
+        return ok && saveDbRecord(xtr, isNew);
     }
 
     private ActionListener typeSwitchAction() {
@@ -346,48 +353,8 @@ public class EditTripPanel extends RecordEditPanel {
         cl.show(detailInfoPanel, detailPanelLabels[tripType]);
     }
 
-    private void deleteEstablishOnlyInfo(int xtrip_id) {
-        try {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, "xtrip_id=" + xtrip_id + " and ifnull(distance_loaded,0)=0", null);
-            for (DbObject rec : recs) {
-                DashBoard.getExchanger().deleteObject(rec);
-            }
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-    }
-
-    private void deleteDeEstablishOnlyInfo(int xtrip_id) {
-        try {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class, "xtrip_id=" + xtrip_id + " and ifnull(distance_loaded,0)<>0", null);
-            for (DbObject rec : recs) {
-                DashBoard.getExchanger().deleteObject(rec);
-            }
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-    }
-
-    private void deleteChildInfo(Class cls, int xtrip_id) {
-        try {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(cls, "xtrip_id=" + xtrip_id, null);
-            for (DbObject rec : recs) {
-                DashBoard.getExchanger().deleteObject(rec);
-            }
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-    }
-
-    private void deleteMovingInfo(int xtrip_id) {
-        deleteChildInfo(Xtripmoving.class, xtrip_id);
-    }
-
-    private void deleteExchangeInfo(int xtrip_id) {
-        deleteChildInfo(Xtripexchange.class, xtrip_id);
-    }
-
-    private void deleteEstablishInfo(int xtrip_id) {
-        deleteChildInfo(Xtripestablish.class, xtrip_id);
+    private Xemployee getOperator(Integer xemployeeId) throws RemoteException {
+        DbObject[] prev = DashBoard.getExchanger().getDbObjects(Xemployee.class, "xemployee_id=" + xemployeeId, null);
+        return null;
     }
 }

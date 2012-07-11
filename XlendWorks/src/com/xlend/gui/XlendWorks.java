@@ -706,53 +706,57 @@ public class XlendWorks {
         return false;
     }
 
-    public static Xtripestablish getTripEstablish(Xtrip xtr) throws RemoteException {
-        Xtripestablish xtre = null;
-        if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
-                    "xtrip_id=" + xtr.getXtripId() + " and ifnull(distance_loaded,0)=0", "xtripestablish_id");
-            if (recs.length > 0) {
-                xtre = (Xtripestablish) recs[0];
-            }
-        }
-        return xtre;
-    }
+//    public static Xtripestablish getTripEstablish(Xtrip xtr) throws RemoteException {
+//        Xtripestablish xtre = null;
+//        if (xtr != null) {
+//            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
+//                    "xtrip_id=" + xtr.getXtripId() 
+////                    + " and ifnull(distance_loaded,0)=0"
+//                    , "xtripestablish_id");
+//            if (recs.length > 0) {
+//                xtre = (Xtripestablish) recs[0];
+//            }
+//        }
+//        return xtre;
+//    }
 
-    public static Xtripestablish getTripDeEstablish(Xtrip xtr) throws RemoteException {
-        Xtripestablish xtre = null;
-        if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
-                    "xtrip_id=" + xtr.getXtripId() + " and ifnull(distance_loaded,0)<>0", "xtripestablish_id");
-            if (recs.length > 0) {
-                xtre = (Xtripestablish) recs[0];
-            }
-        }
-        return xtre;
-    }
+//    public static Xtripestablish getTripDeEstablish(Xtrip xtr) throws RemoteException {
+//        Xtripestablish xtre = null;
+//        if (xtr != null) {
+//            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripestablish.class,
+//                    "xtrip_id=" + xtr.getXtripId() 
+////                    + " and ifnull(distance_loaded,0)<>0"
+//                    , "xtripestablish_id");
+//            if (recs.length > 0) {
+//                xtre = (Xtripestablish) recs[0];
+//            }
+//        }
+//        return xtre;
+//    }
 
-    public static Xtripmoving getTripMove(Xtrip xtr) throws RemoteException {
-        Xtripmoving xtrm = null;
-        if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripmoving.class,
-                    "xtrip_id=" + xtr.getXtripId(), "xtripmoving_id");
-            if (recs.length > 0) {
-                xtrm = (Xtripmoving) recs[0];
-            }
-        }
-        return xtrm;
-    }
+//    public static Xtripmoving getTripMove(Xtrip xtr) throws RemoteException {
+//        Xtripmoving xtrm = null;
+//        if (xtr != null) {
+//            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripmoving.class,
+//                    "xtrip_id=" + xtr.getXtripId(), "xtripmoving_id");
+//            if (recs.length > 0) {
+//                xtrm = (Xtripmoving) recs[0];
+//            }
+//        }
+//        return xtrm;
+//    }
 
-    public static Xtripexchange getTripExchange(Xtrip xtr) throws RemoteException {
-        Xtripexchange xtre = null;
-        if (xtr != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripexchange.class,
-                    "xtrip_id=" + xtr.getXtripId(), "xtripexchange_id");
-            if (recs.length > 0) {
-                xtre = (Xtripexchange) recs[0];
-            }
-        }
-        return xtre;
-    }
+//    public static Xtripexchange getTripExchange(Xtrip xtr) throws RemoteException {
+//        Xtripexchange xtre = null;
+//        if (xtr != null) {
+//            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripexchange.class,
+//                    "xtrip_id=" + xtr.getXtripId(), "xtripexchange_id");
+//            if (recs.length > 0) {
+//                xtre = (Xtripexchange) recs[0];
+//            }
+//        }
+//        return xtre;
+//    }
 
     public static ComboItem[] loadSiteDiaryHrsWorked(java.util.Date dt,
             Integer siteID, Integer operatorID, Integer machineID) {

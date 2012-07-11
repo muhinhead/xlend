@@ -4,7 +4,7 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.site.SiteLookupAction;
-import com.xlend.orm.Xtripexchange;
+import com.xlend.orm.Xtrip;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedNumberSpinner;
@@ -18,10 +18,10 @@ import javax.swing.JTextField;
  *
  * @author Nick Mukhin
  */
-public class EditTripExchangePanel extends RecordEditPanel {
+public class EditTripExchangePanel extends RecordEditPanel implements EditSubPanel {
 
-    private static int xtrip_id = 0;
-    private JTextField idField;
+//    private static int xtrip_id = 0;
+//    private JTextField idField;
     private DefaultComboBoxModel siteCbModel;
     private JComboBox siteCB;
     private DefaultComboBoxModel machineCbModel;
@@ -31,13 +31,12 @@ public class EditTripExchangePanel extends RecordEditPanel {
     private JSpinner distanceEmptySP;
     private JSpinner distanceLoadedSP;
 
-    /**
-     * @param aXtrip_id the xtrip_id to set
-     */
-    public static void setXtrip_id(int aXtrip_id) {
-        xtrip_id = aXtrip_id;
-    }
-
+//    /**
+//     * @param aXtrip_id the xtrip_id to set
+//     */
+//    public static void setXtrip_id(int aXtrip_id) {
+//        xtrip_id = aXtrip_id;
+//    }
     public EditTripExchangePanel(DbObject dbObject) {
         super(dbObject);
     }
@@ -45,7 +44,7 @@ public class EditTripExchangePanel extends RecordEditPanel {
     @Override
     protected void fillContent() {
         String titles[] = new String[]{
-            "ID:",
+            //            "ID:",
             "Site:",
             "Machine:",
             "With Machine:",
@@ -65,56 +64,58 @@ public class EditTripExchangePanel extends RecordEditPanel {
             withMachineCbModel.addElement(ci);
         }
         edits = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 5),
-            getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),2),
-            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),2),
-            getGridPanel(comboPanelWithLookupBtn(withMachineCB = new JComboBox(withMachineCbModel), new MachineLookupAction(withMachineCB, null)),2),
+            //            getGridPanel(idField = new JTextField(), 5),
+            getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
+            getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)), 2),
+            getGridPanel(comboPanelWithLookupBtn(withMachineCB = new JComboBox(withMachineCbModel), new MachineLookupAction(withMachineCB, null)), 2),
             getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
             getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
-        idField.setEnabled(false);
+//        idField.setEnabled(false);
         organizePanels(titles, edits, null);
     }
 
     @Override
     public void loadData() {
-        Xtripexchange xte = (Xtripexchange) getDbObject();
-        if (xte != null) {
-            idField.setText(xte.getXtripexchangeId().toString());
-            if (xte.getXsiteId() != null) {
-                selectComboItem(siteCB, xte.getXsiteId());
+        Xtrip trip = (Xtrip) getDbObject();
+        if (trip != null) {
+            if (trip.getTositeId() != null) {
+                selectComboItem(siteCB, trip.getTositeId());
             }
-            if (xte.getMachineId() != null) {
-                selectComboItem(machineCB, xte.getMachineId());
+            if (trip.getMachineId() != null) {
+                selectComboItem(machineCB, trip.getMachineId());
             }
-            if (xte.getWithmachineId() != null) {
-                selectComboItem(withMachineCB, xte.getWithmachineId());
+            if (trip.getWithmachineId() != null) {
+                selectComboItem(withMachineCB, trip.getWithmachineId());
             }
-            if (xte.getDistanceEmpty() != null) {
-                distanceEmptySP.setValue(xte.getDistanceEmpty());
+            if (trip.getDistanceEmpty() != null) {
+                distanceEmptySP.setValue(trip.getDistanceEmpty());
             }
-            if (xte.getDistanceLoaded() != null) {
-                distanceLoadedSP.setValue(xte.getDistanceLoaded());
+            if (trip.getDistanceLoaded() != null) {
+                distanceLoadedSP.setValue(trip.getDistanceLoaded());
             }
         }
     }
 
     @Override
     public boolean save() throws Exception {
-        boolean isNew = false;
-        Xtripexchange xte = (Xtripexchange) getDbObject();
-        if (xte == null) {
-            xte = new Xtripexchange(null);
-            xte.setXtripexchangeId(0);
-            isNew = true;
+        Xtrip trip = (Xtrip) getDbObject();
+        if (trip != null) {
+            trip.setTositeId(getSelectedCbItem(siteCB));
+            trip.setMachineId(getSelectedCbItem(machineCB));
+            trip.setWithmachineId(getSelectedCbItem(withMachineCB));
+            trip.setDistanceEmpty((Integer) distanceEmptySP.getValue());
+            trip.setDistanceLoaded((Integer) distanceLoadedSP.getValue());
+            return true;
         }
-        xte.setXtripId(xtrip_id);
-        xte.setMachineId(getSelectedCbItem(machineCB));
-        xte.setWithmachineId(getSelectedCbItem(withMachineCB));
-        xte.setXsiteId(getSelectedCbItem(siteCB));
-        xte.setDistanceEmpty((Integer) distanceEmptySP.getValue());
-        xte.setDistanceLoaded((Integer) (distanceLoadedSP.isVisible() ? distanceLoadedSP.getValue() : null));
-        xtrip_id = 0;
-        return saveDbRecord(xte, isNew);
+        return false;
+    }
+//    public Integer getTargetSiteID() {
+//        return getSelectedCbItem(siteCB);
+//    }
+
+    @Override
+    public void setMachineID(Integer machineID) {
+       selectComboItem(machineCB, machineID);
     }
 }

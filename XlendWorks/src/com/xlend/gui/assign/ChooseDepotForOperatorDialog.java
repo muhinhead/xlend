@@ -16,7 +16,7 @@ import javax.swing.*;
  *
  * @author nick
  */
-class ChooseDepotForOperatorDialog extends PopupDialog {
+public class ChooseDepotForOperatorDialog extends PopupDialog {
 
     private DefaultComboBoxModel siteCbModel;
     private JButton okButton;

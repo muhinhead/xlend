@@ -19,8 +19,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 26;
-    public static final String DB_VERSION = "0.26";
+    private static final int DB_VERSION_ID = 27;
+    public static final String DB_VERSION = "0.27";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -1439,7 +1439,21 @@ public class DbConnection {
         "alter table xopmachassing alter xemployee_id int null",
         "alter table xopmachassing add constraint xopmachassing_xemployee_fk foreign key (xemployee_id) references xemployee on delete cascade",
         "alter table xopmachassing add constraint xopmachassing_xmachine_fk foreign key (xmachine_id) references xmachine",
-        "update sheet set sheetname='Trip Sheets' where sheetname='Treep Sheets'"
+        "update sheet set sheetname='Trip Sheets' where sheetname='Treep Sheets'",
+        //26->27
+        "drop table xmachineonsite",
+        "drop table xtripestablish",
+        "drop table xtripmoving",
+        "drop table xtripexchange",
+        "alter table xtrip add distance_empty int",
+        "alter table xtrip add distance_loaded int",
+        "alter table xtrip add machine_id int",
+        "alter table xtrip add withmachine_id int",
+        "alter table xtrip add constraint xtrip_xmachine_fk foreign key (machine_id) references xmachine",
+        "alter table xtrip add constraint xtrip_xmachine_fk2 foreign key (withmachine_id) references xmachine",
+        "alter table xtrip add insite_id int",
+        "alter table xtrip add constraint xtrip_xsite_fk3 foreign key (insite_id) references xsite",
+        "alter table xtrip add is_copmplete bit default 0"
     };
 
     public static Connection getConnection() throws RemoteException {

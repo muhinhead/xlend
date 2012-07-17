@@ -192,6 +192,7 @@ create cached table xsite
     xorder_id       int,
     xorder2_id      int,
     xorder3_id      int,
+    is_active       bit,
     constraint xsite_id primary key (xsite_id),
     constraint xsite_xorder_fk foreign key (xorder_id) references xorder,
     constraint xsite_xorder_fk2 foreign key (xorder2_id) references xorder,

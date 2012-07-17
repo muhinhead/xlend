@@ -27,6 +27,7 @@ public class SitesGrid extends GeneralGridPanel {
         maxWidths.put(2, 500);
         maxWidths.put(3, 200);
         maxWidths.put(4, 200);
+        maxWidths.put(5, 40);
     }
 
     public SitesGrid(IMessageSender exchanger) throws RemoteException {
@@ -48,7 +49,8 @@ public class SitesGrid extends GeneralGridPanel {
                     EditSiteDialog ed = new EditSiteDialog("New Site", null);
                     if (EditSiteDialog.okPressed) {
                         Xsite xsite = (Xsite) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xsite.getXsiteId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
+                                getSelect(), xsite.getXsiteId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -71,7 +73,7 @@ public class SitesGrid extends GeneralGridPanel {
                         EditSiteDialog.xorder = null;
                         new EditSiteDialog("Edit Site", xsite);
                         if (EditSiteDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -94,7 +96,7 @@ public class SitesGrid extends GeneralGridPanel {
                     if (xsite != null && GeneralFrame.yesNo("Attention!", "Do you want to delete site ["
                             + xsite.getName() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xsite);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

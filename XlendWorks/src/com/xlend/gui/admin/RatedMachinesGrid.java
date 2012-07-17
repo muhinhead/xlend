@@ -38,7 +38,7 @@ public class RatedMachinesGrid extends GeneralGridPanel {
                 try {
                     EditRatedMachineDialog ed = new EditRatedMachineDialog("New Rated Machine", null);
                     if (ed.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class RatedMachinesGrid extends GeneralGridPanel {
                         new EditRatedMachineDialog("Edit Rated Machine", itm);
                         if (EditRatedMachineDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -86,7 +86,7 @@ public class RatedMachinesGrid extends GeneralGridPanel {
                             if (GeneralFrame.yesNo("Attention!", 
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(itm);
-                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {

@@ -39,7 +39,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                     if (EditOperatorClockSheetDialog.okPressed) {
                         Xopclocksheet xl = (Xopclocksheet) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xl.getXopclocksheetId());
+                                getTableView(), getTableDoc(), getSelect(), xl.getXopclocksheetId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                         Xopclocksheet xi = (Xopclocksheet) exchanger.loadDbObjectOnID(Xopclocksheet.class, id);
                         new EditOperatorClockSheetDialog("Edit Clock Sheet", xi);
                         if (EditOperatorClockSheetDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +84,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                     if (xi != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xi);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

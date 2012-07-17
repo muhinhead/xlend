@@ -38,7 +38,7 @@ public class WageCategoryGrid extends GeneralGridPanel {
                 try {
                     EditWageCategoryDialog ed = new EditWageCategoryDialog("New Wage Category", null);
                     if (ed.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class WageCategoryGrid extends GeneralGridPanel {
                         new EditWageCategoryDialog("Edit Wage Category", itm);
                         if (EditWageCategoryDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -89,7 +89,7 @@ public class WageCategoryGrid extends GeneralGridPanel {
                             } else if (GeneralFrame.yesNo("Attention!", 
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(itm);
-                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {

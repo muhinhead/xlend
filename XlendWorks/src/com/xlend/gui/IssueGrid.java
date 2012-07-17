@@ -33,7 +33,8 @@ public class IssueGrid extends GeneralGridPanel {
                     EditIssuingDialog ed = new EditIssuingDialog("Add Record", null);
                     if (EditIssuingDialog.okPressed) {
                         Xissuing xi = (Xissuing) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xi.getXissuingId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xi.getXissuingId(),
+                                getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,7 +57,8 @@ public class IssueGrid extends GeneralGridPanel {
                         new EditIssuingDialog("Edit Issuing Record", xi);
                         if (EditIssuingDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,
+                                getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -79,7 +81,8 @@ public class IssueGrid extends GeneralGridPanel {
                     if (xi != null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xi);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
+                                getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

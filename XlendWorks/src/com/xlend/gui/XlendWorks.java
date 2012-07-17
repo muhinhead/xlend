@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.48";
+    public static final String version = "0.49";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -260,7 +260,7 @@ public class XlendWorks {
     }
     
     public static ComboItem[] loadAllSites(IMessageSender exchanger) {
-        return loadSites(exchanger, null);
+        return loadSites(exchanger, "is_active=1");
     }
 
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {

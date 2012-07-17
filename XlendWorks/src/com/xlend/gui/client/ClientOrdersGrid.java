@@ -49,7 +49,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                     if (esd.okPressed) {
                         Xorder xorder = (Xorder) esd.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xorder.getXorderId());
+                                xorder.getXorderId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -72,7 +72,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                         EditOrderDialog.xclient = getXclient();
                         EditOrderDialog esd = new EditOrderDialog("Edit Order", itm);
                         if (esd.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -96,7 +96,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                             + itm.getOrdernumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

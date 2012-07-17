@@ -35,7 +35,7 @@ public class AccountsGrid extends GeneralGridPanel {
                     if (EditAccountDialog.okPressed) {
                         Xaccounts xa = (Xaccounts) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xa.getXaccountId());
+                                getSelect(), xa.getXaccountId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -57,7 +57,7 @@ public class AccountsGrid extends GeneralGridPanel {
                         Xaccounts xa = (Xaccounts) exchanger.loadDbObjectOnID(Xaccounts.class, id);
                         new EditAccountDialog("Edit Account", xa);
                         if (EditAccountDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -80,7 +80,7 @@ public class AccountsGrid extends GeneralGridPanel {
                     if (xa != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this account?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xa);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

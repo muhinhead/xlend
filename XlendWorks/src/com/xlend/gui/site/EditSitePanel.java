@@ -40,6 +40,7 @@ public class EditSitePanel extends RecordEditPanel {
     private AbstractAction ordLookupAction3;
     private JScrollPane dsp;
     private DefaultComboBoxModel typeCBmodel;
+    private JCheckBox isActiveCB;
 
     public EditSitePanel(DbObject dbObject) {
         super(dbObject);
@@ -71,6 +72,9 @@ public class EditSitePanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
             siteNameField = new JTextField(),
+//            getBorderPanel(new JComponent[]{siteNameField = new JTextField(),
+//                new JLabel("Active:",SwingConstants.RIGHT),
+//                isActiveCB = new JCheckBox()}),
             orderBox = new JComboBox(orderCBModel),
             order2Box = new JComboBox(order2CBModel),
             order3Box = new JComboBox(order3CBModel),
@@ -111,7 +115,9 @@ public class EditSitePanel extends RecordEditPanel {
         ided.add(new JPanel());
         ided.add(new JPanel());
         upedit.add(ided);
-        upedit.add(siteNameField);
+        upedit.add(getGridPanel(new JComponent[]{siteNameField,
+            getBorderPanel(new JComponent[]{new JLabel("Is Active:",SwingConstants.RIGHT),isActiveCB = new JCheckBox()})
+        }));
         upedit.add(comboPanelWithLookupBtn(orderBox, ordLookupAction = orderLookup(orderBox)));
         upedit.add(comboPanelWithLookupBtn(order2Box, ordLookupAction2 = orderLookup(order2Box)));
         upedit.add(comboPanelWithLookupBtn(order3Box, ordLookupAction3 = orderLookup(order3Box)));
@@ -183,6 +189,7 @@ public class EditSitePanel extends RecordEditPanel {
             }
             clientSuppliedDieselRB.setSelected(xsite.getDieselsponsor() != null && xsite.getDieselsponsor() == 1);
             xlendSuppliedDieselRB.setSelected(xsite.getDieselsponsor() == null || xsite.getDieselsponsor() == 0);
+            isActiveCB.setSelected(xsite.getIsActive()!=null && xsite.getIsActive()!=0);
         }
     }
 
@@ -207,6 +214,7 @@ public class EditSitePanel extends RecordEditPanel {
         String tp = typeBox.getSelectedItem().toString();
         xsite.setSitetype(tp.substring(0, 1));
         xsite.setDieselsponsor(clientSuppliedDieselRB.isSelected() ? 1 : 0);
+        xsite.setIsActive(isActiveCB.isSelected()?1:0);
 
         if (itm.getValue().startsWith("--Add new order")) { // add new order
             itm = updateOrderComboBox(orderBox, orderCBModel);

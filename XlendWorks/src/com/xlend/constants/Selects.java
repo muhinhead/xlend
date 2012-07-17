@@ -19,12 +19,14 @@ public class Selects {
     public static final String SELECT_FROM_SITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
-            + "from xsite order by upper(name)";
+            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\","
+            + "CASEWHEN(is_active,'Yes','No') \"Active\" "
+            + "from xsite order by is_active desc,upper(name)";
     public static final String SELECT_ORDERISITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
             + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "CASEWHEN(is_active,'Yes','No') \"Active\" "
             + "from xsite where xorder_id = # or xorder2_id = # or xorder3_id = #";
     public static final String SELECT_FROM_CLIENTS = "Select xclient_id \"Id\","
             + "clientcode \"Client Code\", companyname \"Company name\", "
@@ -126,9 +128,9 @@ public class Selects {
     public static final String SELECT_SITES4LOOKUP =
             "Select xsite_id \"Id\", name \"Site Name\","
             + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
-            + "from xsite order by sitetype,upper(name)";
+            + "from xsite where is_active=1 order by sitetype,upper(name)";
     public static final String SELECT_DEPOTS4LOOKUP = 
-            "Select xsite_id \"Id\", name \"Site Name\" from xsite order by upper(name)";
+            "Select xsite_id \"Id\", name \"Site Name\" from xsite where is_active=1 order by upper(name)";
     public static final String SELECT_FROM_LOWBEDS =
             "Select xlowbed_id \"Id\", "
             + "m.tmvnr \"TMVnr\", t1.machtype \"Machine Type\", m.reg_nr \"Reg.Nr\", "

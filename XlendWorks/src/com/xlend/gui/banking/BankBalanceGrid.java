@@ -32,7 +32,7 @@ public class BankBalanceGrid extends GeneralGridPanel {
                     if (EditBalanceDialog.okPressed) {
                         Xbankbalance xbb = (Xbankbalance) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xbb.getXbankbalanceId());
+                                getSelect(), xbb.getXbankbalanceId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -54,7 +54,7 @@ public class BankBalanceGrid extends GeneralGridPanel {
                         Xbankbalance xbb = (Xbankbalance) exchanger.loadDbObjectOnID(Xbankbalance.class, id);
                         new EditBalanceDialog("Edit Balance", xbb);
                         if (EditBalanceDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -77,7 +77,7 @@ public class BankBalanceGrid extends GeneralGridPanel {
                     if (xbb != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xbb);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

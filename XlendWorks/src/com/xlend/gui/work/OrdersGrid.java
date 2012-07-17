@@ -58,7 +58,7 @@ public class OrdersGrid extends GeneralGridPanel {
                         if (EditContractOrderDialog.okPressed) {
                             Xorder xorder = (Xorder) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId());
+                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId(),getPageSelector().getSelectedIndex());
                         }
                     } else if (inContract) {
                         GeneralFrame.infoMessageBox("Attention!", "Save contract please before adding orders");
@@ -67,7 +67,7 @@ public class OrdersGrid extends GeneralGridPanel {
                         if (EditOrderDialog.okPressed) {
                             Xorder xorder = (Xorder) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId());
+                                    getTableView(), getTableDoc(), getSelect(), xorder.getXorderId(),getPageSelector().getSelectedIndex());
                         }
                     }
                 } catch (RemoteException ex) {
@@ -93,13 +93,13 @@ public class OrdersGrid extends GeneralGridPanel {
                             EditContractOrderDialog od = new EditContractOrderDialog("Edit Order on contract", xorder);
                             if (EditContractOrderDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger,
-                                        getTableView(), getTableDoc(), getSelect(), id);
+                                        getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                             }
                         } else {
                             new EditOrderDialog("Edit Order", xorder);
                             if (EditOrderDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger, getTableView(),
-                                        getTableDoc(), getSelect(),id);
+                                        getTableDoc(), getSelect(),id,getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {
@@ -125,7 +125,7 @@ public class OrdersGrid extends GeneralGridPanel {
                             + xorder.getOrdernumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xorder);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

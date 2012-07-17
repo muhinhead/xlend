@@ -39,7 +39,7 @@ public class AbsenteismGrid extends GeneralGridPanel {
                     if (EditAbsenteismDialog.okPressed) {
                         Xabsenteeism xa = (Xabsenteeism) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xa.getXabsenteeismId());
+                                getSelect(), xa.getXabsenteeismId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -62,7 +62,7 @@ public class AbsenteismGrid extends GeneralGridPanel {
                         new EditAbsenteismDialog("Edit Absenteism Record", xa);
                         if (EditAbsenteismDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -85,7 +85,7 @@ public class AbsenteismGrid extends GeneralGridPanel {
                     if (xa != null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xa);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

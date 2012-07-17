@@ -49,7 +49,7 @@ public class ClientContractsGrid extends GeneralGridPanel {
                     if (esd.okPressed) {
                         Xcontract xcontract = (Xcontract) esd.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xcontract.getXcontractId());
+                                xcontract.getXcontractId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -72,7 +72,7 @@ public class ClientContractsGrid extends GeneralGridPanel {
                         EditContractDialog.xclient = getXclient();
                         EditContractDialog esd = new EditContractDialog("Edit Contract", itm);
                         if (esd.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -96,7 +96,7 @@ public class ClientContractsGrid extends GeneralGridPanel {
                             + itm.getContractref() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

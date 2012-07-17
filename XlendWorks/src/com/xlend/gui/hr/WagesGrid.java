@@ -39,7 +39,7 @@ public class WagesGrid extends GeneralGridPanel {
                     if (EditWagesDialog.okPressed) {
                         Xwagesum xs = (Xwagesum) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                getSelect(), xs.getXwagesumId());
+                                getSelect(), xs.getXwagesumId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class WagesGrid extends GeneralGridPanel {
                         Xwagesum xs = (Xwagesum) exchanger.loadDbObjectOnID(Xwagesum.class, id);
                         new EditWagesDialog("Edit Wage List", xs);
                         if (EditWagesDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +84,7 @@ public class WagesGrid extends GeneralGridPanel {
                     if (xs !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xs);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

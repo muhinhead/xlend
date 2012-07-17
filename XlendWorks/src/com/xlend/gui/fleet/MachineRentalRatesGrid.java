@@ -40,7 +40,7 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                     if (EditMachineRentalRatesDialog.okPressed) {
                         Xmachrentalrate xmr = (Xmachrentalrate) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xmr.getXmachrentalrateId());
+                                getTableView(), getTableDoc(), getSelect(), xmr.getXmachrentalrateId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -63,7 +63,7 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                         new EditMachineRentalRatesDialog("Edit Rental Rates List", xmr);
                         if (EditMachineRentalRatesDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +88,7 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                             if (GeneralFrame.yesNo("Attention!", 
                                     "Do you want to delete this rates list?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(xmr);
-                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {

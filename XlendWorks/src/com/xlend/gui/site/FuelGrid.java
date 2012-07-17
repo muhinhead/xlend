@@ -43,7 +43,7 @@ public class FuelGrid extends GeneralGridPanel {
                     EditFuelDialog ed = new EditFuelDialog("Add Record", null);
                     if (EditFuelDialog.okPressed) {
                         Xfuel xb = (Xfuel) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXfuelId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXfuelId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -65,7 +65,7 @@ public class FuelGrid extends GeneralGridPanel {
                         Xfuel xfl  = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
                         new EditFuelDialog("Edit Entry", xfl);
                         if (EditFuelDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +88,7 @@ public class FuelGrid extends GeneralGridPanel {
                     if (xfl !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xfl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

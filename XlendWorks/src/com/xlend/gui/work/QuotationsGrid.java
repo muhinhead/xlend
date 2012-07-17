@@ -49,7 +49,7 @@ public class QuotationsGrid extends GeneralGridPanel {
                     if (EditQuotaDialog.okPressed) {
                         Xquotation xq = (Xquotation) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xq.getXquotationId());
+                                getTableView(), getTableDoc(), getSelect(), xq.getXquotationId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -72,7 +72,7 @@ public class QuotationsGrid extends GeneralGridPanel {
                         new EditQuotaDialog("Edit Quotation", xq);
                         if (EditQuotaDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -95,7 +95,7 @@ public class QuotationsGrid extends GeneralGridPanel {
                     if (xq!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  [" 
                             + xq.getRfcnumber() + "]?")== JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xq);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

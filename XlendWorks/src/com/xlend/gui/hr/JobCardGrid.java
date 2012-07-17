@@ -39,7 +39,7 @@ public class JobCardGrid extends GeneralGridPanel {
                     if (EditJobCardDialog.okPressed) {
                         Xjobcard xj = (Xjobcard) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xj.getXjobcardId());
+                                getTableView(), getTableDoc(), getSelect(), xj.getXjobcardId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class JobCardGrid extends GeneralGridPanel {
                         Xjobcard xi = (Xjobcard) exchanger.loadDbObjectOnID(Xjobcard.class, id);
                         new EditJobCardDialog("Edit Job Card", xi);
                         if (EditJobCardDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +84,7 @@ public class JobCardGrid extends GeneralGridPanel {
                     if (xi != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this job card?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xi);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

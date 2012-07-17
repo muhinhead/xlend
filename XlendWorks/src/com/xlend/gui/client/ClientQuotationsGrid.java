@@ -56,7 +56,7 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
                     if (esd.okPressed) {
                         Xquotation xq = (Xquotation) esd.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xq.getXquotationId());
+                                xq.getXquotationId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -80,7 +80,7 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
                         EditQuotaDialog.xclient = getXclient();
                         EditQuotaDialog esd = new EditQuotaDialog("Edit RFQ", itm);
                         if (esd.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -104,7 +104,7 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
                             + itm.getRfcnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

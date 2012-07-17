@@ -45,7 +45,7 @@ public class TrackGrid extends GeneralGridPanel {
                     if (EditTrackDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId());
+                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -68,7 +68,7 @@ public class TrackGrid extends GeneralGridPanel {
                         new EditTrackDialog("Edit Truck", machine);
                         if (EditTrackDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -91,7 +91,7 @@ public class TrackGrid extends GeneralGridPanel {
                     if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Truck [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

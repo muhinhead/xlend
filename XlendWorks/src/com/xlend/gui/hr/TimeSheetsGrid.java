@@ -59,7 +59,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                         if (EditTimeSheetDialog.okPressed) {
                             Xtimesheet ts = (Xtimesheet) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId());
+                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(),getPageSelector().getSelectedIndex());
                         }
                     } else if (inEmloyee) {
                         GeneralFrame.infoMessageBox("Attention!", "Save contract please before adding orders");
@@ -68,7 +68,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                         if (EditTimeSheetDialog.okPressed) {
                             Xtimesheet ts = (Xtimesheet) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId());
+                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(),getPageSelector().getSelectedIndex());
                         }
                     }
                 } catch (RemoteException ex) {
@@ -94,13 +94,13 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                             EditTimeSheetDialog od = new EditTimeSheetDialog("Edit time sheet for employee", ts);
                             if (EditTimeSheetDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger,
-                                        getTableView(), getTableDoc(), getSelect(), id);
+                                        getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                             }
                         } else {
                             new EditTimeSheetDialog("Edit Timesheet", ts);
                             if (EditTimeSheetDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger, getTableView(),
-                                        getTableDoc(), getSelect(), id);
+                                        getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {
@@ -124,7 +124,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                     if (ts != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete timesheet?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(ts);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

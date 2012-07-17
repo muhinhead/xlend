@@ -3,7 +3,7 @@ package com.xlend.gui;
 import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
-import com.xlend.mvc.dbtable.DbTableView;
+import com.xlend.mvc.dbtable.DbTableView.MyTableModel;
 import com.xlend.mvc.dbtable.ITableView;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
@@ -18,25 +18,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -211,23 +193,15 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         Component selectedPanel = mainPanel.getSelectedComponent();
         if (selectedPanel instanceof GeneralGridPanel) {
             GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
-            selectedGridPanel.highlightSearch(srcField.getText());
+            try {
+                RowFilter<MyTableModel, Object> rf = RowFilter.regexFilter(srcField.getText());
+                selectedGridPanel.getTableView().getSorter().setRowFilter(rf);
+            } catch (Exception ex) {
+                XlendWorks.log(ex);
+            }
+//            selectedGridPanel.highlightSearch(srcField.getText());
         }
     }
-
-//    private KeyAdapter getFilterFieldKeyListener() {
-//        return new KeyAdapter() {
-//
-//            @Override
-//            public void keyReleased(KeyEvent e) {
-//                Component selectedPanel = mainPanel.getSelectedComponent();
-//                if (selectedPanel instanceof GeneralGridPanel) {
-//                    GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
-//                    selectedGridPanel.setFilter(fltrField.getText());
-//                }
-//            }
-//        };
-//    }
 
     public void setVisible(boolean b) {
         if (b) {
@@ -244,6 +218,9 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
                 boolean pressed = searchButton.isSelected();
                 srcLabel.setVisible(pressed);
                 srcField.setVisible(pressed);
+                if (pressed) {
+                    srcField.requestFocus();
+                }
             }
         };
     }
@@ -259,11 +236,11 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //            }
 //        };
 //    }
-
     private void refreshGrids() {
         for (DbTableGridPanel grid : grids.keySet()) {
             try {
-                updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid), null);
+                updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid), null,
+                        grid.getPageSelector().getSelectedIndex());
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -353,11 +330,15 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
     }
 
     public static void updateGrid(IMessageSender exchanger,
-            ITableView view, DbTableDocument doc, String select, Integer id)
+            ITableView view, DbTableDocument doc, String select, Integer id, int page)
             throws RemoteException {
         int row = view.getSelectedRow();
         if (select != null) {
-            doc.setBody(exchanger.getTableBody(select));
+            if (page >= 0) {
+                doc.setBody(exchanger.getTableBody(select, page, GeneralGridPanel.PAGESIZE));
+            } else {
+                doc.setBody(exchanger.getTableBody(select));
+            }
             view.getController().updateExcept(null);
             if (id != null) {
                 DbTableGridPanel.selectRowOnId(view, id);
@@ -419,14 +400,12 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //        }
 //        return contractsPanel;
 //    }
-    
 //    protected DbTableGridPanel createAndRegisterGrid(String select,
 //            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
 //        DbTableGridPanel panel = createGridPanel(getExchanger(), select, add, edit, del, maxWidths);
 //        grids.put(panel, select);
 //        return panel;
 //    }
-
 //    public static DbTableGridPanel createGridPanel(IMessageSender exchanger, String select,
 //            AbstractAction add, AbstractAction edit, AbstractAction del, HashMap<Integer, Integer> maxWidths) {
 //        DbTableGridPanel targetPanel = null;
@@ -443,7 +422,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //        }
 //        return targetPanel;
 //    }
-
     protected void registerGrid(GeneralGridPanel grid) {
         grids.put(grid, grid.getSelect());
     }

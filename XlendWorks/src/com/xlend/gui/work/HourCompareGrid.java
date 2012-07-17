@@ -33,7 +33,8 @@ public class HourCompareGrid extends GeneralGridPanel {
                     EditHourCompareDialog ed = new EditHourCompareDialog("New Hour Comparison", null);
                     if (EditHourCompareDialog.okPressed) {
                         Xhourcompare xc = (Xhourcompare) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xc.getXhourcompareId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
+                                getSelect(), xc.getXhourcompareId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -55,7 +56,8 @@ public class HourCompareGrid extends GeneralGridPanel {
                         Xhourcompare xc = (Xhourcompare) exchanger.loadDbObjectOnID(Xhourcompare.class, id);
                         new EditHourCompareDialog("Edit Hour Comparison", xc);
                         if (EditHourCompareDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
+                                    getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -78,7 +80,7 @@ public class HourCompareGrid extends GeneralGridPanel {
                     if (xc != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xc);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

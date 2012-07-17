@@ -42,7 +42,7 @@ public class BreakdownsGrid extends GeneralGridPanel {
                     EditBreakdownDialog ed = new EditBreakdownDialog("Add breakdown", null);
                     if (EditBreakdownDialog.okPressed) {
                         Xbreakdown xb = (Xbreakdown) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -64,7 +64,7 @@ public class BreakdownsGrid extends GeneralGridPanel {
                         Xbreakdown xb = (Xbreakdown) exchanger.loadDbObjectOnID(Xbreakdown.class, id);
                         new EditBreakdownDialog("Edit breakdown", xb);
                         if (EditBreakdownDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -87,7 +87,7 @@ public class BreakdownsGrid extends GeneralGridPanel {
                     if (xb !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete breakdown?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xb);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

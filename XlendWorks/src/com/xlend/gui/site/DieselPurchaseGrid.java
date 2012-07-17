@@ -42,7 +42,7 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
                     EditDieselPurchaseDialog ed = new EditDieselPurchaseDialog("Add Purchase", null);
                     if (EditDieselPurchaseDialog.okPressed) {
                         Xdieselpchs xpr = (Xdieselpchs) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xpr.getXdieselpchsId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xpr.getXdieselpchsId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -64,7 +64,7 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
                         Xdieselpchs xpr = (Xdieselpchs) exchanger.loadDbObjectOnID(Xdieselpchs.class, id);
                         new EditDieselPurchaseDialog("Edit Diesel Purchase", xpr);
                         if (EditDieselPurchaseDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -87,7 +87,7 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
                     if (xpr !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete diesel purchase?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xpr);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

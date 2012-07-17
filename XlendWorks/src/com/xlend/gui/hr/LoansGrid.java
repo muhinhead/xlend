@@ -41,7 +41,7 @@ public class LoansGrid extends GeneralGridPanel {
                     if (EditLoanDialog.okPressed) {
                         Xloans xl = (Xloans) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xl.getXloansId());
+                                getTableView(), getTableDoc(), getSelect(), xl.getXloansId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -64,7 +64,7 @@ public class LoansGrid extends GeneralGridPanel {
                         new EditLoanDialog("Edit Loan", xl);
                         if (EditLoanDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -86,7 +86,7 @@ public class LoansGrid extends GeneralGridPanel {
                     Xloans xl = (Xloans) exchanger.loadDbObjectOnID(Xloans.class, id);
                     if (xl != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

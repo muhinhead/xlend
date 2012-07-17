@@ -32,7 +32,7 @@ public class UsersGrid extends GeneralGridPanel {
                 try {
                     EditUserDialog ed = new EditUserDialog("New User", null);
                     if (EditUserDialog.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -55,7 +55,7 @@ public class UsersGrid extends GeneralGridPanel {
                         DbObject[] recs = new DbObject[]{pf, up};
                         new EditUserDialog("Edit User", recs);
                         if (EditUserDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -79,7 +79,7 @@ public class UsersGrid extends GeneralGridPanel {
                                 "Do you want to delete user [" + pf.getFirstName()
                                 + " " + pf.getLastName() + "]?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(pf);
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);

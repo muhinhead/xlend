@@ -67,7 +67,7 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
                     if (bcd.okPressed) {
                         Xbreakconsume breakconsume = (Xbreakconsume) bcd.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                breakconsume.getXbreakconsumeId());
+                                breakconsume.getXbreakconsumeId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -93,7 +93,7 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
                         new EditBreakConsumeDialog("Edit Purchase", xbc);
                         if (EditBreakConsumeDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -117,7 +117,7 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
                     if (xbc!=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xbc);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

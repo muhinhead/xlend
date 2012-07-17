@@ -47,7 +47,7 @@ public class ClientsGrid extends GeneralGridPanel {
                     if (EditClientDialog.okPressed) {
                         Xclient xclient = (Xclient) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xclient.getXclientId());
+                                xclient.getXclientId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -70,7 +70,7 @@ public class ClientsGrid extends GeneralGridPanel {
                         new EditClientDialog("Edit Client", xclient);
                         if (EditClientDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -94,7 +94,7 @@ public class ClientsGrid extends GeneralGridPanel {
                             + xclient.getCompanyname() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xclient);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

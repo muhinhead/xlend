@@ -50,7 +50,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                         ed = new EditOrderItemDialog("New Order Item", null);
                         if (EditOrderItemDialog.okPressed) {
                             Xorderitem xitm = (Xorderitem) ed.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xitm.getXorderitemId());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xitm.getXorderitemId(),getPageSelector().getSelectedIndex());
                         }
                     } else {
                         GeneralFrame.infoMessageBox("Attention!", "Save order please before adding items");
@@ -76,7 +76,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                         EditOrderItemDialog.xorder = getXorder();
                         new EditOrderItemDialog("Edit Order Item", itm);
                         if (EditOrderItemDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -100,7 +100,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                             + itm.getItemnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null);
+                                getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

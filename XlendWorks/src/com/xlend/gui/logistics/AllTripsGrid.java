@@ -39,7 +39,7 @@ public class AllTripsGrid extends GeneralGridPanel {
                     EditTripDialog ed = new EditTripDialog("Add Trip", null);
                     if (EditTripDialog.okPressed) {
                         Xtrip xt = (Xtrip) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xt.getXtripId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xt.getXtripId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class AllTripsGrid extends GeneralGridPanel {
                         Xtrip xt = (Xtrip) exchanger.loadDbObjectOnID(Xtrip.class, id);
                         new EditTripDialog("Edit Trip", xt);
                         if (EditTripDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +84,7 @@ public class AllTripsGrid extends GeneralGridPanel {
                     if (xt !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xt);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

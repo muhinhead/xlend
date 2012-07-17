@@ -43,7 +43,7 @@ public class LowBedGrid extends GeneralGridPanel {
                     if (EditLowBedDialog.okPressed) {
                         Xlowbed lb = (Xlowbed) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), lb.getXmachineId());
+                                getTableView(), getTableDoc(), getSelect(), lb.getXmachineId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -66,7 +66,7 @@ public class LowBedGrid extends GeneralGridPanel {
                         new EditLowBedDialog("Edit Low-Bed", xlb);
                         if (EditLowBedDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +88,7 @@ public class LowBedGrid extends GeneralGridPanel {
                     Xlowbed xlb = (Xlowbed) exchanger.loadDbObjectOnID(Xlowbed.class, id);
                     if (xlb != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xlb);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

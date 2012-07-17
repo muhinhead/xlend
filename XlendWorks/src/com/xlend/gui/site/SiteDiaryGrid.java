@@ -43,7 +43,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
                     EditSiteDiaryDialog ed = new EditSiteDiaryDialog("Add Record", null);
                     if (EditSiteDiaryDialog.okPressed) {
                         Xsitediary xd = (Xsitediary) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xd.getXsitediaryId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xd.getXsitediaryId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -66,7 +66,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
                         new EditSiteDiaryDialog("Edit Record", xd);
                         if (EditSiteDiaryDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +88,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
                     Xsitediary xd = (Xsitediary) exchanger.loadDbObjectOnID(Xsitediary.class, id);
                     if (xd != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xd);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

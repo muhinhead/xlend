@@ -38,7 +38,7 @@ public class PayFromGrid extends GeneralGridPanel {
                 try {
                     EditPayFromDialog ed = new EditPayFromDialog("New Pay Source", null);
                     if (ed.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -61,7 +61,7 @@ public class PayFromGrid extends GeneralGridPanel {
                         new EditPayFromDialog("Edit Pay Source", itm);
                         if (EditPayFromDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +84,7 @@ public class PayFromGrid extends GeneralGridPanel {
                         Cbitems itm = (Cbitems) exchanger.loadDbObjectOnID(Cbitems.class, id);
                         if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(itm);
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);

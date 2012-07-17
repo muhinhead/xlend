@@ -39,7 +39,7 @@ public class Application4LeaveGrid extends GeneralGridPanel {
                     if (EditApp4LeaveDialog.okPressed) {
                         Xappforleave xl = (Xappforleave) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xl.getXappforleaveId());
+                                getSelect(), xl.getXappforleaveId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -62,7 +62,7 @@ public class Application4LeaveGrid extends GeneralGridPanel {
                         new EditApp4LeaveDialog("Edit App for Leave", xl);
                         if (EditApp4LeaveDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -85,7 +85,7 @@ public class Application4LeaveGrid extends GeneralGridPanel {
                     if (xl != null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

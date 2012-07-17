@@ -42,7 +42,8 @@ public class TripSheetGrid extends GeneralGridPanel {
                     EditTripSheetDialog ed = new EditTripSheetDialog("New Tripsheet", null);
                     if (EditTripSheetDialog.okPressed) {
                         Xtripsheet xt = (Xtripsheet) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xt.getXtripsheetId());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                getSelect(), xt.getXtripsheetId(),getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -65,7 +66,7 @@ public class TripSheetGrid extends GeneralGridPanel {
                         new EditTripSheetDialog("Edit Tripsheet", xt);
                         if (EditTripSheetDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id);
+                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +89,7 @@ public class TripSheetGrid extends GeneralGridPanel {
                     if (xt !=null && GeneralFrame.yesNo("Attention!", 
                             "Do you want to delete this tripsheet]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xt);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

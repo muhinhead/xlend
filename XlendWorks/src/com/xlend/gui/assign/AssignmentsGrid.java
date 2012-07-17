@@ -46,7 +46,7 @@ public class AssignmentsGrid extends GeneralGridPanel {
                         EditSiteAssignmentDialog esad = new EditSiteAssignmentDialog("Add assignment", null);
                         if (esad.okPressed) {
                             Xopmachassing assign = (Xopmachassing) esad.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), assign.getXopmachassingId());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), assign.getXopmachassingId(), getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -88,7 +88,7 @@ public class AssignmentsGrid extends GeneralGridPanel {
                             if (ok && GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(assign);
-                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {

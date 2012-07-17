@@ -66,7 +66,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                             contractPage.setNew(true);
                             DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
                         }
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
 
                 } catch (Exception ex) {
@@ -89,7 +89,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                         Xcontractpage contractPage = (Xcontractpage) exchanger.loadDbObjectOnID(Xcontractpage.class, id);
                         new EditContractPageDialog("Edit Contract Page", contractPage);
                         if (EditContractPageDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -112,7 +112,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                     if (contractPage != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract page No_"
                             + contractPage.getPagenum() + "?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(contractPage);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

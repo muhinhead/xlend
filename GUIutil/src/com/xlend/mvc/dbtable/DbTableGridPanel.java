@@ -4,6 +4,7 @@ import com.xlend.mvc.Controller;
 //import com.iid.util.PopupListener;
 import com.xlend.util.PopupListener;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -35,6 +36,8 @@ public class DbTableGridPanel extends JPanel {
     private JButton delButton = null;
     private MouseAdapter doubleClickAdapter;
     private Controller controller;
+    private JComboBox pageSelector;
+    private JProgressBar progressBar;
 
     public DbTableGridPanel(
             AbstractAction addAction,
@@ -84,8 +87,15 @@ public class DbTableGridPanel extends JPanel {
         for (int i = 3; i < acts.length; i++) {
             btnPanel.add(new JButton(acts[i]));
         }
+        JPanel pageChoosePanel = new JPanel(new FlowLayout());
+        pageChoosePanel.add(progressBar = new JProgressBar());
+        progressBar.setIndeterminate(false);
+        pageChoosePanel.add(progressBar);
+        pageChoosePanel.add(new JLabel("Page:",SwingConstants.RIGHT));
+        pageChoosePanel.add(pageSelector = new JComboBox());
         add(sp = new JScrollPane((JComponent) getTableView()), BorderLayout.CENTER);
         add(getRightPanel(btnPanel), BorderLayout.EAST);
+        add(pageChoosePanel, BorderLayout.SOUTH);
         tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
 
             public void mouseClicked(MouseEvent e) {
@@ -144,8 +154,8 @@ public class DbTableGridPanel extends JPanel {
     public int getSelectedID() {
         int row = tableView.getSelectedRow();
         if (row >= 0 && row < tableView.getRowCount()) {//&& row < tableView.getSelectedRow()) {
-            Vector line = (Vector) tableView.getRowData().get(row);
-            return Integer.parseInt((String) line.get(0));
+            String sid = (String) tableView.getValueAt(row, 0);
+            return Integer.parseInt(sid);
         }
         return 0;
     }
@@ -259,5 +269,19 @@ public class DbTableGridPanel extends JPanel {
      */
     public Controller getController() {
         return controller;
+    }
+
+    /**
+     * @return the pageSelector
+     */
+    public JComboBox getPageSelector() {
+        return pageSelector;
+    }
+
+    /**
+     * @return the progressBar
+     */
+    public JProgressBar getProgressBar() {
+        return progressBar;
     }
 }

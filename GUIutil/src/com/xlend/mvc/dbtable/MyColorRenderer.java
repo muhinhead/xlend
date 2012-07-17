@@ -22,32 +22,33 @@ public class MyColorRenderer extends JLabel implements TableCellRenderer {
 
     public MyColorRenderer(ITableView tv) {
         super();
-        
+
         Font font = getFont();
-        Font newFont = new Font(font.getName(),font.getStyle(),10);
-        setFont(newFont);        
+        Font newFont = new Font(font.getName(), font.getStyle(), 10);
+        setFont(newFont);
         this.tv = tv;
     }
 
     public Component getTableCellRendererComponent(
             JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {
-        Vector line = (Vector) tv.getRowData().get(row);
-        if (value != null) {
-            setText(value.toString());
+        if (row < tv.getRowData().size()) {
+            Vector line = (Vector) tv.getRowData().get(row);
+            if (value != null) {
+                setText(value.toString());
+            }
+            this.setOpaque(true);
+            String searchStr = tv.getSearchString();
+            String ceilStr = (String) line.get(column);
+            boolean found = (searchStr != null && searchStr.length() > 0 && ceilStr.toUpperCase().indexOf(searchStr.toUpperCase()) >= 0);
+            Color backColor = (row % 2 == 0 && !isSelected) ? found ? searchBackColor : stripColor : (isSelected
+                    ? table.getSelectionBackground()
+                    : found ? searchBackColor : table.getBackground());
+            Color foreColor = isSelected ? found ? searchStringColor : table.getSelectionForeground()
+                    : found ? searchStringColor : table.getForeground();
+            setBackground(backColor);
+            setForeground(foreColor);
         }
-        this.setOpaque(true);
-        String searchStr = tv.getSearchString();
-        String ceilStr = (String) line.get(column);
-        boolean found = (searchStr != null && searchStr.length() > 0 && ceilStr.toUpperCase().indexOf(searchStr.toUpperCase())>=0);
-        Color backColor = (row % 2 == 0 && !isSelected) ? found ? searchBackColor : stripColor : (isSelected ? 
-                table.getSelectionBackground() 
-                : found ? searchBackColor : table.getBackground());
-        Color foreColor = isSelected ? found ? searchStringColor : table.getSelectionForeground() 
-                : found ? searchStringColor : table.getForeground();
-        setBackground(backColor);
-        setForeground(foreColor);
         return this;
     }
 }
-

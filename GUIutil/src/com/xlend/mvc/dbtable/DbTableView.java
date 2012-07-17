@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -19,6 +21,72 @@ import javax.swing.table.TableCellRenderer;
  */
 public class DbTableView extends JTable implements ITableView {
 
+    private TableRowSorter<MyTableModel> sorter;
+
+    /**
+     * @return the sorter
+     */
+    public TableRowSorter<MyTableModel> getSorter() {
+        return sorter;
+    }
+
+    public class MyTableModel extends AbstractTableModel {
+
+        private int colNumAdjusted(int col) {
+            if (idRowNum >= 0 && col >= idRowNum) {
+                return col + 1;
+            } else {
+                return col;
+            }
+        }
+
+        public void fireTableCellUpdated(int row, int col) {
+            super.fireTableCellUpdated(row, colNumAdjusted(col));
+        }
+
+        public String getColumnName(int col) {
+            return (String) colName.get(colNumAdjusted(col));
+        }
+
+        public int getRowCount() {
+            return rowData.size();
+        }
+
+        public int getColumnCount() {
+            return idRowNum >= 0 ? (colName.size() - 1)
+                    : colName.size();
+            ///return colName.size();
+        }
+
+        public boolean isCellEditable(int row, int col) {
+
+            return (getValueAt(row, col).getClass().equals(Boolean.class));
+        }
+
+        public Object getValueAt(int row, int col) {
+            try {
+                Vector line = (Vector) rowData.get(row);
+                return line.get(colNumAdjusted(col));
+            } catch (ArrayIndexOutOfBoundsException ae) {
+                return "";
+            }
+        }
+
+        public void setValueAt(Object val, int row, int col) {
+            Vector line = (Vector) rowData.get(row);
+            line.set(colNumAdjusted(col), val);
+            fireTableCellUpdated(row, colNumAdjusted(col));
+            synchronize();//new Integer(row));
+        }
+
+        public Class getColumnClass(int c) {
+            try {
+                return getValueAt(0, c).getClass();
+            } catch (NullPointerException e) {
+                return String.class;
+            }
+        }
+    }
     private Controller controller = null;
     private Vector colName = new Vector();
     private Vector rowData = new Vector();
@@ -33,60 +101,7 @@ public class DbTableView extends JTable implements ITableView {
 //        return column > 0 ? myCellRenderer : super.getCellRenderer(row, column);
         return myCellRenderer;
     }
-    protected AbstractTableModel tableModel =
-            new AbstractTableModel() {
-
-                private int colNumAdjusted(int col) {
-                    if (idRowNum >= 0 && col >= idRowNum) {
-                        return col + 1;
-                    } else {
-                        return col;
-                    }
-                }
-
-                public void fireTableCellUpdated(int row, int col) {
-                    super.fireTableCellUpdated(row, colNumAdjusted(col));
-                }
-
-                public String getColumnName(int col) {
-                    return (String) colName.get(colNumAdjusted(col));
-                }
-
-                public int getRowCount() {
-                    return rowData.size();
-                }
-
-                public int getColumnCount() {
-                    return idRowNum >= 0 ? (colName.size() - 1)
-                            : colName.size();
-                    ///return colName.size();
-                }
-
-                public boolean isCellEditable(int row, int col) {
-
-                    return (getValueAt(row, col).getClass().equals(Boolean.class));
-                }
-
-                public Object getValueAt(int row, int col) {
-                    Vector line = (Vector) rowData.get(row);
-                    return line.get(colNumAdjusted(col));
-                }
-
-                public void setValueAt(Object val, int row, int col) {
-                    Vector line = (Vector) rowData.get(row);
-                    line.set(colNumAdjusted(col), val);
-                    fireTableCellUpdated(row, colNumAdjusted(col));
-                    synchronize();//new Integer(row));
-                }
-
-                public Class getColumnClass(int c) {
-                    try {
-                        return getValueAt(0, c).getClass();
-                    } catch (NullPointerException e) {
-                        return String.class;
-                    }
-                }
-            };
+    protected MyTableModel tableModel = new MyTableModel();
 
     public DbTableView() {
         super();
@@ -107,6 +122,7 @@ public class DbTableView extends JTable implements ITableView {
         });
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sizeColumnsToFit(AUTO_RESIZE_OFF);
+//        setAutoCreateRowSorter(true);
     }
 
     public void setController(Controller controller) {
@@ -132,6 +148,15 @@ public class DbTableView extends JTable implements ITableView {
         }
         if (getModel() != tableModel) {
             setModel(tableModel);
+            sorter = new TableRowSorter<MyTableModel>(tableModel);
+            setRowSorter(getSorter());
+//            RowFilter<MyTableModel, Object> rf = null;
+//            try {
+//                rf = RowFilter.regexFilter(filterText.getText(), 0);
+//            } catch (java.util.regex.PatternSyntaxExceptione) {
+//                return;
+//            }
+//            sorter.setRowFilter(rf);
         }
         this.invalidate();
         tableModel.fireTableStructureChanged();

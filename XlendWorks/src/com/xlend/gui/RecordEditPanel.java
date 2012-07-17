@@ -6,15 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 
@@ -102,8 +95,7 @@ public abstract class RecordEditPanel extends JPanel {
         fillContent();
         loadData();
     }
-    
-    
+
     protected abstract void fillContent();
 
     public abstract void loadData();
@@ -148,6 +140,12 @@ public abstract class RecordEditPanel extends JPanel {
                 return;
             }
         }
+        if (id != null) {
+            ComboItem ci = new ComboItem(id, "--unknown or inactive--");
+            DefaultComboBoxModel cmb = (DefaultComboBoxModel) cb.getModel();
+            cmb.addElement(ci);
+            cb.setSelectedItem(ci);
+        }
     }
 
     protected static MaskFormatter createFormatter(String s) {
@@ -186,7 +184,7 @@ public abstract class RecordEditPanel extends JPanel {
     }
 
     protected JComponent getGridPanel(JComponent[] comps) {
-        JPanel ans = new JPanel(new GridLayout(1, comps.length,5,1));
+        JPanel ans = new JPanel(new GridLayout(1, comps.length, 5, 1));
         for (int i = 0; i < comps.length; i++) {
             ans.add(comps[i]);
         }

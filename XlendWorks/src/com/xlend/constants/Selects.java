@@ -25,7 +25,7 @@ public class Selects {
     public static final String SELECT_ORDERISITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\", "
             + "CASEWHEN(is_active,'Yes','No') \"Active\" "
             + "from xsite where xorder_id = # or xorder2_id = # or xorder3_id = #";
     public static final String SELECT_FROM_CLIENTS = "Select xclient_id \"Id\","

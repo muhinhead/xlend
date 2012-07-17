@@ -19,8 +19,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 27;
-    public static final String DB_VERSION = "0.27";
+    private static final int DB_VERSION_ID = 28;
+    public static final String DB_VERSION = "0.28";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
@@ -1457,7 +1457,8 @@ public class DbConnection {
         "alter table xtrip drop column distance",
         "alter table xtrip drop column loaded",
         "alter table xtrip add operator_id int",
-        "alter table xtrip add constraint xtrip_xemployee_fk3 foreign key (operator_id) references xemployee"
+        "alter table xtrip add constraint xtrip_xemployee_fk3 foreign key (operator_id) references xemployee",
+        "alter table xsite add is_active bit"
     };
 
     public static Connection getConnection() throws RemoteException {

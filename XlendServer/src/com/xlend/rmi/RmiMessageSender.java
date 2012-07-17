@@ -2,11 +2,9 @@ package com.xlend.rmi;
 
 import com.xlend.XlendServer;
 import com.xlend.dbutil.DbConnection;
-import com.xlend.dbutil.DbUtil;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.sql.Connection;
@@ -15,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -97,10 +93,25 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
-//    @Override
+////    @Override
+//    public Vector[] getTableBody(String select) throws RemoteException {
+//        Vector headers = getColNames(select);
+//        return new Vector[]{headers, getRows(select, headers.size())};
+//    }
+    @Override
     public Vector[] getTableBody(String select) throws RemoteException {
+        return getTableBody(select, 0, 0);
+    }
+
+    @Override
+    public Vector[] getTableBody(String select, int page, int pagesize) throws java.rmi.RemoteException {
         Vector headers = getColNames(select);
-        return new Vector[]{headers, getRows(select, headers.size())};
+        int startrow = 0, endrow = 0;
+        if (page > 0 || pagesize > 0) {
+            startrow = page * pagesize + 1; //int page starts from 0, int startrow starts from 1
+            endrow = (page + 1) * pagesize; //last row of page
+        }
+        return new Vector[]{headers, getRows(select, headers.size(), startrow, endrow)};
     }
 
     private Vector getColNames(String select) throws RemoteException {
@@ -142,14 +153,22 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
-    private Vector getRows(String select, int cols) throws RemoteException {
+    private Vector getRows(String select, int cols, int startrow, int endrow) throws RemoteException {
         Connection connection = DbConnection.getConnection();
         Vector rows = new Vector();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
+            String pagedSelect;
+            if (startrow == 0 && endrow == 0) {
+                pagedSelect = select;
+            } else {
+                //pagedSelect = "Select * from (select subq.*,rownum rn from (" + select + ") subq) where rn between " + startrow + " and " + endrow;
+                pagedSelect = select.replaceFirst("select", "SELECT").replaceAll("Select", "SELECT");
+                pagedSelect = pagedSelect.replaceFirst("SELECT", "SELECT LIMIT " + (startrow-1) + " " + (endrow - startrow + 1));
+            }
             Vector line;
-            ps = connection.prepareStatement(select);
+            ps = connection.prepareStatement(pagedSelect);
             rs = ps.executeQuery();
             while (rs.next()) {
                 line = new Vector();
@@ -187,6 +206,50 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         }
     }
 
+//    private Vector getRows(String select, int cols) throws RemoteException {
+//        Connection connection = DbConnection.getConnection();
+//        Vector rows = new Vector();
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        try {
+//            Vector line;
+//            ps = connection.prepareStatement(select);
+//            rs = ps.executeQuery();
+//            while (rs.next()) {
+//                line = new Vector();
+//                for (int c = 0; c < cols; c++) {
+//                    String ceil = rs.getString(c + 1);
+//                    ceil = ceil == null ? "" : ceil;
+//                    line.add(ceil);
+//                }
+//                rows.add(line);
+//            }
+//            return rows;
+//        } catch (SQLException ex) {
+//            XlendServer.log(ex);
+//            throw new java.rmi.RemoteException(ex.getMessage());
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//            } catch (SQLException se1) {
+//            } finally {
+//                try {
+//                    if (ps != null) {
+//                        ps.close();
+//                    }
+//                } catch (SQLException se2) {
+//                }
+//            }
+//            try {
+//                DbConnection.closeConnection(connection);
+//            } catch (SQLException ex) {
+//                XlendServer.log(ex);
+//                throw new java.rmi.RemoteException(ex.getMessage());
+//            }
+//        }
+//    }
 //    @Override
     public void deleteObject(DbObject dbob) throws RemoteException {
         if (dbob != null) {
@@ -246,5 +309,46 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
 //    @Override
     public void rollbackTransaction(String transactionName) throws RemoteException {
         //execute("ROLLBACK to " + transactionName);
+    }
+
+    public int getCount(String select) throws RemoteException {
+        StringBuffer slct;
+        int count = 0;
+        int p = select.toLowerCase().lastIndexOf("order by");
+        slct = new StringBuffer("select count(*) from (" + select.substring(0, p > 0 ? p : select.length()) + ")");
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Connection connection = DbConnection.getConnection();
+        try {
+            ps = connection.prepareStatement(slct.toString());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            XlendServer.log(ex);
+            throw new java.rmi.RemoteException(ex.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException se1) {
+            } finally {
+                try {
+                    if (ps != null) {
+                        ps.close();
+                    }
+                } catch (SQLException se2) {
+                }
+            }
+            try {
+                DbConnection.closeConnection(connection);
+            } catch (SQLException ex) {
+                XlendServer.log(ex);
+                throw new java.rmi.RemoteException(ex.getMessage());
+            }
+        }
+        return count;
     }
 }

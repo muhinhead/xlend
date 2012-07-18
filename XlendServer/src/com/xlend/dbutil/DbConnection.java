@@ -1458,7 +1458,13 @@ public class DbConnection {
         "alter table xtrip drop column loaded",
         "alter table xtrip add operator_id int",
         "alter table xtrip add constraint xtrip_xemployee_fk3 foreign key (operator_id) references xemployee",
-        "alter table xsite add is_active bit"
+        "alter table xsite add is_active bit",
+        "update sheet set sheetname='Diesel Purchases' where sheetname='Diesel Rurchases'",
+        "update sheet set sheetname='Yard Diesel' where sheetname='Diesel Issuing'",
+        "update sheet set sheetname='Petrol Issued' where sheetname='Fuel'",
+        "update sheet set sheetname='Site Diesel' where sheetname='Issuing'"
+        //"delete from usersheet where sheet_id in (select sheet_id from sheet where sheetname='Creditor Age Analysis')",
+        //"delete from sheet where sheetname='Creditor Age Analysis'"
     };
 
     public static Connection getConnection() throws RemoteException {

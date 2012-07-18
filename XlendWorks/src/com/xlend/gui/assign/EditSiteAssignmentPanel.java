@@ -110,6 +110,7 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                 } else {
                     previous.setDateEnd(new java.sql.Date(dt.getTime()));
                     previous.setXemployeeId(previous.getXemployeeId());
+                    previous.setXmachineId(previous.getXmachineId()==0?null:previous.getXmachineId());
                     previous = (Xopmachassing) DashBoard.getExchanger().saveDbObject(previous);
                     ok = true;
                 }

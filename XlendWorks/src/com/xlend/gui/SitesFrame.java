@@ -27,8 +27,13 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel operatorClockSheetPanel;
     
     private static String[] sheetList = new String[]{
-        "Sites", "Diesel Rurchases", "Diesel Issuing", "Consumables", "Breakdowns", 
-        "Fuel", "Issuing", "Site Diary", "Incidents", "Operator Clock Sheet"
+        "Sites", 
+        "Diesel Purchases",//"Diesel Rurchases", 
+        "Yard Diesel",//Diesel Issuing", 
+        "Consumables", "Breakdowns", 
+        "Petrol Issued",//Fuel", 
+        "Site Diesel",//Issuing", 
+        "Site Diary", "Incidents", "Operator Clock Sheet"
     };
 
     public SitesFrame(IMessageSender exch) {

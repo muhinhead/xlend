@@ -162,6 +162,15 @@ class EditBreakdownPanel extends RecordEditPanel {
         organizePanels(titles, edits, null);
 //        add(new JButton("!!!!"));
 //        add(getPurchasesPanel());
+        machineCB.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboItem mitm = (ComboItem) machineCB.getSelectedItem();
+                BreakdownConsumesGrid.setXmachineID(mitm.getId());
+//                EditBreakConsumeDialog.setXmachineID(mitm.getId());
+            }
+        });
     }
 
     private JComponent getPurchasesPanel(int xbreakdown_id) {

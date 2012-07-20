@@ -243,7 +243,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         for (JTextField tf : detailsFlds) {
             rightPanel.add(tf);
         }
-        
+
         leftPanel.add(new JPanel());
         for (int l = 0; l < days.length; l++) {
             leftPanel.add(daysLabels[l] = new JLabel(days[l], SwingConstants.RIGHT));
@@ -394,8 +394,8 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private void syncOrderComboOnSiteCombo() {
         ComboItem itm = (ComboItem) siteRefBox.getSelectedItem();
         if (itm != null && itm.getId() > 0) {
-            int order_id = XlendWorks.getOrderIdOnSiteId(DashBoard.getExchanger(), itm.getId());
-            for (int i = 0; i < orderRefBox.getItemCount(); i++) {
+            Integer order_id = XlendWorks.getOrderIdOnSiteId(DashBoard.getExchanger(), itm.getId());
+            for (int i = 0; order_id != null && i < orderRefBox.getItemCount(); i++) {
                 ComboItem citm = (ComboItem) orderRefBox.getItemAt(i);
                 if (citm.getId() == order_id) {
                     orderRefBox.setSelectedIndex(i);

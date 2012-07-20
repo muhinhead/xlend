@@ -51,13 +51,13 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
         xmachineID = aXmachineID;
     }
 
-    public BreakdownConsumesGrid(IMessageSender exchanger, String slct, Integer xmachineID, EditBreakdownPanel parentPanel) throws RemoteException {
+    public BreakdownConsumesGrid(IMessageSender exchanger, String slct, Integer xmachID, EditBreakdownPanel parentPanel) throws RemoteException {
         super(exchanger, slct, maxWidths, false);
         int p = Selects.SELECT_BREAKDOWNCONSUMES.indexOf(whereId);
         if (getSelect().startsWith(Selects.SELECT_BREAKDOWNCONSUMES.substring(0, p))) {
             xbreakdownID = new Integer(Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
         }
-        this.xmachineID = xmachineID;
+        this.xmachineID = xmachID;
         this.parentPanel = parentPanel;
     }
 

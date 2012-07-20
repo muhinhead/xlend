@@ -499,7 +499,7 @@ public class XlendWorks {
         w.setIconImage(loadImage(iconName, w));
     }
 
-    public static int getOrderIdOnSiteId(IMessageSender exchanger, int site_id) {
+    public static Integer getOrderIdOnSiteId(IMessageSender exchanger, int site_id) {
         try {
             Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, site_id);
             if (xsite != null) {

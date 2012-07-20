@@ -88,6 +88,13 @@ class EditBreakConsumePanel extends RecordEditPanel {
         }
     }
 
+    public void reloadMachineComboBox() {
+        breakConsumeCbModel.removeAllElements();
+        for (ComboItem ci : XlendWorks.loadConsumesForMachine(DashBoard.getExchanger(), EditBreakConsumeDialog.getXmachineID())) {
+            breakConsumeCbModel.addElement(ci);
+        }
+    }
+    
     @Override
     public boolean save() throws Exception {
         Xbreakconsume xbc = (Xbreakconsume) getDbObject();

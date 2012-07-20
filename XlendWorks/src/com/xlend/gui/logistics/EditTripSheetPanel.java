@@ -15,11 +15,11 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import com.xlend.util.WiderDropDownCombo;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +38,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
     private DefaultComboBoxModel lowbedCbModel;
     private JSpinner dateSP;
     private JComboBox driverCB;
-    private JComboBox lowbedCB;
+    private WiderDropDownCombo lowbedCB;
     private JComboBox authorizedCB;
     private static String[] hdrs = new String[]{
         "Date", "From", "To", "Loaded with", "Empty", "Time start", "Time end", "Km", "Assistant"
@@ -57,12 +57,58 @@ public class EditTripSheetPanel extends RecordEditPanel {
         private JCheckBox markCB;
         private JSpinner dateSP;
         private JComboBox fromSiteCB, toSiteCB;
+        private JTextField fromPlaceField;
+        private JTextField toPlaceField;
         private JComboBox loaded1CB, loaded2CB;
         private JCheckBox isEmptyCB;
         private JSpinner timeStartSP, timeEndSP;
         private JSpinner kilometersSP;
         private JComboBox assistantCB;
         private Xtripsheetpart xPart;
+
+        private class CardPanel extends JPanel {
+
+            private final JPanel comboPanel;
+            private final JTextField textField;
+            private final JComboBox siteCB;
+            private final CardLayout clayaut;
+
+            CardPanel(JComboBox siteCB, JTextField textField) {
+                super(new CardLayout());
+                clayaut = (CardLayout) (getLayout());
+                this.siteCB = siteCB;
+                this.comboPanel = comboPanelWithLookupBtn(siteCB, new SiteLookupAction(siteCB));
+                this.textField = textField;
+                add(this.comboPanel, "combo");
+                add(this.textField, "text");
+                init();
+            }
+
+            private void init() {
+                textField.setToolTipText("double click to show site list");
+                siteCB.setToolTipText("choose last item to enter other value");
+                textField.addMouseListener(new MouseAdapter() {
+
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            clayaut.show(CardPanel.this, "combo");
+                            siteCB.requestFocus();
+                        }
+                    }
+                });
+                siteCB.addActionListener(new AbstractAction() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        ComboItem citm = (ComboItem) siteCB.getSelectedItem();
+                        if (citm != null && citm.getId() == 0) {
+                            clayaut.show(CardPanel.this, "text");
+                            textField.requestFocus();
+                        }
+                    }
+                });
+            }
+        }
 
         RowPanel(Xtripsheetpart part) {
             super(new GridLayout(2, 10));
@@ -78,6 +124,9 @@ public class EditTripSheetPanel extends RecordEditPanel {
                     toSiteCbModel.addElement(ci);
                 }
             }
+            fromSiteCbModel.addElement(new ComboItem(0, "--other--"));
+            toSiteCbModel.addElement(new ComboItem(0, "--other--"));
+
             for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
                 assistantCbModel.addElement(ci);
             }
@@ -107,8 +156,12 @@ public class EditTripSheetPanel extends RecordEditPanel {
 
             add(markCB);
             add(dateSP);
-            add(comboPanelWithLookupBtn(fromSiteCB, new SiteLookupAction(fromSiteCB)));
-            add(comboPanelWithLookupBtn(toSiteCB, new SiteLookupAction(toSiteCB)));
+
+            fromPlaceField = new JTextField();
+            toPlaceField = new JTextField();
+            add(new CardPanel(fromSiteCB, fromPlaceField));
+            add(new CardPanel(toSiteCB, toPlaceField));
+
             add(comboPanelWithLookupBtn(loaded1CB, new MachineLookupAction(loaded1CB, null)));
 
             add(isEmptyCB);
@@ -145,11 +198,19 @@ public class EditTripSheetPanel extends RecordEditPanel {
                 if (getxPart().getPartdate() != null) {
                     dateSP.setValue(new java.util.Date(getxPart().getPartdate().getTime()));
                 }
-                if (getxPart().getFromsiteId() != null) {
+                if (getxPart().getFromsiteId() != null && getxPart().getFromsiteId() != 0) {
+                    RecordEditPanel.addSiteItem(fromSiteCbModel, getxPart().getFromsiteId());
                     selectComboItem(fromSiteCB, getxPart().getFromsiteId());
+                } else {
+                    selectComboItem(fromSiteCB, 0);
+                    fromPlaceField.setText(getxPart().getFromplace());
                 }
-                if (getxPart().getTositeId() != null) {
+                if (getxPart().getTositeId() != null && getxPart().getTositeId() != 0) {
+                    RecordEditPanel.addSiteItem(toSiteCbModel, getxPart().getTositeId());
                     selectComboItem(toSiteCB, getxPart().getTositeId());
+                } else {
+                    selectComboItem(toSiteCB, 0);
+                    toPlaceField.setText(getxPart().getToplace());
                 }
                 if (getxPart().getAssistantId() != null) {
                     selectComboItem(assistantCB, getxPart().getAssistantId());
@@ -182,11 +243,15 @@ public class EditTripSheetPanel extends RecordEditPanel {
                 getxPart().setXtripsheetId(xt.getXtripsheetId());
                 isNew = true;
             }
-//            TimeZone tz = TimeZone.getDefault().getOffset(WIDTH);
-//            int tdiff = tz.getOffset();
 
             getxPart().setFromsiteId(getSelectedCbItem(fromSiteCB));
+            if(fromPlaceField.getText().length()>0) {
+                getxPart().setFromplace(fromPlaceField.getText());
+            }
             getxPart().setTositeId(getSelectedCbItem(toSiteCB));
+            if(toPlaceField.getText().length()>0) {
+                getxPart().setToplace(toPlaceField.getText());
+            }
             getxPart().setIsempty(isEmptyCB.isSelected() ? 1 : 0);
             getxPart().setKilimeters((Integer) kilometersSP.getValue());
             getxPart().setLoaded1Id(getSelectedCbItem(loaded1CB));
@@ -244,23 +309,34 @@ public class EditTripSheetPanel extends RecordEditPanel {
             driverCbModel.addElement(ci);
             authorizedCbModel.addElement(ci);
         }
+        JButton addBtn = new JButton(getAddLineAction());
+        JButton delBtn = new JButton(getDeleteLineAction());
+        JLabel authLblb = new JLabel("  Authorized By:", SwingConstants.RIGHT);
+        JLabel drvrLbl = new JLabel("Driver:", SwingConstants.RIGHT);
+
         JComponent edits[] = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 8),
+            getGridPanel(idField = new JTextField(), 10),
             getGridPanel(new JComponent[]{
-                getGridPanel(dateSP = new SelectedDateSpinner(), 2),
-                new JLabel("Driver:", SwingConstants.RIGHT),
-                comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),
-                getGridPanel(new JComponent[]{new JPanel(),
-                    new JButton(getAddLineAction())})
+                getBorderPanel(new JComponent[]{dateSP = new SelectedDateSpinner()}),
+                getBorderPanel(new JComponent[]{
+                    drvrLbl, comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB))
+                }),
+                new JPanel(),
+                getBorderPanel(new JComponent[]{new JPanel(), new JPanel(), addBtn})
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowBedLookupAction(lowbedCB)),
-                new JLabel("Authorized By:", SwingConstants.RIGHT),
-                comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel), new EmployeeLookupAction(authorizedCB)),
-                getGridPanel(new JComponent[]{new JPanel(),
-                    new JButton(getDeleteLineAction())})
+                comboPanelWithLookupBtn(lowbedCB = new WiderDropDownCombo(lowbedCbModel), new LowBedLookupAction(lowbedCB)),
+                getBorderPanel(new JComponent[]{
+                    authLblb, comboPanelWithLookupBtn(authorizedCB = new JComboBox(authorizedCbModel), new EmployeeLookupAction(authorizedCB))
+                }),
+                new JPanel(),
+                getBorderPanel(new JComponent[]{new JPanel(), new JPanel(), delBtn})
             })
         };
+        drvrLbl.setPreferredSize(authLblb.getPreferredSize());
+        lowbedCB.setPreferredSize(new Dimension(200, lowbedCB.getPreferredSize().height));
+        lowbedCB.setWide(true);
+        addBtn.setPreferredSize(delBtn.getPreferredSize());
 
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(dateSP);

@@ -157,6 +157,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             }
             selectComboItem(paidByCB, xcns.getPayerId());
             selectComboItem(paidMethodCB, xcns.getXpaidmethodId());
+            RecordEditPanel.addSiteItem(siteCbModel, xcns.getXsiteId());
             selectComboItem(siteCB, xcns.getXsiteId());
             accNumField.setText(xcns.getAccnum());
             cheqNumberField.setText(xcns.getChequenumber());

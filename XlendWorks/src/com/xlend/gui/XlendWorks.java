@@ -14,9 +14,7 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Vector;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.49.1";
+    public static final String version = "0.49.2";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -258,7 +256,19 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
+    public static ComboItem loadSite(IMessageSender exchanger, Integer siteID) {
+        if (siteID != null && siteID.intValue() > 0) {
+            try {
+                Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, siteID);
+                return new ComboItem(xsite.getXsiteId(), xsite.getName());
+            } catch (RemoteException ex) {
+                log(ex);
+            }
+        }
+        return null;
+    }
+
     public static ComboItem[] loadAllSites(IMessageSender exchanger) {
         return loadSites(exchanger, "is_active=1");
     }
@@ -349,15 +359,15 @@ public class XlendWorks {
         return null;
     }
 
-    public static String[] loadAllLogins(IMessageSender exchanger) {
+    public static List loadAllLogins(IMessageSender exchanger) {
         try {
             DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");
-            String[] logins = new String[users.length + 1];
-            logins[0] = "";
+            ArrayList logins = new ArrayList();
+            logins.add("");
             int i = 1;
             for (DbObject o : users) {
                 Userprofile up = (Userprofile) o;
-                logins[i++] = up.getLogin();
+                logins.add(up.getLogin());
             }
             return logins;
         } catch (RemoteException ex) {
@@ -460,7 +470,6 @@ public class XlendWorks {
 //    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
 //        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
 //    }
-
     public static ComboItem loadEmployeeExcept(IMessageSender exchanger, String excepts) {
         ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
         return (clist != null && clist.length > 0 ? clist[0] : null);
@@ -682,15 +691,15 @@ public class XlendWorks {
         }
         return true;
     }
-                              
+
     public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, 
+        return loadOnSelect(exchanger,
                 "select l.xlowbed_id,'Machine:'+m.classify+m.tmvnr+"
                 + "'; Driver:'+d.clock_num+' '+d.first_name+'; Assistant:'+a.clock_num+' '+a.first_name "
                 + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
                 + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id");
     }
-    
+
     public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
         return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id=" + xmachineID);
     }
@@ -719,7 +728,6 @@ public class XlendWorks {
 //        }
 //        return xtre;
 //    }
-
 //    public static Xtripestablish getTripDeEstablish(Xtrip xtr) throws RemoteException {
 //        Xtripestablish xtre = null;
 //        if (xtr != null) {
@@ -733,7 +741,6 @@ public class XlendWorks {
 //        }
 //        return xtre;
 //    }
-
 //    public static Xtripmoving getTripMove(Xtrip xtr) throws RemoteException {
 //        Xtripmoving xtrm = null;
 //        if (xtr != null) {
@@ -745,7 +752,6 @@ public class XlendWorks {
 //        }
 //        return xtrm;
 //    }
-
 //    public static Xtripexchange getTripExchange(Xtrip xtr) throws RemoteException {
 //        Xtripexchange xtre = null;
 //        if (xtr != null) {
@@ -757,7 +763,6 @@ public class XlendWorks {
 //        }
 //        return xtre;
 //    }
-
     public static ComboItem[] loadSiteDiaryHrsWorked(java.util.Date dt,
             Integer siteID, Integer operatorID, Integer machineID) {
         Calendar cal = Calendar.getInstance();
@@ -916,11 +921,11 @@ public class XlendWorks {
         Xopmachassing curAss = null;
         try {
             StringBuffer whereCond = new StringBuffer("");
-            if (machine_id!=0) {
-                whereCond.append("xmachine_id="+machine_id).append(" and ");
+            if (machine_id != 0) {
+                whereCond.append("xmachine_id=" + machine_id).append(" and ");
             }
-            if (operator_id!=0) {
-                whereCond.append("xemployee_id="+operator_id).append(" and ");
+            if (operator_id != 0) {
+                whereCond.append("xemployee_id=" + operator_id).append(" and ");
             }
             whereCond.append("date_end is null");
             DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class, whereCond.toString(), null);

@@ -160,6 +160,7 @@ class EditFuelPanel extends RecordEditPanel {
                 selectComboItem(supplierCB, xfl.getXsupplierId());
             }
             if (xfl.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xfl.getXsiteId());
                 selectComboItem(siteCB, xfl.getXsiteId());
             }
         }

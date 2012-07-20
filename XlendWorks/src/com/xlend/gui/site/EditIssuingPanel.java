@@ -239,6 +239,7 @@ public class EditIssuingPanel extends RecordEditPanel {
                 selectComboItem(machineCB, xi.getXmachineId());
             }
             if (xi.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xi.getXsiteId());
                 selectComboItem(siteCB, xi.getXsiteId());
             }
             if (xi.getTime1Start() != null) {

@@ -223,6 +223,7 @@ public class EditTripPanel extends RecordEditPanel {
                 dateSP.setValue(dt);
             }
             if (xtr.getFromsiteId() != null) {
+                RecordEditPanel.addSiteItem(fromSiteCbModel, xtr.getFromsiteId());
                 selectComboItem(fromSiteCB, xtr.getFromsiteId());
             }
 
@@ -273,7 +274,6 @@ public class EditTripPanel extends RecordEditPanel {
                 return false;
             }
         }
-//        int fromSiteID = getSelectedCbItem(fromSiteCB);
         boolean isNew = false;
         Xtrip xtr = (Xtrip) getDbObject();
         if (xtr == null) {

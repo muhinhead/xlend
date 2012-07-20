@@ -104,6 +104,7 @@ public class EditDieselCardPanel extends RecordEditPanel {
                 selectComboItem(operatorCB, xdc.getOperatorId());
             }
             if (xdc.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xdc.getXsiteId());
                 selectComboItem(siteCB, xdc.getXsiteId());
             }
             if (xdc.getAmountLiters() != null) {

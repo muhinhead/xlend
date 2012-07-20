@@ -56,6 +56,7 @@ public class EditTripExchangePanel extends RecordEditPanel implements EditSubPan
     public void loadData() {
         Xtrip trip = (Xtrip) getDbObject();
         if (trip != null) {
+            RecordEditPanel.addSiteItem(EditTripPanel.toSiteCbModel, trip.getTositeId());
             selectComboItem(siteCB, trip.getTositeId());
             selectComboItem(machineCB, trip.getMachineId());
             selectComboItem(withMachineCB, trip.getWithmachineId());

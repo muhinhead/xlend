@@ -505,6 +505,7 @@ class EditIncidentPanel extends RecordEditPanel {
             otherMachinesTA.setText(xi.getOthermachines());
             otherPeopleTA.setText(xi.getOtherpeople());
             if (xi.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xi.getXsiteId());
                 selectComboItem(siteCB, xi.getXsiteId());
             }
             locationTF.setText(xi.getLocation());

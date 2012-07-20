@@ -339,6 +339,7 @@ class EditHourComparePanel extends RecordEditPanel {
                 monthYearSP.setValue(new java.util.Date(xh.getMonthYear().getTime()));
             }
             if (xh.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xh.getXsiteId());
                 selectComboItem(siteCB, xh.getXsiteId());
             }
             if (xh.getXmachineId() != null) {

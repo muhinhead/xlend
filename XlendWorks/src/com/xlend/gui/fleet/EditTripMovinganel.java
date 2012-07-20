@@ -56,7 +56,9 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
     public void loadData() {
         Xtrip trip = (Xtrip) getDbObject();
         if (trip != null) {
+            RecordEditPanel.addSiteItem(inSiteCbModel, trip.getInsiteId());
             selectComboItem(inSiteCB, trip.getInsiteId());
+            RecordEditPanel.addSiteItem(EditTripPanel.toSiteCbModel, trip.getTositeId());
             selectComboItem(toSiteCB, trip.getTositeId());
             selectComboItem(machineCB, trip.getMachineId());
             if (trip.getDistanceEmpty() != null) {

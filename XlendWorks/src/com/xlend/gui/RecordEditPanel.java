@@ -132,6 +132,19 @@ public abstract class RecordEditPanel extends JPanel {
         two.setPreferredSize(new Dimension(width, b.height));
     }
 
+    protected static void addSiteItem(DefaultComboBoxModel cbm, Integer id) {
+        for (int i = 0; id != null && i < cbm.getSize(); i++) {
+            ComboItem itm = (ComboItem) cbm.getElementAt(i);
+            if (itm.getId() == id) {
+                return;
+            }
+        }
+        ComboItem newItm = XlendWorks.loadSite(DashBoard.getExchanger(), id);
+        if (newItm != null) {
+            cbm.addElement(newItm);
+        }
+    }
+
     protected static void selectComboItem(JComboBox cb, Integer id) {
         for (int i = 0; id != null && i < cb.getItemCount(); i++) {
             ComboItem itm = (ComboItem) cb.getItemAt(i);
@@ -215,6 +228,7 @@ public abstract class RecordEditPanel extends JPanel {
             setDbObject(DashBoard.getExchanger().saveDbObject(dbOb));
             return true;
         } catch (Exception ex) {
+            XlendWorks.log(ex);
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;

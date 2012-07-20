@@ -261,6 +261,7 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
                 selectComboItem(machineCB, xs.getXmachineId());
             }
             if (xs.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xs.getXsiteId());
                 selectComboItem(siteCB, xs.getXsiteId());
             }
             for (int i = 0; i < 7; i++) {

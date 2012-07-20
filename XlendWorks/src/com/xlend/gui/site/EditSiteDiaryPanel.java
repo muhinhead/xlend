@@ -345,6 +345,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 siteNumberField.setText(xd.getSiteNumber());
             }
             if (xd.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xd.getXsiteId());
                 selectComboItem(siteCB, xd.getXsiteId());
             }
             try {

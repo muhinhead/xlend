@@ -1,11 +1,9 @@
 package com.xlend.gui.site;
 
-import com.sun.java.swing.plaf.windows.WindowsBorders;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Cbitems;
 import com.xlend.orm.Xbreakconsume;
 import com.xlend.orm.Xconsume;
 import com.xlend.orm.Xsupplier;
@@ -14,8 +12,6 @@ import com.xlend.orm.dbobject.DbObject;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -46,12 +42,12 @@ class EditBreakConsumePanel extends RecordEditPanel {
             "Amt.R:"
         };
         breakConsumeCbModel = new DefaultComboBoxModel();
-        int n=0;
+        int n = 0;
         for (ComboItem ci : XlendWorks.loadConsumesForMachine(DashBoard.getExchanger(), EditBreakConsumeDialog.getXmachineID())) {
             breakConsumeCbModel.addElement(ci);
             n++;
         }
-        if (n==0) {
+        if (n == 0) {
             GeneralFrame.errMessageBox("Warning:", "There is no purchases for this machine found");
         }
         JComponent[] edits = new JComponent[]{
@@ -103,7 +99,12 @@ class EditBreakConsumePanel extends RecordEditPanel {
         }
         xbc.setXconsumeId(getSelectedCbItem(breakConsumeCB));
         xbc.setXbreakdownId(xbreakdownID);
+//        if (xbreakdownID == 0) {
+//            BreakdownConsumesGrid.getNewPurchases().add(xbc);
+//            return true;
+//        } else {
         return saveDbRecord(xbc, isNew);
+//        }
     }
 
 //    void setXmachineID(Integer machineID) {

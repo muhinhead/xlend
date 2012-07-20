@@ -10,6 +10,7 @@ import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
+import com.xlend.orm.Xbreakconsume;
 import com.xlend.orm.Xbreakdown;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -61,6 +62,7 @@ class EditBreakdownPanel extends RecordEditPanel {
 //    private JTextField invoiceNumberField;
     private JSpinner amountSP;
     private static final String UNKNOWN = "--Unknown--";
+    private BreakdownConsumesGrid purPanel;
 
     public EditBreakdownPanel(DbObject dbObject) {
         super(dbObject);
@@ -163,24 +165,25 @@ class EditBreakdownPanel extends RecordEditPanel {
     }
 
     private JComponent getPurchasesPanel(int xbreakdown_id) {
-        JComponent purPanel;
+//        JComponent purPanel;
         String title = "Purchases";
         try {
             purPanel = new BreakdownConsumesGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id), getSelectedCbItem(machineCB));
+                    Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id), 
+                    getSelectedCbItem(machineCB), this);
             purPanel.setPreferredSize(new Dimension(purPanel.getPreferredSize().width, 200));
+            purPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title));
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
-            JTextArea ta;
-            purPanel = new JScrollPane(ta = new JTextArea(ex.getMessage(), 5, 40),
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            ta.setEditable(false);
-            ta.setWrapStyleWord(true);
-            ta.setLineWrap(true);
-            title = "Error!";
+//            JTextArea ta;
+//            purPanel = new JScrollPane(ta = new JTextArea(ex.getMessage(), 5, 40),
+//                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+//                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+//            ta.setEditable(false);
+//            ta.setWrapStyleWord(true);
+//            ta.setLineWrap(true);
+//            title = "Error!";
         }
-        purPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title));
         return purPanel;
     }
 
@@ -198,6 +201,7 @@ class EditBreakdownPanel extends RecordEditPanel {
                 selectComboItem(machineCB, xbr.getXmachineId());
             }
             if (xbr.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xbr.getXsiteId());
                 selectComboItem(siteCB, xbr.getXsiteId());
             }
             if (xbr.getReportedbyId() != null) {
@@ -262,19 +266,31 @@ class EditBreakdownPanel extends RecordEditPanel {
             xbr.setRepairdate(new java.sql.Date(dt.getTime()));
         }
         xbr.setRepaired(problemRepairedCb.isSelected() ? 1 : 0);
-//        xbr.setDescription(descrOfBreakdownField.getText());
         xbr.setOperatorfault(operatorFaultCb.isSelected() ? 1 : 0);
         xbr.setOperatorId(getSelectedCbItem(operatorCB));
-//        xbr.setXconsumeId(getSelectedCbItem(purchasesCB));
         xbr.setKm2site1way((Integer) km2siteSP.getValue());
         xbr.setHoursonjob((Integer) hrsOnJobSP.getValue());
         xbr.setTimeback((Integer) timeBackSP.getValue());
         xbr.setTimeleft((Integer) timeLeftSP.getValue());
         xbr.setStayedover(stayedOverCb.isSelected() ? 1 : 0);
         xbr.setAccomprice((Integer) accomPriceSP.getValue());
-//        xbr.setInvoicenumber(invoiceNumberField.getText());
         xbr.setAmount((Double) amountSP.getValue());
-        return saveDbRecord(xbr, isNew);
+        boolean ok = saveDbRecord(xbr, isNew);
+//        if (ok && BreakdownConsumesGrid.getNewPurchases() != null) {
+//            xbr = (Xbreakdown) getDbObject();
+//            try {
+//                for (Xbreakconsume xbc : BreakdownConsumesGrid.getNewPurchases()) {
+//                    xbc.setXbreakdownId(xbr.getXbreakdownId());
+//                    xbc.setXbreakconsumeId(0);
+//                    xbc.setNew(true);
+//                    DashBoard.getExchanger().saveDbObject(xbc);
+//                }
+//            } catch (RemoteException ex) {
+//                XlendWorks.logAndShowMessage(ex);
+//                ok = false;
+//            }
+//        }
+        return ok;
     }
 
     private AbstractAction getMachineCBaction() {

@@ -49,6 +49,7 @@ public class EditTripEstablishingPanel extends RecordEditPanel implements EditSu
     public void loadData() {
         Xtrip trip = (Xtrip) getDbObject();
         if (trip != null) {
+            RecordEditPanel.addSiteItem(EditTripPanel.toSiteCbModel, trip.getTositeId());
             selectComboItem(siteCB, trip.getTositeId());
             selectComboItem(machineCB, trip.getMachineId());
             if (trip.getDistanceEmpty() != null) {

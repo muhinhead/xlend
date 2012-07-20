@@ -5,6 +5,7 @@ import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView.MyTableModel;
 import com.xlend.mvc.dbtable.ITableView;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import com.xlend.util.Util;
@@ -17,7 +18,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -328,7 +331,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
             }
         });
     }
-
+    
     public static void updateGrid(IMessageSender exchanger,
             ITableView view, DbTableDocument doc, String select, Integer id, int page)
             throws RemoteException {

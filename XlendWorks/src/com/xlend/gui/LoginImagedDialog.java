@@ -3,15 +3,9 @@ package com.xlend.gui;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.ImagePanel;
-import com.xlend.util.NoFrameButton;
-import com.xlend.util.PopupDialog;
-import com.xlend.util.TexturedPanel;
-import com.xlend.util.ToolBarButton;
+import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,7 +40,7 @@ public class LoginImagedDialog extends PopupDialog {
         return okPressed;
     }
     private JPanel controlsPanel;
-    private JComboBox loginField;
+    private Java2sAutoComboBox loginField;
     private JPasswordField pwdField;
     private static IMessageSender exchanger;
     private static boolean okPressed;
@@ -74,7 +68,7 @@ public class LoginImagedDialog extends PopupDialog {
             }
         }
         exchanger = (IMessageSender) getObject();
-        loginField = new JComboBox(XlendWorks.loadAllLogins(exchanger));
+        loginField = new Java2sAutoComboBox(XlendWorks.loadAllLogins(exchanger));
         loginField.setEditable(true);
         pwdField = new JPasswordField(20);
         controlsPanel = new JPanel(new BorderLayout());

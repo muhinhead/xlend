@@ -110,8 +110,9 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 siteCbModel.addElement(ci);
             }
         }
-//        String activeEmployeeCondition = "clock_num!='000' and "
-//                + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0"; 
+        ComboItem unknown = new ComboItem(0, "--unknown--");
+        reportedToCbModel.addElement(unknown);
+        reportedByCbModel.addElement(unknown);
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(),Selects.activeEmployeeCondition)) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
@@ -136,7 +137,6 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 familyProblemRB = new JRadioButton("Family Problems")
             }),
             getGridPanel(new JComponent[]{
-                //                siteCB = new JComboBox(siteCbModel),
                 comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
                 new JPanel(),
                 inJailRB = new JRadioButton("In Jail")
@@ -280,6 +280,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 permGrantedNoRB.setSelected(true);
             }
             if (xa.getXsiteId() != null) {
+                RecordEditPanel.addSiteItem(siteCbModel, xa.getXsiteId());
                 selectComboItem(siteCB, xa.getXsiteId());
             }
             if (xa.getGrantedbyId() != null) {

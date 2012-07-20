@@ -13,6 +13,7 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
+import com.xlend.util.WiderDropDownCombo;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -46,13 +47,13 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
     private class RowPanel extends JPanel {
 
         private JCheckBox markCB;
-        private JComboBox machineCB;
-        private JComboBox fromSiteCB;
-        private JComboBox toSiteCB;
+        private WiderDropDownCombo machineCB;
+        private WiderDropDownCombo fromSiteCB;
+        private WiderDropDownCombo toSiteCB;
         private JSpinner dateReqSP;
         private JSpinner dateMoveSP;
-        private JComboBox lowbedCB;
-        private JComboBox operatorCB;
+        private WiderDropDownCombo lowbedCB;
+        private WiderDropDownCombo operatorCB;
         private JCheckBox completedCB;
         private DefaultComboBoxModel machineCbModel;
         private DefaultComboBoxModel operatorCbModel;
@@ -90,23 +91,23 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
             }
             add(getBorderPanel(new JComponent[]{
                         markCB,
-                        comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
+                        comboPanelWithLookupBtn(machineCB = new WiderDropDownCombo(machineCbModel),
                         machineLookup = new MachineLookupAction(machineCB, null)),
-                        comboPanelWithLookupBtn(fromSiteCB = new JComboBox(siteFromCbModel),
+                        comboPanelWithLookupBtn(fromSiteCB = new WiderDropDownCombo(siteFromCbModel),
                         fromSiteLookup = new SiteLookupAction(fromSiteCB))
                     }));
             add(getGridPanel(new JComponent[]{
-                        comboPanelWithLookupBtn(toSiteCB = new JComboBox(siteToCbModel),
+                        comboPanelWithLookupBtn(toSiteCB = new WiderDropDownCombo(siteToCbModel),
                         toSiteLookup = new SiteLookupAction(toSiteCB)),
                         dateReqSP = new SelectedDateSpinner()
                     }));
             add(getGridPanel(new JComponent[]{
                         dateMoveSP = new SelectedDateSpinner(),
-                        comboPanelWithLookupBtn(lowbedCB = new JComboBox(lowbedCbModel), new LowBedLookupAction(lowbedCB))
+                        comboPanelWithLookupBtn(lowbedCB = new WiderDropDownCombo(lowbedCbModel), new LowBedLookupAction(lowbedCB))
                     }));
             add(getBorderPanel(new JComponent[]{
                         new JPanel(),
-                        comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
+                        comboPanelWithLookupBtn(operatorCB = new WiderDropDownCombo(operatorCbModel), new EmployeeLookupAction(operatorCB)),
                         completedCB = new JCheckBox()
                     }));
             dateReqSP.setEditor(new JSpinner.DateEditor(dateReqSP, "dd/MM/yyyy"));
@@ -114,6 +115,12 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
             dateMoveSP.setEditor(new JSpinner.DateEditor(dateMoveSP, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(dateMoveSP);
 
+            for (WiderDropDownCombo cb : new WiderDropDownCombo[]{
+                        machineCB, fromSiteCB, toSiteCB, lowbedCB, operatorCB}) {
+                cb.setPreferredSize(new Dimension(130, cb.getPreferredSize().height));
+                cb.setWide(true);
+            }
+                    
             load();
         }
 
@@ -128,7 +135,9 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
         private void load() {
             if (rec != null) {
                 selectComboItem(machineCB, rec.getMachineId());
+                RecordEditPanel.addSiteItem(siteFromCbModel, rec.getSiteFromId());
                 selectComboItem(fromSiteCB, rec.getSiteFromId());
+                RecordEditPanel.addSiteItem(siteToCbModel, rec.getSiteToId());
                 selectComboItem(toSiteCB, rec.getSiteToId());
                 if (rec.getDateRequired() != null) {
                     dateReqSP.setValue(new java.util.Date(rec.getDateRequired().getTime()));
@@ -263,8 +272,8 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
 
         downGridPanel.add(hdrPanel, BorderLayout.NORTH);
         add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
-        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        scrollPane.setMinimumSize(new Dimension(screenWidth - 50, 400));
+//        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+//        scrollPane.setMinimumSize(new Dimension(screenWidth - 20, 400));
 
 
         JPanel upperBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));

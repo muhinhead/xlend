@@ -1,11 +1,7 @@
 package com.xlend.gui.employee;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
-import com.xlend.gui.EditPanelWithPhoto;
-import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.LookupDialog;
-import com.xlend.gui.XlendWorks;
+import com.xlend.gui.*;
 import com.xlend.gui.client.EditClientDialog;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.work.OrdersGrid;
@@ -272,6 +268,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             idField.setText(ts.getXtimesheetId().toString());
             selectComboItem(employeeRefBox, ts.getXemployeeId());
             selectComboItem(orderRefBox, ts.getXorderId());
+            RecordEditPanel.addSiteItem(siteCbModel, ts.getXsiteId());
             selectComboItem(siteRefBox, ts.getXsiteId());
             clockSheetChB.setSelected(ts.getClocksheet() != null && ts.getClocksheet() == 1);
             if (ts.getWeekend() != null) {

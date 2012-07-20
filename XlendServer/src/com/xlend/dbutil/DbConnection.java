@@ -1462,9 +1462,26 @@ public class DbConnection {
         "update sheet set sheetname='Diesel Purchases' where sheetname='Diesel Rurchases'",
         "update sheet set sheetname='Yard Diesel' where sheetname='Diesel Issuing'",
         "update sheet set sheetname='Petrol Issued' where sheetname='Fuel'",
-        "update sheet set sheetname='Site Diesel' where sheetname='Issuing'"
+        "update sheet set sheetname='Site Diesel' where sheetname='Issuing'",
         //"delete from usersheet where sheet_id in (select sheet_id from sheet where sheetname='Creditor Age Analysis')",
         //"delete from sheet where sheetname='Creditor Age Analysis'"
+        "alter table xabsenteeism drop constraint xabsenteeism_xemployee_fk2",
+        "alter table xabsenteeism drop constraint xabsenteeism_xemployee_fk3",
+        "alter table xabsenteeism alter reportedby_id int null",    
+        "alter table xabsenteeism alter reportedto_id int null",
+        "alter table xabsenteeism add constraint xabsenteeism_xemployee_fk2 foreign key (reportedby_id) references xemployee on delete cascade",
+        "alter table xabsenteeism add constraint xabsenteeism_xemployee_fk3 foreign key (reportedto_id) references xemployee on delete cascade",
+        "alter table xtripsheetpart drop constraint xtripsheetpart_xsite_fk",
+        "alter table xtripsheetpart drop constraint xtripsheetpart_xsite_fk2",
+        "alter table xtripsheetpart alter fromsite_id int null",
+        "alter table xtripsheetpart alter tosite_id int null",
+        "alter table xtripsheetpart add constraint xtripsheetpart_xsite_fk foreign key (fromsite_id) references xsite",
+        "alter table xtripsheetpart add constraint xtripsheetpart_xsite_fk2 foreign key (tosite_id) references xsite",
+        "alter table xtripsheetpart add fromplace varchar(64)",
+        "alter table xtripsheetpart add toplace varchar(64)",
+        "alter table xbreakconsume drop constraint xbreakconsume_xbreakdown_fk",
+//        "alter table xbreakconsume alter xbreakdown_id int not null",
+        "alter table xbreakconsume add constraint xbreakconsume_xbreakdown_fk foreign key (xbreakdown_id) references xbreakdown on delete cascade"
     };
 
     public static Connection getConnection() throws RemoteException {

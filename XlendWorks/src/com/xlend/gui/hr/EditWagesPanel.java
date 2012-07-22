@@ -15,8 +15,7 @@ import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -45,8 +46,8 @@ class EditWagesPanel extends RecordEditPanel {
     private JSpinner[] overSPs;
     private JSpinner[] dblSPs;
     private int[] xtimesheetIds;
-    private JComboBox timeSheetDatesSB;
-    private DefaultComboBoxModel timeSheetDatesCbModel;
+//    private JComboBox timeSheetDatesSB;
+//    private DefaultComboBoxModel timeSheetDatesCbModel;
 
     public EditWagesPanel(DbObject dbObject) {
         super(dbObject);
@@ -55,28 +56,53 @@ class EditWagesPanel extends RecordEditPanel {
     @Override
     protected void fillContent() {
         String titles[] = new String[]{
-            "Wage List ID:", getDbObject() == null ? "Fill on Timesheet:" : "Week Ending:"
+            "Wage List ID:", //getDbObject() == null ? "Fill on Timesheet:" : 
+            "Week Ending:"
         };
-        timeSheetDatesCbModel = new DefaultComboBoxModel(
-                XlendWorks.getNotFixedTimeSheetDates(DashBoard.getExchanger()));
+//        timeSheetDatesCbModel = new DefaultComboBoxModel(
+//                XlendWorks.getNotFixedTimeSheetDates(DashBoard.getExchanger()));
         weekendSp = new SelectedDateSpinner();
-        weekendSp.setEnabled(false);
+        weekendSp.setEnabled(getDbObject() == null);
         weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(weekendSp);
 
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 10),
-            getGridPanel(getDbObject() == null ? (timeSheetDatesSB = new JComboBox(timeSheetDatesCbModel)) : weekendSp, 5)
+            getGridPanel(/*
+             * getDbObject() == null ? (timeSheetDatesSB = new
+             * JComboBox(timeSheetDatesCbModel)) :
+             */weekendSp, 5)
         };
-        if (timeSheetDatesSB != null) {
-            timeSheetDatesSB.addActionListener(getDateCBaction());
-        }
+//        if (timeSheetDatesSB != null) {
+//            timeSheetDatesSB.addActionListener(getDateCBaction());
+//        }
         idField.setEnabled(false);
         labels = createLabelsArray(titles);
         organizePanels(titles, edits);
         JScrollPane sp = new JScrollPane(getGridPanel());
         add(sp, BorderLayout.CENTER);
-        sp.setPreferredSize(new Dimension(sp.getPreferredSize().width+50, 400));
+        sp.setPreferredSize(new Dimension(sp.getPreferredSize().width + 50, 400));
+
+        weekendSp.addChangeListener(new ChangeListener(){
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                java.sql.Date xd = new java.sql.Date(((java.util.Date) weekendSp.getValue()).getTime());
+                if (xd.getTime() == 0) {
+                    resetNumData();
+                } else {
+                    int i = 0;
+                    for (Xemployee empl : employees) {
+                        Object[] vals = XlendWorks.getTimeSheetData(DashBoard.getExchanger(), xd, empl.getXemployeeId());
+                        xtimesheetIds[i] = (Integer) vals[0];
+                        hoursSPs[i].setValue(vals[1]);
+                        overSPs[i].setValue(vals[2]);
+                        dblSPs[i].setValue(vals[3]);
+                        i++;
+                    }
+                }
+            }
+        });
     }
 
     protected void organizePanels(String[] titles, JComponent[] edits) {
@@ -144,7 +170,7 @@ class EditWagesPanel extends RecordEditPanel {
     public void loadData() {
         Xwagesum xs = (Xwagesum) getDbObject();
         if (xs != null) {
-            weekendSp.setValue(xs.getWeekend());
+            weekendSp.setValue(new java.util.Date(xs.getWeekend().getTime()));
             idField.setText(xs.getXwagesumId().toString());
             for (int i = 0; i < employees.length; i++) {
                 DbObject[] obs;
@@ -175,7 +201,8 @@ class EditWagesPanel extends RecordEditPanel {
             xs = new Xwagesum(null);
             xs.setXwagesumId(0);
             isNew = true;
-            XDate dt = (XDate) timeSheetDatesSB.getSelectedItem();
+//            XDate dt = (XDate) timeSheetDatesSB.getSelectedItem();
+            java.util.Date dt = (java.util.Date) weekendSp.getValue();
             xs.setWeekend(new java.sql.Date(dt.getTime()));
         }
         try {
@@ -219,29 +246,28 @@ class EditWagesPanel extends RecordEditPanel {
         return false;
     }
 
-    private ActionListener getDateCBaction() {
-        return new AbstractAction() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                java.sql.Date xd = (java.sql.Date) timeSheetDatesSB.getSelectedItem();
-                if (xd.getTime() == 0) {
-                    resetNumData();
-                } else {
-                    int i = 0;
-                    for (Xemployee empl : employees) {
-                        Object[] vals = XlendWorks.getTimeSheetData(DashBoard.getExchanger(), xd, empl.getXemployeeId());
-                        xtimesheetIds[i] = (Integer) vals[0];
-                        hoursSPs[i].setValue(vals[1]);
-                        overSPs[i].setValue(vals[2]);
-                        dblSPs[i].setValue(vals[3]);
-                        i++;
-                    }
-                }
-            }
-        };
-    }
-
+//    private ActionListener getDateCBaction() {
+//        return new AbstractAction() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                java.sql.Date xd = (java.sql.Date) timeSheetDatesSB.getSelectedItem();
+//                if (xd.getTime() == 0) {
+//                    resetNumData();
+//                } else {
+//                    int i = 0;
+//                    for (Xemployee empl : employees) {
+//                        Object[] vals = XlendWorks.getTimeSheetData(DashBoard.getExchanger(), xd, empl.getXemployeeId());
+//                        xtimesheetIds[i] = (Integer) vals[0];
+//                        hoursSPs[i].setValue(vals[1]);
+//                        overSPs[i].setValue(vals[2]);
+//                        dblSPs[i].setValue(vals[3]);
+//                        i++;
+//                    }
+//                }
+//            }
+//        };
+//    }
     private void resetNumData(JSpinner[] sps) {
         for (JSpinner sp : sps) {
             sp.setValue(0.0);

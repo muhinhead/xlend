@@ -14,8 +14,8 @@ import javax.swing.JPanel;
  */
 public abstract class EditRecordDialog extends PopupDialog {
 
-    protected JButton applyButton;
-    private AbstractAction applyAction;
+//    protected JButton applyButton;
+//    private AbstractAction applyAction;
     protected JButton saveButton;
     private AbstractAction saveAction;
     protected JButton cancelButton;
@@ -32,11 +32,11 @@ public abstract class EditRecordDialog extends PopupDialog {
         XlendWorks.setWindowIcon(this, "Xcost.png");
         this.editPanel = editPanel;;
         JPanel btnPanel = new JPanel();
-        btnPanel.add(applyButton = new JButton(applyAction = getApplyAction()));
+//        btnPanel.add(applyButton = new JButton(applyAction = getApplyAction()));
         btnPanel.add(saveButton = new JButton(saveAction = getSaveAction()));
         btnPanel.add(cancelButton = new JButton(cancelAction = getCancelAction()));
 
-        applyButton.setToolTipText("Apply changes to database");
+//        applyButton.setToolTipText("Apply changes to database");
         saveButton.setToolTipText("Save changes and close dialog");
         cancelButton.setToolTipText("Discard changes and clode dialog");
         
@@ -53,31 +53,30 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     @Override
     public void freeResources() {
-        applyButton.removeActionListener(applyAction);
+//        applyButton.removeActionListener(applyAction);
         saveButton.removeActionListener(saveAction);
         cancelButton.removeActionListener(cancelAction);
         saveAction = null;
         cancelAction = null;
-        applyAction = null;
+//        applyAction = null;
     }
 
-    protected AbstractAction getApplyAction() {
-        return new AbstractAction("Apply") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (getEditPanel().save()) {
-                        getEditPanel().loadData();
-//                        setOkPressed(true);
-                    }
-                } catch (Exception ex) {
-                    XlendWorks.log(ex);
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
-    }
+//    protected AbstractAction getApplyAction() {
+//        return new AbstractAction("Apply") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    if (getEditPanel().save()) {
+//                        getEditPanel().loadData();
+//                    }
+//                } catch (Exception ex) {
+//                    XlendWorks.log(ex);
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//            }
+//        };
+//    }
 
     protected AbstractAction getSaveAction() {
         return new AbstractAction("Save") {

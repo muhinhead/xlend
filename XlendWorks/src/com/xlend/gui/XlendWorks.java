@@ -184,6 +184,20 @@ public class XlendWorks {
         return null;
     }
 
+    public static List<ComboItem> loadEmployeeList(IMessageSender exchanger, String field) {
+        ArrayList<ComboItem> list = new ArrayList<ComboItem>();
+        try {
+            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, Selects.activeEmployeeCondition, "clock_num");
+            for (DbObject e : employees) {
+                Xemployee emp = (Xemployee) e;
+                list.add(new ComboItem(emp.getXemployeeId(), field.equals("name") ? emp.getFirstName() : emp.getClockNum()));
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return list;
+    }
+
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
         return loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
     }
@@ -980,5 +994,43 @@ public class XlendWorks {
             }
         }
         return null;
+    }
+
+    public static String getEmployeeClockNumOnID(IMessageSender exchanger, Integer id) {
+        try {
+            Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
+            if (emp != null) {
+                return emp.getClockNum();
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return null;
+    }
+
+    public static Integer getEmployeeOnClockNum(IMessageSender exchanger, String clock_num) {
+        try {
+            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num=" + clock_num, null);
+            if (obs.length > 0) {
+                Xemployee emp = (Xemployee) obs[0];
+                return emp.getXemployeeId();
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return null;
+    }
+
+    public static String getMachineType1(IMessageSender exchanger, Integer machineID) {
+        try {
+            Xmachine m = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, machineID);
+            if (m != null) {
+                Xmachtype mt = (Xmachtype) exchanger.loadDbObjectOnID(Xmachtype.class, m.getXmachtypeId());
+                return mt != null ? mt.getMachtype() : "";
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return "";
     }
 }

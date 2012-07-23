@@ -26,7 +26,7 @@ public class PoolVehicleGrid extends GeneralGridPanel {
 
     public PoolVehicleGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_MACHINE.replace(
-                "classify='M'", "classify='P'"), maxWidths, false);
+                "classify='M'", "classify='V'"), maxWidths, false);
     }
 
     public PoolVehicleGrid(IMessageSender exchanger, String select, 

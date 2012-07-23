@@ -13,6 +13,6 @@ public class EditCompanyVehiclePanel extends EditMachinePanel {
     }
     
     protected String getFleetNumberChar() {
-        return "V";
+        return "P";
     }
 }

@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.50";
+    public static final String version = "0.50.1";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;

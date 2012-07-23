@@ -26,7 +26,7 @@ public class CompanyVehicleGrid extends GeneralGridPanel {
 
     public CompanyVehicleGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_MACHINE.replace(
-                "classify='M'", "classify='V'"), maxWidths, false);
+                "classify='M'", "classify='P'"), maxWidths, false);
     }
 
     public CompanyVehicleGrid(IMessageSender exchanger, String select, 

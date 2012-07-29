@@ -20,12 +20,15 @@ import java.util.Vector;
  */
 public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implements IMessageSender {
 
+    public static Boolean isMySQL = null;
 //    private Connection connection;
+
     public RmiMessageSender() throws java.rmi.RemoteException {
-//        connection = DbConnection.getConnection();
-//        if (null == connection) {
-//            throw new java.rmi.RemoteException("Can't establish database connection");
-//        }
+        //        connection = DbConnection.getConnection();
+        //        if (null == connection) {
+        //            throw new java.rmi.RemoteException("Can't establish database connection");
+        //        }
+        
     }
 
 //    @Override
@@ -165,7 +168,13 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             } else {
                 //pagedSelect = "Select * from (select subq.*,rownum rn from (" + select + ") subq) where rn between " + startrow + " and " + endrow;
                 pagedSelect = select.replaceFirst("select", "SELECT").replaceAll("Select", "SELECT");
-                pagedSelect = pagedSelect.replaceFirst("SELECT", "SELECT LIMIT " + (startrow-1) + " " + (endrow - startrow + 1));
+                if (isMySQL) //pagedSelect = pagedSelect.replaceFirst("SELECT", "SELECT LIMIT " + (startrow-1) + " " + (endrow - startrow + 1));
+                {
+                    pagedSelect += (" LIMIT " + (startrow - 1) + "," + (endrow - startrow + 1));
+                } else {
+                    pagedSelect = pagedSelect.replaceFirst("SELECT", "SELECT LIMIT " + (startrow - 1) + " " + (endrow - startrow + 1));
+                }
+                //System.out.println("!!PAGESELECT="+pagedSelect);
             }
             Vector line;
             ps = connection.prepareStatement(pagedSelect);
@@ -315,7 +324,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         StringBuffer slct;
         int count = 0;
         int p = select.toLowerCase().lastIndexOf("order by");
-        slct = new StringBuffer("select count(*) from (" + select.substring(0, p > 0 ? p : select.length()) + ")");
+        slct = new StringBuffer("select count(*) from (" + select.substring(0, p > 0 ? p : select.length()) + ") intab");
         PreparedStatement ps = null;
         ResultSet rs = null;
         Connection connection = DbConnection.getConnection();

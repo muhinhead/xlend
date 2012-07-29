@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import migration.MigrationDialog;
 
 /**
  *
@@ -35,7 +36,7 @@ import javax.swing.ImageIcon;
 public class XlendServer {
 
     public static final String version = "0.60";
-    private static final String PROPERTYFILENAME = "XlendServer.config";
+    public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
     private static FileHandler fh;
@@ -99,6 +100,18 @@ public class XlendServer {
                 System.out.println("Usage:\n\tcom.csa.cmc.XlendServer [port] (default 1099)");
             }
         } else {
+            props = new Properties();
+            File propFile = new File(PROPERTYFILENAME);
+            try {
+                if (propFile.exists()) {
+                    props.load(new FileInputStream(propFile));
+                    DbConnection.setProps(props);
+                    System.out.println("Properties loaded from " + PROPERTYFILENAME);
+                }
+                System.out.println("\nPress Ctrl+C to interrupt");
+            } catch (IOException ioe) {
+                log(ioe);
+            }
             initTray();
         }
         final int port = (args.length > 0 ? Integer.parseInt(args[0]) : 1099);
@@ -109,18 +122,18 @@ public class XlendServer {
                     final Timer queueRunner = new Timer();
                     System.out.println("Starting server on port " + port + "... ");
                     java.rmi.registry.LocateRegistry.createRegistry(port);
-                    props = new Properties();
-                    File propFile = new File(PROPERTYFILENAME);
-                    try {
-                        if (propFile.exists()) {
-                            props.load(new FileInputStream(propFile));
-                            DbConnection.setProps(props);
-                            System.out.println("Properties loaded from " + PROPERTYFILENAME);
-                        }
-                        System.out.println("\nPress Ctrl+C to interrupt");
-                    } catch (IOException ioe) {
-                        log(ioe);
-                    }
+//                    props = new Properties();
+//                    File propFile = new File(PROPERTYFILENAME);
+//                    try {
+//                        if (propFile.exists()) {
+//                            props.load(new FileInputStream(propFile));
+//                            DbConnection.setProps(props);
+//                            System.out.println("Properties loaded from " + PROPERTYFILENAME);
+//                        }
+//                        System.out.println("\nPress Ctrl+C to interrupt");
+//                    } catch (IOException ioe) {
+//                        log(ioe);
+//                    }
                     IMessageSender c = new RmiMessageSender();
                     Naming.rebind("rmi://localhost:" + port + "/XlendServer", c);
                     if (!isTraySupported) {
@@ -166,7 +179,6 @@ public class XlendServer {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     rmiServer.stop();
-//                    DbConnection.shutDownDatabase();
                     System.exit(0);
                 }
             });
@@ -198,9 +210,19 @@ public class XlendServer {
 
             popup.add(miLog);
             popup.add(miAbout);
-            
-//            popup.add(miFix);
-            
+
+            if (props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
+                MenuItem miMigrate = new MenuItem("Migrate");
+                miMigrate.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent e) {
+                        new MigrationDialog();
+                    }
+                });
+                popup.addSeparator();
+                popup.add(miMigrate);
+            }
+
             popup.addSeparator();
             popup.add(miExit);
             ti = new TrayIcon(icon, XLEND_SERVER, popup);

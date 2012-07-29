@@ -5,15 +5,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.Message.RecipientType;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -110,7 +105,7 @@ public class LogViewDialog extends PopupDialog {
         return "...Error loading log...";
     }
 
-    private boolean sendLog(String email) {
+    public boolean sendLog(String email) {
         Properties mailProps = new Properties();
         String[] versions = (String[]) getObject();
         String STARTTLS = "true";

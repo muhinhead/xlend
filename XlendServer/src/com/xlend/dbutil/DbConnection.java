@@ -24,7 +24,7 @@ public class DbConnection {
     public static final String DB_VERSION = "0.28";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
-    private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql");
+    private static String[] createLocalDBsqls = loadDDLscript("crebas_hsqldb.sql",";");
     private static String[] fixLocalDBsqls = new String[]{
         "update dbversion set version_id = " + DB_VERSION_ID + ",version = '" + DB_VERSION + "'",
         //        //version 0.2->0.3
@@ -1547,7 +1547,7 @@ public class DbConnection {
         sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "false").equalsIgnoreCase("true"));
     }
 
-    private static void sqlBatch(String[] sqls, Connection connection, boolean tolog) {
+    public static void sqlBatch(String[] sqls, Connection connection, boolean tolog) {
         PreparedStatement ps = null;
         for (int i = 0; i < sqls.length; i++) {
             try {
@@ -1622,13 +1622,17 @@ public class DbConnection {
         DbConnection.props = props;
     }
 
+    public static Properties getProps() {
+        return props;
+    }
+    
     public static void closeConnection(Connection connection) throws SQLException {
 //        connection.commit();
         connection.close();
         connection = null;
     }
 
-    private static String getCurDir() {
+    public static String getCurDir() {
         File curdir = new File("./");
         return curdir.getAbsolutePath();
     }
@@ -1693,7 +1697,7 @@ public class DbConnection {
 //            }
 //        }
 //    }
-    private static String[] loadDDLscript(String fname) {
+    public static String[] loadDDLscript(String fname,String splitter) {
         String[] ans = new String[0];
         File sqlFile = new File(fname);
         boolean toclean = true;
@@ -1716,7 +1720,7 @@ public class DbConnection {
                     }
                     contents.append(line).append(System.getProperty("line.separator"));
                 }
-                ans = contents.toString().split(";");
+                ans = contents.toString().split(splitter);
             } catch (Exception e) {
                 XlendServer.log(e);
             } finally {

@@ -1,9 +1,5 @@
-#  -- -> ''
-#  --not null auto_increment -> not null auto_increment,
-#  --blob -> blob
-#  --references >- with (pkfield)
-
-
+create database xlend;
+use xlend;
         
 CREAte table dbversion
 (

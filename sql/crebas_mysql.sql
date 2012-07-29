@@ -3,6 +3,7 @@
 #  --blob -> blob
 #  --references >- with (pkfield)
 
+
         
 CREAte table dbversion
 (
@@ -1188,40 +1189,67 @@ create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_i
 
 #----------------- auxiliary tables -------------------
 
-#create view v_userprofile as
-#select p.profile_id,
-#       p.first_name,
-#       p.last_name,
-#       p.address1,
-#       p.address2,
-#       p.city,
-#       p.state,
-#       p.zip_code,
-#       p.phone as office_phone,
-#       p.cell_phone,
-#       u.fax,
-#       p.email,
-#       u.webaddress,
-#       u.office_hours,
-#       u.salesperson,
-#       u.manager
-#  from profile p, userprofile u
-# where u.profile_id = p.profile_id;
-#
-#create view v_clientprofile as
-#       p.first_name,
-#       p.last_name,
-#       c.birthday,
-#       p.address1,
-#       p.address2,
-#       p.city,
-#       p.state,
-#       p.zip_code,
-#       p.phone as home_phone,
-#       p.cell_phone,
-#       p.email,
-#       c.source_type,
-#       c.source_descr,
-#       c.sales_potential
-#  from profile p, clientprofile c
-# where c.profile_id = p.profile_id;
+create view v_userprofile as
+select p.profile_id,
+       p.first_name,
+       p.last_name,
+       p.address1,
+       p.address2,
+       p.city,
+       p.state,
+       p.zip_code,
+       p.phone as office_phone,
+       p.cell_phone,
+       u.fax,
+       p.email,
+       u.webaddress,
+       u.office_hours,
+       u.salesperson,
+       u.manager
+  from profile p, userprofile u
+ where u.profile_id = p.profile_id;
+
+create view v_clientprofile as
+select p.profile_id,
+       p.first_name,
+       p.last_name,
+       c.birthday,
+       p.address1,
+       p.address2,
+       p.city,
+       p.state,
+       p.zip_code,
+       p.phone as home_phone,
+       p.cell_phone,
+       p.email,
+       c.source_type,
+       c.source_descr,
+       c.sales_potential
+  from profile p, clientprofile c
+ where c.profile_id = p.profile_id;
+
+drop function to_char; 
+drop function casewhen;
+delimiter |
+create function to_char(dt datetime, fmt varchar(32))
+returns varchar(32) deterministic
+begin
+   declare fmt char(32) default fmt;
+   set fmt = replace(fmt,'DD','%e');
+   set fmt = replace(fmt,'MM','%m');
+   set fmt = replace(fmt,'YYYY','%Y');
+   set fmt = replace(fmt,'YY','%y');
+   set fmt = replace(fmt,'HH24','%H');
+   set fmt = replace(fmt,'MI','%i');
+   set fmt = replace(fmt,'SS','%S');
+   return DATE_FORMAT(dt, fmt);
+end;
+|
+delimiter |
+create function casewhen(cnd tinyint(1),yesans varchar(32),noans varchar(32))
+returns varchar(32) deterministic
+begin
+return ifnull(if(cnd,yesans,noans),'');
+end;
+|
+delimiter ;

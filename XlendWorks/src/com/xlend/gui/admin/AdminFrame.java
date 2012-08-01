@@ -29,8 +29,8 @@ public class AdminFrame extends GeneralFrame {
     private RatedMachinesGrid ratedMachinesPanel;
     private SiteTypeGrid siteTypePanel;
 
-    public AdminFrame(IMessageSender exch) {
-        super("Admin Console", exch);
+    public AdminFrame() {
+        super("Admin Console", null);
     }
 
     protected JTabbedPane getMainPanel() {

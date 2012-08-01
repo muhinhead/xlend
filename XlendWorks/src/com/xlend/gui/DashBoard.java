@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.gui.admin.AdminFrame;
+import com.xlend.gui.parts.PartsDashBoard;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.orm.Sheet;
 import com.xlend.orm.dbobject.DbObject;
@@ -8,16 +9,8 @@ import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.TexturedPanel;
 import com.xlend.util.ToolBarButton;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,160 +19,59 @@ import java.util.Properties;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 /**
  *
  * @author Admin
  */
-public class DashBoard extends JFrame {
+public class DashBoard extends AbstractDashBoard {
 
+    private static IMessageSender exchanger = null;
     public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
     private static final String BACKGROUNDIMAGE = "Background.png";//"gears-background+xcost.jpg";
     public final static String LASTLOGIN = "LastLogin";//    public final static String PWDMD5 = "PWDMD5";
-    private static IMessageSender exchanger;
     private static Properties props;
     public static DashBoard ourInstance;
 
     public static Properties getProperties() {
         return props;
     }
-
-    public static IMessageSender getExchanger() {
-        return exchanger;
-    }
-
-    public static void setExchanger(IMessageSender exch) {
-        exchanger = exch;
-    }
-    private final JButton docsButton;
-    private final JButton sitesButton;
-    private final JButton hrbutton;
-    private final JButton partsbutton;
-    private final JButton fleetbutton;
-    private final JButton logisticsButton;
-    private final JButton bankingbutton;
-    private final JButton logoutButton;
-    private JPanel controlsPanel;
-    private final JLabel userLogin;
+    private JButton docsButton;
+    private JButton sitesButton;
+    private JButton hrbutton;
+    private JButton partsbutton;
+    private JButton fleetbutton;
+    private JButton logisticsButton;
+    private JButton bankingbutton;
+    private JButton logoutButton;
+    private JButton reportsButton;
+    private JLabel userLogin;
     private GeneralFrame workFrame = null;
     private GeneralFrame sitesFrame = null;
     private GeneralFrame hrFrame = null;
     private GeneralFrame fleetFrame = null;
     private GeneralFrame adminFrame = null;
-    private GeneralFrame reportsFrame = null;
+//    private GeneralFrame reportsFrame = null;
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
     private ToolBarButton adminButton = null;
-    private final JButton reportsButton;
-
-    private void updateSheetList() {
-        updateSheetList("DOCS", DocFrame.sheets());
-        updateSheetList("SITES", SitesFrame.sheets());
-        updateSheetList("HR", HRFrame.sheets());
-        updateSheetList("REPORTS", ReportsFrame.sheets());
-        updateSheetList("FLEET", FleetFrame.sheets());
-        updateSheetList("LOGISTICS", LogisticsFrame.sheets());
-        updateSheetList("BANKING", BankingFrame.sheets());
-    }
-
-    private void updateSheetList(String parentName, String[] sheetNames) {
-        DbObject rec;
-        DbObject[] children;
-        DbObject[] sheets;
-        try {
-            sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
-            Sheet sh;
-            String[] names;
-            int papa_id;
-            if (sheets.length == 0) {
-                sh = new Sheet(null);
-                sh.setSheetname(parentName);
-                sh.setSheetId(0);
-                sh.setNew(true);
-                sh = (Sheet) exchanger.saveDbObject(sh);
-                papa_id = sh.getSheetId();
-            } else {
-                sh = (Sheet) sheets[0];
-                papa_id = sh.getSheetId();
-                for (int i = 1; i < sheets.length; i++) {//to remove duplicates
-                    exchanger.deleteObject(sheets[i]);
-                }
-            }
-            sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
-            for (String s : sheetNames) {
-                children = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id + " and sheetname='" + s + "'", null);
-                if (children.length == 0) {
-                    sh = new Sheet(null);
-                    sh.setSheetname(s);
-                    sh.setParentId(papa_id);
-                    sh.setSheetId(0);
-                    sh.setNew(true);
-                    exchanger.saveDbObject(sh);
-                } else {
-                    for (int i = 1; i < children.length; i++) {
-                        exchanger.deleteObject(children[i]);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            XlendWorks.log(ex);
-        }
-    }
-
-    private class WinListener extends WindowAdapter {
-
-        public WinListener(JFrame frame) {
-        }
-
-        public void windowClosing(WindowEvent e) {
-            exit();
-        }
-    }
-
-    private class LayerPanel extends JLayeredPane {
-
-        private LayerPanel() {
-            super();
-        }
-
-        @Override
-        public void setBounds(int x, int y, int width, int height) {
-            super.setBounds(x, y, width, height);
-            controlsPanel.setBounds(getBounds());
-        }
-    }
+    private ImagePanel img;
+    private int dashWidth;
+    private int dashHeight;
 
     public DashBoard(IMessageSender exch) {
         super("Xcost");
         ourInstance = this;
-        XlendWorks.setWindowIcon(this, "Xcost.png");
-        addWindowListener(new WinListener(this));
-        exchanger = exch;
-        getContentPane().setLayout(new BorderLayout());
+        updateSheetList(exch);
+        setVisible(true);
+    }
 
-        LayerPanel layers = new LayerPanel();
-        controlsPanel = new JPanel(new BorderLayout());
-        JPanel main = new TexturedPanel(BACKGROUNDIMAGE);
-        controlsPanel.add(main, BorderLayout.CENTER);
-        ImagePanel img = new ImagePanel(XlendWorks.loadImage(BACKGROUNDIMAGE, this));
-        addNotify();
-        Insets insets = getInsets();
-        int dashWidth = img.getWidth();
-        int dashHeight = img.getHeight();
-        int yShift = 97;
-        int xShift = 20;
-        this.setMinimumSize(new Dimension(dashWidth + insets.left + insets.right, dashHeight + insets.top + insets.bottom));
-        layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
-
-        getContentPane().add(layers, BorderLayout.CENTER);
-        readProperty("junk", ""); // just to init properties
-
+    @Override
+    protected void fillControlsPanel() throws HeadlessException {
         img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
@@ -242,9 +134,10 @@ public class DashBoard extends JFrame {
 
         adminButton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (adminFrame == null) {
-                    adminFrame = new AdminFrame(getExchanger());
+                    adminFrame = new AdminFrame();
                 } else {
                     try {
                         adminFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -258,6 +151,7 @@ public class DashBoard extends JFrame {
 
         docsButton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
                     workFrame = new DocFrame(getExchanger());
@@ -272,8 +166,17 @@ public class DashBoard extends JFrame {
             }
         });
 
+        partsbutton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PartsDashBoard(DashBoard.this);
+            }
+        });
+
         sitesButton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (sitesFrame == null) {
                     sitesFrame = new SitesFrame(getExchanger());
@@ -294,13 +197,14 @@ public class DashBoard extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 new ReportsMenuDialog();
                 if (ReportsMenuDialog.okPressed) {
-                    reportsFrame = new ReportsFrame(getExchanger());
+                    ReportsFrame reportsFrame = new ReportsFrame(getExchanger());
                 }
             }
         });
 
         hrbutton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (hrFrame == null) {
                     hrFrame = new HRFrame(getExchanger());
@@ -317,6 +221,7 @@ public class DashBoard extends JFrame {
 
         fleetbutton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (fleetFrame == null) {
                     fleetFrame = new FleetFrame(getExchanger());
@@ -333,6 +238,7 @@ public class DashBoard extends JFrame {
 
         logisticsButton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (logisticsFrame == null) {
                     logisticsFrame = new LogisticsFrame(getExchanger());
@@ -349,6 +255,7 @@ public class DashBoard extends JFrame {
 
         bankingbutton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (bankingFrame == null) {
                     bankingFrame = new BankingFrame(getExchanger());
@@ -365,6 +272,7 @@ public class DashBoard extends JFrame {
 
         logoutButton.addActionListener(new AbstractAction() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 saveProps();
@@ -388,40 +296,70 @@ public class DashBoard extends JFrame {
         userLogin.setBounds(10, 30, 50, userLogin.getPreferredSize().height);
         main.add(userLogin);
 
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        setLocation(screenSize.width - getWidth() - 10, 10);
-
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
-
+        centerOnScreen();
         setResizable(false);
-        setVisible(true);
-        updateSheetList();
     }
 
-    public void setVisible(boolean show) {
-        if (adminFrame != null) {
-            adminFrame.dispose();
-            adminFrame = null;
-        }
-        if (workFrame != null) {
-            workFrame.dispose();
-            workFrame = null;
-        }
-        if (sitesFrame != null) {
-            sitesFrame.dispose();
-            sitesFrame = null;
-        }
-        if (hrFrame != null) {
-            hrFrame.dispose();
-            hrFrame = null;
-        }
-        if (fleetFrame != null) {
-            fleetFrame.dispose();
-            fleetFrame = null;
-        }
+    private void updateSheetList(IMessageSender exch) {
+        setExchanger(exch);
+        updateSheetList("DOCS", DocFrame.sheets());
+        updateSheetList("SITES", SitesFrame.sheets());
+        updateSheetList("HR", HRFrame.sheets());
+        updateSheetList("REPORTS", ReportsFrame.sheets());
+        updateSheetList("FLEET", FleetFrame.sheets());
+        updateSheetList("LOGISTICS", LogisticsFrame.sheets());
+        updateSheetList("BANKING", BankingFrame.sheets());
+    }
 
-        super.setVisible(show);
+    private void updateSheetList(String parentName, String[] sheetNames) {
+        DbObject rec;
+        DbObject[] children;
+        DbObject[] sheets;
+        try {
+            sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
+            Sheet sh;
+            String[] names;
+            int papa_id;
+            if (sheets.length == 0) {
+                sh = new Sheet(null);
+                sh.setSheetname(parentName);
+                sh.setSheetId(0);
+                sh.setNew(true);
+                sh = (Sheet) exchanger.saveDbObject(sh);
+                papa_id = sh.getSheetId();
+            } else {
+                sh = (Sheet) sheets[0];
+                papa_id = sh.getSheetId();
+                for (int i = 1; i < sheets.length; i++) {//to remove duplicates
+                    exchanger.deleteObject(sheets[i]);
+                }
+            }
+            sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
+            for (String s : sheetNames) {
+                children = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id + " and sheetname='" + s + "'", null);
+                if (children.length == 0) {
+                    sh = new Sheet(null);
+                    sh.setSheetname(s);
+                    sh.setParentId(papa_id);
+                    sh.setSheetId(0);
+                    sh.setNew(true);
+                    exchanger.saveDbObject(sh);
+                } else {
+                    for (int i = 1; i < children.length; i++) {
+                        exchanger.deleteObject(children[i]);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            XlendWorks.log(ex);
+        }
+    }
+
+    @Override
+    protected void initBackground() {
+
+        super.initBackground();
+        addWindowListener(new DashBoard.WinListener(this));
     }
 
     public static void saveProperties() {
@@ -446,10 +384,9 @@ public class DashBoard extends JFrame {
         saveProperties();
     }
 
-    private void exit() {
+    protected void exit() {
         saveProps();
-        dispose();
-        System.exit(1);
+        super.exit();
     }
 
     public static String readProperty(String key, String deflt) {
@@ -475,34 +412,47 @@ public class DashBoard extends JFrame {
         return props.getProperty(key, deflt);
     }
 
-    public static void setSizes(JFrame frame, double x, double y) {
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize((int) (x * d.width), (int) (y * d.height));
-    }
+    @Override
+    public void setVisible(boolean show) {
 
-    public static float getXratio(JFrame frame) {
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        return (float) frame.getWidth() / d.width;
-    }
-
-    public static float getYratio(JFrame frame) {
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        return (float) frame.getHeight() / d.height;
-    }
-
-    public static void centerWindow(JFrame frame) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = frame.getSize();
-        if (frameSize.height > screenSize.height) {
-            frameSize.height = screenSize.height;
+        if (adminFrame != null) {
+            adminFrame.dispose();
+            adminFrame = null;
         }
-        if (frameSize.width > screenSize.width) {
-            frameSize.width = screenSize.width;
+        if (workFrame != null) {
+            workFrame.dispose();
+            workFrame = null;
         }
-        frame.setLocation((screenSize.width - frameSize.width) / 2,
-                (screenSize.height - frameSize.height) / 2);
+        if (sitesFrame != null) {
+            sitesFrame.dispose();
+            sitesFrame = null;
+        }
+        if (hrFrame != null) {
+            hrFrame.dispose();
+            hrFrame = null;
+        }
+        if (fleetFrame != null) {
+            fleetFrame.dispose();
+            fleetFrame = null;
+        }
+        super.setVisible(show);
+    }
 
-        frame.setExtendedState(Frame.NORMAL);
-        frame.validate();
+    public static IMessageSender getExchanger() {
+        return exchanger;
+    }
+
+    static void setExchanger(IMessageSender iMessageSender) {
+        exchanger = iMessageSender;
+    }
+
+    @Override
+    protected String getBackGroundImage() {
+        return BACKGROUNDIMAGE;
+    }
+
+    @Override
+    public void lowLevelInit() {
+        readProperty("junk", ""); // just to init properties
     }
 }

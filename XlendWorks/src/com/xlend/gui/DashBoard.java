@@ -55,11 +55,9 @@ public class DashBoard extends AbstractDashBoard {
     private GeneralFrame hrFrame = null;
     private GeneralFrame fleetFrame = null;
     private GeneralFrame adminFrame = null;
-//    private GeneralFrame reportsFrame = null;
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
     private ToolBarButton adminButton = null;
-    private ImagePanel img;
     private int dashWidth;
     private int dashHeight;
 
@@ -72,7 +70,7 @@ public class DashBoard extends AbstractDashBoard {
 
     @Override
     protected void fillControlsPanel() throws HeadlessException {
-        img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
+        ImagePanel img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
         adminButton = new ToolBarButton("admin.png");
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
@@ -170,7 +168,19 @@ public class DashBoard extends AbstractDashBoard {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new PartsDashBoard(DashBoard.this);
+                final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
+                if (partsDashBoard == null) {
+                    new PartsDashBoard(DashBoard.this);
+                } else {
+                    partsDashBoard.requestFocus();
+                    java.awt.EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            partsDashBoard.toFront();
+                            partsDashBoard.repaint();
+                        }
+                    });
+                }
             }
         });
 
@@ -311,7 +321,7 @@ public class DashBoard extends AbstractDashBoard {
         updateSheetList("BANKING", BankingFrame.sheets());
     }
 
-    private void updateSheetList(String parentName, String[] sheetNames) {
+    public static void updateSheetList(String parentName, String[] sheetNames) {
         DbObject rec;
         DbObject[] children;
         DbObject[] sheets;

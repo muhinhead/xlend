@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.60";
+    public static final String version = "0.60.1";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -671,7 +671,7 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "Select xmachine_id, classify+tmvnr "
+        return loadOnSelect(exchanger, "Select xmachine_id, concat(m.classify,m.tmvnr) "
                 + "from xmachine m, xmachtype t1 "
                 + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
     }
@@ -708,8 +708,8 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
         return loadOnSelect(exchanger,
-                "select l.xlowbed_id,'Machine:'+m.classify+m.tmvnr+"
-                + "'; Driver:'+d.clock_num+' '+d.first_name+'; Assistant:'+a.clock_num+' '+a.first_name "
+                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
+                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
                 + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
                 + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id");
     }

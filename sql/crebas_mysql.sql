@@ -1,5 +1,9 @@
-create database xlend;
-use xlend;
+#  -- -> ''
+#  --not null auto_increment -> not null auto_increment,
+#  --blob -> blob
+#  --references >- with (pkfield)
+
+
         
 CREAte table dbversion
 (
@@ -1180,6 +1184,50 @@ create table xopmachassing
 );
 
 create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_id, xemployee_id, xmachine_id);
+
+create table junk (j char(1), primary key (j));
+insert into junk values('j');
+
+insert into cbitems (name, id, val)
+  select 'parts_groups',1,'machines'
+    from junk
+   where not exists(select * from cbitems where name='parts_groups' and id=1);
+   
+insert into cbitems (name, id, val)
+  select 'parts_groups',2,'trucks'
+    from junk
+   where not exists(select * from cbitems where name='parts_groups' and id=2);
+
+insert into cbitems (name, id, val)
+  select 'parts_groups',3,'vehicles'
+    from junk
+   where not exists(select * from cbitems where name='parts_groups' and id=3);
+
+insert into cbitems (name, id, val)
+  select 'parts_groups',4,'misc'
+    from junk
+   where not exists(select * from cbitems where name='parts_groups' and id=4);
+
+insert into cbitems (name, id, val)
+  select 'parts_groups',5,'liquids'
+    from junk
+   where not exists(select * from cbitems where name='parts_groups' and id=5);
+
+create table xpartcategory
+(
+    xpartcategory_id int not null auto_increment,
+    group_id         int not null,
+    name             varchar(64) not null,
+    parent_id        int,
+    constraint xpartcategory_pk primary key (xpartcategory_id),
+    constraint xpartcategory_xpartcategory_fk foreign key (parent_id) references xpartcategory (xpartcategory_id)
+);
+
+create unique index xpartcategory_uniq_idx on xpartcategory (group_id, name, parent_id);
+
+insert into xpartcategory (group_id, name)
+select id, upper(substr(val,1,1))+substr(val,2)+" parts" from cbitems where name='parts_groups';
+
 
 #--select date_required \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required
 

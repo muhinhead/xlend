@@ -20,8 +20,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 29;
-    public static final String DB_VERSION = "0.29";
+    private static final int DB_VERSION_ID = 30;
+    public static final String DB_VERSION = "0.30";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -1535,6 +1535,8 @@ public class DbConnection {
         + "  select 'parts_groups',5,'liquids'"
         + "    from junk"
         + "   where not exists(select * from cbitems where name='parts_groups' and id=5)",
+        //        "drop table xparts",
+        //        "drop table xpartcategory",
         "create table xpartcategory"
         + "("
         + "    xpartcategory_id int not null auto_increment,"
@@ -1542,11 +1544,47 @@ public class DbConnection {
         + "    name             varchar(64) not null,"
         + "    parent_id        int,"
         + "    constraint xpartcategory_pk primary key (xpartcategory_id),"
-        + "    constraint xpartcategory_xpartcategory_fk foreign key (parent_id) references xpartcategory (xpartcategory_id)"    
+        + "    constraint xpartcategory_xpartcategory_fk foreign key (parent_id) references xpartcategory (xpartcategory_id) on delete cascade"
         + ")",
-        "create unique index xpartcategory_uniq_idx on xpartcategory (group_id, name, parent_id)",
+        "create unique index xpartcategory_uniq_idx on xpartcategory (group_id, name)",
         "insert into xpartcategory (group_id, name) "
-        + "select id, concat(upper(substr(val,1,1)), substr(val,2), ' parts') from cbitems where name='parts_groups'"
+        + "select id, concat(upper(substr(val,1,1)), substr(val,2), ' parts') "
+        + " from cbitems"
+        + " where name='parts_groups'"
+        + " and not exists(select * from xpartcategory"
+        + " where group_id=cbitems.id and name=concat(upper(substr(cbitems.val,1,1)), substr(cbitems.val,2)))",
+        //29->30
+        "create table xparts"
+        + "("
+        + "    xparts_id        int not null auto_increment,"
+        + "    partnumber       varchar(64) not null,"
+        + "    description      varchar(128) not null,"
+        + "    xmachtype_id     int not null,"
+        + "    xpartcategory_id int not null,"
+        + "    whatfor          varchar(128),"
+        + "    constraint xparts_pk primary key (xparts_id),"
+        + "    constraint xparts_xmachtype_id foreign key (xmachtype_id) references xmachtype (xmachtype_id),"
+        + "    constraint xparts_xpartcategory_fk foreign key (xpartcategory_id) references xpartcategory (xpartcategory_id)"
+        + ")",
+        "create table xstocks"
+        + "("
+        + "    xstocks_id      int not null auto_increment,"
+        + "    name            varchar(64) not null,"
+        + "    description     varchar(128),"
+        + "    constraint xstocks_pk primary key (xstocks_id)"
+        + ")",
+        "create table xpartstocks"
+        + "("
+        + "    xpartstocks_id int not null auto_increment,"
+        + "    xparts_id      int not null,"
+        + "    xstocks_id     int not null,"
+        + "    xsupplier_id   int not null,"
+        + "    rest           decimal(10,2) not null,"
+        + "    constraint xpartstocks_pk primary key (xpartstocks_id),"
+        + "    constraint xpartstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),"
+        + "    constraint xpartstocks_xstocks_fk foreign key (xstocks_id) references xstocks (xstocks_id),"
+        + "    constraint xpartstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
+        + ")"
     };
 
     public static Connection getConnection() throws RemoteException {
@@ -1570,7 +1608,7 @@ public class DbConnection {
         if (isFirstTime) {
             initLocalDB(connection);
 //            if (props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
-                fixLocalDB(connection);
+            fixLocalDB(connection);
 //            }
             isFirstTime = false;
         }

@@ -8,38 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xposition extends DbObject  {
+public class Xstocks extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xpositionId = null;
-    private String pos = null;
+    private Integer xstocksId = null;
+    private String name = null;
+    private String description = null;
 
-    public Xposition(Connection connection) {
-        super(connection, "xposition", "xposition_id");
-        setColumnNames(new String[]{"xposition_id", "pos"});
+    public Xstocks(Connection connection) {
+        super(connection, "xstocks", "xstocks_id");
+        setColumnNames(new String[]{"xstocks_id", "name", "description"});
     }
 
-    public Xposition(Connection connection, Integer xpositionId, String pos) {
-        super(connection, "xposition", "xposition_id");
-        setNew(xpositionId.intValue() <= 0);
-//        if (xpositionId.intValue() != 0) {
-            this.xpositionId = xpositionId;
+    public Xstocks(Connection connection, Integer xstocksId, String name, String description) {
+        super(connection, "xstocks", "xstocks_id");
+        setNew(xstocksId.intValue() <= 0);
+//        if (xstocksId.intValue() != 0) {
+            this.xstocksId = xstocksId;
 //        }
-        this.pos = pos;
+        this.name = name;
+        this.description = description;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xposition xposition = null;
+        Xstocks xstocks = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id,pos FROM xposition WHERE xposition_id=" + id;
+        String stmt = "SELECT xstocks_id,name,description FROM xstocks WHERE xstocks_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xposition = new Xposition(getConnection());
-                xposition.setXpositionId(new Integer(rs.getInt(1)));
-                xposition.setPos(rs.getString(2));
-                xposition.setNew(false);
+                xstocks = new Xstocks(getConnection());
+                xstocks.setXstocksId(new Integer(rs.getInt(1)));
+                xstocks.setName(rs.getString(2));
+                xstocks.setDescription(rs.getString(3));
+                xstocks.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +51,7 @@ public class Xposition extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xposition;
+        return xstocks;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +60,27 @@ public class Xposition extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xposition ("+(getXpositionId().intValue()!=0?"xposition_id,":"")+"pos) values("+(getXpositionId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xstocks ("+(getXstocksId().intValue()!=0?"xstocks_id,":"")+"name,description) values("+(getXstocksId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXpositionId().intValue()!=0) {
-                 ps.setObject(++n, getXpositionId());
+             if (getXstocksId().intValue()!=0) {
+                 ps.setObject(++n, getXstocksId());
              }
-             ps.setObject(++n, getPos());
+             ps.setObject(++n, getName());
+             ps.setObject(++n, getDescription());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXpositionId().intValue()==0) {
-             stmt = "SELECT max(xposition_id) FROM xposition";
+         if (getXstocksId().intValue()==0) {
+             stmt = "SELECT max(xstocks_id) FROM xstocks";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXpositionId(new Integer(rs.getInt(1)));
+                     setXstocksId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +106,13 @@ public class Xposition extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xposition " +
-                    "SET pos = ?" + 
-                    " WHERE xposition_id = " + getXpositionId();
+                    "UPDATE xstocks " +
+                    "SET name = ?, description = ?" + 
+                    " WHERE xstocks_id = " + getXstocksId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPos());
+                ps.setObject(1, getName());
+                ps.setObject(2, getDescription());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,37 +125,37 @@ public class Xposition extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xemployee.exists(getConnection(),"xposition_id = " + getXpositionId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xemployee_xposition_fk");
+        if (Xpartstocks.exists(getConnection(),"xstocks_id = " + getXstocksId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xpartstocks_xstocks_fk");
         }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xposition " +
-                "WHERE xposition_id = " + getXpositionId();
+                "DELETE FROM xstocks " +
+                "WHERE xstocks_id = " + getXstocksId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXpositionId(new Integer(-getXpositionId().intValue()));
+        setXstocksId(new Integer(-getXstocksId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXpositionId().intValue() < 0);
+        return (getXstocksId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id,pos FROM xposition " +
+        String stmt = "SELECT xstocks_id,name,description FROM xstocks " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -160,7 +165,7 @@ public class Xposition extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xposition(con,new Integer(rs.getInt(1)),rs.getString(2)));
+                lst.add(dbObj=new Xstocks(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getString(3)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -170,10 +175,10 @@ public class Xposition extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xposition[] objects = new Xposition[lst.size()];
+        Xstocks[] objects = new Xstocks[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xposition xposition = (Xposition) lst.get(i);
-            objects[i] = xposition;
+            Xstocks xstocks = (Xstocks) lst.get(i);
+            objects[i] = xstocks;
         }
         return objects;
     }
@@ -185,7 +190,7 @@ public class Xposition extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id FROM xposition " +
+        String stmt = "SELECT xstocks_id FROM xstocks " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -203,31 +208,41 @@ public class Xposition extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXpositionId() + getDelimiter();
+    //    return getXstocksId() + getDelimiter();
     //}
 
-    public Integer getXpositionId() {
-        return xpositionId;
+    public Integer getXstocksId() {
+        return xstocksId;
     }
 
-    public void setXpositionId(Integer xpositionId) throws ForeignKeyViolationException {
-        setWasChanged(this.xpositionId != null && this.xpositionId != xpositionId);
-        this.xpositionId = xpositionId;
-        setNew(xpositionId.intValue() == 0);
+    public void setXstocksId(Integer xstocksId) throws ForeignKeyViolationException {
+        setWasChanged(this.xstocksId != null && this.xstocksId != xstocksId);
+        this.xstocksId = xstocksId;
+        setNew(xstocksId.intValue() == 0);
     }
 
-    public String getPos() {
-        return pos;
+    public String getName() {
+        return name;
     }
 
-    public void setPos(String pos) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.pos != null && !this.pos.equals(pos));
-        this.pos = pos;
+    public void setName(String name) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.name != null && !this.name.equals(name));
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.description != null && !this.description.equals(description));
+        this.description = description;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getXpositionId();
-        columnValues[1] = getPos();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getXstocksId();
+        columnValues[1] = getName();
+        columnValues[2] = getDescription();
         return columnValues;
     }
 
@@ -244,10 +259,11 @@ public class Xposition extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXpositionId(Integer.parseInt(flds[0]));
+            setXstocksId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXpositionId(null);
+            setXstocksId(null);
         }
-        setPos(flds[1]);
+        setName(flds[1]);
+        setDescription(flds[2]);
     }
 }

@@ -1185,6 +1185,7 @@ create table xopmachassing
 
 create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_id, xemployee_id, xmachine_id);
 
+drop table junk;
 create table junk (j char(1), primary key (j));
 insert into junk values('j');
 
@@ -1223,11 +1224,44 @@ create table xpartcategory
     constraint xpartcategory_xpartcategory_fk foreign key (parent_id) references xpartcategory (xpartcategory_id)
 );
 
-create unique index xpartcategory_uniq_idx on xpartcategory (group_id, name, parent_id);
+create unique index xpartcategory_uniq_idx on xpartcategory (group_id, name);
 
 insert into xpartcategory (group_id, name)
 select id, upper(substr(val,1,1))+substr(val,2)+" parts" from cbitems where name='parts_groups';
 
+create table xparts
+(
+    xparts_id       int not null auto_increment,
+    partnumber      varchar(64) not null,
+    description     varchar(128) not null,
+    xmachtype_id    int not null,
+    xpartcategory_id int not null,
+    whatfor         varchar(128),
+    constraint xparts_pk primary key (xparts_id),
+    constraint xparts_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id),
+    constraint xparts_xpartcategory_fk foreign key (xpartcategory_id) references xpartcategory (xpartcategory_id)
+);
+
+create table xstocks
+(
+    xstocks_id      int not null auto_increment,
+    name            varchar(64) not null,
+    description     varchar(128),
+    constraint xstocks_pk primary key (xstocks_id)
+);
+
+create table xpartstocks
+(
+    xpartstocks_id int not null auto_increment,
+    xparts_id      int not null,
+    xstocks_id     int not null,
+    xsupplier_id   int not null,
+    rest           decimal(10,2) not null,
+    constraint xpartstocks_pk primary key (xpartstocks_id),
+    constraint xpartstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),
+    constraint xpartstocks_xstocks_fk foreign key (xstocks_id) references xstocks (xstocks_id),
+    constraint xpartstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
+);
 
 #--select date_required \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required
 
@@ -1272,8 +1306,6 @@ select p.profile_id,
   from profile p, clientprofile c
  where c.profile_id = p.profile_id;
 
-drop function to_char; 
-drop function casewhen;
 delimiter |
 create function to_char(dt datetime, fmt varchar(32))
 returns varchar(32) deterministic

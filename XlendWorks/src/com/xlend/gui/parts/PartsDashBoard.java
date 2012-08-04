@@ -3,10 +3,15 @@ package com.xlend.gui.parts;
 import com.xlend.gui.AbstractDashBoard;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.XlendWorks;
+import com.xlend.orm.Xpartcategory;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -25,9 +30,14 @@ public class PartsDashBoard extends AbstractDashBoard {
     private ToolBarButton miscButton;
     private ToolBarButton liquidsButton;
     private PartsCategoriesFrame machinePartsFrame;
+    private PartsCategoriesFrame trucksPartsFrame;
+    private PartsCategoriesFrame vehiclesePartsFrame;
+    private PartsCategoriesFrame miscPartsFrame;
+    private PartsCategoriesFrame liquidsPartsFrame;
 
     public PartsDashBoard(JFrame parentFrame) {
         super("Parts");
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         instance = this;
         setVisible(true);
         setResizable(false);
@@ -66,19 +76,83 @@ public class PartsDashBoard extends AbstractDashBoard {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                
-//                if (machinePartsFrame == null) {
-//                    machinePartsFrame = new PartsCategoriesFrame("Machines parts", DashBoard.getExchanger(), "machines");
-//                } else {
-//                    try {
-//                        machinePartsFrame.setLookAndFeel(DashBoard.readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    machinePartsFrame.setVisible(true);
-//                }
+
+                if (machinePartsFrame == null) {
+                    machinePartsFrame = createCategoriesFrame(1, "machines");
+                } else {
+                    showPartsCategoriesFrame(machinePartsFrame);
+                }
             }
         });
+
+        trucksButton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (trucksPartsFrame == null) {
+                    trucksPartsFrame = createCategoriesFrame(2, "trucks");
+                } else {
+                    showPartsCategoriesFrame(trucksPartsFrame);
+                }
+            }
+        });
+        
+        vehiclesButton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (vehiclesePartsFrame == null) {
+                    vehiclesePartsFrame = createCategoriesFrame(3, "vehicles");
+                } else {
+                    showPartsCategoriesFrame(vehiclesePartsFrame);
+                }
+            }
+        });
+        
+        miscButton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (miscPartsFrame == null) {
+                    miscPartsFrame = createCategoriesFrame(4, "misc");
+                } else {
+                    showPartsCategoriesFrame(miscPartsFrame);
+                }
+            }
+        });
+        
+        liquidsButton.addActionListener(new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (liquidsPartsFrame == null) {
+                    liquidsPartsFrame = createCategoriesFrame(5, "liquids");
+                } else {
+                    showPartsCategoriesFrame(liquidsPartsFrame);
+                }
+            }
+        });
+    }
+
+    private static PartsCategoriesFrame createCategoriesFrame(int group_id, String name) {
+        PartsCategoriesFrame categoriesFrame = null;
+        try {
+            DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xpartcategory.class, "group_id="+group_id+" and parent_id is null", null);
+            Xpartcategory xpc = (Xpartcategory) obs[0];
+            categoriesFrame = new PartsCategoriesFrame(xpc.getName(), DashBoard.getExchanger(), name);
+        } catch (RemoteException ex) {
+            XlendWorks.logAndShowMessage(ex);
+        }
+        return categoriesFrame;
+    }
+
+    private static void showPartsCategoriesFrame(PartsCategoriesFrame partsFrame) {
+        try {
+            partsFrame.setLookAndFeel(DashBoard.readProperty("LookAndFeel",
+                    UIManager.getSystemLookAndFeelClassName()));
+        } catch (Exception ex) {
+        }
+        partsFrame.setVisible(true);
     }
 
     @Override

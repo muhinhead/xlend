@@ -172,6 +172,7 @@ public class DashBoard extends AbstractDashBoard {
                 if (partsDashBoard == null) {
                     new PartsDashBoard(DashBoard.this);
                 } else {
+                    partsDashBoard.setVisible(true);
                     partsDashBoard.requestFocus();
                     java.awt.EventQueue.invokeLater(new Runnable() {
                         @Override

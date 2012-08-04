@@ -132,13 +132,14 @@ public class EditBalancePanel extends RecordEditPanel {
         String titles[] = new String[]{
             "ID:",
             "Date & Time:",
-            "Total Available:",};
+            "Total Available:"
+        };
         childRows = new ArrayList<RowPanel>();
         toDelete = new ArrayList<RowPanel>();
         JComponent[] edits = new JComponent[]{
             getGridPanel(new JComponent[]{idField = new JTextField(), new JPanel(), new JButton(getAddLineAction())}),
             getGridPanel(new JComponent[]{dateSP = new SelectedDateSpinner(), new JPanel(), new JButton(getDeleteLineAction())}),
-            getGridPanel(valueField = new SelectedNumberSpinner(0.0, 0.0, 999999999, 0.01),3)
+            getGridPanel(valueField = new SelectedNumberSpinner(0.0, 0.0, 999999999, 0.01), 3)
         };
         valueField.setFont(valueField.getFont().deriveFont(Font.BOLD, 14));
         valueField.setEnabled(false);
@@ -163,7 +164,7 @@ public class EditBalancePanel extends RecordEditPanel {
             }
         });
         for (String h : hdrs) {
-            hdrPanel.add(new JLabel(h,h.equals("Balance")?SwingConstants.RIGHT:SwingConstants.LEFT));
+            hdrPanel.add(new JLabel(h, h.equals("Balance") ? SwingConstants.RIGHT : SwingConstants.LEFT));
         }
         downGridPanel.add(hdrPanel);
         add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
@@ -268,7 +269,7 @@ public class EditBalancePanel extends RecordEditPanel {
         if (dt != null) {
             xb.setBalancedate(new java.sql.Timestamp(dt.getTime()));
         }
-        xb.setTotalvalue((Double)valueField.getValue());
+        xb.setTotalvalue((Double) valueField.getValue());
         boolean ok = saveDbRecord(xb, isNew);
         if (ok) {
             for (RowPanel p : childRows) {

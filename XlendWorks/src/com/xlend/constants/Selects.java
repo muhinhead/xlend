@@ -195,6 +195,8 @@ public class Selects {
             + "and m.xmachtype2_id=t2.xmachtype_id ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
             + "from xsupplier order by companyname";
+    public static final String SELECT_FROM_WAREHOUSES = 
+            "select xstocks_id, name from xstocks";
     public static final String SELECT_FROM_SUPPLIERS =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\", "
@@ -433,6 +435,21 @@ public class Selects {
     public static final String activeEmployeeCondition = "clock_num!='000' and "
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
 
+    public static final String SELECT_FROM_XPARTS = 
+            "select xparts_id \"Id\", partnumber \"Part No\", "
+            + "(select machtype from xmachtype where xmachtype_id=xparts.xmachtype_id) \"Machine Type\", "
+            + "description \"Description\", whatfor \"Destination\" "
+            + " from xparts where xpartcategory_id=#";
+    
+    public static final String SELECT_ALL_STOCKS =
+            "select xstocks_id \"Id\", name \"Name\", description \"Description\" from xstocks";
+    
+    public static final String SELECT_PART_STOCKS =
+            "select xpartstocks.xpartstocks_id \"Id\", companyname \"Supplier\", xstocks.name \"Warehouse\", rest \"Rest\" "
+            + " from xpartstocks,xstocks,xsupplier"
+            + " where xpartstocks.xstocks_id=xstocks.xstocks_id and xpartstocks.xsupplier_id=xsupplier.xsupplier_id"
+            + " and xpartstocks.xparts_id=#";
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");

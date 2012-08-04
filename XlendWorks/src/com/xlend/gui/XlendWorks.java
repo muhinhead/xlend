@@ -1033,4 +1033,8 @@ public class XlendWorks {
         }
         return "";
     }
+
+    public static ComboItem[] loadAllWarehouses(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.SELECT_FROM_WAREHOUSES);
+    }
 }

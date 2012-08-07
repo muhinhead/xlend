@@ -345,7 +345,7 @@ create table xmachine
     monthly_pay     int,
     paystart        date,
     payend          date,
-    photo           blob,
+    photo           mediumblob,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
 );
@@ -1232,11 +1232,10 @@ select id, upper(substr(val,1,1))+substr(val,2)+" parts" from cbitems where name
 create table xparts
 (
     xparts_id       int not null auto_increment,
-    partnumber      varchar(64) not null,
+    serialnumber    varchar(32),
     description     varchar(128) not null,
     xmachtype_id    int not null,
     xpartcategory_id int not null,
-    whatfor         varchar(128),
     constraint xparts_pk primary key (xparts_id),
     constraint xparts_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id),
     constraint xparts_xpartcategory_fk foreign key (xpartcategory_id) references xpartcategory (xpartcategory_id)

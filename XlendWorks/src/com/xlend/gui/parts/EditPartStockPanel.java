@@ -21,10 +21,10 @@ class EditPartStockPanel extends RecordEditPanel {
 
     public static int xpartID;
     private JTextField idField;
-    private JComboBox warehouseCB;
+    private JComboBox stockCB;
     private JComboBox supplierCB;
     private JSpinner amountSP;
-    private DefaultComboBoxModel supplierCbModel, warehouseCbModel;
+    private DefaultComboBoxModel supplierCbModel, stockCbModel;
 
     public EditPartStockPanel(DbObject dbObject) {
         super(dbObject);
@@ -44,15 +44,15 @@ class EditPartStockPanel extends RecordEditPanel {
         for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
             supplierCbModel.addElement(ci);
         }
-        warehouseCbModel = new DefaultComboBoxModel();
-        warehouseCbModel.addElement(new ComboItem(0, "--Add new warehouse--"));
+        stockCbModel = new DefaultComboBoxModel();
+        stockCbModel.addElement(new ComboItem(0, "--Add new stock--"));
         for (ComboItem ci : XlendWorks.loadAllWarehouses(DashBoard.getExchanger())) {
-            warehouseCbModel.addElement(ci);
+            stockCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 5),
             comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel), new SupplierLookupAction(supplierCB)),
-            getGridPanel(warehouseCB = new JComboBox(warehouseCbModel), 2),
+            getGridPanel(stockCB = new JComboBox(stockCbModel), 2),
             getGridPanel(amountSP = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.01), 5)
         };
         idField.setEnabled(false);
@@ -66,7 +66,7 @@ class EditPartStockPanel extends RecordEditPanel {
         if (xps != null) {
             idField.setText(xps.getXpartstocksId().toString());
             selectComboItem(supplierCB, xps.getXsupplierId());
-            selectComboItem(warehouseCB, xps.getXstocksId());
+            selectComboItem(stockCB, xps.getXstocksId());
             amountSP.setValue(xps.getRest());
         }
     }
@@ -93,20 +93,20 @@ class EditPartStockPanel extends RecordEditPanel {
                 }
             }
         } else {
-            ci = (ComboItem) warehouseCB.getSelectedItem();
+            ci = (ComboItem) stockCB.getSelectedItem();
             if (ci.getValue().startsWith("--")) { // add new warehouse (stock)
-                EditStockDialog ewd = new EditStockDialog("New Warehouse", null);
+                EditStockDialog ewd = new EditStockDialog("New Stock", null);
                 if (ewd.okPressed) {
                     Xstocks xstock = (Xstocks) ewd.getEditPanel().getDbObject();
                     if (xstock != null) {
                         ci = new ComboItem(xstock.getXstocksId(), xstock.getName());
-                        warehouseCbModel.addElement(ci);
-                        warehouseCB.setSelectedItem(ci);
+                        stockCbModel.addElement(ci);
+                        stockCB.setSelectedItem(ci);
                     }
                 }
             } else {
                 xps.setXsupplierId(getSelectedCbItem(supplierCB));
-                xps.setXstocksId(getSelectedCbItem(warehouseCB));
+                xps.setXstocksId(getSelectedCbItem(stockCB));
                 xps.setRest((Double) amountSP.getValue());
                 return saveDbRecord(xps, isNew);
             }

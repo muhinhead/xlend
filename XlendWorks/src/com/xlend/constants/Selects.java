@@ -442,7 +442,9 @@ public class Selects {
             + " from xparts where xpartcategory_id=#";
     
     public static final String SELECT_ALL_STOCKS =
-            "select xstocks_id \"Id\", name \"Name\", description \"Description\" from xstocks";
+            "select xstocks_id \"Id\", name \"Name\", "
+            + "(select name from xsite where xsite_id=xstocks.xsite_id) \"Site\" "
+            + "description \"Description\" from xstocks";
     
     public static final String SELECT_PART_STOCKS =
             "select xpartstocks.xpartstocks_id \"Id\", companyname \"Supplier\", xstocks.name \"Location\", rest \"Rest\" "

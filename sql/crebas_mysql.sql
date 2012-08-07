@@ -126,7 +126,7 @@ create table xcontractpage #--implements IPage
     pagenum            int,
     description        varchar(64),
     fileextension      varchar(8),
-    pagescan           blob,
+    pagescan           mediumblob,
     constraint xcontractpage_pk primary key (xcontractpage_id),
     constraint xcontractpage_xcontract_fk foreign key (xcontract_id) references xcontract (xcontract_id) on delete cascade
 );
@@ -142,7 +142,7 @@ create table xquotation
     responsedby        varchar(12),
     responsecmnt       varchar(128),
     responder_id       int,
-    responsedoc        blob,
+    responsedoc        mediumblob,
     constraint xquotation_pk primary key (xquotation_id),
     constraint xquotation_xclient_fk foreign key (xclient_id) references xclient (xclient_id),
     constraint xquotation_profile_fk foreign key (responder_id) references userprofile (profile_id)
@@ -1246,7 +1246,9 @@ create table xstocks
     xstocks_id      int not null auto_increment,
     name            varchar(64) not null,
     description     varchar(128),
-    constraint xstocks_pk primary key (xstocks_id)
+    xsite_id        int not null,
+    constraint xstocks_pk primary key (xstocks_id),
+    constraint xstocks_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
 );
 
 create table xpartstocks

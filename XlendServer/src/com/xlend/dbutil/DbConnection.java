@@ -1557,7 +1557,7 @@ public class DbConnection {
         "create table xparts"
         + "("
         + "    xparts_id        int not null auto_increment,"
-        + "    partnumber       varchar(64) not null,"
+        + "    serialnumber     varchar(32) null,"
         + "    description      varchar(128) not null,"
         + "    xmachtype_id     int not null,"
         + "    xpartcategory_id int not null,"
@@ -1584,7 +1584,10 @@ public class DbConnection {
         + "    constraint xpartstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),"
         + "    constraint xpartstocks_xstocks_fk foreign key (xstocks_id) references xstocks (xstocks_id),"
         + "    constraint xpartstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
-        + ")"
+        + ")",
+        "alter table xparts change column partnumber serialnumber varchar(32)",
+        "alter table xparts drop whatfor",
+        "alter table xmachine modify column photo mediumblob"
     };
 
     public static Connection getConnection() throws RemoteException {

@@ -35,7 +35,7 @@ class EditPartStockPanel extends RecordEditPanel {
         String titles[] = new String[]{
             "ID:",
             "Supplier:",
-            "Warehouse:",
+            "Location:",
             "Amount:"
         };
 

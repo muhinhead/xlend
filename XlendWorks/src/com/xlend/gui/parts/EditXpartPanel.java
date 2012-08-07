@@ -33,7 +33,7 @@ class EditXpartPanel extends RecordEditPanel {
     private JTextField descriptionField;
     private JComboBox machineTypeCB;
     private DefaultComboBoxModel machineTypeCbModel;
-    private JTextField destinationField;
+//    private JTextField destinationField;
     private PartStocksGrid partStockGrid;
 
     public EditXpartPanel(DbObject dbObject) {
@@ -45,10 +45,10 @@ class EditXpartPanel extends RecordEditPanel {
         instance = this;
         String titles[] = new String[]{
             "ID:",
-            "Part No_:",
+            "Serial No_:",
             "Description:",
-            "Machine type:",
-            "Destination:"
+            "Machine type:"
+//           ,"Destination:"
         };
         machineTypeCbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(), "M','T','P','L','V")) {
@@ -59,7 +59,7 @@ class EditXpartPanel extends RecordEditPanel {
             getGridPanel(partNoField = new JTextField(), 3),
             descriptionField = new JTextField(),
             getGridPanel(machineTypeCB = new JComboBox(machineTypeCbModel), 2),
-            destinationField = new JTextField()
+//            destinationField = new JTextField()
         };
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
@@ -78,10 +78,10 @@ class EditXpartPanel extends RecordEditPanel {
         Xparts xpart = (Xparts) getDbObject();
         if (xpart != null) {
             idField.setText(xpart.getXpartsId().toString());
-            partNoField.setText(xpart.getPartnumber());
+            partNoField.setText(xpart.getSerialnumber());
             descriptionField.setText(xpart.getDescription());
             selectComboItem(machineTypeCB, xpart.getXmachtypeId());
-            destinationField.setText(xpart.getWhatfor());
+//            destinationField.setText(xpart.getWhatfor());
             partStockGrid.selectPartID(xpart.getXpartsId().intValue());
         }
     }
@@ -96,9 +96,9 @@ class EditXpartPanel extends RecordEditPanel {
             xpart.setXpartsId(0);
             xpart.setXpartcategoryId(categoryID);
         }
-        xpart.setPartnumber(partNoField.getText());
+        xpart.setSerialnumber(partNoField.getText());
         xpart.setDescription(descriptionField.getText());
-        xpart.setWhatfor(destinationField.getText());
+//        xpart.setWhatfor(destinationField.getText());
         xpart.setXmachtypeId(getSelectedCbItem(machineTypeCB));
         return saveDbRecord(xpart, isNew);
     }

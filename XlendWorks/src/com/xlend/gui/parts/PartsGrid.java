@@ -82,7 +82,7 @@ class PartsGrid extends GeneralGridPanel {
                     try {
                         Xparts xpart = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, id);
                         if (xpart != null && GeneralFrame.yesNo("Attention!", "Do you want to delete part ["
-                                + xpart.getPartnumber() + "]?") == JOptionPane.YES_OPTION) {
+                                + xpart.getSerialnumber() + "]?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(xpart);
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

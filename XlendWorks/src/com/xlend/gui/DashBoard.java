@@ -49,6 +49,7 @@ public class DashBoard extends AbstractDashBoard {
     private JButton bankingbutton;
     private JButton logoutButton;
     private JButton reportsButton;
+    private JButton adminButton;
     private JLabel userLogin;
     private GeneralFrame workFrame = null;
     private GeneralFrame sitesFrame = null;
@@ -57,13 +58,13 @@ public class DashBoard extends AbstractDashBoard {
     private GeneralFrame adminFrame = null;
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
-    private ToolBarButton adminButton = null;
-    private int dashWidth;
-    private int dashHeight;
+//    private int dashWidth;
+//    private int dashHeight;
 
     public DashBoard(IMessageSender exch) {
         super("Xcost");
         ourInstance = this;
+        setExchanger(exch);
         updateSheetList(exch);
         setVisible(true);
     }
@@ -71,6 +72,7 @@ public class DashBoard extends AbstractDashBoard {
     @Override
     protected void fillControlsPanel() throws HeadlessException {
         ImagePanel img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
+        
         adminButton = new ToolBarButton("admin.png");
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
@@ -135,7 +137,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (adminFrame == null) {
-                    adminFrame = new AdminFrame();
+                    adminFrame = new AdminFrame(exchanger);
                 } else {
                     try {
                         adminFrame.setLookAndFeel(readProperty("LookAndFeel",

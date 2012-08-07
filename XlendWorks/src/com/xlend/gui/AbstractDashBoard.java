@@ -31,6 +31,8 @@ public abstract class AbstractDashBoard extends JFrame {
 //        this.msgSender = exch;
 //    }
     protected JPanel controlsPanel;
+    protected int dashWidth;
+    protected int dashHeight;
 
     protected abstract String getBackGroundImage();
     
@@ -82,8 +84,8 @@ public abstract class AbstractDashBoard extends JFrame {
         addNotify();
         ImagePanel img = new ImagePanel(XlendWorks.loadImage(getBackGroundImage(), this));
         Insets insets = getInsets();
-        int dashWidth = img.getWidth();
-        int dashHeight = img.getHeight();
+        dashWidth = img.getWidth();
+        dashHeight = img.getHeight();
         this.setMinimumSize(new Dimension(dashWidth + insets.left + insets.right, dashHeight + insets.top + insets.bottom));
         layers.add(controlsPanel, JLayeredPane.DEFAULT_LAYER);
 

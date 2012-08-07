@@ -195,7 +195,7 @@ public class Selects {
             + "and m.xmachtype2_id=t2.xmachtype_id ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
             + "from xsupplier order by companyname";
-    public static final String SELECT_FROM_WAREHOUSES = 
+    public static final String SELECT_FROM_STORES = 
             "select xstocks_id, name from xstocks";
     public static final String SELECT_FROM_SUPPLIERS =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
@@ -436,16 +436,16 @@ public class Selects {
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
 
     public static final String SELECT_FROM_XPARTS = 
-            "select xparts_id \"Id\", partnumber \"Part No\", "
+            "select xparts_id \"Id\", serialnumber \"Serial No\", "
             + "(select machtype from xmachtype where xmachtype_id=xparts.xmachtype_id) \"Machine Type\", "
-            + "description \"Description\", whatfor \"Destination\" "
+            + "description \"Description\" "
             + " from xparts where xpartcategory_id=#";
     
     public static final String SELECT_ALL_STOCKS =
             "select xstocks_id \"Id\", name \"Name\", description \"Description\" from xstocks";
     
     public static final String SELECT_PART_STOCKS =
-            "select xpartstocks.xpartstocks_id \"Id\", companyname \"Supplier\", xstocks.name \"Warehouse\", rest \"Rest\" "
+            "select xpartstocks.xpartstocks_id \"Id\", companyname \"Supplier\", xstocks.name \"Location\", rest \"Rest\" "
             + " from xpartstocks,xstocks,xsupplier"
             + " where xpartstocks.xstocks_id=xstocks.xstocks_id and xpartstocks.xsupplier_id=xsupplier.xsupplier_id"
             + " and xpartstocks.xparts_id=#";

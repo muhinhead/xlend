@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.61";
+    public static final String version = "0.61.1";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1035,6 +1035,6 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllWarehouses(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SELECT_FROM_WAREHOUSES);
+        return loadOnSelect(exchanger, Selects.SELECT_FROM_STORES);
     }
 }

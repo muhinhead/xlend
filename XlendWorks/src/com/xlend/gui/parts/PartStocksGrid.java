@@ -30,7 +30,7 @@ public class PartStocksGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add Shipment") {
+        return new AbstractAction("Add Stock") {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,7 +50,7 @@ public class PartStocksGrid extends GeneralGridPanel {
                         }
                     }
                     if (xpartID > 0) {
-                        EditPartStockDialog ed = new EditPartStockDialog("Add Shipment", null);
+                        EditPartStockDialog ed = new EditPartStockDialog("Add Stock", null);
                         if (EditPartStockDialog.okPressed) {
                             Xpartstocks partstocks = (Xpartstocks) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),

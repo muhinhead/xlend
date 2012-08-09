@@ -22,52 +22,54 @@ class PartsGrid extends GeneralGridPanel {
 
     public PartsGrid(IMessageSender exchanger, int category_id) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_XPARTS.replaceAll("#", "" + category_id), null, false);
-        EditXpartPanel.categoryID = cartegoryID = category_id;
+//        EditXpartPanel.categoryID = cartegoryID = category_id;
     }
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("Add Part") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    EditXpartDialog ed = new EditXpartDialog("New Part", null);
-                    if (EditXpartDialog.okPressed) {
-                        Xparts xpart = (Xparts) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xpart.getXpartsId(), getPageSelector().getSelectedIndex());
-                    }
-                } catch (RemoteException ex) {
-                    XlendWorks.log(ex);
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
-            }
-        };
+//        return new AbstractAction("Add Part") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    EditXpartDialog ed = new EditXpartDialog("New Part", null);
+//                    if (EditXpartDialog.okPressed) {
+//                        Xparts xpart = (Xparts) ed.getEditPanel().getDbObject();
+//                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
+//                                xpart.getXpartsId(), getPageSelector().getSelectedIndex());
+//                    }
+//                } catch (RemoteException ex) {
+//                    XlendWorks.log(ex);
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//            }
+//        };
+        return null;
     }
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Part") {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int id = getSelectedID();
-                if (id > 0) {
-                    try {
-                        Xparts xpart = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, id);
-                        new EditXpartDialog("Edit Part", xpart);
-                        if (EditXpartDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
-                        }
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                    }
-                }
-            }
-        };
+//        return new AbstractAction("Edit Part") {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int id = getSelectedID();
+//                if (id > 0) {
+//                    try {
+//                        Xparts xpart = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, id);
+//                        new EditXpartDialog("Edit Part", xpart);
+//                        if (EditXpartDialog.okPressed) {
+//                            GeneralFrame.updateGrid(exchanger, getTableView(),
+//                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+//                        }
+//                    } catch (RemoteException ex) {
+//                        XlendWorks.log(ex);
+//                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                    }
+//                }
+//            }
+//        };
+        return null;
     }
 
     @Override
@@ -82,7 +84,7 @@ class PartsGrid extends GeneralGridPanel {
                     try {
                         Xparts xpart = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, id);
                         if (xpart != null && GeneralFrame.yesNo("Attention!", "Do you want to delete part ["
-                                + xpart.getSerialnumber() + "]?") == JOptionPane.YES_OPTION) {
+                                + xpart.getPartnumber() + "]?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(xpart);
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
@@ -97,7 +99,7 @@ class PartsGrid extends GeneralGridPanel {
     }
 
     public void selectCategoryID(int category_id) {
-        EditXpartPanel.categoryID = cartegoryID = category_id;
+//        EditXpartPanel.categoryID = cartegoryID = category_id;
         String newSelect = Selects.SELECT_FROM_XPARTS.replaceAll("#", "" + category_id);
         DbTableDocument td = (DbTableDocument) getController().getDocument();
         setSelect(newSelect);

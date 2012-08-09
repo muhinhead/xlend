@@ -436,9 +436,11 @@ public class Selects {
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
 
     public static final String SELECT_FROM_XPARTS = 
-            "select xparts_id \"Id\", serialnumber \"Serial No\", "
-            + "(select machtype from xmachtype where xmachtype_id=xparts.xmachtype_id) \"Machine Type\", "
-            + "description \"Description\" "
+            "select xparts_id \"Id\", partnumber \"Part No\", description \"Part Description\", storename \"Store\","
+            + "machinemodel \"Machine Model\", quantity \"Quantity\","
+            + "(select companyname from xsupplier where xsupplier_id=lastsupplier_id) \"Last Supplier\","
+            + "(select companyname from xsupplier where xsupplier_id=prevsupplier_id) \"Previous Supplier\","
+            + "priceperunit \"Price Per Unit\", purchased \"Purchase Date\" "
             + " from xparts where xpartcategory_id=#";
     
     public static final String SELECT_ALL_STOCKS =

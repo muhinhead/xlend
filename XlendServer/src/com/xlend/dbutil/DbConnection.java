@@ -20,8 +20,8 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static final int DB_VERSION_ID = 30;
-    public static final String DB_VERSION = "0.30";
+    private static final int DB_VERSION_ID = 31;
+    public static final String DB_VERSION = "0.31";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -1566,28 +1566,23 @@ public class DbConnection {
         + "    constraint xparts_xmachtype_id foreign key (xmachtype_id) references xmachtype (xmachtype_id),"
         + "    constraint xparts_xpartcategory_fk foreign key (xpartcategory_id) references xpartcategory (xpartcategory_id)"
         + ")",
-        "create table xstocks"
-        + "("
-        + "    xstocks_id      int not null auto_increment,"
-        + "    name            varchar(64) not null,"
-        + "    description     varchar(128),"
-        + "    constraint xstocks_pk primary key (xstocks_id)"
-        + ")",
-        "create table xpartstocks"
-        + "("
-        + "    xpartstocks_id int not null auto_increment,"
-        + "    xparts_id      int not null,"
-        + "    xstocks_id     int not null,"
-        + "    xsupplier_id   int not null,"
-        + "    rest           decimal(10,2) not null,"
-        + "    constraint xpartstocks_pk primary key (xpartstocks_id),"
-        + "    constraint xpartstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),"
-        + "    constraint xpartstocks_xstocks_fk foreign key (xstocks_id) references xstocks (xstocks_id),"
-        + "    constraint xpartstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
-        + ")",
-        "alter table xparts change column partnumber serialnumber varchar(32)",
-        "alter table xparts drop whatfor",
-        "alter table xmachine modify column photo mediumblob"
+        //30->31
+        "drop table xpartstocks",
+        "drop table xstocks",
+        "alter table xparts change column serialnumber partnumber varchar(32)",
+        "alter table xparts drop column whatfor",
+        "alter table xparts drop foreign key xparts_xmachtype_id",
+        "alter table xparts drop column xmachtype_id",
+        "alter table xparts add storename varchar(64)",
+        "alter table xparts add machinemodel varchar(64)",
+        "alter table xparts add quantity int not null default 0",
+        "alter table xparts add lastsupplier_id int",
+        "alter table xparts add prevsupplier_id int",
+        "alter table xparts add priceperunit decimal(10,2) not null default 0",
+        "alter table xparts add purchased date",
+        "alter table xparts add constraint xparts_xsupplier_fk foreign key (lastsupplier_id) references xsupplier (xsupplier_id)",
+        "alter table xparts add constraint xparts_xsupplier_fk2 foreign key (prevsupplier_id) references xsupplier (xsupplier_id)",
+        "alter table xparts add constraint valid_quantity check(quantity>=0)"
     };
 
     public static Connection getConnection() throws RemoteException {

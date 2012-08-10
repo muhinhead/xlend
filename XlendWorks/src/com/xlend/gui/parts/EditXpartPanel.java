@@ -7,16 +7,11 @@ import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xparts;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.Java2sAutoComboBox;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -135,7 +130,7 @@ class EditXpartPanel extends RecordEditPanel {
         part.setQuantity((Integer) quantitySP.getValue());
         part.setPriceperunit((Double) pricePerUnitSP.getValue());
         if (!isNew) {
-            if (getSelectedCbItem(lastSupplierCB).intValue() != part.getLastsupplierId().intValue()) {
+            if (part.getLastsupplierId()!=null && getSelectedCbItem(lastSupplierCB).intValue() != part.getLastsupplierId().intValue()) {
                 part.setPrevsupplierId(part.getLastsupplierId());
             }
         } else {

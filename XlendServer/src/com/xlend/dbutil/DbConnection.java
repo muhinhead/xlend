@@ -1582,7 +1582,37 @@ public class DbConnection {
         "alter table xparts add purchased date",
         "alter table xparts add constraint xparts_xsupplier_fk foreign key (lastsupplier_id) references xsupplier (xsupplier_id)",
         "alter table xparts add constraint xparts_xsupplier_fk2 foreign key (prevsupplier_id) references xsupplier (xsupplier_id)",
-        "alter table xparts add constraint valid_quantity check(quantity>=0)"
+        "alter table xparts add constraint valid_quantity check(quantity>=0)",
+        "create table xbookouts"
+        + "("
+        + "    xbookouts_id    int not null auto_increment,"
+        + "    xparts_id       int not null,"
+        + "    issue_date      date not null,"
+        + "    xsite_id        int not null,"
+        + "    xmachine_id     int not null,"
+        + "    issuedby_id     int not null,"
+        + "    issuedto_id     int not null,"
+        + "    quantity        int not null,"
+        + "    constraint xbookouts_pk primary key (xbookouts_id),"
+        + "    constraint xbookouts_xparts_fk foreign key (xparts_id) references xparts (xparts_id),"
+        + "    constraint xbookouts_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+        + "    constraint xbookouts_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),"
+        + "    constraint xbookouts_xemployee_fk2 foreign key (issuedto_id) references xemployee (xemployee_id)"
+        + ")",
+        "create table xaddstocks"
+        + "("
+        + "    xaddstocks_id   int not null auto_increment,"
+        + "    xparts_id       int not null,"
+        + "    purchase_date   date not null,"
+        + "    enteredby_id    int not null,"
+        + "    xsupplier_id    int not null,"
+        + "    priceperunit    decimal(10,2) not null,"
+        + "    quantity        int not null,"
+        + "    constraint xaddstocks_pk primary key (xaddstocks_id),"
+        + "    constraint xaddstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),"
+        + "    constraint xaddstocks_xemployee_fk foreign key (enteredby_id) references xemployee (xemployee_id),"
+        + "    constraint xaddstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
+        + ")"
     };
 
     public static Connection getConnection() throws RemoteException {

@@ -2,6 +2,7 @@ package com.xlend.gui.parts;
 
 import com.xlend.gui.AbstractDashBoard;
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xpartcategory;
 import com.xlend.orm.dbobject.DbObject;
@@ -9,6 +10,7 @@ import com.xlend.util.ImagePanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,13 @@ public class PartsDashBoard extends AbstractDashBoard {
 
     private static PartsDashBoard instance = null;
     private static final String BACKGROUNDIMAGE = "partsdashboard.png";
+    private static String[] sheetList = new String[]{
+        "Machines", "Trucks", "Vehicles", "Misc", "Liquids"
+    };
+
+    public static String[] sheets() {
+        return sheetList;
+    }
     private ToolBarButton machinesButton;
     private ToolBarButton trucksButton;
     private ToolBarButton vehiclesButton;
@@ -76,11 +85,14 @@ public class PartsDashBoard extends AbstractDashBoard {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (machinePartsFrame == null) {
-                    machinePartsFrame = createCategoriesFrame(1, "machines");
+                if (XlendWorks.availableForCurrentUser(sheets()[0])) {
+                    if (machinePartsFrame == null) {
+                        machinePartsFrame = createCategoriesFrame(1, "machines");
+                    } else {
+                        showPartsCategoriesFrame(machinePartsFrame);
+                    }
                 } else {
-                    showPartsCategoriesFrame(machinePartsFrame);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[0]);
                 }
             }
         });
@@ -89,46 +101,62 @@ public class PartsDashBoard extends AbstractDashBoard {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (trucksPartsFrame == null) {
-                    trucksPartsFrame = createCategoriesFrame(2, "trucks");
+                if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+                    if (trucksPartsFrame == null) {
+                        trucksPartsFrame = createCategoriesFrame(2, "trucks");
+                    } else {
+                        showPartsCategoriesFrame(trucksPartsFrame);
+                    }
                 } else {
-                    showPartsCategoriesFrame(trucksPartsFrame);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[1]);
                 }
             }
         });
-        
+
         vehiclesButton.addActionListener(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (vehiclesePartsFrame == null) {
-                    vehiclesePartsFrame = createCategoriesFrame(3, "vehicles");
+                if (XlendWorks.availableForCurrentUser(sheets()[2])) {
+                    if (vehiclesePartsFrame == null) {
+                        vehiclesePartsFrame = createCategoriesFrame(3, "vehicles");
+                    } else {
+                        showPartsCategoriesFrame(vehiclesePartsFrame);
+                    }
                 } else {
-                    showPartsCategoriesFrame(vehiclesePartsFrame);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[2]);
                 }
             }
         });
-        
+
         miscButton.addActionListener(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (miscPartsFrame == null) {
-                    miscPartsFrame = createCategoriesFrame(4, "misc");
+                if (XlendWorks.availableForCurrentUser(sheets()[3])) {
+                    if (miscPartsFrame == null) {
+                        miscPartsFrame = createCategoriesFrame(4, "misc");
+                    } else {
+                        showPartsCategoriesFrame(miscPartsFrame);
+                    }
                 } else {
-                    showPartsCategoriesFrame(miscPartsFrame);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[3]);
                 }
             }
         });
-        
+
         liquidsButton.addActionListener(new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (liquidsPartsFrame == null) {
-                    liquidsPartsFrame = createCategoriesFrame(5, "liquids");
+                if (XlendWorks.availableForCurrentUser(sheets()[4])) {
+                    if (liquidsPartsFrame == null) {
+                        liquidsPartsFrame = createCategoriesFrame(5, "liquids");
+                    } else {
+                        showPartsCategoriesFrame(liquidsPartsFrame);
+                    }
                 } else {
-                    showPartsCategoriesFrame(liquidsPartsFrame);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[4]);
                 }
             }
         });
@@ -137,7 +165,7 @@ public class PartsDashBoard extends AbstractDashBoard {
     private static PartsCategoriesFrame createCategoriesFrame(int group_id, String name) {
         PartsCategoriesFrame categoriesFrame = null;
         try {
-            DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xpartcategory.class, "group_id="+group_id+" and parent_id is null", null);
+            DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xpartcategory.class, "group_id=" + group_id + " and parent_id is null", null);
             Xpartcategory xpc = (Xpartcategory) obs[0];
             categoriesFrame = new PartsCategoriesFrame(xpc.getName(), DashBoard.getExchanger(), name);
         } catch (RemoteException ex) {
@@ -176,4 +204,14 @@ public class PartsDashBoard extends AbstractDashBoard {
     public static PartsDashBoard getInstance() {
         return instance;
     }
+
+//    private ActionListener lackOfPermissionsAction() {
+//        return new AbstractAction() {
+//
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                GeneralFrame.infoMessageBox("Sorry!", "Access denied");
+//            }
+//        };
+//    }
 }

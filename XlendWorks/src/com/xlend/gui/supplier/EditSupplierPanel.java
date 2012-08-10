@@ -166,7 +166,7 @@ class EditSupplierPanel extends RecordEditPanel {
                 XlendWorks.log(ex);
             }
         }
-        detailPanel.add("Payemtns", paymentPanel);
+        detailPanel.add("Paymetns", paymentPanel);
         detailPanel.add("Fuel", fuelPanel);
         detailPanel.add("Consumables not paid", consPanel);
         return detailPanel;

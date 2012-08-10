@@ -322,6 +322,7 @@ public class DashBoard extends AbstractDashBoard {
         updateSheetList("FLEET", FleetFrame.sheets());
         updateSheetList("LOGISTICS", LogisticsFrame.sheets());
         updateSheetList("BANKING", BankingFrame.sheets());
+        updateSheetList("PARTS", PartsDashBoard.sheets());
     }
 
     public static void updateSheetList(String parentName, String[] sheetNames) {

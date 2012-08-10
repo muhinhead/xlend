@@ -112,6 +112,7 @@ class EditXpartPanel extends RecordEditPanel {
                 java.util.Date dt = new java.util.Date(part.getPurchased().getTime());
                 purchaseDateSP.setValue(dt);
             }
+            quantitySP.setEnabled(false);
         }
     }
 

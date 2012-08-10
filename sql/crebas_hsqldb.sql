@@ -1353,7 +1353,7 @@ create cached table xparts
     storename       varchar(64) not null,
     machinemodel    varchar(64),
     quantity        int not null,
-    lastsupplier_id int not null,
+    lastsupplier_id int,
     prevsupplier_id int,
     priceperunit    decimal(10,2) not null,
     purchased       date,
@@ -1376,7 +1376,7 @@ create table xbookouts
     issuedto_id     int not null,
     quantity        int not null,
     constraint xbookouts_pk primary key (xbookouts_id),
-    constraint xbookouts_xparts_fk foreign key (xparts_id) references xparts (xparts_id),
+    constraint xbookouts_xparts_fk foreign key (xparts_id) references xparts (xparts_id) on delete cascade,
     constraint xbookouts_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
     constraint xbookouts_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),
     constraint xbookouts_xemployee_fk2 foreign key (issuedto_id) references xemployee (xemployee_id)
@@ -1392,7 +1392,7 @@ create table xaddstocks
     priceperunit    decimal(10,2) not null,
     quantity        int not null,
     constraint xaddstocks_pk primary key (xaddstocks_id),
-    constraint xaddstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id),
+    constraint xaddstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id) on delete cascade,
     constraint xaddstocks_xemployee_fk foreign key (enteredby_id) references xemployee (xemployee_id),
     constraint xaddstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
 );

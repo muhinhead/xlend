@@ -130,7 +130,9 @@ public class Selects {
             + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 order by sitetype,upper(name)";
     public static final String SELECT_DEPOTS4LOOKUP = 
-            "Select xsite_id \"Id\", name \"Site Name\" from xsite where is_active=1 order by upper(name)";
+            "Select xsite_id \"Id\", name \"Site Name\", "
+            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "from xsite where is_active=1 and sitetype='D' order by upper(name)";
     public static final String SELECT_FROM_LOWBEDS =
             "Select xlowbed_id \"Id\", "
             + "concat(m.classify,m.tmvnr) \"TMVnr\", t1.machtype \"Machine Type\", m.reg_nr \"Reg.Nr\", "
@@ -440,7 +442,7 @@ public class Selects {
             + "machinemodel \"Machine Model\", quantity \"Quantity\","
             + "(select companyname from xsupplier where xsupplier_id=lastsupplier_id) \"Last Supplier\","
             + "(select companyname from xsupplier where xsupplier_id=prevsupplier_id) \"Previous Supplier\","
-            + "priceperunit \"Price Per Unit\", purchased \"Purchase Date\" "
+            + "priceperunit \"Last Price Per Unit\", purchased \"Purchase Date\" "
             + " from xparts where xpartcategory_id=#";
     
     public static final String SELECT_ALL_STOCKS =
@@ -453,6 +455,24 @@ public class Selects {
             + " from xpartstocks,xstocks,xsupplier"
             + " where xpartstocks.xstocks_id=xstocks.xstocks_id and xpartstocks.xsupplier_id=xsupplier.xsupplier_id"
             + " and xpartstocks.xparts_id=#";
+    public static final String SELECT_DISTINCT_STORES =
+            "select distinct storename from xparts order by storename";
+    public static final String SELECT_DISTINCT_MACHINEMODELS =
+            "select distinct machinemodel from xparts order by machinemodel";
+    public static final String SELECT_FROM_ADDSTOCKS = 
+            "Select xaddstocks_id \"Id\", purchase_date \"Purchase Date\", "
+            + "quantity \"Quantity\", priceperunit \"Price per Unit\", "
+            + "(Select companyname from xsupplier where xsupplier_id=xaddstocks.xsupplier_id) \"Supplier\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xaddstocks.enteredby_id) \"Entered By\" "
+            + "from xaddstocks where xparts_id=# order by purchase_date desc";
+    public static final String SELECT_FROM_BOOKOUTS =
+            "Select xbookouts_id \"Id\",issue_date \"Date of Issue\","
+            + "quantity \"Quantity\", "
+            + "(Select name from xsite where xsite_id=xbookouts.xsite_id) \"Depot/Site\","
+            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xbookouts.xmachine_id) \"For Machine\","
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedby_id) \"Issued By\","
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedto_id) \"Issued To\" "
+            + "from xbookouts where xparts_id=# order by issue_date desc";
     
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",

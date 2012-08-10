@@ -450,6 +450,22 @@ public class XlendWorks {
         return new String[]{""};
     }
 
+    private static String[] loadStringsOnSelect(IMessageSender exchanger, String select) {
+        try {
+            Vector[] tab = exchanger.getTableBody(select);
+            Vector rows = tab[1];
+            String[] ans = new String[rows.size()];
+            for (int i = 0; i < rows.size(); i++) {
+                Vector line = (Vector) rows.get(i);
+                ans[i] = line.get(0).toString();
+            }
+            return ans;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return new String[]{""};
+    }
+
     private static ComboItem[] loadOnSelect(IMessageSender exchanger, String select) {
         try {
             Vector[] tab = exchanger.getTableBody(select);
@@ -1036,5 +1052,25 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllWarehouses(IMessageSender exchanger) {
         return loadOnSelect(exchanger, Selects.SELECT_FROM_STORES);
+    }
+
+    public static String[] loadDistinctStoreNames(IMessageSender exchanger) {
+        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_STORES);
+//        String ss[] = loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_STORES);
+//        ArrayList arr = new ArrayList();
+//        for (String s : ss) {
+//            arr.add(s);
+//        }
+//        return arr;
+    }
+    
+    public static String[] loadDistinctMachineModels(IMessageSender exchanger) {
+        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
+//        String ss[] = loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
+//        ArrayList arr = new ArrayList();
+//        for (String s : ss) {
+//            arr.add(s);
+//        }
+//        return arr;
     }
 }

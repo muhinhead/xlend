@@ -4,12 +4,9 @@ import com.xlend.gui.AboutDialog;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
-import com.xlend.mvc.dbtable.DbTableDocument;
-import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.orm.Xpartcategory;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.PopupDialog;
 import com.xlend.util.PopupListener;
 import com.xlend.util.ToolBarButton;
 import com.xlend.util.Util;
@@ -19,8 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
@@ -29,7 +24,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -353,8 +347,8 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
             XlendWorks.logAndShowMessage(ex);
             splitPanelV.setRightComponent(new JLabel("ERROR:" + ex.getMessage()));
         }
-        //new JScrollPane(tableView = new DbTableView()));
-        splitPanelV.setDividerLocation(300);
+   
+        splitPanelV.setDividerLocation(200);
         return splitPanelV;
     }
     

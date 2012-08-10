@@ -42,7 +42,7 @@ public class XaddstocksWithTrigger extends Xaddstocks {
                         part.setPriceperunit((Double) self.getPriceperunit());
                         part.setPriceperunit(self.getPriceperunit());
                         part.setPurchased(self.getPurchaseDate());
-                        if (self.getXsupplierId().intValue() != part.getLastsupplierId().intValue()) {
+                        if (part.getLastsupplierId()!=null && self.getXsupplierId().intValue() != part.getLastsupplierId().intValue()) {
                             part.setPrevsupplierId(part.getLastsupplierId());
                             part.setLastsupplierId(self.getXsupplierId());
                         }

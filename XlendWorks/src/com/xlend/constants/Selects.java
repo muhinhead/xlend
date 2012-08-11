@@ -19,13 +19,13 @@ public class Selects {
     public static final String SELECT_FROM_SITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\","
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\","
             + "CASEWHEN(is_active,'Yes','No') \"Active\" "
             + "from xsite order by is_active desc,upper(name)";
     public static final String SELECT_ORDERISITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\", "
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\", "
             + "CASEWHEN(is_active,'Yes','No') \"Active\" "
             + "from xsite where xorder_id = # or xorder2_id = # or xorder3_id = #";
     public static final String SELECT_FROM_CLIENTS = "Select xclient_id \"Id\","
@@ -127,11 +127,11 @@ public class Selects {
             + "from xwage where xtimesheet_id = #";
     public static final String SELECT_SITES4LOOKUP =
             "Select xsite_id \"Id\", name \"Site Name\","
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 order by sitetype,upper(name)";
     public static final String SELECT_DEPOTS4LOOKUP = 
             "Select xsite_id \"Id\", name \"Site Name\", "
-            + "(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 and sitetype='D' order by upper(name)";
     public static final String SELECT_FROM_LOWBEDS =
             "Select xlowbed_id \"Id\", "
@@ -160,7 +160,7 @@ public class Selects {
             + "concat(xmachine.classify,tmvnr) \"Fleet Nr\", "
             + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine\", "
             + "(select machtype from xmachtype where xmachtype2_id=xmachine.xmachtype_id) \"Type\", xmachine.reg_nr \"Reg.Nr\", "
-            + "concat(xemployee.clock_num,' ',substr(xemployee.first_name,0,1),'.',xemployee.sur_name) \"Operator\", "
+            + "concat(xemployee.clock_num,' ',substr(xemployee.first_name,1,1),'.',xemployee.sur_name) \"Operator\", "
             + "estdate \"Est.Date\", deestdate \"De-Est.Date\" "
             + "from xmachineonsite,xmachine,xemployee "
             + "where xmachine.xmachine_id=xmachineonsite.xmachine_id "
@@ -215,7 +215,7 @@ public class Selects {
     public static final String SELECT_FROM_DIESELCARD =
             "Select xdieselcard_id \"Id\", carddate \"Date\", "
             + "concat(classify,tmvnr) \"Machine\", "
-            + "concat(substr(first_name,0,1),'.',sur_name,' (',clock_num,')') \"Operator\", "
+            + "concat(substr(first_name,1,1),'.',sur_name,' (',clock_num,')') \"Operator\", "
             + "name \"Site\", amount_liters \"Liters\" from xdieselcard,xmachine,xemployee,xsite "
             + "where xdieselcard.xmachine_id=xmachine.xmachine_id and xdieselcard.xsite_id=xsite.xsite_id "
             + "and xdieselcard.operator_id=xemployee.xemployee_id";
@@ -223,7 +223,7 @@ public class Selects {
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
     public static final String SELECT_FROM_CONSUMABLES =
             "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
-            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,0,1),"
+            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,1,1),"
             + "'.',req.sur_name,' (',req.clock_num,')') \"Requested by\", "
             + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.partnumber \"Part.Nr\" "
             + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
@@ -231,7 +231,7 @@ public class Selects {
             + "and con.requester_id=req.xemployee_id";
     public static final String SELECT_SUPPLIERS_CONSUMABLES =
             "Select xconsume_id \"Id\", "
-            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,0,1),"
+            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,1,1),"
             + "'.',req.sur_name,' (',req.clock_num,')') \"Requested by\", "
             + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.amount_rands \"Amount(R)\" "
             + "from xconsume con, xmachine mac, xemployee req "
@@ -239,7 +239,7 @@ public class Selects {
             + "and con.requester_id=req.xemployee_id";
     public static final String SELECT_FROM_CONSUMABLES4MACHINE =
             "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
-            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,0,1),"
+            + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,1,1),"
             + "'.',req.sur_name,' (',req.clock_num,')') \"Requested by\", "
             + "con.invoicedate \"Inv.Date\", con.invoicenumber \"Inv.Nr\", con.partnumber \"Part.Nr\" "
             + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
@@ -255,7 +255,7 @@ public class Selects {
     public static final String SELECT_FROM_WAGES =
             "Select xwagesum.xwagesum_id \"List Id\",weekend \"Week ending\", "
             //            + "xemployee.clock_num \"Clock Nr.\","
-            //            + " concat(substr(xemployee.first_name,0,1),'.',xemployee.sur_name,' (',xemployee.clock_num,')') \"Name\","
+            //            + " concat(substr(xemployee.first_name,1,1),'.',xemployee.sur_name,' (',xemployee.clock_num,')') \"Name\","
             //            + "weeklywage \"Weekly Wage\", "
             + "sum(normaltime) \"Total Hours\",sum(overtime) \"Total Overtime\", sum(doubletime) \"Total Doubletime\" "
             + "from xwagesum,xwagesumitem "//,xemployee "
@@ -400,7 +400,7 @@ public class Selects {
     public static final String SELECT_FROM_WAGECATEGORY =
             "select cbitem_id \"Id\", id \"Code\", val \"Wage Category\" from cbitems where name='wage_category'";
     public static final String SELECT_FROM_SITETYPES =
-            "select cbitem_id \"Id\", substr(val,0,1) \"Code\", val \"Site Type\" from cbitems where name='site_types'";
+            "select cbitem_id \"Id\", substr(val,1,1) \"Code\", val \"Site Type\" from cbitems where name='site_types'";
     public static final String SELECT_FROM_RATEDMACHINES =
             "select cbitem_id \"Id\", id \"Code\", val \"Machine\" from cbitems where name='rated_machines'";
     public static final String SELECT_FROM_MACHINERANTALRATE =
@@ -420,12 +420,12 @@ public class Selects {
             + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     public static final String SELECT_EMPLOYEE_ASSIGNMENTS =
             "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
-            + "(Select concat(name,' (',(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types'),')') from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
+            + "(Select concat(name,' (',(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types'),')') from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\" "
             + "from xopmachassing where xemployee_id=# order by xopmachassing_id desc";
     public static final String SELECT_MACHINE_ASSIGNMENTS =
             "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
-            + "(Select concat(name,'(',(select min(val) from cbitems where substr(val,0,1)=sitetype and name='site_types'),')') from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
+            + "(Select concat(name,'(',(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types'),')') from xsite where xsite_id=xopmachassing.xsite_id) \"Site\","
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
             + "from xopmachassing where xmachine_id=# order by xopmachassing_id desc";
     public static final String SELECT_SITE_ASSIGNMENTS =

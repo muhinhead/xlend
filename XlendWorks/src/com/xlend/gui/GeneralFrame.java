@@ -127,20 +127,12 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
         toolBar = new JToolBar();
         toolBar.add(searchButton);
-        toolBar.add(srcLabel = new JLabel("  Search for:"));
+        toolBar.add(srcLabel = new JLabel("  Filter:"));
         toolBar.add(srcField = new JTextField(20));
         srcLabel.setVisible(false);
         srcField.setVisible(false);
         srcField.addKeyListener(getSrcFieldKeyListener());
         srcField.setMaximumSize(srcField.getPreferredSize());
-
-//        toolBar.add(filterButton);
-//        toolBar.add(fltrLabel = new JLabel("  Filter on:"));
-//        toolBar.add(fltrField = new JTextField(20));
-//        fltrLabel.setVisible(false);
-//        fltrField.setVisible(false);
-//        fltrField.addKeyListener(getFilterFieldKeyListener());
-//        fltrField.setMaximumSize(fltrField.getPreferredSize());
 
         toolBar.add(printButton);
         toolBar.add(refreshButton);

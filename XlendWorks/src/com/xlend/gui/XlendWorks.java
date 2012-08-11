@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.62.1";
+    public static final String version = "0.62.2";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -737,7 +737,7 @@ public class XlendWorks {
     public static boolean availableForCurrentUser(String sheetName) {
         try {
             DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
-                    + " and sheet_id in (select sheet_id from sheet where sheetname='" + sheetName + "')", null);
+                    + " and sheet_id in (select sheet_id from sheet where sheetname like binary '" + sheetName + "')", null);
             return recs.length > 0;
         } catch (RemoteException ex) {
             log(ex);

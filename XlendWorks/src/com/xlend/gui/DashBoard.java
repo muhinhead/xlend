@@ -4,10 +4,10 @@ import com.xlend.gui.admin.AdminFrame;
 import com.xlend.gui.parts.PartsDashBoard;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.orm.Sheet;
+import com.xlend.orm.Usersheet;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
-import com.xlend.util.TexturedPanel;
 import com.xlend.util.ToolBarButton;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,12 +15,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.UIManager;
 
 /**
@@ -72,7 +76,7 @@ public class DashBoard extends AbstractDashBoard {
     @Override
     protected void fillControlsPanel() throws HeadlessException {
         ImagePanel img = new ImagePanel(XlendWorks.loadImage("admin.png", this));
-        
+
         adminButton = new ToolBarButton("admin.png");
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
@@ -177,6 +181,7 @@ public class DashBoard extends AbstractDashBoard {
                     partsDashBoard.setVisible(true);
                     partsDashBoard.requestFocus();
                     java.awt.EventQueue.invokeLater(new Runnable() {
+
                         @Override
                         public void run() {
                             partsDashBoard.toFront();
@@ -315,6 +320,40 @@ public class DashBoard extends AbstractDashBoard {
 
     private void updateSheetList(IMessageSender exch) {
         setExchanger(exch);
+        HashSet<String> allSheetNames = new HashSet<String>();
+        for (String[] sheetList : new String[][]{DocFrame.sheets(), SitesFrame.sheets(),
+                    HRFrame.sheets(), ReportsFrame.sheets(), FleetFrame.sheets(), LogisticsFrame.sheets(),
+                    BankingFrame.sheets(), PartsDashBoard.sheets()}) {
+            for (String sheetName : sheetList) {
+                allSheetNames.add(sheetName);
+            }
+        }
+        DbObject[] sheets;
+        ArrayList<Sheet> obsoleteSheets = new ArrayList<Sheet>();
+        try {
+            sheets = exchanger.getDbObjects(Sheet.class, "parent_id is not null", null);
+            for (DbObject rec : sheets) {
+                Sheet sheet = (Sheet) rec;
+                if (!allSheetNames.contains(sheet.getSheetname())) {
+                    obsoleteSheets.add(sheet);
+                }
+            }
+        } catch (Exception ex) {
+            XlendWorks.log(ex);
+        }
+
+        if (obsoleteSheets.size() > 0) {
+            XlendWorks.log("Removing OBSOLETE SHEETS:");
+        }
+        for (Sheet s : obsoleteSheets) {
+            XlendWorks.log("!! id=" + s.getSheetId() + " name=[" + s.getSheetname() + "] parent_id=" + s.getParentId());
+            try {
+                exchanger.deleteObject(s);
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+            }
+        }
+
         updateSheetList("DOCS", DocFrame.sheets());
         updateSheetList("SITES", SitesFrame.sheets());
         updateSheetList("HR", HRFrame.sheets());
@@ -330,7 +369,7 @@ public class DashBoard extends AbstractDashBoard {
         DbObject[] children;
         DbObject[] sheets;
         try {
-            sheets = exchanger.getDbObjects(Sheet.class, "sheetname='" + parentName + "'", "sheet_id");
+            sheets = exchanger.getDbObjects(Sheet.class, "sheetname like binary '" + parentName + "'", "sheet_id");
             Sheet sh;
             String[] names;
             int papa_id;
@@ -350,7 +389,7 @@ public class DashBoard extends AbstractDashBoard {
             }
             sheets = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id, null);
             for (String s : sheetNames) {
-                children = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id + " and sheetname='" + s + "'", null);
+                children = exchanger.getDbObjects(Sheet.class, "parent_id=" + papa_id + " and sheetname like binary '" + s + "'", null);
                 if (children.length == 0) {
                     sh = new Sheet(null);
                     sh.setSheetname(s);

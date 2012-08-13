@@ -31,6 +31,9 @@ class EditMachineTypePanel extends RecordEditPanel {
             nameField = new JTextField(32),
             getBorderPanel(new JComponent[]{classField = new JTextField(1)})
         };
+        if (MachineTypeGrid.papaType!=null) {
+            classField.setText(MachineTypeGrid.papaType.getClassify());
+        }
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
     }

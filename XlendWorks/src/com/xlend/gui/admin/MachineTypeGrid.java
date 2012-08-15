@@ -22,14 +22,14 @@ import javax.swing.JOptionPane;
 public class MachineTypeGrid extends GeneralGridPanel {
 
     public static Xmachtype papaType;
-    
-    public MachineTypeGrid(IMessageSender exchanger, String select, DbTableView masterView) throws RemoteException {
-        super(exchanger, select, null, false, masterView);
-        setIsMultilineSelection(true);
+
+    public MachineTypeGrid(IMessageSender exchanger, String select, DbTableView masterView, boolean readOnly) throws RemoteException {
+        super(exchanger, select, null, readOnly, masterView);
+//        setIsMultilineSelection(true);
     }
 
     public MachineTypeGrid(IMessageSender exchanger, DbTableView masterView) throws RemoteException {
-        this(exchanger, Selects.SELECT_MACHTYPES, masterView);
+        this(exchanger, Selects.SELECT_MACHTYPES, masterView, false);
     }
 
     private String setParentID() throws NumberFormatException {
@@ -52,11 +52,14 @@ public class MachineTypeGrid extends GeneralGridPanel {
     }
 
     private static String subTypeHeader() {
-        return "Subtype"+(papaType==null?"":" of type "+papaType.getMachtype());
-    } 
-    
+        return "Subtype" + (papaType == null ? "" : " of type " + papaType.getMachtype());
+    }
+
     @Override
     protected AbstractAction addAction() {
+//        if (!isExternalView) {
+//            return null;
+//        }
         return new AbstractAction(isExternalView ? "Add Type" : "Add Subtype") {
 
             @Override
@@ -65,7 +68,7 @@ public class MachineTypeGrid extends GeneralGridPanel {
                     String select = setParentID();
                     EditMachineTypeDialog ed = new EditMachineTypeDialog("New " + (isExternalView ? "Machine Type" : subTypeHeader()), null);
                     if (EditMachineTypeDialog.okPressed) {
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, null, 
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, null,
                                 getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
@@ -78,6 +81,9 @@ public class MachineTypeGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
+//        if (!isExternalView) {
+//            return null;
+//        }
         return new AbstractAction("Edit " + (isExternalView ? "Machine Type" : "Subtype")) {
 
             @Override
@@ -89,7 +95,7 @@ public class MachineTypeGrid extends GeneralGridPanel {
                         String select = setParentID();
                         EditMachineTypeDialog ed = new EditMachineTypeDialog("Edit " + (isExternalView ? "Machine Type" : subTypeHeader()), mt);
                         if (EditMachineTypeDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, id, 
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, id,
                                     getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
@@ -103,23 +109,22 @@ public class MachineTypeGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
+//        if (!isExternalView) {
+//            return null;
+//        }
         return new AbstractAction("Delete Machine " + (isExternalView ? "Type(s)" : "Subtype(s)")) {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
-                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete selected type(s)?") == JOptionPane.YES_OPTION) {
+                    if (GeneralFrame.yesNo("Attention!", "Do you want to delete selected type?") == JOptionPane.YES_OPTION) {
                         try {
                             String select = setParentID();
-                            int[] ids = getSelectedIDs();
-                            for (int iid : ids) {
-                                Xmachtype mt = (Xmachtype) exchanger.loadDbObjectOnID(Xmachtype.class, iid);
-                                if (mt != null) {
-                                    exchanger.deleteObject(mt);
-                                }
-                            }
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, null, 
+                            Xmachtype mt = (Xmachtype) exchanger.loadDbObjectOnID(Xmachtype.class, id);
+                            exchanger.deleteObject(mt);
+                            
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, null,
                                     getPageSelector().getSelectedIndex());
                         } catch (RemoteException ex) {
                             XlendWorks.log(ex);

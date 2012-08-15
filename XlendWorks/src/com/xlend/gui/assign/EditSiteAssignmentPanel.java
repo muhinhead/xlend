@@ -53,9 +53,9 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(dateSP = new SelectedDateSpinner(), 4),
             comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-            new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)),
+                new MachineLookupAction(machineCB, null)),//Selects.notAssignedMachinesCondition)),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel),
-            new EmployeeLookupAction(operatorCB, Selects.notAssignedOperatorCondition))
+                new EmployeeLookupAction(operatorCB, null))//Selects.notAssignedOperatorCondition))
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));

@@ -60,7 +60,7 @@ public class AdminFrame extends GeneralFrame {
     private JComponent getDictionariesPanel() {
         if (dictionaryPanel == null) {
             try {
-                machineSubTypesPanel = new MachineTypeGrid(getExchanger(), Selects.SELECT_MACHSUBTYPES, null);
+                machineSubTypesPanel = new MachineTypeGrid(getExchanger(), Selects.SELECT_MACHSUBTYPES, null, true);
                 Controller detailController = machineSubTypesPanel.getController();
                 XlendMasterTableView masterView = new XlendMasterTableView(getExchanger(), detailController, "parenttype_id", 0);
                 registerGrid(machineTypesPanel = new MachineTypeGrid(getExchanger(), masterView));

@@ -1,8 +1,14 @@
 package com.xlend.gui.admin;
 
+import com.xlend.constants.Selects;
+import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachtype;
 import com.xlend.orm.dbobject.DbObject;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
@@ -31,11 +37,22 @@ class EditMachineTypePanel extends RecordEditPanel {
             nameField = new JTextField(32),
             getBorderPanel(new JComponent[]{classField = new JTextField(1)})
         };
-        if (MachineTypeGrid.papaType!=null) {
+        if (MachineTypeGrid.papaType != null) {
             classField.setText(MachineTypeGrid.papaType.getClassify());
         }
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
+
+        int machineTypeID = 0;
+        Xmachtype mt = (Xmachtype) getDbObject();
+        if (mt != null) {
+            machineTypeID = mt.getXmachtypeId();
+            try {
+                add(new MachineTypeGrid(DashBoard.getExchanger(), Selects.SELECT_MACHTYPES.replaceAll(" is null", "=" + machineTypeID), null, false));
+            } catch (RemoteException ex) {
+                XlendWorks.logAndShowMessage(ex);
+            }
+        }
     }
 
     @Override
@@ -60,7 +77,7 @@ class EditMachineTypePanel extends RecordEditPanel {
         }
         mt.setMachtype(nameField.getText());
         mt.setClassify(classField.getText().length() > 1 ? classField.getText().substring(0, 1) : classField.getText());
-        if (parentID != null) {
+        if (parentID != null && mt.getXmachtypeId().intValue()!=parentID.intValue()) {
             mt.setParenttypeId(parentID);
         }
         ok = saveDbRecord(mt, isNew);

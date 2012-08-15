@@ -300,7 +300,9 @@ public class EditTripPanel extends RecordEditPanel {
         if (toAssign) {
             try {
                 java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
-                Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), xtr.getMachineId(), xtr.getOperatorId());
+                int machID = xtr.getMachineId()==null?0:xtr.getMachineId().intValue();
+                int opID = xtr.getOperatorId()==null?0:xtr.getOperatorId().intValue();
+                Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machID, opID);
                 if (previous == null) {
                     Xopmachassing previousOperatorsAssign = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), 0, xtr.getOperatorId());
                     if (previousOperatorsAssign != null) {
@@ -356,6 +358,8 @@ public class EditTripPanel extends RecordEditPanel {
                 DashBoard.getExchanger().saveDbObject(assign);
 
             } catch (Exception ex) {
+//                ex.pr
+                ex.printStackTrace();
                 XlendWorks.logAndShowMessage(ex);
                 ok = false;
             }

@@ -17,6 +17,7 @@ create table picture
 (
     picture_id   int not null auto_increment,
     picture      mediumblob,
+    stamp timestamp,
     constraint picture_pk primary key (picture_id)
 );
 
@@ -35,6 +36,7 @@ create table profile
     cell_phone   varchar(12),
     email        varchar(80),
     picture_id   int,
+    stamp timestamp,
     constraint profile_pk primary key (profile_id),
     constraint profile_picture_fk foreign key (picture_id) references picture (picture_id)
 );
@@ -50,6 +52,7 @@ create table userprofile
     supervisor   smallint,
     login        varchar(16),
     pwdmd5       varchar(32),
+    stamp timestamp,
     constraint userprofile_pk primary key (profile_id),
     constraint userprofile_profile_fk foreign key (profile_id) references profile (profile_id) on delete cascade
 );
@@ -60,6 +63,7 @@ create table sheet
     sheetname varchar(32) not null,
     classname varchar(64),
     parent_id int,
+    stamp timestamp,
     constraint sheet_pk primary key (sheet_id)
 );
 
@@ -68,6 +72,7 @@ create table usersheet
     usersheet_id int not null auto_increment,
     profile_id   int not null,
     sheet_id     int not null,
+    stamp timestamp,
     constraint usersheet_pk primary key (usersheet_id),
     constraint usersheet_sheet_fk foreign key (sheet_id) references sheet (sheet_id) on delete cascade,
     constraint usersheet_user_fk foreign key (profile_id) references userprofile (profile_id) on delete cascade
@@ -78,6 +83,7 @@ create table reportgroup
     reportgroup_id int not null auto_increment,
     sheetgroup_id  int not null,
     sheet_id       int not null,
+    stamp timestamp,
     constraint reportgroup_pk primary key (reportgroup_id),
     constraint reportgroup_sheet_fk foreign key (sheetgroup_id) references sheet (sheet_id) on delete cascade,
     constraint reportgroup_sheet_fk2 foreign key (sheet_id) references sheet (sheet_id) on delete cascade
@@ -91,6 +97,7 @@ create table clientprofile
     source_type       varchar(10), #--check (source_type in('Phonebook','Referral','Location','Others')),
     source_descr      varchar(255),
     sales_potential   int,
+    stamp timestamp,
     constraint clientprofile_pk primary key (profile_id),
     constraint clientprofile_profile_spers_fk foreign key (salesperson_id) references profile (profile_id),
     constraint clientprofile_profile_fk foreign key (profile_id) references profile (profile_id) on delete cascade
@@ -106,6 +113,7 @@ create table xclient
     vatnumber       varchar(32),
     address         varchar(255),
     description     varchar(255),
+    stamp timestamp,
     constraint xclient_pk primary key (xclient_id)
 );
 
@@ -115,6 +123,7 @@ create table xcontract
     contractref    varchar(32) not null,
     description    varchar(255),
     xclient_id     int not null,
+    stamp timestamp,
     constraint xcontract_pk primary key (xcontract_id),
     constraint xcontract_xclient_fk foreign key (xclient_id) references xclient (xclient_id)
 );
@@ -127,6 +136,7 @@ create table xcontractpage #--implements IPage
     description        varchar(64),
     fileextension      varchar(8),
     pagescan           mediumblob,
+    stamp timestamp,
     constraint xcontractpage_pk primary key (xcontractpage_id),
     constraint xcontractpage_xcontract_fk foreign key (xcontract_id) references xcontract (xcontract_id) on delete cascade
 );
@@ -143,6 +153,7 @@ create table xquotation
     responsecmnt       varchar(128),
     responder_id       int,
     responsedoc        mediumblob,
+    stamp timestamp,
     constraint xquotation_pk primary key (xquotation_id),
     constraint xquotation_xclient_fk foreign key (xclient_id) references xclient (xclient_id),
     constraint xquotation_profile_fk foreign key (responder_id) references userprofile (profile_id)
@@ -156,6 +167,7 @@ create table xquotationpage #--implements IPage
     description        varchar(64),
     fileextension      varchar(8),
     pagescan           blob,
+    stamp timestamp,
     constraint xquotationpage_pk primary key (xquotationpage_id),
     constraint xquotationpage_xquotation_fk foreign key (xquotation_id) references xquotation (xquotation_id) on delete cascade
 );
@@ -173,6 +185,7 @@ create table xorder
     contactfax         varchar(32),
     deliveryaddress    varchar(255) not null,
     invoiceaddress     varchar(255) not null,
+    stamp timestamp,
     constraint xorder_pk primary key (xorder_id),
     constraint xorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),
     constraint xorder_xquotation_fk  foreign key (xquotation_id) references xquotation (xquotation_id),
@@ -190,6 +203,7 @@ create table xsite
     xorder2_id      int,
     xorder3_id      int,
     is_active       bit,
+    stamp timestamp,
     constraint xsite_id primary key (xsite_id),
     constraint xsite_xorder_fk foreign key (xorder_id) references xorder (xorder_id),
     constraint xsite_xorder_fk2 foreign key (xorder2_id) references xorder (xorder_id),
@@ -204,6 +218,7 @@ create table xorderpage #--implements IPage
     description       varchar(64),
     fileextension      varchar(8),
     pagescan          blob,
+    stamp timestamp,
     constraint xorderpage_pk primary key (xorderpage_id),
     constraint xorderpage_xorder_fk foreign key (xorder_id) references xorder (xorder_id) on delete cascade
 );
@@ -212,6 +227,7 @@ create table xposition
 (
     xposition_id    int not null auto_increment,
     pos             varchar(64) not null,
+    stamp timestamp,
     constraint xposition_pk primary key (xposition_id)
 );
 
@@ -257,6 +273,7 @@ create table xemployee
     bank_account3     varchar(32),
     branch_code_name3 varchar(32),
     employment_start date,
+    stamp timestamp,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition (xposition_id)
 );
@@ -270,6 +287,7 @@ create table xtimesheet
     weekend       date,
     clocksheet    smallint default 1,
     image         blob,
+    stamp timestamp,
     constraint xtimesheet_pk primary key (xtimesheet_id),
     constraint xtimesheet_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
     constraint xtimesheet_xorder_fk foreign key (xorder_id) references xorder (xorder_id),
@@ -286,6 +304,7 @@ create table xwage
     doubletime     double,
     deduction      double,
     stoppeddetails varchar(128),
+    stamp timestamp,
     constraint xwage_pk primary key (xwage_id),
     constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id) on delete cascade
 );
@@ -294,6 +313,7 @@ create table xwagesum
 (
     xwagesum_id int not null auto_increment,
     weekend     date,
+    stamp timestamp,
     constraint xwagesum_pk primary key (xwagesum_id)
 );
 
@@ -307,6 +327,7 @@ create table xwagesumitem
     normaltime      double,
     overtime        double,
     doubletime      double,
+    stamp timestamp,
     constraint xwagesumitem_pk primary key (xwagesumitem_id),
     constraint xwagesumitem_xwagesum_fk foreign key (xwagesum_id) references xwagesum (xwagesum_id) on delete cascade,
     constraint xwagesumitem_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
@@ -319,6 +340,7 @@ create table xmachtype
     machtype         varchar(32) not null,
     parenttype_id    int,
     classify         char(1),
+    stamp timestamp,
     constraint xmachtype_pk primary key (xmachtype_id)
     #--,constraint xmachtype_xmachtype_fk foreign key (parenttype_id) references xmachtype
 );
@@ -346,6 +368,7 @@ create table xmachine
     paystart        date,
     payend          date,
     photo           mediumblob,
+    stamp timestamp,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
 );
@@ -356,6 +379,7 @@ create table xlowbed
     xmachine_id     int not null,
     driver_id       int,
     assistant_id    int,
+    stamp timestamp,
     constraint xlowbed_pk primary key (xlowbed_id),
     constraint xlowbed_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
     constraint xlowbed_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
@@ -379,6 +403,7 @@ create table xtrip
     withmachine_id  int,
     is_copmplete    bit,
     operator_id     int,
+    stamp timestamp,
     constraint xtrip_pk primary key (xtrip_id),
     constraint xtrip_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id) on delete cascade,
     constraint xtrip_xsite_fk foreign key (fromsite_id) references xsite (xsite_id),
@@ -403,6 +428,7 @@ create table xorderitem
     priceperone       decimal(10,2) not null,
     xmachtype_id      int,
     totalvalue        decimal(10,2),
+    stamp timestamp,
     constraint xorderitem_pk primary key (xorderitem_id),
     constraint xoreritem_xorder_fk foreign key (xorder_id) references xorder (xorder_id) on delete cascade,
     constraint xorderitem_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
@@ -422,6 +448,7 @@ create table xsupplier
     company_regnr    varchar(32),
     address          varchar(255),
     banking          varchar(255),
+    stamp timestamp,
     constraint xsupplier_pk primary key (xsupplier_id)
 );
 
@@ -429,6 +456,7 @@ create table xpaidmethod
 (
     xpaidmethod_id   int not null auto_increment,
     method           varchar(32) not null,
+    stamp timestamp,
     constraint xpaidmethod_pk primary key (xpaidmethod_id)
 );
 
@@ -442,6 +470,7 @@ create table xdieselpchs
     amount_rands     decimal(10,2) not null,
     paidby_id        int,
     xpaidmethod_id   int not null,
+    stamp timestamp,
     constraint xdieselpchs_pk primary key (xdieselpchs_id),
     constraint xdieselpchs_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),
     constraint xdieselpchs_xemployee_fk foreign key (authorizer_id) references xemployee (xemployee_id),
@@ -458,6 +487,7 @@ create table xdieselcard
     xsite_id          int not null,
     amount_liters     int,
     personiss_id      int,
+    stamp timestamp,
     constraint xdieselcard_pk primary key (xdieselcard_id),
     constraint xdieselcard_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
     constraint xdieselcard_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
@@ -484,6 +514,7 @@ create table xconsume
     chequenumber      varchar(32),
     accnum            varchar(16),
     xsite_id          int,
+    stamp timestamp,
     constraint xconsume_pk primary key (xconsume_id),
     constraint xconsume_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),
     constraint xconsume_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
@@ -517,6 +548,7 @@ create table xbreakdown
     accomprice        int,
     invoicenumber     varchar(16),
     amount            decimal(10,2),
+    stamp timestamp,
     constraint xbreakdown_pk primary key (xbreakdown_id),
     constraint xbreakdown_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
     constraint xbreakdown_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
@@ -532,6 +564,7 @@ create table xbreakconsume
     xbreakconsume_id  int not null auto_increment,
     xconsume_id       int not null,
     xbreakdown_id     int not null,
+    stamp timestamp,
     constraint xbreakconsume_pk primary key (xbreakconsume_id),
     constraint xbreakconsume_xconsume_fk foreign key (xconsume_id) references xconsume (xconsume_id),
     constraint xbreakconsume_xbreakdown_fk foreign key (xbreakdown_id) references xbreakdown (xbreakdown_id) on delete cascade
@@ -548,6 +581,7 @@ create table xfuel
     issuedto_id  int,
     xsupplier_id int,
     iscache      bit,
+    stamp timestamp,
     constraint xfuel_id primary key (xfuel_id),
     constraint xfuel_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xfuel_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),
@@ -563,6 +597,7 @@ create table xpayment
     ammount      decimal(10,2) not null,
     paidfrom     int not null,
     paydby_id    int,
+    stamp timestamp,
     constraint xpayment_pk primary key (xpayment_id),
     constraint xpayment_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),
     constraint xpayment_xemployee_fk foreign key (paydby_id) references xemployee (xemployee_id)
@@ -595,6 +630,7 @@ create table xabsenteeism
     no_reason       bit,
     medical_cert    bit,
     death_cert      bit,
+    stamp timestamp,
     constraint xabsenteeism_pk primary key (xabsenteeism_id),
     constraint xabsenteeism_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
     constraint xabsenteeism_xsite_fk foreign key (xsite_id) references xsite (xsite_id) on delete cascade,
@@ -667,6 +703,7 @@ create table xissuing
     issuedby6_end   int,
     issuedby7_start int,
     issuedby7_end   int,
+    stamp timestamp,
     constraint xissuing_pk primary key (xissuing_id),
     constraint xissuing_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
     constraint xissuing_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
@@ -694,6 +731,7 @@ create table xtripsheet
     xlowbed_id    int not null,
     driver_id     int not null,
     authorized_id int not null,
+    stamp timestamp,
     constraint xtripsheet_pk primary key (xtripsheet_id),
     constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id),
     constraint xtripsheet_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
@@ -716,6 +754,7 @@ create table xtripsheetpart
     timeend           time,
     kilimeters        int,
     assistant_id      int,
+    stamp timestamp,
     constraint xtripsheetpart_fk primary key (xtripsheetpart_id),
     constraint xtripsheetpart_xtripsheet_fk foreign key (xtripsheet_id) references xtripsheet (xtripsheet_id) on delete cascade,
     constraint xtripsheetpart_xsite_fk foreign key (fromsite_id) references xsite (xsite_id),
@@ -732,6 +771,7 @@ create table xaccounts
     accnumber         varchar(12) not null,
     bank              varchar(32) not null,
     branch            varchar(32) not null,
+    stamp timestamp,
     constraint xaccount_pk primary key (xaccount_id)
 );
 
@@ -740,6 +780,7 @@ create table xbankbalance
     xbankbalance_id  int not null auto_increment,
     balancedate      timestamp not null,
     totalvalue       decimal(12,2),
+    stamp timestamp,
     constraint xbankbalance_pk primary key (xbankbalance_id)
 );
 
@@ -749,6 +790,7 @@ create table xbankbalancepart
    xbankbalance_id     int not null,
    xaccount_id         int not null,
    total               decimal(10,2),
+   stamp timestamp,
    constraint xbankbalancepart_pk primary key (xbankbalancepart_id),
    constraint xbankbalancepart_xbankbalance_fk foreign key (xbankbalance_id) references xbankbalance (xbankbalance_id) on delete cascade,
    constraint xbankbalancepart_xaccounts_fk foreign key (xaccount_id) references xaccounts (xaccount_id)
@@ -763,6 +805,7 @@ create table xsitediary
     manager_id       int not null,
     site_foreman     varchar(32),
     site_number      varchar(32),
+    stamp timestamp,
     constraint xsitediary_pk primary key (xsitediary_id),
     constraint xsitediary_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xsitediary_xemployee_fk foreign key (manager_id) references xemployee (xemployee_id)
@@ -797,6 +840,7 @@ create table xsitediaryitem
     day5value          varchar(6),
     day6value          varchar(6),
     day7value          varchar(6),
+    stamp timestamp,
     constraint xsitediaryitem_pk primary key (xsitediaryitem_id),
     constraint xsitediaryitem_xsitediary_fk foreign key (xsitediary_id) references xsitediary (xsitediary_id) on delete cascade,
     constraint xsitediaryitem_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
@@ -819,6 +863,7 @@ create table xappforleave
     is_approved      bit,
     approvedby_id    int,
     remarks          varchar(1024),
+    stamp timestamp,
     constraint xappforleave_pk primary key (xappforleave_id),
     constraint xappforleave_xemployee_fk foreign key (applicant_id) references xemployee (xemployee_id),
     constraint xappforleave_xemployee_fk2 foreign key (approvedby_id) references xemployee (xemployee_id)
@@ -839,6 +884,7 @@ create table xloans
     deduction        decimal(10,2) not null,
     deducttime       int,
     is_signed        bit,
+    stamp timestamp,
     constraint xloans_pk primary key (xloans_id),
     constraint xloans_xemployee_fk foreign key (requestedby_id) references xemployee (xemployee_id),
     constraint xloans_xemployee_fk2 foreign key (authorizedby_id) references xemployee (xemployee_id)
@@ -862,6 +908,7 @@ create table xincidents
     is_verified      bit,
     verifiedby_id    int,
     lost_income      int,
+    stamp timestamp,
     constraint xincidents_pk primary key (xincidents_id),
     constraint xincidents_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xincidents_xemployee_fk foreign key (reportedby_id) references xemployee (xemployee_id),
@@ -874,6 +921,7 @@ create table xmachineincident
     xmachineincident_id int not null auto_increment,
     xincidents_id    int not null,
     xmachine_id      int not null,
+    stamp timestamp,
     constraint xmachineincident_pk primary key (xmachineincident_id),
     constraint xmachineincident_xincidents_fk foreign key (xincidents_id) references xincidents (xincidents_id) on delete cascade,
     constraint xmachineincident_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id) on delete cascade
@@ -884,6 +932,7 @@ create table xemployeeincident
     xemployeeincident_id int not null auto_increment,
     xincidents_id        int not null,
     xemployee_id         int not null,
+    stamp timestamp,
     constraint xemployeeincident_pk primary key (xemployeeincident_id),
     constraint xemployeeincident_xincidents_fk foreign key (xincidents_id) references xincidents (xincidents_id) on delete cascade,
     constraint xemployeeincident_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade
@@ -893,6 +942,7 @@ create table xsalarylist
 (
     xsalarylist_id int not null auto_increment,
     payday         date not null,
+    stamp timestamp,
     constraint xsalarylist_pk primary key (xsalarylist_id)
 );
 
@@ -902,6 +952,7 @@ create table xsalary
     xsalarylist_id int not null,
     xemployee_id   int not null,
     amount         decimal(10,2) not null,
+    stamp timestamp,
     constraint xsalarylist_pk primary key (xsalary_id),
     constraint xsalary_xsalarylist_fk foreign key (xsalarylist_id) references xsalarylist (xsalarylist_id) on delete cascade,
     constraint xsalary_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)
@@ -963,6 +1014,7 @@ create table xopclocksheet
     stand_from7      time,
     stand_to7        time,
     reason7          varchar(255),
+    stamp timestamp,
     constraint xopclocksheet_pk primary key (xopclocksheet_id),
     constraint xopclocksheet_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
     constraint xopclocksheet_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
@@ -1045,6 +1097,7 @@ create table xjobcard
     machine_id3_day7 int,
     machine_id4_day7 int,
     machine_id5_day7 int,
+    stamp timestamp,
     constraint xjobcard_pk primary key (xjobcard_id),
     constraint xjobcard_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
     constraint xjobcard_xmachine_fk11 foreign key (machine_id1_day1) references xmachine (xmachine_id),
@@ -1091,6 +1144,7 @@ create table xhourcompare
     xsite_id        int not null,
     operator_id     int not null,
     xmachine_id     int not null,
+    stamp timestamp,
     constraint xhourcompare_pk primary key (xhourcompare_id),
     constraint xhourcompare_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xhourcompare_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
@@ -1109,6 +1163,7 @@ create table xhourcompareday
     tsh                double,
     tsn                double,
     invn               double,
+    stamp timestamp,
     constraint xhourcompareday_pk primary key (xhourcompareday_id),
     constraint xhourcompareday_xhourcompare_fk foreign key (xhourcompare_id) references xhourcompare (xhourcompare_id)
 );
@@ -1121,6 +1176,7 @@ create table cbitems
   name          varchar(32) not null,
   id            int not null,
   val           varchar(64),
+  stamp timestamp,
   constraint cbitems_pk primary key (cbitem_id)
 );
 
@@ -1133,6 +1189,7 @@ create table xmachrentalrate
     actual_date        date,
     diesel_price       decimal(6,2),
     factor             decimal(6,2),
+    stamp timestamp,
     constraint xmachinerentalrate_pk primary key (xmachrentalrate_id)
 );
 
@@ -1145,6 +1202,7 @@ create table xmachrentalrateitm
     dry                    decimal(8,2) not null,
     real_wet               decimal(8,2) not null,
     good_wet               decimal(8,2) not null,
+    stamp timestamp,
     constraint xmachrentalrateitm_pk primary key (xmachrentalrateitm_id),
     constraint xmachrentalrateitm_xmachrentalrate_fk foreign key (xmachrentalrate_id) references xmachrentalrate (xmachrentalrate_id) on delete cascade,
     constraint xmachrentalrateitm_cbitem_fk foreign key (cbitem_id) references cbitems (cbitem_id)
@@ -1161,6 +1219,7 @@ create table xtransscheduleitm
     lowbed_id              int,
     operator_id            int,
     is_completed           bit,
+    stamp timestamp,
     constraint xtransscheduleitm_pk primary key (xtransscheduleitm_id),
     constraint xtransscheduleitm_xmachine_fk foreign key (machine_id) references xmachine (xmachine_id),
     constraint xtransscheduleitm_xsite_fk foreign key (site_from_id) references xsite (xsite_id),
@@ -1177,6 +1236,7 @@ create table xopmachassing
     xmachine_id      int,
     date_start       date not null,
     date_end         date,
+    stamp timestamp,
     constraint xopmachassing_pk primary key (xopmachassing_id),
     constraint xopmachassing_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xopmachassing_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
@@ -1220,6 +1280,7 @@ create table xpartcategory
     group_id         int not null,
     name             varchar(64) not null,
     parent_id        int,
+    stamp timestamp,
     constraint xpartcategory_pk primary key (xpartcategory_id),
     constraint xpartcategory_xpartcategory_fk foreign key (parent_id) references xpartcategory (xpartcategory_id)
 );
@@ -1242,6 +1303,7 @@ create table xparts
     priceperunit    decimal(10,2) not null,
     purchased       date,
     xpartcategory_id int not null,
+    stamp timestamp,
     constraint xparts_pk primary key (xparts_id),
     constraint xparts_xsupplier_fk foreign key (lastsupplier_id) references xsupplier (xsupplier_id),
     constraint xparts_xsupplier_fk2 foreign key (prevsupplier_id) references xsupplier (xsupplier_id),
@@ -1259,6 +1321,7 @@ create table xbookouts
     issuedby_id     int not null,
     issuedto_id     int not null,
     quantity        int not null,
+    stamp timestamp,
     constraint xbookouts_pk primary key (xbookouts_id),
     constraint xbookouts_xparts_fk foreign key (xparts_id) references xparts (xparts_id) on delete cascade,
     constraint xbookouts_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
@@ -1275,6 +1338,7 @@ create table xaddstocks
     xsupplier_id    int not null,
     priceperunit    decimal(10,2) not null,
     quantity        int not null,
+    stamp timestamp,
     constraint xaddstocks_pk primary key (xaddstocks_id),
     constraint xaddstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id) on delete cascade,
     constraint xaddstocks_xemployee_fk foreign key (enteredby_id) references xemployee (xemployee_id),

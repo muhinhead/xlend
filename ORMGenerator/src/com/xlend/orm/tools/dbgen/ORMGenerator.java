@@ -11,6 +11,7 @@ import com.xlend.orm.tools.dbgen.dbstructure.Type;
 import com.xlend.orm.tools.dbgen.dbstructure.ForeignKey;
 import com.xlend.orm.tools.dbgen.dbstructure.Table;
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -534,6 +535,8 @@ public class ORMGenerator {
                 output.println("        } catch(NumberFormatException ne) {");
                 output.println("            set" + capitalize(col.getJavaName()) + "(null);");
                 output.println("        }");
+            } else if (col.getType().getJavaType().equals("Timestamp")) {
+                output.println("        //Timestamp flds["+n+"] skipped");
             } else {
                 output.println("        set" + capitalize(col.getJavaName()) + "(flds[" + n + "]);");
             }

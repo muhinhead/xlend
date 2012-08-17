@@ -1,11 +1,8 @@
 package com.xlend.gui;
 
-import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
-import com.xlend.gui.hr.EmployeesGrid;
 import com.xlend.remote.IMessageSender;
-import java.awt.Component;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;

@@ -6,6 +6,7 @@ import com.xlend.orm.dbobject.TriggerAdapter;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -59,7 +59,7 @@ public class SyncPushTimer extends TimerTask {
 
     @Override
     public void run() {
-        //XlendServer.log("==== SyncPushTimer runs ====");
+//        XlendServer.log("==== SyncPushTimer runs ====");
         sync();
     }
 
@@ -72,7 +72,9 @@ public class SyncPushTimer extends TimerTask {
             ps = DbConnection.getLogDBconnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             while (rs.next()) {
-                getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4)));
+                if (getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4)))==null) {
+//                    XlendServer.log("==== SyncPushTimer found update of "+rs.getString(2)+" ID="+rs.getInt(4)+" ====");
+                }
             }
         } catch (Exception ex) {
             XlendServer.log(ex);

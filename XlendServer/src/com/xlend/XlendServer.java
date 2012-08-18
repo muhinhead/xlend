@@ -53,7 +53,7 @@ public class XlendServer {
     private static Timer syncTimer;
     private static Thread syncThread;
     private static boolean isCycle = true;
-    private static final int TIMESTEP = 10 * 1000;
+    private static final int TIMESTEP = 60 * 1000;
 
     private static boolean compareDbVersions() {
         try {
@@ -164,14 +164,13 @@ public class XlendServer {
     }
 
     private static void runSyncService() throws RemoteException {
-        (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
 
         if (compareDbVersions()) {
             syncThread = new Thread() {
 
                 @Override
                 public void run() {
-                    super.run();
+//                    super.run();
                     while (isCycle) {
                         try {
                             SyncPushTimer.syncRemoteDB();
@@ -186,6 +185,7 @@ public class XlendServer {
                 }
             };
             syncThread.start();
+            (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
         } else {
             XlendServer.log("ATTENTION! Local and remote database versions "
                     + "does not match, replication didn't started!");
@@ -223,6 +223,7 @@ public class XlendServer {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     rmiServer.stop();
+                    isCycle = false;
                     System.exit(0);
                 }
             });
@@ -280,6 +281,7 @@ public class XlendServer {
             tray.add(ti);
         } catch (Exception ex) {
             log("RMI server trouble: " + ex.getMessage());
+            isCycle = false;
             System.exit(2);
         }
     }

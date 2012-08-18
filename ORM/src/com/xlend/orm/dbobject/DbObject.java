@@ -41,7 +41,10 @@ public abstract class DbObject implements Serializable {
     public abstract void delete() throws SQLException, ForeignKeyViolationException;
 
     public abstract boolean isDeleted();
-//    public abstract void restore() throws SQLException;
+
+    public abstract Integer getPK_ID();
+
+    public abstract void setPK_ID(Integer id) throws ForeignKeyViolationException;
 
     public static DbObject[] load(Connection con, String whereCondition, String orderCondition)
             throws SQLException {

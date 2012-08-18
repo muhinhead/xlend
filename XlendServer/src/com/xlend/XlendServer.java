@@ -188,7 +188,7 @@ public class XlendServer {
             syncThread.start();
         } else {
             XlendServer.log("ATTENTION! Local and remote database versions "
-                    + "not match, replication didn't started!");
+                    + "does not match, replication didn't started!");
         }
     }
 

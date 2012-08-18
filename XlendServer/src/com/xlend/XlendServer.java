@@ -5,6 +5,8 @@
 package com.xlend;
 
 import com.xlend.dbutil.DbConnection;
+import com.xlend.dbutil.SyncPushTimer;
+import com.xlend.orm.Dbversion;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
 import java.awt.Image;
@@ -19,6 +21,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.logging.FileHandler;
@@ -45,6 +50,27 @@ public class XlendServer {
     private static Properties props;
     private static boolean isTraySupported = SystemTray.isSupported();
     private static final String XLEND_SERVER = "Xlend Server";
+    private static Timer syncTimer;
+    private static Thread syncThread;
+    private static boolean isCycle = true;
+    private static final int TIMESTEP = 10 * 1000;
+
+    private static boolean compareDbVersions() {
+        try {
+            Connection localConnection = DbConnection.getConnection();
+            Connection remoteConnection = SyncPushTimer.getRemoteDBconnection();
+            Dbversion vLocal = (Dbversion) new Dbversion(localConnection).loadOnId(1);
+            Dbversion vRemote = (Dbversion) new Dbversion(remoteConnection).loadOnId(1);
+            if (vLocal.getVersionId().intValue() != vRemote.getVersionId().intValue()) {
+                XlendServer.log("Local DB version:" + vLocal.getVersion()+"("+vLocal.getVersionId()+")" 
+                        + " Remote DB version:" + vRemote.getVersion()+"("+vRemote.getVersionId()+")");
+            }
+            return vLocal.getVersionId().intValue() == vRemote.getVersionId().intValue();
+        } catch (Exception ex) {
+            XlendServer.log(ex);
+        }
+        return false;
+    }
 
     private static class CtrlCtrapper extends Thread {
 
@@ -122,23 +148,12 @@ public class XlendServer {
                     final Timer queueRunner = new Timer();
                     System.out.println("Starting server on port " + port + "... ");
                     java.rmi.registry.LocateRegistry.createRegistry(port);
-//                    props = new Properties();
-//                    File propFile = new File(PROPERTYFILENAME);
-//                    try {
-//                        if (propFile.exists()) {
-//                            props.load(new FileInputStream(propFile));
-//                            DbConnection.setProps(props);
-//                            System.out.println("Properties loaded from " + PROPERTYFILENAME);
-//                        }
-//                        System.out.println("\nPress Ctrl+C to interrupt");
-//                    } catch (IOException ioe) {
-//                        log(ioe);
-//                    }
                     IMessageSender c = new RmiMessageSender();
                     Naming.rebind("rmi://localhost:" + port + "/XlendServer", c);
                     if (!isTraySupported) {
                         Runtime.getRuntime().addShutdownHook(new CtrlCtrapper(queueRunner));
                     }
+                    runSyncService();
                 } catch (Exception ex) {
                     log("RMI server trouble: " + ex.getMessage());
                     System.exit(1);
@@ -146,6 +161,35 @@ public class XlendServer {
             }
         };
         rmiServer.start();
+    }
+
+    private static void runSyncService() throws RemoteException {
+        (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
+
+        if (compareDbVersions()) {
+            syncThread = new Thread() {
+
+                @Override
+                public void run() {
+                    super.run();
+                    while (isCycle) {
+                        try {
+                            SyncPushTimer.syncRemoteDB();
+                        } catch (Exception ex) {
+                            XlendServer.log(ex);
+                        }
+                        try {
+                            sleep(TIMESTEP);
+                        } catch (InterruptedException ex) {
+                        }
+                    }
+                }
+            };
+            syncThread.start();
+        } else {
+            XlendServer.log("ATTENTION! Local and remote database versions "
+                    + "not match, replication didn't started!");
+        }
     }
 
     public static Image loadImage(String iconName) {

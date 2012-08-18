@@ -454,6 +454,16 @@ public class ORMGenerator {
         output.println("    //    return get" + capitalize(pkColumn.getJavaName()) + "() + getDelimiter();");
         output.println("    //}");
         output.println();
+        output.println("    public Integer getPK_ID() {");
+        output.println("        return " + pkColumn.getJavaName() + ";");
+        output.println("    }");
+        output.println();
+        output.println("    public void setPK_ID(Integer id) throws ForeignKeyViolationException {");
+        output.println("        boolean prevIsNew = isNew();");
+        output.println("        set" + capitalize(pkColumn.getJavaName()) + "(id);");
+        output.println("        setNew(prevIsNew);");
+        output.println("    }");
+        output.println();
         output.println("    public Integer get" + capitalize(pkColumn.getJavaName()) + "() {");
         output.println("        return " + pkColumn.getJavaName() + ";");
         output.println("    }");
@@ -523,6 +533,8 @@ public class ORMGenerator {
                 output.println("        }");
             } else if (col.getType().getJavaType().equals("Date")) {
                 output.println("        set" + capitalize(col.getJavaName()) + "(toDate(flds[" + n + "]));");
+            } else if (col.getType().getJavaType().equals("Timestamp")) {
+                output.println("        set" + capitalize(col.getJavaName()) + "(toTimeStamp(flds[" + n + "]));");
             } else if (col.getType().getJavaType().equals("Double")) {
                 output.println("        try {");
                 output.println("            set" + capitalize(col.getJavaName()) + "(Double.parseDouble(flds[" + n + "]));");

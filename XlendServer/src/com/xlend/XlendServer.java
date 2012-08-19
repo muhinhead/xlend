@@ -173,6 +173,7 @@ public class XlendServer {
 //                    super.run();
                     while (isCycle) {
                         try {
+//                            XlendServer.log("!! before SyncPushTimer.syncRemoteDB()");
                             SyncPushTimer.syncRemoteDB();
                         } catch (Exception ex) {
                             XlendServer.log(ex);

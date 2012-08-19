@@ -216,17 +216,19 @@ public class DbConnection {
     };
 
     public synchronized static Connection getLogDBconnection() {
+//        XlendServer.log("!! start DbConnection.getLogDBconnection()");
         if (logDBconnection == null) {
             try {
                 Locale.setDefault(Locale.ENGLISH);
                 DriverManager.registerDriver((java.sql.Driver) Class.forName("org.hsqldb.jdbcDriver").newInstance());
                 logDBconnection = DriverManager.getConnection("jdbc:hsqldb:file://" + getCurDir() + "/LogDB/XlendServer", "sa", "");
                 logDBconnection.setAutoCommit(true);
-                sqlBatch(createLogDBsqls, logDBconnection, false);
+                sqlBatch(createLogDBsqls, logDBconnection, true);
             } catch (Exception ex) {
                 XlendServer.log(ex);
             }
         }
+//        XlendServer.log("!! DbConnection.getLogDBconnection() return "+logDBconnection!=null?"valid logDBconnection":"NULL!!");
         return logDBconnection;
     }
 

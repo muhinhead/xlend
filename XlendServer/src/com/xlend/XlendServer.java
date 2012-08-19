@@ -36,7 +36,7 @@ import migration.MigrationDialog;
 
 /**
  *
- * @auth
+ * @author Nick Mukhin
  */
 public class XlendServer {
 

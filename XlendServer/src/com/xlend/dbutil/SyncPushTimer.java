@@ -32,6 +32,7 @@ public class SyncPushTimer extends TimerTask {
                         DbConnection.getProps().getProperty("remotePassword",
                         "jaco84oliver"));
                 targetConnection.setAutoCommit(true);
+                clearOldLogs();
             } catch (Exception ex) {
                 XlendServer.log(ex);
             }
@@ -96,6 +97,27 @@ public class SyncPushTimer extends TimerTask {
             }
         }
     }
+
+    private static void clearOldLogs() {
+        PreparedStatement ps = null;
+        try {
+            XlendServer.log("Clean sync log...");
+            ps = DbConnection.getLogDBconnection().prepareStatement(
+                    "delete from updatelog where not synchronized is null");
+            int rows = ps.executeUpdate();
+            XlendServer.log(""+rows+" log rows removed");
+        } catch (SQLException ex) {
+            XlendServer.log(ex);
+        } finally {
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException se2) {
+            }
+        }
+    }
+
 
     private static void setSyncMark(Integer ulID) {
         PreparedStatement ps = null;

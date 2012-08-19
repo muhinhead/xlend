@@ -24,8 +24,8 @@
         <h3>List of employees</h3>
         <% Connection connection = DbConnection.getConnection();%>
         <form>
-            <table class="gridtable"><tr><th>Id</th><th>Clock Number</th><th>First Name</th><th>Surname</th><th>Nick name</th></tr>
-                <% for (DbObject row : Xemployee.load(connection, null, "clock_num")) {%>
+            <table class="gridtable"><tr><th>Id</th><th>Clock Number</th><th>First Name</th><th>Surname</th><th>Nick name</th><th></th></tr>
+                <% for (DbObject row : Xemployee.load(connection, "clock_num<>'000'", "clock_num")) {%>
                 <% Xemployee emp = (Xemployee) row;%>
                 <tr>
                     <td><%=emp.getXemployeeId()%></td>
@@ -33,6 +33,7 @@
                     <td><%=emp.getFirstName()%></td>
                     <td><%=emp.getSurName()%></td>
                     <td><%=emp.getNickName()%></td>
+                    <td><input type="button" value="Details..." onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/></td>
                 </tr>
                 <% }%>
             </table>        

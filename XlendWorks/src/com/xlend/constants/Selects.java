@@ -101,8 +101,8 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surename\", phone0_num \"Phone Nr\", "
-            + "val \"Wage Cat.\" "
-            + "from xemployee, cbitems where cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
+            + "(select val from cbitems where cbitems.name='wage_category' and cbitems.id=xemployee.wage_category) \"Wage Cat.\" "
+            + "from xemployee "
             + "order by clock_num";
     public static final String SELECT_FROM_SALEMPLOYEE_EXCLUDING =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","

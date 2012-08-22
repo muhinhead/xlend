@@ -62,8 +62,8 @@ public class XlendServer {
             Dbversion vLocal = (Dbversion) new Dbversion(localConnection).loadOnId(1);
             Dbversion vRemote = (Dbversion) new Dbversion(remoteConnection).loadOnId(1);
             if (vLocal.getVersionId().intValue() != vRemote.getVersionId().intValue()) {
-                XlendServer.log("Local DB version:" + vLocal.getVersion()+"("+vLocal.getVersionId()+")" 
-                        + " Remote DB version:" + vRemote.getVersion()+"("+vRemote.getVersionId()+")");
+                XlendServer.log("Local DB version:" + vLocal.getVersion() + "(" + vLocal.getVersionId() + ")"
+                        + " Remote DB version:" + vRemote.getVersion() + "(" + vRemote.getVersionId() + ")");
             }
             return vLocal.getVersionId().intValue() == vRemote.getVersionId().intValue();
         } catch (Exception ex) {
@@ -172,12 +172,8 @@ public class XlendServer {
                 public void run() {
 //                    super.run();
                     while (isCycle) {
-                        try {
 //                            XlendServer.log("!! before SyncPushTimer.syncRemoteDB()");
-                            SyncPushTimer.syncRemoteDB();
-                        } catch (Exception ex) {
-                            XlendServer.log(ex);
-                        }
+                        SyncPushTimer.syncRemoteDB();
                         try {
                             sleep(TIMESTEP);
                         } catch (InterruptedException ex) {

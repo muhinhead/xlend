@@ -28,7 +28,7 @@ public class SyncPushTimer extends TimerTask {
                         DbConnection.getProps().getProperty("remoteConnection",
                         "jdbc:mysql://ec2-23-22-145-131.compute-1.amazonaws.com/xlend"),
                         DbConnection.getProps().getProperty("remoteLogin",
-                        "jaco"), 
+                        "jaco"),
                         DbConnection.getProps().getProperty("remotePassword",
                         "jaco84oliver"));
                 targetConnection.setAutoCommit(true);
@@ -73,7 +73,7 @@ public class SyncPushTimer extends TimerTask {
             ps = DbConnection.getLogDBconnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             while (rs.next()) {
-                if (getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4)))==null) {
+                if (getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4))) == null) {
 //                    XlendServer.log("==== SyncPushTimer found update of "+rs.getString(2)+" ID="+rs.getInt(4)+" ====");
                 }
             }
@@ -105,7 +105,7 @@ public class SyncPushTimer extends TimerTask {
             ps = DbConnection.getLogDBconnection().prepareStatement(
                     "delete from updatelog where not synchronized is null");
             int rows = ps.executeUpdate();
-            XlendServer.log(""+rows+" log rows removed");
+            XlendServer.log("" + rows + " log rows removed");
         } catch (SQLException ex) {
             XlendServer.log(ex);
         } finally {
@@ -117,7 +117,6 @@ public class SyncPushTimer extends TimerTask {
             }
         }
     }
-
 
     private static void setSyncMark(Integer ulID) {
         PreparedStatement ps = null;
@@ -138,43 +137,47 @@ public class SyncPushTimer extends TimerTask {
         }
     }
 
-    public static void syncRemoteDB() throws Exception {
+    public static void syncRemoteDB() {
         Object[] keySet = getUpdated().keySet().toArray().clone();
         if (keySet.length > 0) {
             XlendServer.log("==== SyncPushTimer.syncRemoteDB() runs ====");
             for (Object ob : keySet) {
-                Integer ulID = (Integer) ob;
-                UpdateLog ul = getUpdated().get(ulID);
-                Class dbobClass = Class.forName(ul.classname);
-                Constructor constructor = dbobClass.getConstructor(Connection.class);
-                DbObject dbob = (DbObject) constructor.newInstance(DbConnection.getConnection());
-                if (ul.operation != -1) {
-                    dbob = dbob.loadOnId(ul.id);
-                } else {
-                    dbob.setPK_ID(ul.id);
-                }
-                if (dbob != null) {
-                    dbob.setConnection(getRemoteDBconnection());
-                    switch (ul.operation) {
-                        case 1:
-                            dbob.setNew(true);
-                            dbob.save();
-                            XlendServer.log(ul.classname + " id=" + ul.id + " inserted");
-                            break;
-                        case 0:
-                            dbob.setNew(false);
-                            dbob.save();
-                            XlendServer.log(ul.classname + " id=" + ul.id + " updated");
-                            break;
-                        case -1:
-                            dbob.delete();
-                            XlendServer.log(ul.classname + " id=" + ul.id + " deleted");
-                            break;
+                try {
+                    Integer ulID = (Integer) ob;
+                    UpdateLog ul = getUpdated().get(ulID);
+                    Class dbobClass = Class.forName(ul.classname);
+                    Constructor constructor = dbobClass.getConstructor(Connection.class);
+                    DbObject dbob = (DbObject) constructor.newInstance(DbConnection.getConnection());
+                    if (ul.operation != -1) {
+                        dbob = dbob.loadOnId(ul.id);
+                    } else {
+                        dbob.setPK_ID(ul.id);
                     }
-                } else {
-                    XlendServer.log(ul.classname + " id=" + ul.id + " not found");
+                    if (dbob != null) {
+                        dbob.setConnection(getRemoteDBconnection());
+                        switch (ul.operation) {
+                            case 1:
+                                dbob.setNew(true);
+                                dbob.save();
+                                XlendServer.log(ul.classname + " id=" + ul.id + " inserted");
+                                break;
+                            case 0:
+                                dbob.setNew(false);
+                                dbob.save();
+                                XlendServer.log(ul.classname + " id=" + ul.id + " updated");
+                                break;
+                            case -1:
+                                dbob.delete();
+                                XlendServer.log(ul.classname + " id=" + ul.id + " deleted");
+                                break;
+                        }
+                    } else {
+                        XlendServer.log(ul.classname + " id=" + ul.id + " not found");
+                    }
+                    setSyncMark(ulID);
+                } catch (Exception ex) {
+                    XlendServer.log(ex);
                 }
-                setSyncMark(ulID);
             }
         }
     }

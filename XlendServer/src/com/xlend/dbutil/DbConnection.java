@@ -212,7 +212,9 @@ public class DbConnection {
         "alter table xpartcategory add stamp timestamp",
         "alter table xparts add stamp timestamp",
         "alter table xbookouts add stamp timestamp",
-        "alter table xaddstocks add stamp timestamp"
+        "alter table xaddstocks add stamp timestamp",
+        "alter table xtrip modify tosite_id int null",
+        "alter table xtrip add othersite varchar(128)"
     };
 
     public synchronized static Connection getLogDBconnection() {

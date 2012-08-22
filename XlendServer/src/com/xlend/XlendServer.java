@@ -40,7 +40,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    public static final String version = "0.63";
+    public static final String version = "0.63.1";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -170,9 +170,7 @@ public class XlendServer {
 
                 @Override
                 public void run() {
-//                    super.run();
                     while (isCycle) {
-//                            XlendServer.log("!! before SyncPushTimer.syncRemoteDB()");
                         SyncPushTimer.syncRemoteDB();
                         try {
                             sleep(TIMESTEP);
@@ -185,7 +183,7 @@ public class XlendServer {
             (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
         } else {
             XlendServer.log("ATTENTION! Local and remote database versions "
-                    + "does not match, replication didn't started!");
+                    + "does not match, replication doesn't start!");
         }
     }
 

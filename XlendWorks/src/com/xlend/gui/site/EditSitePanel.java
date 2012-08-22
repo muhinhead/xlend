@@ -129,7 +129,7 @@ public class EditSitePanel extends RecordEditPanel {
         form.add(upper, BorderLayout.NORTH);
 
         JPanel leftpanel = new JPanel(new BorderLayout());
-        leftpanel.add(new JLabel(labels[6], SwingConstants.RIGHT), BorderLayout.NORTH);
+        leftpanel.add(new JLabel(labels[8], SwingConstants.RIGHT), BorderLayout.NORTH);
 
         form.add(leftpanel, BorderLayout.WEST);
         form.add(dsp);

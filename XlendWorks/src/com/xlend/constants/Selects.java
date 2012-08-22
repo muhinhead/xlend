@@ -133,17 +133,25 @@ public class Selects {
             "Select xsite_id \"Id\", name \"Site Name\", "
             + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 and sitetype='D' order by upper(name)";
-    public static final String SELECT_FROM_LOWBEDS =
-            "Select xlowbed_id \"Id\", "
-            + "concat(m.classify,m.tmvnr) \"TMVnr\", t1.machtype \"Machine Type\", m.reg_nr \"Reg.Nr\", "
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\", "
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
-            + "from xlowbed, xmachine m, xmachtype t1 "
-            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
-//    public static final String SELECT_LOWBEDS4LOOKUP =
-//            "Select xlowbed_id \"Id\", m.tmvnr+' ('+m.reg_nr+')' "
-//            + "from xlowbed, xmachine m, xmachtype t1 "
-//            + "where m.xmachine_id=xlowbed.xmachine_id and t1.xmachtype_id=m.xmachtype_id";
+//    public static final String SELECT_FROM_LOWBEDS =
+//            "Select xlowbed_id \"IId\", "
+//            + "concat(m.classify,m.tmvnr) \"TMVnr\", "
+//            + "(select t1.machtype from xmachtype t1 where t1.xmachtype_id=m.xmachtype_id) \"Machine Type\", "
+////            + "(select reg_nr from xmachine where xmachine.xmachine_id=xlowbed.xmachine_id) \"Reg.Nr\","
+////            + "t1.machtype \"Machine Type\", "
+//            + "m.reg_nr \"Reg.Nr\", "
+//            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\", "
+//            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
+//            + "from xlowbed,xmachine m where m.xmachine_id=xlowbed.xmachine_id";
+      public static final String SELECT_FROM_LOWBEDS = 
+              "Select xlowbed_id \"Id\","
+              + "concat(xmachine.classify,xmachine.tmvnr) \"TMVnr\","
+              + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine Type\","
+              + "xmachine.reg_nr \"Reg.Nr\","
+              + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\","
+              + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
+              + "from xlowbed, xmachine "
+              + "where xmachine.xmachine_id=xlowbed.xmachine_id";
     public static final String SELECT_ALL_LOWBEDS =
             "select l.xlowbed_id \"Id\",concat(m.classify,m.tmvnr) \"Machine\", "
                 + "concat(d.clock_num,' ',d.first_name) \"Driver\", concat(a.clock_num,' ',a.first_name) \"Assistant\" "

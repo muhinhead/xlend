@@ -1,4 +1,6 @@
-select 'cbitems' tablename,count(*),max(stamp) from cbitems union 
+drop table tmp_statusctics if exist;
+create temporary table tmp_statistics as
+select 'cbitems' tablename,count(*) cnt,max(stamp) laststamp from cbitems union 
 select 'clientprofile',count(*),max(stamp) from clientprofile union 
 select 'picture',count(*),max(stamp) from picture union
 select 'profile',count(*),max(stamp) from profile union
@@ -62,3 +64,6 @@ select 'xtripsheetpart',count(*),max(stamp) from  xtripsheetpart union
 select 'xwage',count(*),max(stamp) from xwage union
 select 'xwagesum',count(*),max(stamp) from xwagesum union
 select 'xwagesumitem',count(*),max(stamp) from  xwagesumitem;
+
+select * from tmp_statistics;
+select sum(cnt),max(laststamp) from tmp_statistics;

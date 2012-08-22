@@ -17,6 +17,7 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
     private DefaultComboBoxModel inSiteCbModel;
     private JComboBox inSiteCB;
     private JComboBox toSiteCB;
+    private JTextField otherSiteField;
     private JSpinner distanceEmptySP;
     private JSpinner distanceLoadedSP;
     private JComboBox machineCB;
@@ -44,10 +45,12 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(EditTripPanel.machineCbModel), new MachineLookupAction(machineCB, null)), 2),
             getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(EditTripPanel.operatorCbModel), new EmployeeLookupAction(operatorCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(inSiteCB = new JComboBox(inSiteCbModel), new SiteLookupAction(inSiteCB)), 2),
-            getGridPanel(comboPanelWithLookupBtn(toSiteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(toSiteCB)), 2),
+            getGridPanel(new JComponent[]{comboPanelWithLookupBtn(toSiteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(toSiteCB)), otherSiteField=new JTextField()}),
             getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
             getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
+        otherSiteField.setVisible(false);
+        toSiteCB.addActionListener(EditTripPanel.otherSiteAction(otherSiteField));
         organizePanels(titles, edits, null);
         machineCB.addActionListener(EditTripPanel.syncOperatorAction(machineCB, operatorCB));        
     }
@@ -68,6 +71,10 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
                 distanceLoadedSP.setValue(trip.getDistanceLoaded());
             }
             selectComboItem(operatorCB, trip.getOperatorId());
+            otherSiteField.setText(trip.getOthersite());
+            if (trip.getTositeId()==null || trip.getTositeId()==0) {
+                toSiteCB.setSelectedIndex(EditTripPanel.toSiteCbModel.getSize());
+            }
         }
     }
 
@@ -81,6 +88,7 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
             trip.setDistanceEmpty((Integer) distanceEmptySP.getValue());
             trip.setDistanceLoaded((Integer) distanceLoadedSP.getValue());
             trip.setOperatorId(getSelectedCbItem(operatorCB));
+            trip.setOthersite(otherSiteField.getText());
             return true;
         }
         return false;

@@ -26,7 +26,7 @@ public class LowBedLookupAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         try {
             LookupDialog ld = new LookupDialog("Low-bed Lookup", lowbedCB,
-                    new LowBedGrid(DashBoard.getExchanger(), Selects.SELECT_ALL_LOWBEDS, false),
+                    new LowBedGrid(DashBoard.getExchanger(), Selects.SELECT_ALL_LOWBEDS, true),
                     new String[]{"l.xlowbed_id","m.classify+m.tmvnr", "d.clock_num", "d.first_name", "a.clock_num", "a.first_name"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

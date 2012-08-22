@@ -39,6 +39,21 @@ public class EditTripPanel extends RecordEditPanel {
         "Exchanging"
     };
     private static Integer xlowbed_id;
+
+    static class OtherFieldShowAction implements ActionListener {
+
+        private JTextField otherField;
+
+        public OtherFieldShowAction(JTextField otherFld) {
+            this.otherField = otherFld;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ComboItem ci = (ComboItem) toSiteCbModel.getSelectedItem();
+            otherField.setVisible(ci.getId() < 0);
+        }
+    }
     private DefaultComboBoxModel lowbedCbModel;
     private DefaultComboBoxModel fromSiteCbModel;
     private DefaultComboBoxModel driverCbModel;
@@ -108,6 +123,7 @@ public class EditTripPanel extends RecordEditPanel {
                 fromSiteCbModel.addElement(ci);
             }
         }
+        toSiteCbModel.addElement(new ComboItem(-1, "--Other--"));
         driverCbModel = new DefaultComboBoxModel();
         assistantCbModel = new DefaultComboBoxModel();
         firstTime = false;
@@ -166,6 +182,10 @@ public class EditTripPanel extends RecordEditPanel {
         });
 
         add(detailsPanel());
+    }
+
+    public static ActionListener otherSiteAction(JTextField otherFld) {
+        return new OtherFieldShowAction(otherFld);
     }
 
     private void syncDriverAndAssistant() {
@@ -300,8 +320,8 @@ public class EditTripPanel extends RecordEditPanel {
         if (toAssign) {
             try {
                 java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
-                int machID = xtr.getMachineId()==null?0:xtr.getMachineId().intValue();
-                int opID = xtr.getOperatorId()==null?0:xtr.getOperatorId().intValue();
+                int machID = xtr.getMachineId() == null ? 0 : xtr.getMachineId().intValue();
+                int opID = xtr.getOperatorId() == null ? 0 : xtr.getOperatorId().intValue();
                 Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machID, opID);
                 if (previous == null) {
                     Xopmachassing previousOperatorsAssign = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), 0, xtr.getOperatorId());

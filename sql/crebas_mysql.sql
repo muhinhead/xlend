@@ -734,7 +734,7 @@ create table xtripsheet
     authorized_id int not null,
     stamp timestamp,
     constraint xtripsheet_pk primary key (xtripsheet_id),
-    constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id),
+    constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id),
     constraint xtripsheet_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
     constraint xtripsheet_xemployee_fk2 foreign key (authorized_id) references xemployee (xemployee_id)
 );
@@ -811,22 +811,6 @@ create table xsitediary
     constraint xsitediary_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
     constraint xsitediary_xemployee_fk foreign key (manager_id) references xemployee (xemployee_id)
 );
-
-#--create table xsitediarypart -- discarded!
-#--(
-#--    xsitediarypart_id  int not null auto_increment,
-#--    xsitediary_id      int not null,
-#--    partdate           date not null,
-#--    xmachine_id        int not null,
-#--    hrs_worked         int not null,
-#--    hrs_standing       int not null,
-#--    operator_id        int not null,
-#--    comments           varchar(1024),
-#--    constraint xsitediarypart_pk primary key (xsitediarypart_id),
-#--    constraint xsitediarypart_xsitediary_fk foreign key (xsitediary_id) references xsitediary (xsitediary_id) on delete cascade,
-#--    constraint xsitediarypart_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
-#--    constraint xsitediarypart_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id)
-#--);
 
 create table xsitediaryitem
 (

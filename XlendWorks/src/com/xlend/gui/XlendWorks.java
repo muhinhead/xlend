@@ -688,8 +688,8 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "Select xmachine_id, concat(m.classify,m.tmvnr) "
-                + "from xmachine m, xmachtype t1 "
-                + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
+                + "from xmachine m left join xmachtype t1 "
+                + "on m.xmachtype_id=t1.xmachtype_id");// and t1.classify='T'");
     }
 
     public static ComboItem[] loadRatedMachines(IMessageSender exchanger) {

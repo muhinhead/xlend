@@ -6,11 +6,15 @@ import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xconsume;
 import com.xlend.remote.IMessageSender;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -23,13 +27,12 @@ public class ConsumablesGrid extends GeneralGridPanel {
 //    static {
 //        maxWidths.put(0, 40);
 //    }
-
     public ConsumablesGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_CONSUMABLES, getMaxWidths(new int[]{40}), false);
     }
 
     public ConsumablesGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
-        super(exchanger, select, getMaxWidths(new int[]{40,100,100}), readonly);
+        super(exchanger, select, getMaxWidths(new int[]{40, 100, 100}), readonly);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class ConsumablesGrid extends GeneralGridPanel {
                     EditConsumableDialog ed = new EditConsumableDialog("Add Consumable", null);
                     if (EditConsumableDialog.okPressed) {
                         Xconsume xcns = (Xconsume) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -64,7 +67,7 @@ public class ConsumablesGrid extends GeneralGridPanel {
                         Xconsume xcns = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
                         new EditConsumableDialog("Edit Consumable", xcns);
                         if (EditConsumableDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,10 +87,10 @@ public class ConsumablesGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xconsume xcns = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
-                    if (xcns !=null && GeneralFrame.yesNo("Attention!", 
+                    if (xcns != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete consumable?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xcns);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -96,5 +99,42 @@ public class ConsumablesGrid extends GeneralGridPanel {
 
             }
         };
-    }    
+    }
+
+    @Override
+    protected JPanel getRightPanel(JPanel btnPanel) {
+        JPanel rightPanel = super.getRightPanel(btnPanel);
+        JPanel rightCenterPanel = new JPanel(new BorderLayout());
+        rightPanel.add(rightCenterPanel, BorderLayout.CENTER);
+        JPanel inoutButtonPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        inoutButtonPanel.add(new JPanel());
+        JButton dupBtn;
+        inoutButtonPanel.add(dupBtn = new JButton(getDuplicateAction("Duplicate")));
+        rightCenterPanel.add(inoutButtonPanel, BorderLayout.NORTH);
+        dupBtn.setToolTipText("Duplicate selected row");
+        return rightPanel;
+    }
+
+    private AbstractAction getDuplicateAction(final String label) {
+        return new AbstractAction(label) {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int id = getSelectedID();
+                    EditConsumablePanel.sampleRecord = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
+                    EditConsumableDialog ed = new EditConsumableDialog("Duplicate Consumable", null);
+                    if (EditConsumableDialog.okPressed) {
+                        Xconsume xcns = (Xconsume) ed.getEditPanel().getDbObject();
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId(), getPageSelector().getSelectedIndex());
+                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                } finally {
+                    EditConsumablePanel.sampleRecord = null;
+                }
+            }
+        };
+    }
 }

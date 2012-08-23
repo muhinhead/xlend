@@ -31,6 +31,7 @@ import javax.swing.JTextField;
  */
 public class EditConsumablePanel extends RecordEditPanel {
 
+    public static Xconsume sampleRecord;
     private JTextField idField;
     private DefaultComboBoxModel supplierCbModel;
     private DefaultComboBoxModel siteCbModel;
@@ -138,6 +139,14 @@ public class EditConsumablePanel extends RecordEditPanel {
         Xconsume xcns = (Xconsume) getDbObject();
         if (xcns != null) {
             idField.setText(xcns.getXconsumeId().toString());
+        } else if (sampleRecord != null) {
+            xcns = sampleRecord;
+            for (JComponent comp : new JComponent[]{supplierCB, requesterCB,
+                invoiceDateSP,invoiceNumField,authorizerCB,collectorCB,accNumField,amtLitersSP,amtRandsSP,paidByCB,paidMethodCB,cheqNumberField}) {
+                comp.setEnabled(false);
+            }
+        }
+        if (xcns != null) {
             selectComboItem(supplierCB, xcns.getXsupplierId());
             selectComboItem(machineCB, xcns.getXmachineId());
             selectComboItem(requesterCB, xcns.getRequesterId());

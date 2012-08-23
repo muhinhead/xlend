@@ -25,7 +25,7 @@ public class LowBedGrid extends GeneralGridPanel {
     }
 
     public LowBedGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_LOWBEDS, maxWidths, true);
+        super(exchanger, Selects.SELECT_FROM_LOWBEDS, maxWidths, false);
     }
 
     public LowBedGrid(IMessageSender exchanger, String select, boolean b) throws RemoteException {

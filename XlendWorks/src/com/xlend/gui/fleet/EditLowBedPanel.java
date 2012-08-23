@@ -61,7 +61,7 @@ public class EditLowBedPanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 7),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-                new MachineLookupAction(machineCB, "m.classify='T'")),4),
+                new MachineLookupAction(machineCB, null)),4),
             getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),2),
             getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),2)
         };

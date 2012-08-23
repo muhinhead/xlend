@@ -161,8 +161,8 @@ public class Selects {
             "Select xmachine_id \"Id\", concat(m.classify,m.tmvnr) \"TMVnr\", "
             + "t1.machtype \"Machine Type\", reg_nr \"Reg.Nr\", "
             + "expdate \"License Exp.Date\", CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\" "
-            + "from xmachine m, xmachtype t1 "
-            + "where m.xmachtype_id=t1.xmachtype_id and t1.classify='M'";
+            + "from xmachine m left join xmachtype t1 "
+            + "on m.xmachtype_id=t1.xmachtype_id where m.classify='M' order by m.classify,cast(m.tmvnr as decimal)";
     public static final String SELECTMACHINESONSITE =
             "Select xmachineonsate_id \"Id\", "
             + "concat(xmachine.classify,tmvnr) \"Fleet Nr\", "
@@ -175,19 +175,20 @@ public class Selects {
             + "and xemployee.xemployee_id=xmachineonsite.xemployee_id "
             + "and xsite_id = #";
     public static final String MACHINETVMS =
-            "Select xmachine_id,concat(classify,tmvnr) from xmachine where classify in ('M','T','V','P') order by classify,cast(tmvnr as decimal)";
+            "Select xmachine_id,concat(classify,tmvnr) from xmachine where not classify is null "
+            + "order by classify,cast(tmvnr as decimal)";
     public static final String notAssignedMachinesCondition = "xmachine_id not in (select xmachine_id from xopmachassing where date_end is null "
             + " and xsite_id not in(select xsite_id from xsite where sitetype='D'))";
     public static final String notAssignedOperatorCondition = "xemployee_id not in (select xemployee_id from xopmachassing where date_end is null "
             + " and xsite_id not in(select xsite_id from xsite where sitetype='D'))";
     public static final String NOT_ASSIGNED_MACHINES =
-            "Select xmachine_id,concat(classify,tmvnr) from xmachine where classify in ('M','T','V','P') "
+            "Select xmachine_id,concat(classify,tmvnr) from xmachine where not classify is null "
             + "and " + notAssignedMachinesCondition + " order by classify,cast(tmvnr as decimal)";
     public static final String ALLMACHINETVMS =
             "Select xmachine_id,concat(classify,tmvnr) from xmachine order by classify,cast(tmvnr as decimal)";
     public static final String FREEMACHINETVMS =
             "Select xmachine_id,concat(classify,tmvnr) \"TMVNR\" from xmachine "
-            + "where classify in ('M','T','V','P') "
+            + "where not classify is null "
             + "and xmachine_id not in (select xmachine_id from xmachineonsite "
             + "where deestdate is null or deestdate > CURDATE()) order by classify,cast(tmvnr as decimal)";
     public static final String EMPLOYEES =
@@ -201,7 +202,7 @@ public class Selects {
             "Select xmachine_id \"Id\", concat(m.classify,tmvnr) \"Fleet Nr\", reg_nr \"RReg.Nr\", "
             + "(select machtype from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine\","
             + "(select machtype from xmachtype where xmachtype_id=m.xmachtype2_id) \"Type\" "//"t2.machtype \"Type\" "
-            + "from xmachine m where classify in ('M','T','V','P') order by m.classify,cast(m.tmvnr as decimal)";
+            + "from xmachine m where not classify is null order by m.classify,cast(m.tmvnr as decimal)";
 //            + "and m.xmachtype2_id=t2.xmachtype_id ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
             + "from xsupplier order by companyname";

@@ -214,7 +214,32 @@ public class DbConnection {
 //        "alter table xbookouts add stamp timestamp",
 //        "alter table xaddstocks add stamp timestamp",
         "alter table xtrip modify tosite_id int null",
-        "alter table xtrip add othersite varchar(128)"
+        "alter table xtrip add othersite varchar(128)",
+        "alter table xtripsheet drop foreign key xtripsheet_xmachine_fk",
+        "alter table xtripsheet add constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id)",
+        
+        "update xlowbed set xmachine_id=185 where xmachine_id=179",
+        "update xlowbed set xmachine_id=186 where xmachine_id=178",
+        "update xlowbed set xmachine_id=187 where xmachine_id=181",
+        "update xlowbed set xmachine_id=196 where xmachine_id=182",
+        
+        "update xconsume set xmachine_id=185 where xmachine_id=179",
+        "update xconsume set xmachine_id=186 where xmachine_id=178",
+        "update xconsume set xmachine_id=187 where xmachine_id=181",
+        "update xconsume set xmachine_id=196 where xmachine_id=182",
+        
+        "update xmachineincident set xmachine_id=185 where xmachine_id=179",
+        "update xmachineincident set xmachine_id=186 where xmachine_id=178",
+        "update xmachineincident set xmachine_id=187 where xmachine_id=181",
+        "update xmachineincident set xmachine_id=196 where xmachine_id=182",
+        
+        "update xopmachassing set xmachine_id=185 where xmachine_id=179",
+        "update xopmachassing set xmachine_id=186 where xmachine_id=178",
+        "update xopmachassing set xmachine_id=187 where xmachine_id=181",
+        "update xopmachassing set xmachine_id=196 where xmachine_id=182",
+        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
+        
+        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)"
     };
 
     public synchronized static Connection getLogDBconnection() {

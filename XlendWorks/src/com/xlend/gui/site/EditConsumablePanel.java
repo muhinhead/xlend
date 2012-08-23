@@ -142,7 +142,8 @@ public class EditConsumablePanel extends RecordEditPanel {
         } else if (sampleRecord != null) {
             xcns = sampleRecord;
             for (JComponent comp : new JComponent[]{supplierCB, requesterCB,
-                invoiceDateSP,invoiceNumField,authorizerCB,collectorCB,accNumField,amtLitersSP,amtRandsSP,paidByCB,paidMethodCB,cheqNumberField}) {
+                invoiceDateSP,invoiceNumField,authorizerCB,collectorCB,
+                accNumField,paidByCB,paidMethodCB,cheqNumberField}) {
                 comp.setEnabled(false);
             }
         }

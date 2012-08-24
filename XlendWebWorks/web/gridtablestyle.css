@@ -61,3 +61,23 @@ table.formtable td {
     border-color: #666666;
     background-color: #ffbd64;
 }
+table.gray {
+    background-color:#666666;
+    border-width: 0px;
+    color:white;
+}
+table.gray TH {
+    background-color:#666666;
+    border-width: 0px;
+    color:white;
+}
+table.gray TD {
+    background-color:#666666;
+    border-width: 0px;
+    color:white;
+}
+table.gray IMG {
+    background-color:#666666;
+    border-width: 0px;
+    color:white;
+}

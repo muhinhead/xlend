@@ -4,10 +4,9 @@
     Author     : nick
 --%>
 
-<%@page import="com.xlend.orm.dbobject.DbObject"%>
-<%@page import="com.xlend.orm.Xemployee"%>
-<%@page import="java.sql.Connection"%>
-<%@page import="com.xlend.web.DbConnection"%>
+<%@page import="com.xlend.util.ImagePanel"%>
+<%@page import="java.awt.Image"%>
+<%@page import="com.xlend.web.Util"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -20,24 +19,79 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Xlend Web Works</title>
     </head>
-    <body>
-        <h3>List of employees</h3>
-        <% Connection connection = DbConnection.getConnection();%>
-        <form>
-            <table class="gridtable"><tr><th>Id</th><th>Clock Number</th><th>First Name</th><th>Surname</th><th>Nick name</th><th></th></tr>
-                <% for (DbObject row : Xemployee.load(connection, "clock_num<>'000'", "clock_num")) {%>
-                <% Xemployee emp = (Xemployee) row;%>
+    <body bgcolor="#666666">
+        <h3 align="center" >Xlend Works Dashboard</h3>
+        <% ImagePanel backPanel = new ImagePanel(Util.loadImage("top.png", getServletContext()));%>
+        <form >
+            <table align="center" width="<%=backPanel.getWidth()%>" class="gray" border="0">
                 <tr>
-                    <td><%=emp.getXemployeeId()%></td>
-                    <td><%=emp.getClockNum()%></td>
-                    <td><%=emp.getFirstName()%></td>
-                    <td><%=emp.getSurName()%></td>
-                    <td><%=emp.getNickName()%></td>
-                    <td><input type="button" value="Details..." onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/></td>
+                <th valign="bottom">
+                <table align="center" class="gray" border="0">
+                    <tr align="center">
+                        <th colspan="5">
+                            <img cursor="default" src="images/top.png" alt="top" width="<%=backPanel.getWidth()%>" height="<%=backPanel.getHeight() + 10%>">
+                        </th>
+                    </tr>
+                    <tr>
+                        <% ImagePanel maxImg = new ImagePanel(Util.loadImage("Banking.png", getServletContext()));%>
+                        <td align="center"  cursor="pointer">
+                            <% ImagePanel btnImg = new ImagePanel(Util.loadImage("Docs.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Docs.png" alt="Docs" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("HR.png", getServletContext()));%>
+                            <a href="./HR.jsp">
+                                <img src="images/HR.png" alt="HR" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Parts.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Parts.png" alt="Parts" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Sites.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Sites.png" alt="Sites" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Fleet.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Fleet.png" alt="Fleet" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr align="center">
+                        <td></td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Banking.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Banking.png" alt="Banking" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Reports.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Reports.png" alt="Reports" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td align="center">
+                            <% btnImg = new ImagePanel(Util.loadImage("Logistics.png", getServletContext()));%>
+                            <a href="javascript:alert('Not implemented yet')">
+                                <img src="images/Logistics.png" alt="Logistics" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
+                            </a>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+                </th>
                 </tr>
-                <% }%>
-            </table>        
+
+            </table>
         </form>
-        <%DbConnection.closeConnection(connection);%>
     </body>
 </html>

@@ -43,7 +43,7 @@
                         <table class="formtable">
                             <tr>
                                 <th>Login:</th>
-                                <td><input id="loginfield" name="loginfield"/>
+                                <td><input id="loginfield" name="loginfield" value="<%=(request.getParameter("loginfield")==null?"":request.getParameter("loginfield"))%>"/>
                                 </td>
                             </tr>
                             <tr>

@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -64,10 +66,10 @@ public class DbConnection {
         return out.toString();
     }
 
-    public static String getPositionOnID(int xposition_id) {
+    public static String getPositionOnID(int xposition_id,Connection connection) {
         String position = "unknown";
         try {
-            Xposition pos = (Xposition) new Xposition(getConnection()).loadOnId(xposition_id);
+            Xposition pos = (Xposition) new Xposition(connection).loadOnId(xposition_id);
             position = pos.getPos();
         } catch (Exception ex) {
             Logger.getLogger(DbConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -75,6 +77,33 @@ public class DbConnection {
         return position;
     }
 
+    public static String getStampOnID(int xemployee_id,Connection connection) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = connection.prepareStatement("Select date(stamp) from xemployee where xemployee_id="+xemployee_id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DbConnection.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (rs != null) try {
+                    rs.close();
+                } catch (SQLException ex) {
+                }
+            } finally {
+                if (ps != null) try {
+                    ps.close();
+                } catch (SQLException ex) {
+                }
+            }
+        }
+        return "?";
+    }
+    
     public static String getWageCategoryOnID(int wageCatID) {
         String category = "unknown";
         try {

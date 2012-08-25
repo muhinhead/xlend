@@ -35,6 +35,7 @@
         <%   session.setAttribute("sessionGUUID", UUID.randomUUID().toString()); %>
         <%   Userprofile curUser = (Userprofile)obs[0]; %>
         <%   session.setAttribute("currentLogin", curUser.getLogin()); %>
+        <%   session.setAttribute("isSupervisor", curUser.getSupervisor().toString()); %>
              onload="load('<%=session.getAttribute("sessionGUUID")%>');"
         <% }%>
         >

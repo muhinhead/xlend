@@ -21,22 +21,23 @@
         <title>Employee Card</title>
     </head>
     <body>
+        <a href="javascript:history.go(-1)">Return to list</a>
         <h3>Employee Card</h3>
         <% String[] durations = new String[]{
-            "Permanent","1 month","2 month","3 month","","","6 month",
-            "","","","","","1 year"
-        };%>
+                "Permanent", "1 month", "2 month", "3 month", "", "", "6 month",
+                "", "", "", "", "", "1 year"
+            };%>
         <% Connection connection = DbConnection.getConnection();%>
-        <% int id = Integer.parseInt(request.getParameter("id")); %>
+        <% int id = Integer.parseInt(request.getParameter("id"));%>
         <% Xemployee emp = (Xemployee) new Xemployee(connection).loadOnId(id);%>
         <% String[] assigns = DbConnection.findCurrentAssignment(id);%>
         <% byte[] imageData = (byte[]) emp.getPhoto();%>
-        <% String imgFileName = "Xemployee"+id+".jpg";%>
-        <% 
+        <% String imgFileName = "Xemployee" + id + ".jpg";%>
+        <%
             ServletContext servletContext = getServletContext();
-	    String contextPath = servletContext.getRealPath(File.separator);        
+            String contextPath = servletContext.getRealPath(File.separator);
         %>
-        <% File fout = new File(contextPath+imgFileName);%>
+        <% File fout = new File(contextPath + imgFileName);%>
         <% String fpath = fout.getAbsolutePath();%>
         <% DbConnection.writeFile(fout, imageData);%>
         <form>
@@ -50,7 +51,7 @@
                     <th>Clock Nr:</th>
                     <td><%=emp.getClockNum()%></td>
                     <th colspan="2"></th>
-                    <th rowspan="11"><img src="<%=imgFileName%>" alt="Here should be a picture" width="450" height="342"></th>
+                    <th rowspan="11"><img src="<%=imgFileName%>" alt="Picture" width="450" height="342"></th>
                 </tr>
                 <tr>
                     <th>Name:</th>
@@ -92,7 +93,7 @@
                 </tr>
                 <tr>
                     <th>Work Position:</th>
-                    <td colspan="4"><%=DbConnection.getPositionOnID(emp.getXpositionId())%></td>
+                    <td colspan="4"><%=DbConnection.getPositionOnID(emp.getXpositionId(),connection)%></td>
                     <th></th>
                 </tr>
                 <tr>
@@ -101,15 +102,19 @@
                     <th>Start Date:</th>
                     <td><%=emp.getContractStart()%></td>
                     <th>End Date:</th>
-                    <% if(emp.getContractEnd()!=null) {%>
-                        <td><%=emp.getContractEnd()%></td>
+                    <% if (emp.getContractEnd() != null) {%>
+                    <td><%=emp.getContractEnd()%></td>
                     <% } else {%>
-                        <th></th>
-                    <% } %>
+                    <th></th>
+                    <% }%>
                 </tr>
                 <tr>
                     <th>Rate of Pay (R/hour):</th>
-                    <td><%="**.*"%></td>
+                    <% if (session.getAttribute("isSupervisor")!=null && session.getAttribute("isSupervisor").equals("1")) {%>
+                        <td><%=(emp.getRate()==null?"":emp.getRate().toString())%></td>
+                    <%} else {%>>
+                        <td><%="***"%></td>
+                    <%}%>
                     <th>Wage Category:</th>
                     <td><%=DbConnection.getWageCategoryOnID(emp.getWageCategory())%></td>
                     <th>Employment Start Date:</th>
@@ -129,7 +134,5 @@
             </table>
         </form>
         <%DbConnection.closeConnection(connection);%>
-        <% //fout.delete(); %>
-        <a href="javascript:history.go(-1)">Return to list</a>
     </body>
 </html>

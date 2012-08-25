@@ -4,6 +4,7 @@
     Author     : nick
 --%>
 
+<%@page import="java.io.File"%>
 <%@page import="com.xlend.orm.dbobject.DbObject"%>
 <%@page import="com.xlend.orm.Xemployee"%>
 <%@page import="java.sql.Connection"%>
@@ -11,6 +12,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+    <% Connection connection = DbConnection.getConnection();%>
+    <% DbObject[] employees = Xemployee.load(connection, "clock_num<>'000'", "clock_num");%>
     <head>
         <style type="text/css">
             <!--
@@ -21,11 +24,17 @@
         <title>Xlend Web Works</title>
     </head>
     <body>
-        <h3>List of employees</h3>
-        <% Connection connection = DbConnection.getConnection();%>
+        <a href="./index.jsp?sessionGUUID=<%=session.getAttribute("sessionGUUID")%>">Return to dashboard</a>
+        <h3>List of <%=employees.length%> employees</h3>
+        
         <form>
-            <table class="gridtable"><tr><th>Id</th><th>Clock Number</th><th>First Name</th><th>Surname</th><th>Nick name</th><th></th></tr>
-                <% for (DbObject row : Xemployee.load(connection, "clock_num<>'000'", "clock_num")) {%>
+            <table class="gridtable">
+                <tr><th>Id</th><th>Clock Number</th>
+                    <th>First Name</th><th>Surname</th><th>Nick name</th><th>Work position</th>
+                    <th>Last updated</th>
+                    <th></th>
+                </tr>
+                <% for (DbObject row : employees) {%>
                 <% Xemployee emp = (Xemployee) row;%>
                 <tr>
                     <td><%=emp.getXemployeeId()%></td>
@@ -33,11 +42,14 @@
                     <td><%=emp.getFirstName()%></td>
                     <td><%=emp.getSurName()%></td>
                     <td><%=emp.getNickName()%></td>
-                    <td><input type="button" value="Details..." onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/></td>
+                    <td><%=DbConnection.getPositionOnID(emp.getXpositionId(),connection)%></td>
+                    <td><%=DbConnection.getStampOnID(emp.getXemployeeId(),connection)%></td>
+                    <td><input type="button" value="Details..." 
+                               onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/></td>
                 </tr>
                 <% }%>
             </table>        
         </form>
-        <%DbConnection.closeConnection(connection);%>
     </body>
+    <%DbConnection.closeConnection(connection);%>
 </html>

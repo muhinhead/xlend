@@ -91,7 +91,7 @@
                                         <img src="images/Logistics.png" alt="Logistics" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
                                     </a>
                                 </td>
-                                <td valign="bottom">
+                                <td valign="bottom" align="right">
                                     <% btnImg = new ImagePanel(Util.loadImage("logout.png", getServletContext()));%>
                                     <a href="./login.jsp">
                                         <img src="images/logout.png" alt="logout" width="<%=btnImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">

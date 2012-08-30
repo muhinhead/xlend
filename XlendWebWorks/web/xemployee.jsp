@@ -21,7 +21,7 @@
         <title>Employee Card</title>
     </head>
     <body>
-        <a href="javascript:history.go(-1)">Return to list</a>
+        <a href="HR.jsp?select=<%=request.getParameter("id")%>#xempl<%=request.getParameter("id")%>">Return to list</a>
         <h3>Employee Card</h3>
         <% String[] durations = new String[]{
                 "Permanent", "1 month", "2 month", "3 month", "", "", "6 month",
@@ -125,11 +125,23 @@
                     <td><%=assigns!=null?assigns[0]:""%></td>
                     <th>Machine:</th>
                     <td><%=assigns!=null?assigns[1]:""%></td>
-                    <th><input type="button" value="Assignments..." onclick="alert('Not implemented yet')"></th>
+                    <%if (request.getParameter("mode")==null || !request.getParameter("mode").equals("withassignments")) {%>
+                        <th><input type="button" value="Assignments..." 
+                                   onclick="document.location.href='xemployee.jsp?id=<%=request.getParameter("id")%>&mode=withassignments'"></th>
+                    <% } else { %>
+                        <th><a href="xemployee.jsp?id=<%=request.getParameter("id")%>">Hide assignments</a></th>
+                    <% } %>
                     <th></th>
                 </tr>      
+                <%if (request.getParameter("mode")!=null && request.getParameter("mode").equals("withassignments")) {%>
+                    <tr>
+                        <th>Assignments history:</th>
+                        <td colspan="6"></td>
+                    </tr>
+                <% } %>
+                
                 <tr>
-                    <th colspan="8"></th>
+                    <th colspan="7"></th>
                 </tr>
             </table>
         </form>

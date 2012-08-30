@@ -25,6 +25,8 @@
     </head>
     <body>
         <a href="./index.jsp?sessionGUUID=<%=session.getAttribute("sessionGUUID")%>">Return to dashboard</a>
+        <script type="text/javascript" language="JavaScript" src="find2.js">
+        </script>
         <h3>List of <%=employees.length%> employees</h3>
         
         <form>
@@ -36,16 +38,18 @@
                 </tr>
                 <% for (DbObject row : employees) {%>
                 <% Xemployee emp = (Xemployee) row;%>
-                <tr>
-                    <td><%=emp.getXemployeeId()%></td>
+                <tr class="<%=(request.getParameter("select").equals(emp.getXemployeeId().toString())?"selected":"")%>" >
+                    <td><%=emp.getXemployeeId()%><a name="xempl<%=emp.getXemployeeId()%>"></a></td>
                     <td><%=emp.getClockNum()%></td>
                     <td><%=emp.getFirstName()%></td>
                     <td><%=emp.getSurName()%></td>
                     <td><%=emp.getNickName()%></td>
                     <td><%=DbConnection.getPositionOnID(emp.getXpositionId(),connection)%></td>
                     <td><%=DbConnection.getStampOnID(emp.getXemployeeId(),connection)%></td>
-                    <td><input type="button" value="Details..." 
-                               onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/></td>
+                    <td><input type="button" id="details<%=emp.getXemployeeId()%>"
+                               value="Details..." 
+                               onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/>
+                    </td>
                 </tr>
                 <% }%>
             </table>        

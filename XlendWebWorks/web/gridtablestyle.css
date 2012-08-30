@@ -36,6 +36,12 @@ table.gridtable td {
     border-color: #666666;
     background-color: #ffbd64;
 }
+table.gridtable td:hover { background: #e29425; }
+
+.selected {
+    border: 1px solid #009900; 
+    color: white;
+}
 
 table.formtable {
     font-family: verdana,arial,sans-serif;
@@ -82,3 +88,4 @@ table.gray IMG {
     border-width: 0px;
     color:white;
 }
+

@@ -38,7 +38,7 @@
                 </tr>
                 <% for (DbObject row : employees) {%>
                 <% Xemployee emp = (Xemployee) row;%>
-                <tr class="<%=(request.getParameter("select").equals(emp.getXemployeeId().toString())?"selected":"")%>" >
+                <tr class="<%=(request.getParameter("select")!=null && request.getParameter("select").equals(emp.getXemployeeId().toString())?"selected":"")%>" >
                     <td><%=emp.getXemployeeId()%><a name="xempl<%=emp.getXemployeeId()%>"></a></td>
                     <td><%=emp.getClockNum()%></td>
                     <td><%=emp.getFirstName()%></td>

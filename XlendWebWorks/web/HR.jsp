@@ -1,7 +1,7 @@
 <%-- 
     Document   : HR
     Created on : 21.08.2012, 13:19:48
-    Author     : nick
+    Author     : Nick Mukhin
 --%>
 
 <%@page import="java.io.File"%>
@@ -21,9 +21,9 @@
             -->
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Xlend Web Works</title>
+        <title>HR</title>
     </head>
-    <body>
+    <body background="images/metallic-gears-background-.jpg">
         <a href="./index.jsp?sessionGUUID=<%=session.getAttribute("sessionGUUID")%>">Return to dashboard</a>
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>

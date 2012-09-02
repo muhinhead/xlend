@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
     Created on : 21.08.2012, 12:36:57
-    Author     : nick
+    Author     : Nick Mukhin
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -30,7 +30,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Xlend Works Login</title>
     </head>
-    <body
+    <body background="images/metallic-gears-background-.jpg"
         <% if (request.getParameter("loginfield") != null) {%>
         onload="enter('<%=request.getParameter("loginfield")%>','<%=request.getParameter("passwordfield")%>');"
         <% }%>

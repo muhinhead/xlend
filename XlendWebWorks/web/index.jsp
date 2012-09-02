@@ -1,7 +1,7 @@
 <%-- 
     Document   : index
     Created on : 18.08.2012, 14:39:17
-    Author     : nick
+    Author     : Nick Mukhin
 --%>
 
 <%@page import="com.xlend.util.ImagePanel"%>
@@ -60,7 +60,7 @@
                                 </td>
                                 <td align="center">
                                     <% btnImg = new ImagePanel(Util.loadImage("Sites.png", getServletContext()));%>
-                                    <a href="javascript:alert('Not implemented yet')">
+                                    <a href="./sites.jsp">
                                         <img src="images/Sites.png" alt="Sites" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
                                     </a>
                                 </td>

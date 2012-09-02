@@ -1,7 +1,7 @@
 <%-- 
     Document   : xemployee
     Created on : 19.08.2012, 12:21:50
-    Author     : nick
+    Author     : Nick Mukhin
 --%>
 
 <%@page import="com.xlend.constants.Selects"%>
@@ -23,7 +23,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Employee Card</title>
     </head>
-    <body>
+    <body background="images/metallic-gears-background-.jpg">
         <a href="HR.jsp?select=<%=request.getParameter("id")%>#xempl<%=request.getParameter("id")%>">Return to list</a>
         <h3>Employee Card</h3>
         <% String[] durations = new String[]{
@@ -33,7 +33,7 @@
         <% Connection connection = DbConnection.getConnection();%>
         <% int id = Integer.parseInt(request.getParameter("id"));%>
         <% Xemployee emp = (Xemployee) new Xemployee(connection).loadOnId(id);%>
-        <% String[] assigns = DbConnection.findCurrentAssignment(id);%>
+        <% String[] assigns = DbConnection.findCurrentAssignment(id,connection);%>
         <% byte[] imageData = (byte[]) emp.getPhoto();%>
         <% String imgFileName = "Xemployee" + id + ".jpg";%>
         <%
@@ -137,7 +137,7 @@
                     <%}%>
                     </td>
                     <th>Wage Category:</th>
-                    <td><%=DbConnection.getWageCategoryOnID(emp.getWageCategory())%></td>
+                    <td><%=DbConnection.getWageCategoryOnID(emp.getWageCategory(),connection)%></td>
                     <th>Employment Start Date:</th>
                     <td><%=emp.getEmploymentStart() != null ? emp.getEmploymentStart() : ""%></td>
                 </tr>
@@ -167,35 +167,35 @@
                 <tr>
                     <th>Assignments history:</th>
                     <td colspan="6">
-                        <%=Util.showTable(Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", emp.getXemployeeId().toString()))%>
+                        <%=Util.showTable(Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", emp.getXemployeeId().toString()),connection)%>
                     </td>
                 </tr>
                 <% } else if (request.getParameter("mode") != null && request.getParameter("mode").equals("withtimesheets")) {%>
                 <tr>
                     <th>Timesheets history:</th>
                     <td colspan="6">
-                        <%=Util.showTable(Selects.SELECT_TIMESHEETS4EMPLOYEE.replace("#", emp.getXemployeeId().toString()))%>
+                        <%=Util.showTable(Selects.SELECT_TIMESHEETS4EMPLOYEE.replace("#", emp.getXemployeeId().toString()),connection)%>
                     </td>
                 </tr>
                 <% } else if (request.getParameter("mode") != null && request.getParameter("mode").equals("withloans")) {%>
                 <tr>
                     <th>Loans history:</th>
                     <td colspan="6">
-                        <%=Util.showTable(Selects.SELECT_LOANS4EMPLOYEE.replace("#", emp.getXemployeeId().toString()))%>
+                        <%=Util.showTable(Selects.SELECT_LOANS4EMPLOYEE.replace("#", emp.getXemployeeId().toString()),connection)%>
                     </td>
                 </tr>
                 <% } else if (request.getParameter("mode") != null && request.getParameter("mode").equals("withappleave")) {%>
                 <tr>
                     <th>Apps for leave history:</th>
                     <td colspan="6">
-                        <%=Util.showTable(Selects.SELECT_APP4LEAVE4EMPL.replace("#", emp.getXemployeeId().toString()))%>
+                        <%=Util.showTable(Selects.SELECT_APP4LEAVE4EMPL.replace("#", emp.getXemployeeId().toString()),connection)%>
                     </td>
                 </tr>
                 <% } else if (request.getParameter("mode") != null && request.getParameter("mode").equals("withabsent")) {%>
                 <tr>
                     <th>Absenteeism list:</th>
                     <td colspan="6">
-                        <%=Util.showTable(Selects.SELECT_ABSENTEISM4EMPLOYEE.replace("#", emp.getXemployeeId().toString()))%>
+                        <%=Util.showTable(Selects.SELECT_ABSENTEISM4EMPLOYEE.replace("#", emp.getXemployeeId().toString()),connection)%>
                     </td>
                 </tr>
                 <% } %>

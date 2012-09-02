@@ -1,7 +1,7 @@
 <%-- 
     Document   : checklogin
     Created on : 25.08.2012, 7:57:39
-    Author     : nick
+    Author     : Nick Mukhin
 --%>
 <%@page import="java.util.UUID"%>
 <%@page import="com.xlend.orm.Userprofile"%>
@@ -30,7 +30,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login checking</title>
     </head>
-    <body
+    <body background="images/metallic-gears-background-.jpg"
         <% if (obs.length > 0) {%>
         <%   session.setAttribute("sessionGUUID", UUID.randomUUID().toString()); %>
         <%   Userprofile curUser = (Userprofile)obs[0]; %>

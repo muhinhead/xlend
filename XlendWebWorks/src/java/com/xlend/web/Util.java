@@ -22,6 +22,15 @@ import javax.swing.ImageIcon;
  */
 public class Util {
 
+    public abstract static class TableCeil {
+
+        String header;
+        public TableCeil(String h) {
+            header = h;
+        }
+        public abstract String getCeil(int id);
+    };
+
     public static Image loadImage(String iconName, ServletContext servletContext) {
         Image im = null;
         String path = servletContext.getRealPath(File.separator) + "images/" + iconName;
@@ -37,22 +46,21 @@ public class Util {
         return im;
     }
 
-    public static Vector[] getTableBody(String select) throws RemoteException {
-        return getTableBody(select, 0, 0);
+    public static Vector[] getTableBody(String select, Connection connection) throws RemoteException {
+        return getTableBody(select, 0, 0, connection);
     }
 
-    public static Vector[] getTableBody(String select, int page, int pagesize) throws java.rmi.RemoteException {
-        Vector headers = getColNames(select);
+    public static Vector[] getTableBody(String select, int page, int pagesize, Connection connection) throws java.rmi.RemoteException {
+        Vector headers = getColNames(select, connection);
         int startrow = 0, endrow = 0;
         if (page > 0 || pagesize > 0) {
             startrow = page * pagesize + 1; //int page starts from 0, int startrow starts from 1
             endrow = (page + 1) * pagesize; //last row of page
         }
-        return new Vector[]{headers, getRows(select, headers.size(), startrow, endrow)};
+        return new Vector[]{headers, getRows(select, headers.size(), startrow, endrow, connection)};
     }
 
-    private static Vector getColNames(String select) {
-        Connection connection = DbConnection.getConnection();
+    private static Vector getColNames(String select, Connection connection) {
         Vector colNames = new Vector();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -80,17 +88,11 @@ public class Util {
                 } catch (SQLException se2) {
                 }
             }
-            try {
-                DbConnection.closeConnection(connection);
-            } catch (SQLException ex) {
-                Logger.getLogger(DbConnection.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return null;
     }
 
-    private static Vector getRows(String select, int cols, int startrow, int endrow) {
-        Connection connection = DbConnection.getConnection();
+    private static Vector getRows(String select, int cols, int startrow, int endrow, Connection connection) {
         Vector rows = new Vector();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -131,32 +133,41 @@ public class Util {
                 } catch (SQLException se2) {
                 }
             }
-            try {
-                DbConnection.closeConnection(connection);
-            } catch (SQLException ex) {
-                Logger.getLogger(DbConnection.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
         return null;
     }
 
-    public static String showTable(String select) {
+    public static String showTable(String select, Connection connection) {
+        return showTable(select, connection, null);
+    }
+
+    public static String showTable(String select, Connection connection, TableCeil[] addCeils) {
         StringBuffer ans = new StringBuffer();
         ans.append("<table class=\"gridtable\">");
         try {
-            Vector[] assignmentsBody = Util.getTableBody(select);
+            Vector[] assignmentsBody = Util.getTableBody(select, connection);
             Vector hdr = assignmentsBody[0];
             Vector body = assignmentsBody[1];
             ans.append("<tr>");
             for (Object h : hdr) {
-                ans.append("<th>" + h.toString() + "</th>");
+                ans.append("<th>").append(h.toString()).append("</th>");
+            }
+            if (addCeils != null) {
+                for (TableCeil c : addCeils) {
+                    ans.append("<th>").append(c.header).append("</th>");
+                }
             }
             ans.append("</tr>");
             for (Object h : body) {
                 ans.append("<tr>");
-                Vector line = (Vector)h;
+                Vector line = (Vector) h;
                 for (Object c : line) {
-                    ans.append("<td>" + c.toString() + "</td>");
+                    ans.append("<td>").append(c.toString()).append("</td>");
+                }
+                if (addCeils != null) {
+                    for (TableCeil c : addCeils) {
+                        ans.append("<td>").append(c.getCeil(Integer.parseInt(line.get(0).toString()))).append("</td>");
+                    }
                 }
                 ans.append("</tr>");
             }

@@ -10,7 +10,7 @@ import java.util.Vector;
  * @author Nick Mukhin
  */
 public class Selects {
-
+    
     public static final String SELECT_FROM_USERS =
             "Select profile_id \"Id\","
             + "first_name \"First Name\",last_name \"Last Name\","
@@ -18,6 +18,12 @@ public class Selects {
             + " from v_userprofile";
     public static final String SELECT_FROM_SITES =
             "Select xsite_id \"Id\", name \"Site Name\", description \"Description\", "
+            + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\","
+            + "CASEWHEN(is_active,'Yes','No') \"Active\" "
+            + "from xsite order by is_active desc,upper(name)";
+    public static final String SELECT_FROM_SITES_WEB =
+            "Select xsite_id \"Id\", concat(name,'<a name=\"xsite',xsite_id,'\"></a>') \"Site Name\", description \"Description\", "
             + "CASEWHEN(dieselsponsor,'Yes','No') \"Diesel Sponsored\", "
             + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\","
             + "CASEWHEN(is_active,'Yes','No') \"Active\" "
@@ -388,7 +394,7 @@ public class Selects {
             "Select xincidents_id \"Id\", reportdate \"Date\", incidentdate \"Date of incident\", "
             + "(Select name from xsite where xsite_id=xincidents.xsite_id) \"Site\", "
             + "estimated_cost \"Estimated cost\", lost_income \"Lost income\" "
-            + "from xincidents where requestedby_id=# order by issueddate";
+            + "from xincidents where requestedby_id=# order by incidentdate";
     public static final String SELECT_FROM_SALARYLISTS =
             "Select xsalarylist_id \"Id\", payday \"Date\", "
             + "(Select sum(amount) from xsalary where xsalarylist_id=xsalarylist.xsalarylist_id) \"Total amount\" "

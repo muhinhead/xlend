@@ -4,6 +4,7 @@
     Author     : nick
 --%>
 
+<%@page import="com.xlend.util.ImagePanel"%>
 <%@page import="com.xlend.constants.Selects"%>
 <%@page import="com.xlend.web.Util"%>
 <%@page import="com.xlend.orm.Xsite"%>
@@ -14,7 +15,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <% Connection connection = DbConnection.getConnection();%>
+    <% final Connection connection = DbConnection.getConnection();%>
     <head>
         <style type="text/css">
             <!--
@@ -29,8 +30,16 @@
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>
         <h3>List of sites</h3>
+        <% ImagePanel maxImg = new ImagePanel(Util.loadImage("tab_sites.png", getServletContext()));%>
         <form>
+            <img source="tab_sites.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>" />
             <% Util.TableCeil[] addCeils = new Util.TableCeil[]{
+                    new Util.TableCeil("Last updated") {
+                        @Override
+                        public String getCeil(int id) {
+                            return DbConnection.getStampOnID(id,"xsite",connection);
+                        }
+                    },
                     new Util.TableCeil("") {
                         @Override
                         public String getCeil(int id) {

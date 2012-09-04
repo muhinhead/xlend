@@ -45,7 +45,7 @@
                     <td><%=emp.getSurName()%></td>
                     <td><%=emp.getNickName()%></td>
                     <td><%=DbConnection.getPositionOnID(emp.getXpositionId(),connection)%></td>
-                    <td><%=DbConnection.getStampOnID(emp.getXemployeeId(),connection)%></td>
+                    <td><%=DbConnection.getStampOnID(emp.getXemployeeId(),"xemployee",connection)%></td>
                     <td><input type="button" id="details<%=emp.getXemployeeId()%>"
                                value="Details..." 
                                onclick="document.location.href = 'xemployee.jsp?id=<%=emp.getXemployeeId()%>'"/>

@@ -28,9 +28,12 @@ public class DbConnection {
     private static long timestamp = Calendar.getInstance().getTimeInMillis();
 
     public static Connection getConnection() {
-        if (cnct == null) {
+        if (cnct == null || Calendar.getInstance().getTimeInMillis() - timestamp > 1000 * 1800) {
             Connection connection = null;
             try {
+                if (cnct != null) {
+                    closeConnection(cnct);
+                }
                 DriverManager.registerDriver((java.sql.Driver) Class.forName(
                         props.getProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
                 connection = DriverManager.getConnection(props.getProperty("dbConnection",
@@ -154,13 +157,12 @@ public class DbConnection {
     }
 
     public static String getStampOnID(int id, String table, Connection connection) {
-        return getStringOnId("Select date(stamp) from "+table+" where "+table+"_id=", id, connection);
+        return getStringOnId("Select date(stamp) from " + table + " where " + table + "_id=", id, connection);
     }
-    
+
 //    public static String getStampOnID(int id, Connection connection) {
 //        return getStringOnId("Select date(stamp) from xemployee where xemployee_id=", id, connection);
 //    }
-
     public static String getOrderOnId(int order_id, Connection connection) {
         if (order_id <= 0) {
             return "none";

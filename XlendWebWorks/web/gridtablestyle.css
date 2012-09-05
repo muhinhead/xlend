@@ -89,3 +89,8 @@ table.gray IMG {
     color:white;
 }
 
+.image {
+    width: 200px;
+    height: 60px;
+    position: relative;
+}

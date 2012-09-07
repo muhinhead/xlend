@@ -103,7 +103,7 @@ public class SyncPushTimer extends TimerTask {
         try {
             XlendServer.log("Clean sync log...");
             ps = DbConnection.getLogDBconnection().prepareStatement(
-                    "delete from updatelog where not synchronized is null");
+                    "delete from updatelog where not synchronized is null or (select max(updatelog_id) from updatelog)-updatelog_id>1000");
             int rows = ps.executeUpdate();
             XlendServer.log(""+rows+" log rows removed");
         } catch (SQLException ex) {

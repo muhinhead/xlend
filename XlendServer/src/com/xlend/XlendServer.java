@@ -40,7 +40,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    public static final String version = "0.63.1";
+    public static final String version = "0.64";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -65,7 +65,7 @@ public class XlendServer {
                 XlendServer.log("Local DB version:" + vLocal.getVersion() + "(" + vLocal.getVersionId() + ")"
                         + " Remote DB version:" + vRemote.getVersion() + "(" + vRemote.getVersionId() + ")");
             }
-            return vLocal.getVersionId().intValue() == vRemote.getVersionId().intValue();
+            return vRemote.getVersionId().intValue() - vLocal.getVersionId().intValue() <= 1;
         } catch (Exception ex) {
             XlendServer.log(ex);
         }
@@ -142,7 +142,6 @@ public class XlendServer {
         }
         final int port = (args.length > 0 ? Integer.parseInt(args[0]) : 1099);
         rmiServer = new Thread() {
-
             public void run() {
                 try {
                     final Timer queueRunner = new Timer();
@@ -167,7 +166,6 @@ public class XlendServer {
 
         if (compareDbVersions()) {
             syncThread = new Thread() {
-
                 @Override
                 public void run() {
                     while (isCycle) {
@@ -214,7 +212,6 @@ public class XlendServer {
             final PopupMenu popup = new PopupMenu();
             MenuItem miExit = new MenuItem("Exit");
             miExit.addActionListener(new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     rmiServer.stop();
@@ -224,14 +221,12 @@ public class XlendServer {
             });
             MenuItem miAbout = new MenuItem("About...");
             miAbout.addActionListener(new ActionListener() {
-
                 public void actionPerformed(ActionEvent e) {
                     new AboutDialog();
                 }
             });
             MenuItem miLog = new MenuItem("Server log...");
             miLog.addActionListener(new ActionListener() {
-
                 public void actionPerformed(ActionEvent e) {
                     showLog();
                 }
@@ -254,7 +249,6 @@ public class XlendServer {
             if (props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
                 MenuItem miMigrate = new MenuItem("Migrate");
                 miMigrate.addActionListener(new ActionListener() {
-
                     public void actionPerformed(ActionEvent e) {
                         new MigrationDialog();
                     }
@@ -268,7 +262,6 @@ public class XlendServer {
             ti = new TrayIcon(icon, XLEND_SERVER, popup);
             ti.setActionCommand("DoubleClick");
             ti.addActionListener(new ActionListener() {
-
                 public void actionPerformed(ActionEvent e) {
                     showLog();
                 }

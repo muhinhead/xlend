@@ -1,18 +1,25 @@
 package com.xlend.dbutil;
 
 import com.xlend.XlendServer;
+import com.xlend.orm.Xopmachassing;
+import com.xlend.orm.dbobject.DbObject;
+import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.rmi.RmiMessageSender;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,8 +28,8 @@ import java.util.Properties;
 public class DbConnection {
 
     private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 32;
-    public static final String DB_VERSION = "0.32";
+    private static final int DB_VERSION_ID = 33;
+    public static final String DB_VERSION = "0.33";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -46,7 +53,7 @@ public class DbConnection {
         //        "alter table xtimesheet alter xorder_id int null",
         //        "alter table xtimesheet add constraint xtimesheet_xorder_fk foreign key (xorder_id) references xorder",
         //        "alter table xemployee drop bank_details",
-        //        "drop table xsitediarypart",
+        "drop table xsitediarypart",
         //        //"drop table dual",
         //        "create table junk (j char(1), primary key (j))",
         //        "insert into junk values('j')",
@@ -149,97 +156,97 @@ public class DbConnection {
         //        + "    constraint xaddstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
         //        + ")"
         //31->32
-//        "alter table picture add stamp timestamp",
-//        "alter table profile add stamp timestamp",
-//        "alter table userprofile add stamp timestamp",
-//        "alter table sheet add stamp timestamp",
-//        "alter table usersheet add stamp timestamp",
-//        "alter table reportgroup add stamp timestamp",
-//        "alter table clientprofile add stamp timestamp",
-//        "alter table xclient add stamp timestamp",
-//        "alter table xcontract add stamp timestamp",
-//        "alter table xcontractpage add stamp timestamp",
-//        "alter table xquotation add stamp timestamp",
-//        "alter table xquotationpage add stamp timestamp",
-//        "alter table xorder add stamp timestamp",
-//        "alter table xsite add stamp timestamp",
-//        "alter table xorderpage add stamp timestamp",
-//        "alter table xposition add stamp timestamp",
-//        "alter table xemployee add stamp timestamp",
-//        "alter table xtimesheet add stamp timestamp",
-//        "alter table xwage add stamp timestamp",
-//        "alter table xwagesum add stamp timestamp",
-//        "alter table xwagesumitem add stamp timestamp",
-//        "alter table xmachtype add stamp timestamp",
-//        "alter table xmachine add stamp timestamp",
-//        "alter table xlowbed add stamp timestamp",
-//        "alter table xtrip add stamp timestamp",
-//        "alter table xorderitem add stamp timestamp",
-//        "alter table xsupplier add stamp timestamp",
-//        "alter table xpaidmethod add stamp timestamp",
-//        "alter table xdieselpchs add stamp timestamp",
-//        "alter table xdieselcard add stamp timestamp",
-//        "alter table xconsume add stamp timestamp",
-//        "alter table xbreakdown add stamp timestamp",
-//        "alter table xbreakconsume add stamp timestamp",
-//        "alter table xfuel add stamp timestamp",
-//        "alter table xpayment add stamp timestamp",
-//        "alter table xabsenteeism add stamp timestamp",
-//        "alter table xissuing add stamp timestamp",
-//        "alter table xtripsheet add stamp timestamp",
-//        "alter table xtripsheetpart add stamp timestamp",
-//        "alter table xaccounts add stamp timestamp",
-//        "alter table xbankbalance add stamp timestamp",
-//        "alter table xbankbalancepart add stamp timestamp",
-//        "alter table xsitediary add stamp timestamp",
-//        "alter table xsitediaryitem add stamp timestamp",
-//        "alter table xappforleave add stamp timestamp",
-//        "alter table xloans add stamp timestamp",
-//        "alter table xincidents add stamp timestamp",
-//        "alter table xmachineincident add stamp timestamp",
-//        "alter table xemployeeincident add stamp timestamp",
-//        "alter table xsalarylist add stamp timestamp",
-//        "alter table xsalary add stamp timestamp",
-//        "alter table xopclocksheet add stamp timestamp",
-//        "alter table xjobcard add stamp timestamp",
-//        "alter table xhourcompare add stamp timestamp",
-//        "alter table xhourcompareday add stamp timestamp",
-//        "alter table cbitems add stamp timestamp",
-//        "alter table xmachrentalrate add stamp timestamp",
-//        "alter table xmachrentalrateitm add stamp timestamp",
-//        "alter table xtransscheduleitm add stamp timestamp",
-//        "alter table xopmachassing add stamp timestamp",
-//        "alter table xpartcategory add stamp timestamp",
-//        "alter table xparts add stamp timestamp",
-//        "alter table xbookouts add stamp timestamp",
-//        "alter table xaddstocks add stamp timestamp",
-        "alter table xtrip modify tosite_id int null",
-        "alter table xtrip add othersite varchar(128)",
-        "alter table xtripsheet drop foreign key xtripsheet_xmachine_fk",
-        "alter table xtripsheet add constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id)",
-        
-        "update xlowbed set xmachine_id=185 where xmachine_id=179",
-        "update xlowbed set xmachine_id=186 where xmachine_id=178",
-        "update xlowbed set xmachine_id=187 where xmachine_id=181",
-        "update xlowbed set xmachine_id=196 where xmachine_id=182",
-        
-        "update xconsume set xmachine_id=185 where xmachine_id=179",
-        "update xconsume set xmachine_id=186 where xmachine_id=178",
-        "update xconsume set xmachine_id=187 where xmachine_id=181",
-        "update xconsume set xmachine_id=196 where xmachine_id=182",
-        
-        "update xmachineincident set xmachine_id=185 where xmachine_id=179",
-        "update xmachineincident set xmachine_id=186 where xmachine_id=178",
-        "update xmachineincident set xmachine_id=187 where xmachine_id=181",
-        "update xmachineincident set xmachine_id=196 where xmachine_id=182",
-        
-        "update xopmachassing set xmachine_id=185 where xmachine_id=179",
-        "update xopmachassing set xmachine_id=186 where xmachine_id=178",
-        "update xopmachassing set xmachine_id=187 where xmachine_id=181",
-        "update xopmachassing set xmachine_id=196 where xmachine_id=182",
-        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
-        
-        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)"
+        //        "alter table picture add stamp timestamp",
+        //        "alter table profile add stamp timestamp",
+        //        "alter table userprofile add stamp timestamp",
+        //        "alter table sheet add stamp timestamp",
+        //        "alter table usersheet add stamp timestamp",
+        //        "alter table reportgroup add stamp timestamp",
+        //        "alter table clientprofile add stamp timestamp",
+        //        "alter table xclient add stamp timestamp",
+        //        "alter table xcontract add stamp timestamp",
+        //        "alter table xcontractpage add stamp timestamp",
+        //        "alter table xquotation add stamp timestamp",
+        //        "alter table xquotationpage add stamp timestamp",
+        //        "alter table xorder add stamp timestamp",
+        //        "alter table xsite add stamp timestamp",
+        //        "alter table xorderpage add stamp timestamp",
+        //        "alter table xposition add stamp timestamp",
+        //        "alter table xemployee add stamp timestamp",
+        //        "alter table xtimesheet add stamp timestamp",
+        //        "alter table xwage add stamp timestamp",
+        //        "alter table xwagesum add stamp timestamp",
+        //        "alter table xwagesumitem add stamp timestamp",
+        //        "alter table xmachtype add stamp timestamp",
+        //        "alter table xmachine add stamp timestamp",
+        //        "alter table xlowbed add stamp timestamp",
+        //        "alter table xtrip add stamp timestamp",
+        //        "alter table xorderitem add stamp timestamp",
+        //        "alter table xsupplier add stamp timestamp",
+        //        "alter table xpaidmethod add stamp timestamp",
+        //        "alter table xdieselpchs add stamp timestamp",
+        //        "alter table xdieselcard add stamp timestamp",
+        //        "alter table xconsume add stamp timestamp",
+        //        "alter table xbreakdown add stamp timestamp",
+        //        "alter table xbreakconsume add stamp timestamp",
+        //        "alter table xfuel add stamp timestamp",
+        //        "alter table xpayment add stamp timestamp",
+        //        "alter table xabsenteeism add stamp timestamp",
+        //        "alter table xissuing add stamp timestamp",
+        //        "alter table xtripsheet add stamp timestamp",
+        //        "alter table xtripsheetpart add stamp timestamp",
+        //        "alter table xaccounts add stamp timestamp",
+        //        "alter table xbankbalance add stamp timestamp",
+        //        "alter table xbankbalancepart add stamp timestamp",
+        //        "alter table xsitediary add stamp timestamp",
+        //        "alter table xsitediaryitem add stamp timestamp",
+        //        "alter table xappforleave add stamp timestamp",
+        //        "alter table xloans add stamp timestamp",
+        //        "alter table xincidents add stamp timestamp",
+        //        "alter table xmachineincident add stamp timestamp",
+        //        "alter table xemployeeincident add stamp timestamp",
+        //        "alter table xsalarylist add stamp timestamp",
+        //        "alter table xsalary add stamp timestamp",
+        //        "alter table xopclocksheet add stamp timestamp",
+        //        "alter table xjobcard add stamp timestamp",
+        //        "alter table xhourcompare add stamp timestamp",
+        //        "alter table xhourcompareday add stamp timestamp",
+        //        "alter table cbitems add stamp timestamp",
+        //        "alter table xmachrentalrate add stamp timestamp",
+        //        "alter table xmachrentalrateitm add stamp timestamp",
+        //        "alter table xtransscheduleitm add stamp timestamp",
+        //        "alter table xopmachassing add stamp timestamp",
+        //        "alter table xpartcategory add stamp timestamp",
+        //        "alter table xparts add stamp timestamp",
+        //        "alter table xbookouts add stamp timestamp",
+        //        "alter table xaddstocks add stamp timestamp",
+//        "alter table xtrip modify tosite_id int null",
+//        "alter table xtrip add othersite varchar(128)",
+//        "alter table xtripsheet drop foreign key xtripsheet_xmachine_fk",
+//        "alter table xtripsheet add constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id)",
+//        "update xlowbed set xmachine_id=185 where xmachine_id=179",
+//        "update xlowbed set xmachine_id=186 where xmachine_id=178",
+//        "update xlowbed set xmachine_id=187 where xmachine_id=181",
+//        "update xlowbed set xmachine_id=196 where xmachine_id=182",
+//        "update xconsume set xmachine_id=185 where xmachine_id=179",
+//        "update xconsume set xmachine_id=186 where xmachine_id=178",
+//        "update xconsume set xmachine_id=187 where xmachine_id=181",
+//        "update xconsume set xmachine_id=196 where xmachine_id=182",
+//        "update xmachineincident set xmachine_id=185 where xmachine_id=179",
+//        "update xmachineincident set xmachine_id=186 where xmachine_id=178",
+//        "update xmachineincident set xmachine_id=187 where xmachine_id=181",
+//        "update xmachineincident set xmachine_id=196 where xmachine_id=182",
+//        "update xopmachassing set xmachine_id=185 where xmachine_id=179",
+//        "update xopmachassing set xmachine_id=186 where xmachine_id=178",
+//        "update xopmachassing set xmachine_id=187 where xmachine_id=181",
+//        "update xopmachassing set xmachine_id=196 where xmachine_id=182",
+//        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
+//        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)",
+        //32->33    
+        "alter table xtimesheet modify xsite_id int null",
+        "alter table xtimesheet add xmachine_id int null",
+        "alter table xtimesheet add constraint xtimesheet_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)",
+        "alter table xwage drop deduction"
     };
 
     public synchronized static Connection getLogDBconnection() {
@@ -293,6 +300,7 @@ public class DbConnection {
 
     public static void fixLocalDB(Connection connection) {
         sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "false").equalsIgnoreCase("true"));
+        fixWrongAssignments(connection);
     }
 
     public static void sqlBatch(String[] sqls, Connection connection, boolean tolog) {
@@ -439,5 +447,117 @@ public class DbConnection {
             XlendServer.log("File " + fname + " not found");
         }
         return ans;
+    }
+
+    private static ArrayList<Integer> getAnomalies(Connection connection, String stmt) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Integer> anomalies = new ArrayList<Integer>();
+        try {
+            ps = connection.prepareStatement(stmt);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                anomalies.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            XlendServer.log(ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    try {
+                        rs.close();
+                    } catch (SQLException ex) {
+                    }
+                }
+            } finally {
+                if (ps != null) {
+                    try {
+                        ps.close();
+                    } catch (SQLException ex) {
+                    }
+                }
+            }
+        }
+        return anomalies;
+    }
+
+    private static void fixWrongAssignments(Connection connection) {
+        String stmt = "select xemployee_id from xopmachassing where date_end is null and not xemployee_id is null group by xemployee_id having count(*)>1";
+        fixOperatorsAssignments(connection, getAnomalies(connection, stmt));
+        stmt = "select xmachine_id from xopmachassing where date_end is null and not xmachine_id is null group by xmachine_id having count(*)>1";
+        fixMachineAssignments(connection, getAnomalies(connection, stmt));
+        stmt = "select xemployee_id from xopmachassing o "
+                + "where not exists(select * from xopmachassing "
+                + " where xemployee_id=o.xemployee_id and date_end is null)"
+                + "and not xemployee_id is null order by xemployee_id,xopmachassing_id";
+        addCurrentAssignment(connection, getAnomalies(connection, stmt), "xemployee_id");
+        stmt = "select xmachine_id from xopmachassing o "
+                + "where not exists(select * from xopmachassing "
+                + " where xmachine_id=o.xmachine_id and date_end is null)"
+                + "and not xmachine_id is null order by xmachine_id,xopmachassing_id";
+        addCurrentAssignment(connection, getAnomalies(connection, stmt), "xmachine_id");
+    }
+
+    private static void fixOperatorsAssignments(Connection connection, ArrayList<Integer> operatorAnomalies) {
+        fixAssignment(connection, operatorAnomalies, "xemployee_id");
+    }
+
+    private static void fixMachineAssignments(Connection connection, ArrayList<Integer> machineAnomalies) {
+        fixAssignment(connection, machineAnomalies, "xmachine_id");
+    }
+
+    private static void fixAssignment(Connection connection, ArrayList<Integer> anomalies, String fld) {
+        for (Integer itemID : anomalies) {
+            try {
+                Xopmachassing cur = null;
+                Xopmachassing next = null;
+                DbObject[] assigns = Xopmachassing.load(connection, fld + "=" + itemID, "xopmachassing_id");
+                for (int i = 0; i < assigns.length; i++) {
+                    cur = (Xopmachassing) assigns[i];
+                    if (cur.getDateEnd() == null && i < assigns.length - 1) {
+                        next = (Xopmachassing) assigns[i + 1];
+                        if (cur.getXmachineId() == 0) {
+                            cur.setXmachineId(null);
+                        }
+                        if (cur.getXemployeeId() == 0) {
+                            cur.setXemployeeId(null);
+                        }
+                        cur.setDateEnd(next.getDateStart());
+                        cur.save();
+                    }
+                }
+                if (cur.getDateEnd() != null) {
+                    addAssignment(cur, fld);
+                }
+            } catch (Exception ex) {
+                XlendServer.log(ex);
+            }
+        }
+    }
+
+    private static void addCurrentAssignment(Connection connection, ArrayList<Integer> anomalies, String fld) {
+        for (Integer itemID : anomalies) {
+            try {
+                DbObject[] assigns = Xopmachassing.load(connection, fld + "=" + itemID, "xopmachassing_id desc");
+                Xopmachassing cur = (Xopmachassing) assigns[0];
+                addAssignment(cur, fld);
+            } catch (Exception ex) {
+                XlendServer.log(ex);
+            }
+        }
+    }
+
+    private static void addAssignment(Xopmachassing cur, String fld) throws SQLException, ForeignKeyViolationException {
+        Date dt = cur.getDateEnd();
+        cur.setXopmachassingId(0);
+        cur.setNew(true);
+        cur.setDateStart(dt);
+        cur.setDateEnd(null);
+        if (fld.equals("xemployee_id")) {
+            cur.setXmachineId(null);
+        } else if (fld.equals("xmachine_id")) {
+            cur.setXemployeeId(null);
+        }
+        cur.save();
     }
 }

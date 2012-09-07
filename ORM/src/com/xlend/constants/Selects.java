@@ -106,19 +106,19 @@ public class Selects {
     public static final String SELECT_FROM_EMPLOYEE =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surename\", phone0_num \"Phone Nr\", val \"Wage Cat.\" "
+            + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\" "
 //            + "(select val from cbitems where cbitems.name='wage_category' and cbitems.id=xemployee.wage_category) \"Wage Cat.\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "order by clock_num";
     public static final String SELECT_FROM_SALEMPLOYEE_EXCLUDING =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surename\", phone0_num \"Phone Nr\" from xemployee "
+            + "sur_name \"Surname\", phone0_num \"Phone Nr\" from xemployee "
             + "where coalesce(wage_category,1)=1 and xemployee_id not in(#) order by clock_num";
     public static final String SELECT_FROM_TIMESHEET =
             "Select t.xtimesheet_id \"Id\", t.weekend \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
-            + "e.sur_name \"Surename\", s.name \"Site\", o.ordernumber \"Order Nr\" "
+            + "e.sur_name \"Surname\", s.name \"Site\", o.ordernumber \"Order Nr\" "
             + "from xtimesheet t,xemployee e, xsite s, xorder o "
             + "where t.xemployee_id=e.xemployee_id "
             + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id";

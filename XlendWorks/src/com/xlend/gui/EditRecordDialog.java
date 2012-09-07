@@ -30,7 +30,8 @@ public abstract class EditRecordDialog extends PopupDialog {
         super.fillContent();
         setOkPressed(false);
         XlendWorks.setWindowIcon(this, "Xcost.png");
-        this.editPanel = editPanel;;
+        this.editPanel = editPanel;
+        this.editPanel.setOwnerDialog(this);
         JPanel btnPanel = new JPanel();
 //        btnPanel.add(applyButton = new JButton(applyAction = getApplyAction()));
         btnPanel.add(saveButton = new JButton(saveAction = getSaveAction()));

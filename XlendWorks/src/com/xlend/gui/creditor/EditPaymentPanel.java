@@ -49,7 +49,7 @@ class EditPaymentPanel extends RecordEditPanel {
             "Date of payment:",
             "Amount:",
             "Paid From:",
-            "Payd By:"
+            "Paid By:"
         };
         supplierCbModel = new DefaultComboBoxModel();
         supplierCbModel.addElement(new ComboItem(0, ADD_NEW_SUPPLIER));

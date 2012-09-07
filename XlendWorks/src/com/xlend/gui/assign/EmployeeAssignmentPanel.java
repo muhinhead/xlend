@@ -2,6 +2,7 @@ package com.xlend.gui.assign;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.MachineLookupAction;
@@ -13,6 +14,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import javax.swing.*;
@@ -62,7 +64,7 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             getGridPanel(dateSP = new SelectedDateSpinner(), 9),
             getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-                new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)), 3)
+            new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)), 3)
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
@@ -110,8 +112,29 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
         JPanel historyPanel = new JPanel(new BorderLayout());
         historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
+//            AssignmentsGrid asg;
             historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", xemployee.getXemployeeId().toString())));
+                    Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", xemployee.getXemployeeId().toString())) {
+                @Override
+                protected AbstractAction addAction() {
+                    return new AbstractAction("Add new assignment") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                EmployeeAssignmentDialog dlg = (EmployeeAssignmentDialog) getOwnerDialog();
+                                if (save()) {
+                                    dlg.setOkPressed(true);
+                                    dlg.dispose();
+                                }
+                            } catch (Exception ex) {
+                                XlendWorks.log(ex);
+                                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                            }
+                        }
+                    };
+                }
+            });
+
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

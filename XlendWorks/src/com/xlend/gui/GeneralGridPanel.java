@@ -98,6 +98,8 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
             model.addElement(new Integer(i + 1).toString() + " (" + (i * GeneralGridPanel.PAGESIZE + 1) + " - " + (maxrow - (i < pagesCount - 1 ? 1 : 0)) + ")");
         }
         getPageSelector().setModel(model);
+        //getPageSelector().setEnabled(pagesCount>1);
+        showPageSelector(pagesCount>1);
     }
 
     protected void refresh() {

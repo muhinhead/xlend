@@ -42,14 +42,16 @@ import javax.swing.event.ChangeListener;
  */
 public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
-    private DefaultComboBoxModel employeeCbModel = new DefaultComboBoxModel();
-    private DefaultComboBoxModel orderCbModel = new DefaultComboBoxModel();
-    private DefaultComboBoxModel siteCbModel = new DefaultComboBoxModel();
+    private DefaultComboBoxModel employeeCbModel;
+    private DefaultComboBoxModel orderCbModel;
+    private DefaultComboBoxModel siteCbModel;
+    private DefaultComboBoxModel machineCbModel;
     private JTextField idField;
     private JSpinner weekendSp;
     private JComboBox employeeRefBox;
     private JComboBox orderRefBox;
     private JComboBox siteRefBox;
+    private JComboBox machineBox;
     private JCheckBox clockSheetChB;
     private JSpinner monNormalSp;
     private JSpinner tueNormalSp;
@@ -94,7 +96,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private AbstractAction employeeLookup;
     private Xemployee xemployee;
     private ChangeListener deductListener;
-    private Double[] prevDeduct;
+//    private Double[] prevDeduct;
     private JLabel[] daysLabels;
     private String[] days;
     private String[] headers;
@@ -108,42 +110,44 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         days = new String[]{//"", 
             "Monday", "Tuesday", "Wednesday",
             "Thursday", "Friday", "Saturday", "Sunday"};
-        headers = new String[]{"Normal Time", "Overtime", "Double Time", "Deduct"};
+        headers = new String[]{
+            "Normal Time", "Overtime", "Double Time"//, "Deduct"
+        };
         daysLabels = new JLabel[7];
         dayWages = new Xwage[7];
-        prevDeduct = new Double[7];
-        for (int i = 0; i < 7; i++) {
-            prevDeduct[i] = new Double(0.0);
-        }
+//        prevDeduct = new Double[7];
+//        for (int i = 0; i < 7; i++) {
+//            prevDeduct[i] = new Double(0.0);
+//        }
         sps = new JSpinner[]{
             monNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             monOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             monDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            monDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            monDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             tueNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             tueOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             tueDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            tueDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            tueDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             wedNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             wedOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             wedDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            wedDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            wedDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             thuNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             thuOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             thuDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            thuDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            thuDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             friNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             friOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             friDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            friDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            friDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             satNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             satOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             satDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            satDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+            //            satDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
             sunNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             sunOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            sunDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
-            sunDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),};
+            sunDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5), //            sunDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
+        };
         detailsFlds = new JTextField[]{
             monDetails = new JTextField(40),
             tueDetails = new JTextField(40),
@@ -157,6 +161,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         employeeCbModel = new DefaultComboBoxModel();
         orderCbModel = new DefaultComboBoxModel();
         siteCbModel = new DefaultComboBoxModel();
+        machineCbModel = new DefaultComboBoxModel();
         for (ComboItem itm : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             employeeCbModel.addElement(itm);
         }
@@ -166,13 +171,17 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         for (ComboItem itm : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
             siteCbModel.addElement(itm);
         }
+        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            machineCbModel.addElement(ci);
+        }
         String[] titles = new String[]{
-            "ID:", "Operator:", "Week Ending:", "Site:", "Order:", "Clock Sheet:"
+            "ID:", "Operator:", "Machine:", "Week Ending:", "Site:", "Order:", "Clock Sheet:"
         };
         labels = createLabelsArray(titles);
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
+            machineBox = new JComboBox(machineCbModel),
             getGridPanel(weekendSp = new SelectedDateSpinner(), 3),
             siteRefBox = new JComboBox(siteCbModel),
             orderRefBox = new JComboBox(orderCbModel),
@@ -181,7 +190,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         weekendSp.setEditor(new JSpinner.DateEditor(weekendSp, "dd/MM/yyyy"));
 
         ChangeListener changeListener = new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 shiftDayLabels();
@@ -205,20 +213,20 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             } else if (i == 1) {
                 editPanel.add(comboPanelWithLookupBtn(employeeRefBox,
                         employeeLookup = new EmployeeLookupAction(employeeRefBox)));
-            } else if (i == 3) {
-                editPanel.add(comboPanelWithLookupBtn(siteRefBox, siteLookupAction = siteLookup()));
             } else if (i == 4) {
+                editPanel.add(comboPanelWithLookupBtn(siteRefBox, siteLookupAction = siteLookup()));
+            } else if (i == 5) {
                 editPanel.add(comboPanelWithLookupBtn(orderRefBox, ordLookupAction = orderLookup()));
             } else {
                 editPanel.add(edits[i]);
             }
         }
         siteRefBox.addActionListener(getSiteRefChangedaCtion());
-        deductListener = getDeductListener();
-
-        for (int i = 3; i < sps.length; i += 4) {
-            sps[i].addChangeListener(deductListener);
-        }
+//        deductListener = getDeductListener();
+//
+//        for (int i = 3; i < sps.length; i += 4) {
+//            sps[i].addChangeListener(deductListener);
+//        }
 
         add(getDaysPanel(), BorderLayout.CENTER);
     }
@@ -233,7 +241,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         JPanel leftPanel = new JPanel(new GridLayout(8, 1));
 
         uppanel.add(leftPanel, BorderLayout.WEST);
-        JPanel centralPanel = new JPanel(new GridLayout(8, 4));
+        JPanel centralPanel = new JPanel(new GridLayout(8, 3));
         uppanel.add(centralPanel, BorderLayout.CENTER);
 
         JPanel rightPanel = new JPanel(new GridLayout(8, 1));
@@ -249,11 +257,11 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             leftPanel.add(daysLabels[l] = new JLabel(days[l], SwingConstants.RIGHT));
         }
 
-        for (int i = 0; i < 32; i++) {
-            if (i < 4) {
+        for (int i = 0; i < 24; i++) {
+            if (i < 3) {
                 centralPanel.add(new JLabel(headers[i], SwingConstants.CENTER));
             } else {
-                centralPanel.add(sps[i - 4]);
+                centralPanel.add(sps[i - 3]);
             }
         }
 
@@ -267,6 +275,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             Date dt;
             idField.setText(ts.getXtimesheetId().toString());
             selectComboItem(employeeRefBox, ts.getXemployeeId());
+            selectComboItem(machineBox, ts.getXmachineId());
             selectComboItem(orderRefBox, ts.getXorderId());
             RecordEditPanel.addSiteItem(siteCbModel, ts.getXsiteId());
             selectComboItem(siteRefBox, ts.getXsiteId());
@@ -282,10 +291,10 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 for (DbObject o : ws) {
                     Xwage w = (Xwage) o;
                     dayWages[i] = w;
-                    sps[i * 4].setValue(w.getNormaltime());
-                    sps[i * 4 + 1].setValue(w.getOvertime());
-                    sps[i * 4 + 2].setValue(w.getDoubletime());
-                    sps[i * 4 + 3].setValue(w.getDeduction());
+                    sps[i * 3].setValue(w.getNormaltime());
+                    sps[i * 3 + 1].setValue(w.getOvertime());
+                    sps[i * 3 + 2].setValue(w.getDoubletime());
+//                    sps[i * 4 + 3].setValue(w.getDeduction());
                     detailsFlds[i].setText(w.getStoppeddetails());
                     i++;
                 }
@@ -320,12 +329,16 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             Date weekend = (Date) weekendSp.getValue();
 
             try {
-                Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
-                ts.setXorderId(id != null && id > 0 ? id : null);
-                id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
-                ts.setXemployeeId(id != null && id > 0 ? id : null);
-                id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
-                ts.setXsiteId(id != null && id > 0 ? id : null);
+//                Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
+//                ts.setXorderId(id != null && id > 0 ? id : null);
+                ts.setXorderId(getSelectedCbItem(orderRefBox));
+//                id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
+//                ts.setXemployeeId(id != null && id > 0 ? id : null);
+                ts.setXemployeeId(getSelectedCbItem(employeeRefBox));
+//                id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
+//                ts.setXsiteId(id != null && id > 0 ? id : null);
+                ts.setXsiteId(getSelectedCbItem(siteRefBox));
+                ts.setXmachineId(getSelectedCbItem(machineBox));
                 ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
                 ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
                 ts.setImage(imageData);
@@ -339,10 +352,10 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     }
                     dayWages[d].setXtimesheetId(ts.getXtimesheetId());
                     dayWages[d].setDay(new java.sql.Date(weekend.getTime() - (7 - d) * 1000 * 3600 * 24));
-                    dayWages[d].setNormaltime(norm = (Double) sps[d * 4].getValue());
-                    dayWages[d].setOvertime(over = (Double) sps[d * 4 + 1].getValue());
-                    dayWages[d].setDoubletime(dbl = (Double) sps[d * 4 + 2].getValue());
-                    dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
+                    dayWages[d].setNormaltime(norm = (Double) sps[d * 3].getValue());
+                    dayWages[d].setOvertime(over = (Double) sps[d * 3 + 1].getValue());
+                    dayWages[d].setDoubletime(dbl = (Double) sps[d * 3 + 2].getValue());
+//                    dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
                     dayWages[d].setStoppeddetails(detailsFlds[d].getText());
                     if (norm + over + dbl > 24) {
                         GeneralFrame.errMessageBox("Error:", "Total day time exceeds 24h!");
@@ -383,7 +396,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 //    }
     private ActionListener getSiteRefChangedaCtion() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncOrderComboOnSiteCombo();
@@ -415,7 +427,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
     private AbstractAction siteLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -431,7 +442,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 
     private AbstractAction orderLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -446,42 +456,41 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         };
     }
 
-    private ChangeListener getDeductListener() {
-        return new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSpinner sp = (JSpinner) e.getSource();
-                int idx = getDeductSpIndex(sp);
-                double diff = (Double) sp.getValue() - prevDeduct[idx];
-                JSpinner normSp = sps[idx * 4];
-                JSpinner overSp = sps[idx * 4 + 1];
-                JSpinner dblSp = sps[idx * 4 + 2];
-
-                if ((Double) normSp.getValue() >= diff) {
-                    normSp.setValue(new Double((Double) normSp.getValue() - diff));
-                } else if ((Double) overSp.getValue() >= diff) {
-                    overSp.setValue(new Double((Double) overSp.getValue() - diff));
-                } else if ((Double) dblSp.getValue() >= diff) {
-                    dblSp.setValue(new Double((Double) dblSp.getValue() - diff));
-                } else {
-                    sp.setValue(prevDeduct[idx]);
-                }
-
-                prevDeduct[idx] = (Double) sp.getValue();
-            }
-
-            private int getDeductSpIndex(JSpinner sp) {
-                int idx = 0;
-                for (int i = 3; i < sps.length; i += 4, idx++) {
-                    if (sps[i] == sp) {
-                        return idx;
-                    }
-                }
-                return -1;
-            }
-        };
-    }
+//    private ChangeListener getDeductListener() {
+//        return new ChangeListener() {
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                JSpinner sp = (JSpinner) e.getSource();
+//                int idx = getDeductSpIndex(sp);
+////                double diff = (Double) sp.getValue() - prevDeduct[idx];
+//                JSpinner normSp = sps[idx * 4];
+//                JSpinner overSp = sps[idx * 4 + 1];
+//                JSpinner dblSp = sps[idx * 4 + 2];
+//
+//                if ((Double) normSp.getValue() >= diff) {
+//                    normSp.setValue(new Double((Double) normSp.getValue() - diff));
+//                } else if ((Double) overSp.getValue() >= diff) {
+//                    overSp.setValue(new Double((Double) overSp.getValue() - diff));
+//                } else if ((Double) dblSp.getValue() >= diff) {
+//                    dblSp.setValue(new Double((Double) dblSp.getValue() - diff));
+//                } else {
+//                    sp.setValue(prevDeduct[idx]);
+//                }
+//
+//                prevDeduct[idx] = (Double) sp.getValue();
+//            }
+//
+//            private int getDeductSpIndex(JSpinner sp) {
+//                int idx = 0;
+//                for (int i = 3; i < sps.length; i += 4, idx++) {
+//                    if (sps[i] == sp) {
+//                        return idx;
+//                    }
+//                }
+//                return -1;
+//            }
+//        };
+//    }
 
     private void shiftDayLabels() {
         Date weekend = (Date) weekendSp.getValue();

@@ -17,6 +17,7 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import javax.swing.*;
@@ -58,6 +59,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
             }
         }
         operatorCbModel.addElement(new ComboItem(0, "NO OPERATOR"));
+//        почему комбобокс пустой ???
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             operatorCbModel.addElement(ci);
         }
@@ -138,7 +140,26 @@ public class MachineAssignmentPanel extends RecordEditPanel {
         historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
             historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_MACHINE_ASSIGNMENTS.replace("#", xmachine.getXmachineId().toString())));
+                    Selects.SELECT_MACHINE_ASSIGNMENTS.replace("#", xmachine.getXmachineId().toString())) {
+                @Override
+                protected AbstractAction addAction() {
+                    return new AbstractAction("Add new assignment") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                MachineAssignmentDialog dlg = (MachineAssignmentDialog) getOwnerDialog();
+                                if (save()) {
+                                    dlg.setOkPressed(true);
+                                    dlg.dispose();
+                                }
+                            } catch (Exception ex) {
+                                XlendWorks.log(ex);
+                                GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                            }
+                        }
+                    };
+                }
+            });
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

@@ -18,7 +18,8 @@ public class MachineAssignmentDialog extends EditRecordDialog {
     @Override
     protected void fillContent() {
         super.fillContent(new MachineAssignmentPanel((Xmachine) getObject()));
-        saveButton.setText("Assign");
+//        saveButton.setText("Assign");
+        saveButton.setVisible(false);
         cancelButton.setText("Close");
     }
 

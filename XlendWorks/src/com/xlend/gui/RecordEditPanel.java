@@ -33,6 +33,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected JComponent[] edits;
     protected JLabel[] labels;
     protected final DbObject[] params;
+    private EditRecordDialog ownerDialog;
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -72,6 +73,20 @@ public abstract class RecordEditPanel extends JPanel {
 
     protected JComponent getRightUpperPanel() {
         return new JPanel();
+    }
+
+    /**
+     * @return the ownerDialog
+     */
+    public EditRecordDialog getOwnerDialog() {
+        return ownerDialog;
+    }
+
+    /**
+     * @param ownerDialog the ownerDialog to set
+     */
+    public void setOwnerDialog(EditRecordDialog ownerDialog) {
+        this.ownerDialog = ownerDialog;
     }
 
     protected static class EmptyValueException extends Exception {

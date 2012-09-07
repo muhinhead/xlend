@@ -278,62 +278,6 @@ create table xemployee
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition (xposition_id)
 );
 
-create table xtimesheet
-(
-    xtimesheet_id int not null auto_increment,
-    xemployee_id  int not null,
-    xorder_id     int null,
-    xsite_id      int not null,
-    weekend       date,
-    clocksheet    smallint default 1,
-    image         blob,
-    stamp timestamp,
-    constraint xtimesheet_pk primary key (xtimesheet_id),
-    constraint xtimesheet_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
-    constraint xtimesheet_xorder_fk foreign key (xorder_id) references xorder (xorder_id),
-    constraint xtimesheet_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
-);
-
-create table xwage
-(
-    xwage_id       int not null auto_increment,
-    xtimesheet_id  int not null,
-    day            date,
-    normaltime     double,
-    overtime       double,
-    doubletime     double,
-    deduction      double,
-    stoppeddetails varchar(128),
-    stamp timestamp,
-    constraint xwage_pk primary key (xwage_id),
-    constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id) on delete cascade
-);
-
-create table xwagesum
-(
-    xwagesum_id int not null auto_increment,
-    weekend     date,
-    stamp timestamp,
-    constraint xwagesum_pk primary key (xwagesum_id)
-);
-
-create table xwagesumitem
-(
-    xwagesumitem_id int not null auto_increment,
-    xwagesum_id     int,
-    xemployee_id    int not null,
-    xtimesheet_id   int,
-    weeklywage      int,
-    normaltime      double,
-    overtime        double,
-    doubletime      double,
-    stamp timestamp,
-    constraint xwagesumitem_pk primary key (xwagesumitem_id),
-    constraint xwagesumitem_xwagesum_fk foreign key (xwagesum_id) references xwagesum (xwagesum_id) on delete cascade,
-    constraint xwagesumitem_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
-    constraint xwagesumitem_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id)
-);
-
 create table xmachtype
 (
     xmachtype_id     int not null auto_increment,
@@ -371,6 +315,63 @@ create table xmachine
     stamp timestamp,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
+);
+
+create table xtimesheet
+(
+    xtimesheet_id int not null auto_increment,
+    xemployee_id  int not null,
+    xorder_id     int null,
+    xsite_id      int not null,
+    weekend       date,
+    clocksheet    smallint default 1,
+    image         blob,
+    xmachine_id   int,
+    stamp         timestamp,
+    constraint xtimesheet_pk primary key (xtimesheet_id),
+    constraint xtimesheet_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
+    constraint xtimesheet_xorder_fk foreign key (xorder_id) references xorder (xorder_id),
+    constraint xtimesheet_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
+    constraint xtimesheet_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)
+);
+
+create table xwage
+(
+    xwage_id       int not null auto_increment,
+    xtimesheet_id  int not null,
+    day            date,
+    normaltime     double,
+    overtime       double,
+    doubletime     double,
+    stoppeddetails varchar(128),
+    stamp timestamp,
+    constraint xwage_pk primary key (xwage_id),
+    constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id) on delete cascade
+);
+
+create table xwagesum
+(
+    xwagesum_id int not null auto_increment,
+    weekend     date,
+    stamp timestamp,
+    constraint xwagesum_pk primary key (xwagesum_id)
+);
+
+create table xwagesumitem
+(
+    xwagesumitem_id int not null auto_increment,
+    xwagesum_id     int,
+    xemployee_id    int not null,
+    xtimesheet_id   int,
+    weeklywage      int,
+    normaltime      double,
+    overtime        double,
+    doubletime      double,
+    stamp timestamp,
+    constraint xwagesumitem_pk primary key (xwagesumitem_id),
+    constraint xwagesumitem_xwagesum_fk foreign key (xwagesum_id) references xwagesum (xwagesum_id) on delete cascade,
+    constraint xwagesumitem_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id) on delete cascade,
+    constraint xwagesumitem_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id)
 );
 
 create table xlowbed

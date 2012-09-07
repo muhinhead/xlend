@@ -1,6 +1,6 @@
 <%-- 
-    Document   : sites_dieselpur
-    Created on : 05.09.2012, 20:14:05
+    Document   : yard_diesel
+    Created on : 06.09.2012, 14:29:02
     Author     : Nick Mukhin
 --%>
 
@@ -21,19 +21,19 @@
             -->
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Diesel Purchases</title>
+        <title>Yard Diesel</title>
     </head>
     <body background="images/metallic-gears-background-.jpg">
         <div class="image">
             <div style="position:absolute; left: 30px; top: 14px;">
                 <a href="sites.jsp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
             </div>
-            <!--div style="position:absolute; left: 120px; top: 14px;">
+            <div style="position:absolute; left: 120px; top: 14px;">
                 <a href="sites_dieselpur.jsp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-            </div-->
-            <div style="position:absolute; left: 235px; top: 14px;">
-                <a href="yard_diesel.jsp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
             </div>
+            <!--div style="position:absolute; left: 235px; top: 14px;">
+                <a href="yard_diesel.jsp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+            </div-->
             <div style="position:absolute; left: 350px; top: 14px;">
                 <a href="#">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
             </div>
@@ -67,7 +67,7 @@
                     new Util.TableCeil("Last updated") {
                         @Override
                         public String getCeil(int id) {
-                            return DbConnection.getStampOnID(id, "xdieselpchs", connection);
+                            return DbConnection.getStampOnID(id, "xdieselcard", connection);
                         }
                     }
 //                    ,new Util.TableCeil("") {
@@ -77,7 +77,7 @@
 //                        }
 //                    }
                 };%>
-            <%=Util.showTable(Selects.SELECT_FROM_DIESELPCHS, connection, addCeils)%>
+            <%=Util.showTable(Selects.SELECT_FROM_DIESELCARD, connection, addCeils)%>
         </form>
         <%DbConnection.closeConnection(connection);%>
     </body>

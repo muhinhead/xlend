@@ -255,7 +255,7 @@ public class Selects {
             + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,1,1),"
             + "'.',req.sur_name,' (',req.clock_num,')') \"Requested by\", "
             + "con.invoicedate \"Inv.Date\", "
-            + "con.amount_rands \"Amount (R)\", "
+            + "con.amount_rands \"Vat Incl Amt (R)\", "
             + "con.description \"Description\" "
             + "from xconsume con, xsupplier sup, xmachine mac, xemployee req "
             + "where con.xsupplier_id=sup.xsupplier_id and con.xmachine_id=mac.xmachine_id "

@@ -114,6 +114,4 @@ alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle
 #--alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id);
 #--alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id);
 #--alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id);
-
-
 update dbversion set version_id = 33, version='0.33';

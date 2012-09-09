@@ -43,11 +43,9 @@ public class ConsumablesGrid extends GeneralGridPanel {
 //        alignRight(0);
     }
 
-    
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Consumable") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -67,7 +65,6 @@ public class ConsumablesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -90,9 +87,9 @@ public class ConsumablesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 int id = getSelectedID();
                 try {
                     Xconsume xcns = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
@@ -126,22 +123,23 @@ public class ConsumablesGrid extends GeneralGridPanel {
 
     private AbstractAction getDuplicateAction(final String label) {
         return new AbstractAction(label) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int id = getSelectedID();
-                    EditConsumablePanel.sampleRecord = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
-                    EditConsumableDialog ed = new EditConsumableDialog("Duplicate Consumable", null);
-                    if (EditConsumableDialog.okPressed) {
-                        Xconsume xcns = (Xconsume) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId(), getPageSelector().getSelectedIndex());
+                if (GeneralFrame.yesNo("Attention!", "Please confirm duplication of item") == JOptionPane.YES_OPTION) {
+                    try {
+                        int id = getSelectedID();
+                        EditConsumablePanel.sampleRecord = (Xconsume) exchanger.loadDbObjectOnID(Xconsume.class, id);
+                        EditConsumableDialog ed = new EditConsumableDialog("Duplicate Consumable", null);
+                        if (EditConsumableDialog.okPressed) {
+                            Xconsume xcns = (Xconsume) ed.getEditPanel().getDbObject();
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xcns.getXconsumeId(), getPageSelector().getSelectedIndex());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    } finally {
+                        EditConsumablePanel.sampleRecord = null;
                     }
-                } catch (RemoteException ex) {
-                    XlendWorks.log(ex);
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                } finally {
-                    EditConsumablePanel.sampleRecord = null;
                 }
             }
         };

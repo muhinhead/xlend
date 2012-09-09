@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  *
@@ -38,7 +39,14 @@ public class DbTableGridPanel extends JPanel {
     private Controller controller;
     private JComboBox pageSelector;
     private JProgressBar progressBar;
+    private JLabel pageLbl;
 
+    public void showPageSelector(boolean toshow) {
+        pageSelector.setVisible(toshow);
+        progressBar.setVisible(toshow);
+        pageLbl.setVisible(toshow);
+    }
+    
     public DbTableGridPanel(
             AbstractAction addAction,
             AbstractAction editAction,
@@ -91,7 +99,7 @@ public class DbTableGridPanel extends JPanel {
         pageChoosePanel.add(progressBar = new JProgressBar());
         progressBar.setIndeterminate(false);
         pageChoosePanel.add(progressBar);
-        pageChoosePanel.add(new JLabel("Page:",SwingConstants.RIGHT));
+        pageChoosePanel.add(pageLbl = new JLabel("Page:",SwingConstants.RIGHT));
         pageChoosePanel.add(pageSelector = new JComboBox());
         add(sp = new JScrollPane((JComponent) getTableView()), BorderLayout.CENTER);
         add(getRightPanel(btnPanel), BorderLayout.EAST);
@@ -284,4 +292,5 @@ public class DbTableGridPanel extends JPanel {
     public JProgressBar getProgressBar() {
         return progressBar;
     }
+    
 }

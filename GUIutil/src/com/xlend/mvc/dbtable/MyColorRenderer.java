@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.util.Vector;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Label;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
@@ -29,6 +30,13 @@ public class MyColorRenderer extends JLabel implements TableCellRenderer {
         this.tv = tv;
     }
 
+//    protected void alignRight(int column) {
+//        JLabel label = null;
+//        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+//        rightRenderer.setHorizontalAlignment(label.RIGHT);
+//        tableView.getColumnModel().getColumn(column).setCellRenderer(rightRenderer);
+//    }
+    
     public Component getTableCellRendererComponent(
             JTable table, Object value,
             boolean isSelected, boolean hasFocus, int row, int column) {

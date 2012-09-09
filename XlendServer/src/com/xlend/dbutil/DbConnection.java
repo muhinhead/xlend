@@ -265,22 +265,22 @@ public class DbConnection {
         + "   return convert(sub, unsigned);"
         + "end;",
         "drop function extractchars",
-        "create function extractchars(sval varchar(32))"
-        + "returns char(32) deterministic"
-        + "begin"
-        + "   declare sub varchar(32) default '';"
-        + "   declare i tinyint default 0;"
-        + "   LP: loop"
-        + "        set i = i + 1;"
-        + "        if i > length(sval) then"
-        + "            leave LP;"
-        + "        end if;"
-        + "        if instr('0123456789',substr(sval,i,1))=0 then"
-        + "            set sub = concat(sub,substr(sval,i,1));"
-        + "        end if;"
-        + "   end loop LP;"
-        + "   return sub ;"
-        + "end;",
+        "create function extractchars(sval varchar(32)) "
+        + "returns char(32) deterministic "
+        + "begin "
+        + "   declare sub varchar(32) default ''; "
+        + "   declare i tinyint default 0; "
+        + "   LP: loop "
+        + "        set i = i + 1; "
+        + "        if i > length(sval) then "
+        + "            leave LP; "
+        + "        end if; "
+        + "        if instr('0123456789',substr(sval,i,1))=0 then "
+        + "            set sub = concat(sub,substr(sval,i,1)); "
+        + "        end if; "
+        + "   end loop LP; "
+        + "   return sub; "
+        + "end; ",
         "alter table xjobcard add vehicle_id1_day1 int",
         "alter table xjobcard add vehicle_id2_day1 int",
         "alter table xjobcard add vehicle_id3_day1 int",
@@ -343,6 +343,7 @@ public class DbConnection {
         "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
         "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
         "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
+
 //        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk056 foreign key (vehicle_id5_day6) references xmachine (xmachine_id)",

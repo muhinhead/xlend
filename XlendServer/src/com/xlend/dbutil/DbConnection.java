@@ -220,33 +220,137 @@ public class DbConnection {
         //        "alter table xparts add stamp timestamp",
         //        "alter table xbookouts add stamp timestamp",
         //        "alter table xaddstocks add stamp timestamp",
-//        "alter table xtrip modify tosite_id int null",
-//        "alter table xtrip add othersite varchar(128)",
-//        "alter table xtripsheet drop foreign key xtripsheet_xmachine_fk",
-//        "alter table xtripsheet add constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id)",
-//        "update xlowbed set xmachine_id=185 where xmachine_id=179",
-//        "update xlowbed set xmachine_id=186 where xmachine_id=178",
-//        "update xlowbed set xmachine_id=187 where xmachine_id=181",
-//        "update xlowbed set xmachine_id=196 where xmachine_id=182",
-//        "update xconsume set xmachine_id=185 where xmachine_id=179",
-//        "update xconsume set xmachine_id=186 where xmachine_id=178",
-//        "update xconsume set xmachine_id=187 where xmachine_id=181",
-//        "update xconsume set xmachine_id=196 where xmachine_id=182",
-//        "update xmachineincident set xmachine_id=185 where xmachine_id=179",
-//        "update xmachineincident set xmachine_id=186 where xmachine_id=178",
-//        "update xmachineincident set xmachine_id=187 where xmachine_id=181",
-//        "update xmachineincident set xmachine_id=196 where xmachine_id=182",
-//        "update xopmachassing set xmachine_id=185 where xmachine_id=179",
-//        "update xopmachassing set xmachine_id=186 where xmachine_id=178",
-//        "update xopmachassing set xmachine_id=187 where xmachine_id=181",
-//        "update xopmachassing set xmachine_id=196 where xmachine_id=182",
-//        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
-//        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)",
+        //        "alter table xtrip modify tosite_id int null",
+        //        "alter table xtrip add othersite varchar(128)",
+        //        "alter table xtripsheet drop foreign key xtripsheet_xmachine_fk",
+        //        "alter table xtripsheet add constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id)",
+        //        "update xlowbed set xmachine_id=185 where xmachine_id=179",
+        //        "update xlowbed set xmachine_id=186 where xmachine_id=178",
+        //        "update xlowbed set xmachine_id=187 where xmachine_id=181",
+        //        "update xlowbed set xmachine_id=196 where xmachine_id=182",
+        //        "update xconsume set xmachine_id=185 where xmachine_id=179",
+        //        "update xconsume set xmachine_id=186 where xmachine_id=178",
+        //        "update xconsume set xmachine_id=187 where xmachine_id=181",
+        //        "update xconsume set xmachine_id=196 where xmachine_id=182",
+        //        "update xmachineincident set xmachine_id=185 where xmachine_id=179",
+        //        "update xmachineincident set xmachine_id=186 where xmachine_id=178",
+        //        "update xmachineincident set xmachine_id=187 where xmachine_id=181",
+        //        "update xmachineincident set xmachine_id=196 where xmachine_id=182",
+        //        "update xopmachassing set xmachine_id=185 where xmachine_id=179",
+        //        "update xopmachassing set xmachine_id=186 where xmachine_id=178",
+        //        "update xopmachassing set xmachine_id=187 where xmachine_id=181",
+        //        "update xopmachassing set xmachine_id=196 where xmachine_id=182",
+        //        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
+        //        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)",
         //32->33    
         "alter table xtimesheet modify xsite_id int null",
         "alter table xtimesheet add xmachine_id int null",
         "alter table xtimesheet add constraint xtimesheet_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)",
-        "alter table xwage drop deduction"
+        "alter table xwage drop deduction",
+        "drop function extractnum",
+        "create function extractnum(sval varchar(32)) "
+        + "returns integer deterministic "
+        + "begin "
+        + "   declare sub varchar(32) default '';"
+        + "   declare i tinyint default 0;"
+        + "   LP: loop"
+        + "        set i = i + 1;"
+        + "        if i > length(sval) then"
+        + "            leave LP;"
+        + "        end if;"
+        + "        if instr('0123456789',substr(sval,i,1))>0 then"
+        + "            set sub = concat(sub,substr(sval,i,1));"
+        + "        end if;"
+        + "   end loop LP;"
+        + "   return convert(sub, unsigned);"
+        + "end;",
+        "drop function extractchars",
+        "create function extractchars(sval varchar(32))"
+        + "returns char(32) deterministic"
+        + "begin"
+        + "   declare sub varchar(32) default '';"
+        + "   declare i tinyint default 0;"
+        + "   LP: loop"
+        + "        set i = i + 1;"
+        + "        if i > length(sval) then"
+        + "            leave LP;"
+        + "        end if;"
+        + "        if instr('0123456789',substr(sval,i,1))=0 then"
+        + "            set sub = concat(sub,substr(sval,i,1));"
+        + "        end if;"
+        + "   end loop LP;"
+        + "   return sub ;"
+        + "end;",
+        "alter table xjobcard add vehicle_id1_day1 int",
+        "alter table xjobcard add vehicle_id2_day1 int",
+        "alter table xjobcard add vehicle_id3_day1 int",
+        "alter table xjobcard add vehicle_id4_day1 int",
+        "alter table xjobcard add vehicle_id5_day1 int",
+        "alter table xjobcard add vehicle_id1_day2 int",
+        "alter table xjobcard add vehicle_id2_day2 int",
+        "alter table xjobcard add vehicle_id3_day2 int",
+        "alter table xjobcard add vehicle_id4_day2 int",
+        "alter table xjobcard add vehicle_id5_day2 int",
+        "alter table xjobcard add vehicle_id1_day3 int",
+        "alter table xjobcard add vehicle_id2_day3 int",
+        "alter table xjobcard add vehicle_id3_day3 int",
+        "alter table xjobcard add vehicle_id4_day3 int",
+        "alter table xjobcard add vehicle_id5_day3 int",
+        "alter table xjobcard add vehicle_id1_day4 int",
+        "alter table xjobcard add vehicle_id2_day4 int",
+        "alter table xjobcard add vehicle_id3_day4 int",
+        "alter table xjobcard add vehicle_id4_day4 int",
+        "alter table xjobcard add vehicle_id5_day4 int",
+        "alter table xjobcard add vehicle_id1_day5 int",
+        "alter table xjobcard add vehicle_id2_day5 int",
+        "alter table xjobcard add vehicle_id3_day5 int",
+        "alter table xjobcard add vehicle_id4_day5 int",
+        "alter table xjobcard add vehicle_id5_day5 int",
+        "alter table xjobcard add vehicle_id1_day6 int",
+        "alter table xjobcard add vehicle_id2_day6 int",
+        "alter table xjobcard add vehicle_id3_day6 int",
+        "alter table xjobcard add vehicle_id4_day6 int",
+        "alter table xjobcard add vehicle_id5_day6 int",
+        "alter table xjobcard add vehicle_id1_day7 int",
+        "alter table xjobcard add vehicle_id2_day7 int",
+        "alter table xjobcard add vehicle_id3_day7 int",
+        "alter table xjobcard add vehicle_id4_day7 int",
+        "alter table xjobcard add vehicle_id5_day7 int",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
+        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
+//        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk056 foreign key (vehicle_id5_day6) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk017 foreign key (vehicle_id1_day7) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk027 foreign key (vehicle_id2_day7) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
     };
 
     public synchronized static Connection getLogDBconnection() {
@@ -452,6 +556,7 @@ public class DbConnection {
     private static ArrayList<Integer> getAnomalies(Connection connection, String stmt) {
         PreparedStatement ps = null;
         ResultSet rs = null;
+//        System.out.println("!![" + stmt + "]");
         ArrayList<Integer> anomalies = new ArrayList<Integer>();
         try {
             ps = connection.prepareStatement(stmt);
@@ -482,9 +587,12 @@ public class DbConnection {
     }
 
     private static void fixWrongAssignments(Connection connection) {
-        String stmt = "select xemployee_id from xopmachassing where date_end is null and not xemployee_id is null group by xemployee_id having count(*)>1";
+        XlendServer.log("Checking assignments...");
+        String stmt = "select xemployee_id from xopmachassing "
+                + "where date_end is null and not xemployee_id is null group by xemployee_id having count(*)>1";
         fixOperatorsAssignments(connection, getAnomalies(connection, stmt));
-        stmt = "select xmachine_id from xopmachassing where date_end is null and not xmachine_id is null group by xmachine_id having count(*)>1";
+        stmt = "select xmachine_id from xopmachassing "
+                + "where date_end is null and not xmachine_id is null group by xmachine_id having count(*)>1";
         fixMachineAssignments(connection, getAnomalies(connection, stmt));
         stmt = "select xemployee_id from xopmachassing o "
                 + "where not exists(select * from xopmachassing "

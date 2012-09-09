@@ -56,7 +56,9 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             }
         }
         machineCbModel.addElement(new ComboItem(0, "NO MACHINE"));
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), Selects.NOT_ASSIGNED_MACHINES)) {
+        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), Selects.MACHINETVMS
+                //Selects.NOT_ASSIGNED_MACHINES
+                )) {
             machineCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -64,7 +66,7 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             getGridPanel(dateSP = new SelectedDateSpinner(), 9),
             getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-            new MachineLookupAction(machineCB, Selects.notAssignedMachinesCondition)), 3)
+                new MachineLookupAction(machineCB, null/*Selects.notAssignedMachinesCondition*/)), 2)
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));

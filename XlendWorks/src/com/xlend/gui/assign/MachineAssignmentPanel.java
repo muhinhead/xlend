@@ -68,7 +68,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
             getGridPanel(dateSP = new SelectedDateSpinner(), 7),
             getGridPanel(comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel),
-            new EmployeeLookupAction(operatorCB, Selects.notAssignedOperatorCondition)), 3)
+            new EmployeeLookupAction(operatorCB, null)), 3)
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));

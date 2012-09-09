@@ -31,7 +31,7 @@ public class EmployeeLookupAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            String select = Selects.SELECT_FROM_EMPLOYEE;
+            String select = Selects.SELECT_EMPLOYEE4LOOKUP;//SELECT_FROM_EMPLOYEE;
             if (whereCond != null) {
                 select = select.replace("order by", (select.indexOf("where") > 0 ? " and " : " where ")
                         + whereCond + " order by");

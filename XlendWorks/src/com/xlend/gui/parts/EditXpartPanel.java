@@ -85,7 +85,7 @@ class EditXpartPanel extends RecordEditPanel {
         storeCB.setEditable(true);
         machineModleCB.setEditable(true);
         prevSupplierCB.setEnabled(false);
-        purchaseDateSP.setEnabled(false);
+//        purchaseDateSP.setEnabled(false);
         organizePanels(titles, edits, null);
         add(getHistoryPanel(), BorderLayout.CENTER);
     }

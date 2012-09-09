@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
+import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.orm.Xconsume;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
@@ -11,6 +12,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -35,6 +37,13 @@ public class ConsumablesGrid extends GeneralGridPanel {
         super(exchanger, select, getMaxWidths(new int[]{40, 100, 100}), readonly);
     }
 
+    @Override
+    protected void init(AbstractAction[] acts, String select, Vector[] tableBody, HashMap<Integer, Integer> maxWidths, DbTableView tabView) {
+        super.init(acts, select, tableBody, maxWidths, tabView);
+//        alignRight(0);
+    }
+
+    
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Consumable") {

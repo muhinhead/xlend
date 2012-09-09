@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
@@ -226,10 +227,12 @@ public class EditTripSheetPanel extends RecordEditPanel {
                     selectComboItem(loaded2CB, getxPart().getLoaded2Id());
                 }
                 if (getxPart().getTimestart() != null) {
-                    timeStartSP.setValue(new java.util.Date(getxPart().getTimestart().getTime()));
+                    Timestamp dt = getxPart().getTimestart();
+                    timeStartSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
                 if (getxPart().getTimeend() != null) {
-                    timeEndSP.setValue(new java.util.Date(getxPart().getTimeend().getTime()));
+                    Timestamp dt = getxPart().getTimeend();
+                    timeEndSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
             }
         }

@@ -83,8 +83,7 @@ class EditWagesPanel extends RecordEditPanel {
         add(sp, BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(sp.getPreferredSize().width + 50, 400));
 
-        weekendSp.addChangeListener(new ChangeListener(){
-
+        weekendSp.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 java.sql.Date xd = new java.sql.Date(((java.util.Date) weekendSp.getValue()).getTime());
@@ -123,7 +122,12 @@ class EditWagesPanel extends RecordEditPanel {
         JPanel wagesgridPanel = new JPanel(new BorderLayout());
         wagesgridPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Empoyee List"));
         try {
-            DbObject[] emplRecs = DashBoard.getExchanger().getDbObjects(Xemployee.class, "wage_category in (2,3)", null);
+            DbObject[] emplRecs = DashBoard.getExchanger().getDbObjects(Xemployee.class,
+                    "wage_category in (2,3) and "
+                    + "clock_num!='000' and "
+                    + "upper(clock_num) not like 'S%' and "
+                    + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0", 
+                    "extractchars(clock_num),extractnum(clock_num)");
             JPanel uppanel = new JPanel(new GridLayout(emplRecs.length + 1, 6));
             for (String hdr : hdrs) {
                 uppanel.add(new JLabel(hdr));

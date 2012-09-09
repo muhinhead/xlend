@@ -3,6 +3,7 @@ package com.xlend.gui.employee;
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
 import com.xlend.gui.client.EditClientDialog;
+import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.work.OrdersGrid;
 import com.xlend.gui.work.SitesGrid;
@@ -181,7 +182,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
-            machineBox = new JComboBox(machineCbModel),
+            comboPanelWithLookupBtn(machineBox = new JComboBox(machineCbModel),new MachineLookupAction(machineBox,null)),
             getGridPanel(weekendSp = new SelectedDateSpinner(), 3),
             siteRefBox = new JComboBox(siteCbModel),
             orderRefBox = new JComboBox(orderCbModel),

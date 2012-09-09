@@ -31,6 +31,8 @@ class EditJobCardPanel extends RecordEditPanel {
     private JComboBox employeeCB;
     private DefaultComboBoxModel[] machineCbModels;
     private JComboBox[] machineCBs;
+    private DefaultComboBoxModel[] vehicleCbModels;
+    private JComboBox[] vehicleCBs;
     private JTextArea[] commentsTAs;
     private String[] days;
     private JLabel[] dowsLbls;
@@ -53,7 +55,9 @@ class EditJobCardPanel extends RecordEditPanel {
         };
         employeeCbModel = new DefaultComboBoxModel();
         machineCbModels = new DefaultComboBoxModel[ARRLEN];
+        vehicleCbModels = new DefaultComboBoxModel[ARRLEN];
         machineCBs = new JComboBox[ARRLEN];
+        vehicleCBs = new JComboBox[ARRLEN];
         commentsTAs = new JTextArea[ARRLEN];
         dowsLbls = new JLabel[ARRLEN];
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
@@ -62,15 +66,19 @@ class EditJobCardPanel extends RecordEditPanel {
         for (int i = 0; i < ARRLEN; i++) {
             machineCbModels[i] = new DefaultComboBoxModel();
             machineCbModels[i].addElement(new ComboItem(0, "NO MACHINE"));
+            vehicleCbModels[i] = new DefaultComboBoxModel();
+            vehicleCbModels[i].addElement(new ComboItem(0, "NO VEHICLE"));
             commentsTAs[i] = new JTextArea();
         }
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
             for (int i = 0; i < ARRLEN; i++) {
                 machineCbModels[i].addElement(ci);
+                vehicleCbModels[i].addElement(ci);
             }
         }
         for (int i = 0; i < ARRLEN; i++) {
             machineCBs[i] = new JComboBox(machineCbModels[i]);
+            vehicleCBs[i] = new JComboBox(vehicleCbModels[i]);
         }
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 6),
@@ -117,8 +125,11 @@ class EditJobCardPanel extends RecordEditPanel {
             panels[i] = new JPanel(new BorderLayout());
             panels[i].add(new JScrollPane(commentsTAs[offset] = new JTextArea(2, 10)));
             panels[i].add(getBorderPanel(new JComponent[]{
-                        new JLabel("machine:"),
-                        comboPanelWithLookupBtn(machineCBs[offset], new MachineLookupAction(machineCBs[offset], null))
+//                        new JLabel("machine:"),
+//                        comboPanelWithLookupBtn(vehicleCBs[offset], new MachineLookupAction(vehicleCBs[offset], null)),
+//                        comboPanelWithLookupBtn(machineCBs[offset], new MachineLookupAction(machineCBs[offset], null))
+                        vehicleCBs[offset],
+                        machineCBs[offset]
                     }), BorderLayout.SOUTH);
             offset++;
         }
@@ -195,6 +206,50 @@ class EditJobCardPanel extends RecordEditPanel {
                 xj.getMachineId4Day7(),
                 xj.getMachineId5Day7()
             };
+            Integer vehicleIDs[] = new Integer[]{
+                xj.getVehicleId1Day1(),
+                xj.getVehicleId2Day1(),
+                xj.getVehicleId3Day1(),
+                xj.getVehicleId4Day1(),
+                xj.getVehicleId5Day1(),
+                
+                xj.getVehicleId1Day2(),
+                xj.getVehicleId2Day2(),
+                xj.getVehicleId3Day2(),
+                xj.getVehicleId4Day2(),
+                xj.getVehicleId5Day2(),
+                
+                xj.getVehicleId1Day3(),
+                xj.getVehicleId2Day3(),
+                xj.getVehicleId3Day3(),
+                xj.getVehicleId4Day3(),
+                xj.getVehicleId5Day3(),
+                
+                xj.getVehicleId1Day4(),
+                xj.getVehicleId2Day4(),
+                xj.getVehicleId3Day4(),
+                xj.getVehicleId4Day4(),
+                xj.getVehicleId5Day4(),
+                
+                xj.getVehicleId1Day5(),
+                xj.getVehicleId2Day5(),
+                xj.getVehicleId3Day5(),
+                xj.getVehicleId4Day5(),
+                xj.getVehicleId5Day5(),
+                
+                xj.getVehicleId1Day6(),
+                xj.getVehicleId2Day6(),
+                xj.getVehicleId3Day6(),
+                xj.getVehicleId4Day6(),
+                xj.getVehicleId5Day6(),
+                
+                xj.getVehicleId1Day7(),
+                xj.getVehicleId2Day7(),
+                xj.getVehicleId3Day7(),
+                xj.getVehicleId4Day7(),
+                xj.getVehicleId5Day7()
+            };
+            
             String comments[] = new String[]{
                 xj.getJob1Day1(),
                 xj.getJob2Day1(),
@@ -250,6 +305,7 @@ class EditJobCardPanel extends RecordEditPanel {
             }
             for (int i = 0; i < ARRLEN; i++) {
                 selectComboItem(machineCBs[i], machineIDs[i]);
+                selectComboItem(vehicleCBs[i], vehicleIDs[i]);
                 commentsTAs[i].setText(comments[i]);
             }
         }
@@ -315,6 +371,50 @@ class EditJobCardPanel extends RecordEditPanel {
         xj.setMachineId3Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day7(getSelectedCbItem(machineCBs[i++]));
+        
+        i = 0;
+        xj.setVehicleId1Day1(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day1(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day1(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day1(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day1(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day2(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day2(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day2(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day2(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day2(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day3(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day3(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day3(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day3(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day3(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day4(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day4(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day4(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day4(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day4(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day5(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day5(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day5(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day5(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day5(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day6(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day6(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day6(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day6(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day6(getSelectedCbItem(vehicleCBs[i++]));
+        
+        xj.setVehicleId1Day7(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId2Day7(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId3Day7(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId4Day7(getSelectedCbItem(vehicleCBs[i++]));
+        xj.setVehicleId5Day7(getSelectedCbItem(vehicleCBs[i++]));
+        
         i = 0;
         xj.setJob1Day1(commentsTAs[i++].getText());
         xj.setJob2Day1(commentsTAs[i++].getText());

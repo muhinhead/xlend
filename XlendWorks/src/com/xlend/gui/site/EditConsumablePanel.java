@@ -22,8 +22,11 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -31,6 +34,8 @@ import javax.swing.JTextField;
  */
 public class EditConsumablePanel extends RecordEditPanel {
 
+    private static final double TAX_PROC = 1.14;
+    
     public static Xconsume sampleRecord;
     private JTextField idField;
     private DefaultComboBoxModel supplierCbModel;
@@ -56,6 +61,9 @@ public class EditConsumablePanel extends RecordEditPanel {
     private JComboBox siteCB;
     private JTextField cheqNumberField;
     private JTextField accNumField;
+    private SelectedNumberSpinner amtExclSP;
+    private boolean amtInclFreeze;
+    private boolean amtExclFreeze;
 
     public EditConsumablePanel(DbObject dbObject) {
         super(dbObject);
@@ -77,7 +85,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             "Account Nr/Reference:",
             "Part Nr:",
             "Amount in Liters:",
-            "Amount in Rands:",
+            "Vat Incl.Amount(R):", //"Vat Excl.Amount (R):"
             "Paid by (Employee):",
             "Paid by (Method):",
             "Cheque Nr:"
@@ -121,7 +129,8 @@ public class EditConsumablePanel extends RecordEditPanel {
             getGridPanel(accNumField = new JTextField(), 3),
             getGridPanel(partNumberField = new JTextField(), 3),
             getGridPanel(amtLitersSP = new SelectedNumberSpinner(0, 0, 10000, 1), 3),
-            getGridPanel(amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01), 3),
+            getGridPanel(new JComponent[]{amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01),
+                new JLabel("Vat Excl.Amount:"), amtExclSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01)}),
             comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), new EmployeeLookupAction(paidByCB)),
             getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods(DashBoard.getExchanger())), 2),
             getGridPanel(cheqNumberField = new JTextField(), 3)
@@ -130,6 +139,9 @@ public class EditConsumablePanel extends RecordEditPanel {
         invoiceDateSP.setEditor(new JSpinner.DateEditor(invoiceDateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(invoiceDateSP);
         idField.setEnabled(false);
+//        amtExclSP.setEnabled(false);
+        amtRandsSP.addChangeListener(amtInclChangedListener());
+        amtExclSP.addChangeListener(amtExcllChangedListener());
         organizePanels(titles, edits, null);
         setPreferredSize(new Dimension(500, getPreferredSize().height));
     }
@@ -142,8 +154,8 @@ public class EditConsumablePanel extends RecordEditPanel {
         } else if (sampleRecord != null) {
             xcns = sampleRecord;
             for (JComponent comp : new JComponent[]{supplierCB, requesterCB,
-                invoiceDateSP,invoiceNumField,authorizerCB,collectorCB,
-                accNumField,paidByCB,paidMethodCB,cheqNumberField}) {
+                        invoiceDateSP, invoiceNumField, authorizerCB, collectorCB,
+                        accNumField, paidByCB, paidMethodCB, cheqNumberField}) {
                 comp.setEnabled(false);
             }
         }
@@ -222,7 +234,6 @@ public class EditConsumablePanel extends RecordEditPanel {
 
     private ActionListener getPaidMethodAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 showChequeField();
@@ -235,5 +246,35 @@ public class EditConsumablePanel extends RecordEditPanel {
         boolean isCheque = (ci != null && ci.getValue().startsWith("Cheque"));
         cheqNumberField.setVisible(isCheque);
         labels[labels.length - 1].setVisible(isCheque);
+    }
+
+    private ChangeListener amtInclChangedListener() {
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (!amtInclFreeze) {
+                    amtExclFreeze = true;
+                    Double value = (Double) amtRandsSP.getValue();
+                    value /= TAX_PROC;
+                    amtExclSP.setValue(value);
+                    amtExclFreeze = false;
+                }
+            }
+        };
+    }
+
+    private ChangeListener amtExcllChangedListener() {
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (!amtExclFreeze) {
+                    amtInclFreeze = true;
+                    Double value = (Double) amtExclSP.getValue();
+                    value *= TAX_PROC;
+                    amtRandsSP.setValue(value);
+                    amtInclFreeze = false;
+                }
+            }
+        };
     }
 }

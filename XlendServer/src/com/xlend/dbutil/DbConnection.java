@@ -352,6 +352,11 @@ public class DbConnection {
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
+            ,"alter table xparts modify quantity decimal(10,2)"
+            ,"alter table xbookouts modify quantity decimal(10,2)"
+            ,"alter table xaddstocks modify quantity decimal(10,2)"
+            ,"alter table xtripsheetpart add loaded1 varchar(64)"
+            ,"alter table xtripsheetpart add loaded2 varchar(64)"
     };
 
     public synchronized static Connection getLogDBconnection() {

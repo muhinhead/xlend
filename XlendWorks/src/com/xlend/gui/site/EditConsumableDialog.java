@@ -2,6 +2,7 @@ package com.xlend.gui.site;
 
 import com.xlend.gui.EditRecordDialog;
 import com.xlend.orm.Xconsume;
+import com.xlend.orm.dbobject.DbObject;
 
 /**
  *
@@ -17,7 +18,7 @@ class EditConsumableDialog extends EditRecordDialog {
 
     @Override
     protected void fillContent() {
-        super.fillContent(new EditConsumablePanel((Xconsume) getObject()));
+        super.fillContent(new EditConsumablePanel((DbObject) getObject()));
     }
 
     @Override

@@ -15,6 +15,8 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.sql.Connection;
+import java.sql.Date;
 import javax.swing.*;
 
 /**
@@ -62,7 +64,7 @@ class EditXaddStockPanel extends RecordEditPanel {
             getGridPanel(purchaseDateSP = new SelectedDateSpinner(), 5),
             comboPanelWithLookupBtn(enteredByCB = new JComboBox(enteredByCbModel), new EmployeeLookupAction(enteredByCB)),
             comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel), new SupplierLookupAction(supplierCB)),
-            getGridPanel(quantitySP = new SelectedNumberSpinner(0, 0, 999999, 1), 5),
+            getGridPanel(quantitySP = new SelectedNumberSpinner(0.0, 0.0, 999999.99, 0.01), 5),
             getGridPanel(pricePerUnitSP = new SelectedNumberSpinner(0.0, 0.0, 9999999.0, 0.01), 5)
         };
         idField.setEnabled(false);
@@ -73,6 +75,18 @@ class EditXaddStockPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
+        XaddstocksWithTrigger ads = (XaddstocksWithTrigger) getDbObject();
+        if (ads != null) {
+            idField.setText(ads.getXaddstocksId().toString());
+            if (ads.getPurchaseDate()!=null) {
+                Date dt = ads.getPurchaseDate();
+                purchaseDateSP.setValue(new java.util.Date(dt.getTime()));
+            }
+            quantitySP.setValue(ads.getQuantity());
+            selectComboItem(supplierCB, ads.getXsupplierId());
+            selectComboItem(enteredByCB, ads.getEnteredbyId());
+            pricePerUnitSP.setValue(ads.getPriceperunit());
+        }
     }
 
     @Override
@@ -80,7 +94,7 @@ class EditXaddStockPanel extends RecordEditPanel {
         XaddstocksWithTrigger ads = (XaddstocksWithTrigger) getDbObject();
         boolean isNew = false;
         if (ads == null) {
-            ads = new XaddstocksWithTrigger(null);
+            ads = new XaddstocksWithTrigger((Connection)null);
             ads.setXaddstocksId(0);
             isNew = true;
         }
@@ -96,8 +110,8 @@ class EditXaddStockPanel extends RecordEditPanel {
                 }
             }
         } else {
-            Integer qty = (Integer) quantitySP.getValue();
-            if (qty.intValue() <= 0) {
+            Double qty = (Double) quantitySP.getValue();
+            if (qty.doubleValue() <= 0.0) {
                 GeneralFrame.errMessageBox("Attention!", "Enter positive quantity please");
                 ((JSpinner.DefaultEditor) quantitySP.getEditor()).getTextField().requestFocus();
                 return false;
@@ -107,7 +121,7 @@ class EditXaddStockPanel extends RecordEditPanel {
             ads.setQuantity(qty);
             ads.setEnteredbyId(getSelectedCbItem(enteredByCB));
             ads.setXsupplierId(getSelectedCbItem(supplierCB));
-            ads.setPriceperunit((Double)pricePerUnitSP.getValue());
+            ads.setPriceperunit((Double) pricePerUnitSP.getValue());
             ads.setXpartsId(partID);
             return saveDbRecord(ads, isNew);
         }

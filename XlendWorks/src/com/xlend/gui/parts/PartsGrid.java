@@ -26,11 +26,12 @@ import javax.swing.JPanel;
  */
 class PartsGrid extends GeneralGridPanel {
 
-    private int cartegoryID;
+//    private int cartegoryID;
 
     public PartsGrid(IMessageSender exchanger, int category_id) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_XPARTS.replaceAll("#", "" + category_id), null, false);
-        EditXpartPanel.categoryID = cartegoryID = category_id;
+//        EditXpartPanel.setCategoryID(//cartegoryID = 
+//                category_id);
     }
 
     @Override
@@ -105,7 +106,8 @@ class PartsGrid extends GeneralGridPanel {
     }
 
     public void selectCategoryID(int category_id) {
-        EditXpartPanel.categoryID = cartegoryID = category_id;
+        EditXpartPanel.setCategoryID(//cartegoryID = 
+                category_id);
         String newSelect = Selects.SELECT_FROM_XPARTS.replaceAll("#", "" + category_id);
         DbTableDocument td = (DbTableDocument) getController().getDocument();
         setSelect(newSelect);
@@ -181,10 +183,10 @@ class PartsGrid extends GeneralGridPanel {
         };
     }
 
-    /**
-     * @return the cartegoryID
-     */
-    public int getCartegoryID() {
-        return cartegoryID;
-    }
+//    /**
+//     * @return the cartegoryID
+//     */
+//    public int getCartegoryID() {
+//        return cartegoryID;
+//    }
 }

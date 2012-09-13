@@ -1,6 +1,7 @@
 package com.xlend.gui.logistics;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableDocument;
@@ -12,6 +13,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.rmi.RemoteException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -47,11 +50,11 @@ public class GroupTableGridPanel extends JPanel {
             add(createCenterPanel(), BorderLayout.CENTER);
             add(createRightButtonPanel(new JComponent[]{
                         new JButton(getAddAction("New schedule line")),
-                        new JButton(getEditAction("Edit schedule"))
+                        new JButton(getEditAction("Edit schedule")),
+                        new JButton(getDelAction("Delete schedule"))
                     }), BorderLayout.EAST);
 
             tableView.addMouseListener(new MouseAdapter() {
-
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
                         editSchedule("Edit schedule");
@@ -65,7 +68,6 @@ public class GroupTableGridPanel extends JPanel {
 
     private AbstractAction getAddAction(final String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 addSchedule(title);
@@ -86,7 +88,6 @@ public class GroupTableGridPanel extends JPanel {
 
     private AbstractAction getEditAction(final String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 editSchedule(title);
@@ -94,37 +95,69 @@ public class GroupTableGridPanel extends JPanel {
         };
     }
 
-    private void editSchedule(String title) {
-        Vector data = tableView.getRowData();
+    private AbstractAction getDelAction(final String title) {
+        return new AbstractAction(title) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deleteSchedule();
+            }
+        };
+    }
+
+    private void deleteSchedule() {
         int row = tableView.getSelectedRow();
         if (row >= 0 && row < tableView.getRowCount()) {
             try {
-                Vector line = (Vector) data.get(row);
-                String dateReq = (String) line.get(0);
-                DbObject[] recs = null;
-                if (dateCB.isSelected()) {
-                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                            "date_required='" + dateReq + "'", null);
-                    EditTransscheduleitmPanel.resetFixedAttribute();
-                } else if (dateMachineCB.isSelected()) {
-                    String machineName = (String) line.get(1);
-                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                            "date_required='" + dateReq + "' and machine_id="
-                            + "(select max(xmachine_id) from xmachine where classify+tmvnr='"+machineName+"')", null);
-                    EditTransscheduleitmPanel.setFixedAttribute("machine_id");
-                } else if (dateFromSiteCB.isSelected()) {
-                    String siteName = (String) line.get(1);
-                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                            "date_required='" + dateReq + "' and site_from_id="
-                            + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
-                    EditTransscheduleitmPanel.setFixedAttribute("site_from_id");
-                } else if (dateToSiteCB.isSelected()) {
-                    String siteName = (String) line.get(1);
-                    recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                            "date_required='" + dateReq + "' and site_to_id="
-                            + "(select max(xsite_id) from xsite where name='"+siteName+"')", null);
-                    EditTransscheduleitmPanel.setFixedAttribute("site_to_id");
+                DbObject[] recs = getRecs(row);
+                if (GeneralFrame.yesNo("Attention!", "Do you want to delete schedule of "
+                        + recs.length + " item" 
+                        + (recs.length > 1 ? "s" : "") + "?") == JOptionPane.YES_OPTION) {
+                    for (DbObject rec : recs) {
+                        exchanger.deleteObject(rec);
+                    }
+                    updateGrid();
                 }
+            } catch (RemoteException ex) {
+                XlendWorks.logAndShowMessage(ex);
+            }
+        }
+    }
+
+    private DbObject[] getRecs(int row) throws RemoteException {
+        Vector line = (Vector) tableView.getRowData().get(row);
+        String dateReq = (String) line.get(0);
+        DbObject[] recs = null;
+        if (dateCB.isSelected()) {
+            recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "'", null);
+            EditTransscheduleitmPanel.resetFixedAttribute();
+        } else if (dateMachineCB.isSelected()) {
+            String machineName = (String) line.get(1);
+            recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and machine_id="
+                    + "(select max(xmachine_id) from xmachine where concat(classify,tmvnr)='" + machineName + "')", null);
+//                    EditTransscheduleitmPanel.setFixedAttribute("machine_id");
+        } else if (dateFromSiteCB.isSelected()) {
+            String siteName = (String) line.get(1);
+            recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and site_from_id="
+                    + "(select max(xsite_id) from xsite where name='" + siteName + "')", null);
+//                    EditTransscheduleitmPanel.setFixedAttribute("site_from_id");
+        } else if (dateToSiteCB.isSelected()) {
+            String siteName = (String) line.get(1);
+            recs = exchanger.getDbObjects(Xtransscheduleitm.class,
+                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and site_to_id="
+                    + "(select max(xsite_id) from xsite where name='" + siteName + "')", null);
+//                    EditTransscheduleitmPanel.setFixedAttribute("site_to_id");
+        }
+        return recs;
+    }
+
+    private void editSchedule(String title) {
+        int row = tableView.getSelectedRow();
+        if (row >= 0 && row < tableView.getRowCount()) {
+            try {
+                DbObject[] recs = getRecs(row);
                 if (recs != null) {
                     EditTransscheduleitmDialog ed = new EditTransscheduleitmDialog(title, recs);
                     if (EditTransscheduleitmDialog.okPressed) {
@@ -189,7 +222,6 @@ public class GroupTableGridPanel extends JPanel {
 
     private ItemListener getItemListener() {
         return new ItemListener() {
-
             @Override
             public void itemStateChanged(ItemEvent e) {
                 try {

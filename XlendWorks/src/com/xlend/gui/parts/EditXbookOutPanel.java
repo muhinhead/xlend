@@ -8,6 +8,7 @@ import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
+import com.xlend.orm.Xbookouts;
 import com.xlend.orm.XbookoutsWithTrigger;
 import com.xlend.orm.Xparts;
 import com.xlend.orm.dbobject.ComboItem;
@@ -16,6 +17,8 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.Date;
 import javax.swing.*;
 
 /**
@@ -43,7 +46,7 @@ class EditXbookOutPanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
-        int upperLimit = 9999999;
+        Double upperLimit = 9999999.99;
         if (partID != 0) {
             try {
                 Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, partID);
@@ -81,7 +84,7 @@ class EditXbookOutPanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(issueDateSP = new SelectedDateSpinner(), 4),
-            getGridPanel(quantitySP = new SelectedNumberSpinner(0, 0, upperLimit, 1), 4),
+            getGridPanel(quantitySP = new SelectedNumberSpinner(0.0, 0.0, upperLimit, 0.01), 4),
             comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB, Selects.SELECT_DEPOTS4LOOKUP)),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)), 2),
             comboPanelWithLookupBtn(issuedByCB = new JComboBox(issuedByCbModel), new EmployeeLookupAction(issuedByCB)),
@@ -95,6 +98,19 @@ class EditXbookOutPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
+        Xbookouts bookOut = (Xbookouts) getDbObject();
+        if (bookOut!=null) {
+            idField.setText(bookOut.getXbookoutsId().toString());
+            if (bookOut.getIssueDate()!=null) {
+                Date dt = bookOut.getIssueDate();
+                issueDateSP.setValue(new java.util.Date(dt.getTime()));
+            }
+            quantitySP.setValue(bookOut.getQuantity());
+            selectComboItem(siteCB, bookOut.getXsiteId());
+            selectComboItem(machineCB, bookOut.getXmachineId());
+            selectComboItem(issuedByCB, bookOut.getIssuedbyId());
+            selectComboItem(issuedToCB, bookOut.getIssuedtoId());
+        }
     }
 
     @Override
@@ -103,11 +119,11 @@ class EditXbookOutPanel extends RecordEditPanel {
         XbookoutsWithTrigger bookOut = (XbookoutsWithTrigger) getDbObject();
         if (bookOut == null) {
             isNew = true;
-            bookOut = new XbookoutsWithTrigger(null);
+            bookOut = new XbookoutsWithTrigger((Connection)null);
             bookOut.setXbookoutsId(0);
         }
-        Integer qty = (Integer) quantitySP.getValue();
-        if (qty.intValue() <= 0) {
+        Double qty = (Double) quantitySP.getValue();
+        if (qty.doubleValue() <= 0.0) {
             GeneralFrame.errMessageBox("Attention!", "Enter positive quantity please");
             ((JSpinner.DefaultEditor) quantitySP.getEditor()).getTextField().requestFocus();
             return false;

@@ -20,7 +20,21 @@ import javax.swing.*;
  */
 class EditXpartPanel extends RecordEditPanel {
 
-    static int categoryID;
+    private static int categoryID;
+
+    /**
+     * @return the categoryID
+     */
+    public static int getCategoryID() {
+        return categoryID;
+    }
+
+    /**
+     * @param aCategoryID the categoryID to set
+     */
+    public static void setCategoryID(int aCategoryID) {
+        categoryID = aCategoryID;
+    }
 //    private final String ADD_NEW_SUPPLIER = "--Add new supplier--";
     private JTextField idField;
     private JTextField partNoField;
@@ -43,11 +57,11 @@ class EditXpartPanel extends RecordEditPanel {
     protected void fillContent() {
         String titles[] = new String[]{
             "ID:",
-            "Part No:",            //            "Part Description:",
+            "Part No:", //            "Part Description:",
             "Store:",
             "Machine Model:",
             "Quantity:",
-            "Last Supplier:",            //            "Previous Supplier:",
+            "Last Supplier:", //            "Previous Supplier:",
             "Price Per Unit:",
             "Purchase Date:"
         };
@@ -71,7 +85,7 @@ class EditXpartPanel extends RecordEditPanel {
             }),
             getGridPanel(storeCB = new JComboBox(XlendWorks.loadDistinctStoreNames(DashBoard.getExchanger())), 3),
             getGridPanel(machineModleCB = new JComboBox(XlendWorks.loadDistinctMachineModels(DashBoard.getExchanger())), 3),
-            getGridPanel(quantitySP = new SelectedNumberSpinner(0, 0, 9999999, 1), 8),
+            getGridPanel(quantitySP = new SelectedNumberSpinner(0.0, 0.0, 9999999.99, 0.01), 8),
             getGridPanel(new JComponent[]{
                 comboPanelWithLookupBtn(lastSupplierCB = new JComboBox(lastSupplierCbModel), new SupplierLookupAction(lastSupplierCB)),
                 getBorderPanel(new JComponent[]{new JLabel("  Prev.Supplier:"), prevSupplierCB = new JComboBox(prevSupplierCbModel)})
@@ -119,7 +133,7 @@ class EditXpartPanel extends RecordEditPanel {
             isNew = true;
             part = new Xparts(null);
             part.setXpartsId(0);
-            part.setXpartcategoryId(categoryID);
+            part.setXpartcategoryId(getCategoryID());
         }
         part.setPartnumber(partNoField.getText());
         part.setDescription(descriptionField.getText());
@@ -127,10 +141,12 @@ class EditXpartPanel extends RecordEditPanel {
         part.setStorename(ed.getText());
         ed = (JTextField) machineModleCB.getEditor().getEditorComponent();
         part.setMachinemodel(ed.getText());
-        part.setQuantity((Integer) quantitySP.getValue());
+        if (quantitySP.isEnabled()) {
+            part.setQuantity((Double) quantitySP.getValue());
+        }
         part.setPriceperunit((Double) pricePerUnitSP.getValue());
         if (!isNew) {
-            if (part.getLastsupplierId()!=null && getSelectedCbItem(lastSupplierCB).intValue() != part.getLastsupplierId().intValue()) {
+            if (part.getLastsupplierId() != null && getSelectedCbItem(lastSupplierCB).intValue() != part.getLastsupplierId().intValue()) {
                 part.setPrevsupplierId(part.getLastsupplierId());
             }
         } else {
@@ -147,15 +163,15 @@ class EditXpartPanel extends RecordEditPanel {
     private JPanel getHistoryPanel() {
         JPanel histPanel = new JPanel();
         Xparts part = (Xparts) getDbObject();
-        histPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),"Parts Moving"));
+        histPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Parts Moving"));
         if (part != null) {
             try {
                 JSplitPane sp = new JSplitPane(1);
                 AddStocksGrid ag;
-                sp.setLeftComponent(ag = new AddStocksGrid(DashBoard.getExchanger(),part.getXpartsId()));
+                sp.setLeftComponent(ag = new AddStocksGrid(DashBoard.getExchanger(), part.getXpartsId(), this));
                 ag.setBorder(BorderFactory.createTitledBorder("Entered"));
                 BookOutsGrid bo;
-                sp.setRightComponent(bo = new BookOutsGrid(DashBoard.getExchanger(),part.getXpartsId()));
+                sp.setRightComponent(bo = new BookOutsGrid(DashBoard.getExchanger(), part.getXpartsId(), this));
                 bo.setBorder(BorderFactory.createTitledBorder("Dispatched"));
                 sp.setDividerLocation(0.5);
                 histPanel.add(sp);

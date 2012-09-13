@@ -61,24 +61,32 @@ public class EditTripSheetPanel extends RecordEditPanel {
         private JTextField fromPlaceField;
         private JTextField toPlaceField;
         private JComboBox loaded1CB, loaded2CB;
+        private JTextField loaded1Field, loaded2Field;
         private JCheckBox isEmptyCB;
         private JSpinner timeStartSP, timeEndSP;
         private JSpinner kilometersSP;
         private JComboBox assistantCB;
-        private Xtripsheetpart xPart;
+        private Xtripsheetpart tripSheetPart;
 
         private class CardPanel extends JPanel {
 
             private final JPanel comboPanel;
             private final JTextField textField;
-            private final JComboBox siteCB;
+            private final JComboBox comboBox;
             private final CardLayout clayaut;
 
-            CardPanel(JComboBox siteCB, JTextField textField) {
+            CardPanel(JComboBox cbBox, JTextField textField) {
                 super(new CardLayout());
                 clayaut = (CardLayout) (getLayout());
-                this.siteCB = siteCB;
-                this.comboPanel = comboPanelWithLookupBtn(siteCB, new SiteLookupAction(siteCB));
+                this.comboBox = cbBox;
+                if (cbBox == fromSiteCB || cbBox == toSiteCB) {
+                    this.comboPanel = comboPanelWithLookupBtn(cbBox, new SiteLookupAction(cbBox));
+                } else if (cbBox == loaded1CB || cbBox == loaded2CB) {
+                    this.comboPanel = comboPanelWithLookupBtn(cbBox, new MachineLookupAction(cbBox, null));
+                } else {
+                    this.comboPanel = new JPanel();
+                    comboPanel.add(cbBox);
+                }
                 this.textField = textField;
                 add(this.comboPanel, "combo");
                 add(this.textField, "text");
@@ -86,22 +94,20 @@ public class EditTripSheetPanel extends RecordEditPanel {
             }
 
             private void init() {
-                textField.setToolTipText("double click to show site list");
-                siteCB.setToolTipText("choose last item to enter other value");
+                textField.setToolTipText("double click to show a list");
+                comboBox.setToolTipText("choose last item to enter other value");
                 textField.addMouseListener(new MouseAdapter() {
-
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
                             clayaut.show(CardPanel.this, "combo");
-                            siteCB.requestFocus();
+                            comboBox.requestFocus();
                         }
                     }
                 });
-                siteCB.addActionListener(new AbstractAction() {
-
+                comboBox.addActionListener(new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        ComboItem citm = (ComboItem) siteCB.getSelectedItem();
+                        ComboItem citm = (ComboItem) comboBox.getSelectedItem();
                         if (citm != null && citm.getId() == 0) {
                             clayaut.show(CardPanel.this, "text");
                             textField.requestFocus();
@@ -113,7 +119,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
 
         RowPanel(Xtripsheetpart part) {
             super(new GridLayout(2, 10));
-            this.xPart = part;
+            this.tripSheetPart = part;
             fromSiteCbModel = new DefaultComboBoxModel();
             toSiteCbModel = new DefaultComboBoxModel();
             assistantCbModel = new DefaultComboBoxModel();
@@ -125,16 +131,17 @@ public class EditTripSheetPanel extends RecordEditPanel {
                     toSiteCbModel.addElement(ci);
                 }
             }
-            fromSiteCbModel.addElement(new ComboItem(0, "--other--"));
-            toSiteCbModel.addElement(new ComboItem(0, "--other--"));
 
             for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
                 assistantCbModel.addElement(ci);
             }
-            loaded2CbModel.addElement(new ComboItem(0, "-"));
+//            loaded2CbModel.addElement(new ComboItem(0, "-"));
             for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
                 loaded1CbModel.addElement(ci);
                 loaded2CbModel.addElement(ci);
+            }
+            for (DefaultComboBoxModel model : new DefaultComboBoxModel[]{fromSiteCbModel, toSiteCbModel, loaded1CbModel, loaded2CbModel}) {
+                model.addElement(new ComboItem(0, "--other--"));
             }
             markCB = new JCheckBox();
             dateSP = new SelectedDateSpinner();
@@ -158,12 +165,13 @@ public class EditTripSheetPanel extends RecordEditPanel {
             add(markCB);
             add(dateSP);
 
-            fromPlaceField = new JTextField();
-            toPlaceField = new JTextField();
-            add(new CardPanel(fromSiteCB, fromPlaceField));
-            add(new CardPanel(toSiteCB, toPlaceField));
+//            fromPlaceField = new JTextField();
+//            toPlaceField = new JTextField();
+            add(new CardPanel(fromSiteCB, fromPlaceField = new JTextField()));
+            add(new CardPanel(toSiteCB, toPlaceField = new JTextField()));
 
-            add(comboPanelWithLookupBtn(loaded1CB, new MachineLookupAction(loaded1CB, null)));
+//            add(comboPanelWithLookupBtn(loaded1CB, new MachineLookupAction(loaded1CB, null)));
+            add(new CardPanel(loaded1CB, loaded1Field = new JTextField()));
 
             add(isEmptyCB);
             add(timeStartSP);
@@ -174,7 +182,9 @@ public class EditTripSheetPanel extends RecordEditPanel {
             for (int i = 0; i < 4; i++) {
                 add(new JPanel());
             }
-            add(comboPanelWithLookupBtn(loaded2CB, new MachineLookupAction(loaded2CB, null)));
+            //add(comboPanelWithLookupBtn(loaded2CB, new MachineLookupAction(loaded2CB, null)));
+            add(new CardPanel(loaded2CB, loaded2Field = new JTextField()));
+
             for (int i = 0; i < 5; i++) {
                 add(new JPanel());
             }
@@ -195,43 +205,49 @@ public class EditTripSheetPanel extends RecordEditPanel {
         }
 
         public void load() {
-            if (getxPart() != null) {
-                if (getxPart().getPartdate() != null) {
-                    dateSP.setValue(new java.util.Date(getxPart().getPartdate().getTime()));
+            if (getTripSheetPart() != null) {
+                if (getTripSheetPart().getPartdate() != null) {
+                    dateSP.setValue(new java.util.Date(getTripSheetPart().getPartdate().getTime()));
                 }
-                if (getxPart().getFromsiteId() != null && getxPart().getFromsiteId() != 0) {
-                    RecordEditPanel.addSiteItem(fromSiteCbModel, getxPart().getFromsiteId());
-                    selectComboItem(fromSiteCB, getxPart().getFromsiteId());
+                if (getTripSheetPart().getFromsiteId() != null && getTripSheetPart().getFromsiteId() != 0) {
+                    RecordEditPanel.addSiteItem(fromSiteCbModel, getTripSheetPart().getFromsiteId());
+                    selectComboItem(fromSiteCB, getTripSheetPart().getFromsiteId());
                 } else {
                     selectComboItem(fromSiteCB, 0);
-                    fromPlaceField.setText(getxPart().getFromplace());
+                    fromPlaceField.setText(getTripSheetPart().getFromplace());
                 }
-                if (getxPart().getTositeId() != null && getxPart().getTositeId() != 0) {
-                    RecordEditPanel.addSiteItem(toSiteCbModel, getxPart().getTositeId());
-                    selectComboItem(toSiteCB, getxPart().getTositeId());
+                if (getTripSheetPart().getTositeId() != null && getTripSheetPart().getTositeId() != 0) {
+                    RecordEditPanel.addSiteItem(toSiteCbModel, getTripSheetPart().getTositeId());
+                    selectComboItem(toSiteCB, getTripSheetPart().getTositeId());
                 } else {
                     selectComboItem(toSiteCB, 0);
-                    toPlaceField.setText(getxPart().getToplace());
+                    toPlaceField.setText(getTripSheetPart().getToplace());
                 }
-                if (getxPart().getAssistantId() != null) {
-                    selectComboItem(assistantCB, getxPart().getAssistantId());
+                if (getTripSheetPart().getAssistantId() != null) {
+                    selectComboItem(assistantCB, getTripSheetPart().getAssistantId());
                 }
-                isEmptyCB.setSelected(getxPart().getIsempty() != null && getxPart().getIsempty() == 1);
-                if (getxPart().getKilimeters() != null) {
-                    kilometersSP.setValue(getxPart().getKilimeters());
+                isEmptyCB.setSelected(getTripSheetPart().getIsempty() != null && getTripSheetPart().getIsempty() == 1);
+                if (getTripSheetPart().getKilimeters() != null) {
+                    kilometersSP.setValue(getTripSheetPart().getKilimeters());
                 }
-                if (getxPart().getLoaded1Id() != null) {
-                    selectComboItem(loaded1CB, getxPart().getLoaded1Id());
+                if (getTripSheetPart().getLoaded1Id() != null && getTripSheetPart().getLoaded1Id() != 0) {
+                    selectComboItem(loaded1CB, getTripSheetPart().getLoaded1Id());
+                } else {
+                    selectComboItem(loaded1CB, 0);
+                    loaded1Field.setText(getTripSheetPart().getLoaded1());
                 }
-                if (getxPart().getLoaded2Id() != null) {
-                    selectComboItem(loaded2CB, getxPart().getLoaded2Id());
+                if (getTripSheetPart().getLoaded2Id() != null && getTripSheetPart().getLoaded2Id() != 0) {
+                    selectComboItem(loaded2CB, getTripSheetPart().getLoaded2Id());
+                } else {
+                    selectComboItem(loaded2CB, 0);
+                    loaded2Field.setText(getTripSheetPart().getLoaded2());
                 }
-                if (getxPart().getTimestart() != null) {
-                    Timestamp dt = getxPart().getTimestart();
+                if (getTripSheetPart().getTimestart() != null) {
+                    Timestamp dt = getTripSheetPart().getTimestart();
                     timeStartSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
-                if (getxPart().getTimeend() != null) {
-                    Timestamp dt = getxPart().getTimeend();
+                if (getTripSheetPart().getTimeend() != null) {
+                    Timestamp dt = getTripSheetPart().getTimeend();
                     timeEndSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
             }
@@ -239,41 +255,47 @@ public class EditTripSheetPanel extends RecordEditPanel {
 
         public boolean save() throws Exception {
             boolean isNew = false;
-            if (getxPart() == null) {
-                xPart = new Xtripsheetpart(null);
-                getxPart().setXtripsheetpartId(0);
+            if (getTripSheetPart() == null) {
+                tripSheetPart = new Xtripsheetpart(null);
+                getTripSheetPart().setXtripsheetpartId(0);
                 Xtripsheet xt = (Xtripsheet) getDbObject();
-                getxPart().setXtripsheetId(xt.getXtripsheetId());
+                getTripSheetPart().setXtripsheetId(xt.getXtripsheetId());
                 isNew = true;
             }
 
-            getxPart().setFromsiteId(getSelectedCbItem(fromSiteCB));
-            if(fromPlaceField.getText().length()>0) {
-                getxPart().setFromplace(fromPlaceField.getText());
+            getTripSheetPart().setFromsiteId(getSelectedCbItem(fromSiteCB));
+            if (fromPlaceField.getText().length() > 0) {
+                getTripSheetPart().setFromplace(fromPlaceField.getText());
             }
-            getxPart().setTositeId(getSelectedCbItem(toSiteCB));
-            if(toPlaceField.getText().length()>0) {
-                getxPart().setToplace(toPlaceField.getText());
+            getTripSheetPart().setTositeId(getSelectedCbItem(toSiteCB));
+            if (toPlaceField.getText().length() > 0) {
+                getTripSheetPart().setToplace(toPlaceField.getText());
             }
-            getxPart().setIsempty(isEmptyCB.isSelected() ? 1 : 0);
-            getxPart().setKilimeters((Integer) kilometersSP.getValue());
-            getxPart().setLoaded1Id(getSelectedCbItem(loaded1CB));
-            getxPart().setLoaded2Id(getSelectedCbItem(loaded2CB));
+            getTripSheetPart().setIsempty(isEmptyCB.isSelected() ? 1 : 0);
+            getTripSheetPart().setKilimeters((Integer) kilometersSP.getValue());
+            getTripSheetPart().setLoaded1Id(getSelectedCbItem(loaded1CB));
+            if (loaded1Field.getText().length() > 0) {
+                getTripSheetPart().setLoaded1(loaded1Field.getText());
+            }
+            getTripSheetPart().setLoaded2Id(getSelectedCbItem(loaded2CB));
+            if (loaded2Field.getText().length() > 0) {
+                getTripSheetPart().setLoaded2(loaded2Field.getText());
+            }
             java.util.Date dt = (java.util.Date) dateSP.getValue();
-            getxPart().setPartdate(new java.sql.Date(dt.getTime()));
+            getTripSheetPart().setPartdate(new java.sql.Date(dt.getTime()));
             dt = (Date) timeStartSP.getValue();
-            getxPart().setTimestart(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
+            getTripSheetPart().setTimestart(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
             dt = (Date) timeEndSP.getValue();
-            getxPart().setTimeend(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
-            getxPart().setAssistantId(getSelectedCbItem(assistantCB));
+            getTripSheetPart().setTimeend(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
+            getTripSheetPart().setAssistantId(getSelectedCbItem(assistantCB));
 
-            return saveDbRecord(getxPart(), isNew);
+            return saveDbRecord(getTripSheetPart(), isNew);
         }
 
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xPart = (Xtripsheetpart) DashBoard.getExchanger().saveDbObject(dbOb);
+                tripSheetPart = (Xtripsheetpart) DashBoard.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -284,8 +306,8 @@ public class EditTripSheetPanel extends RecordEditPanel {
         /**
          * @return the xPart
          */
-        public Xtripsheetpart getxPart() {
-            return xPart;
+        public Xtripsheetpart getTripSheetPart() {
+            return tripSheetPart;
         }
     }
 
@@ -354,7 +376,6 @@ public class EditTripSheetPanel extends RecordEditPanel {
         hdrPanel.add(selectAllCB = new JCheckBox());
 
         selectAllCB.setAction(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (RowPanel p : childRows) {
@@ -375,7 +396,6 @@ public class EditTripSheetPanel extends RecordEditPanel {
 
     private AbstractAction getAddLineAction() {
         return new AbstractAction("Add line") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new RowPanel(null));
@@ -397,7 +417,6 @@ public class EditTripSheetPanel extends RecordEditPanel {
 
     private AbstractAction getDeleteLineAction() {
         return new AbstractAction("Delete line(s)") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -475,8 +494,8 @@ public class EditTripSheetPanel extends RecordEditPanel {
                 }
             }
             for (RowPanel d : toDelete) {
-                if (d.getxPart() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getxPart());
+                if (d.getTripSheetPart() != null) {
+                    DashBoard.getExchanger().deleteObject(d.getTripSheetPart());
                 }
             }
         }

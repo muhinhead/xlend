@@ -10,7 +10,7 @@ import java.util.Vector;
  * @author Nick Mukhin
  */
 public class Selects {
-    
+
     public static final String SELECT_FROM_USERS =
             "Select profile_id \"Id\","
             + "first_name \"First Name\",last_name \"Last Name\","
@@ -106,9 +106,14 @@ public class Selects {
     public static final String SELECT_EMPLOYEE4LOOKUP =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "concat(first_name,' ',sur_name,if(length(ifnull(nick_name,''))=0,'',concat(' (',nick_name,')'))) \"Name\", "
-            + "val \"Wage Cat.\", "
-            + "(select s.name from xsite s,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null) \"Now on site\" "
-            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null) \"Now on machine\""
+            + "val \"Wage Cat.\" "
+            + ",(select s.name from xsite s,xopmachassing a "
+            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
+            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
+            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"on site\" "
+            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
             + "order by extractnum(clock_num),clock_num";
@@ -116,9 +121,13 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\", "
-            + "(select s.name from xsite s,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null) \"Now on site\", "
-            + "(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null) \"Now on machine\" "
-//            + "(select val from cbitems where cbitems.name='wage_category' and cbitems.id=xemployee.wage_category) \"Wage Cat.\" "
+            + "(select s.name from xsite s,xopmachassing a "
+            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
+            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
+            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"Now on site\" "
+            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where xemployee_id>0 "
             + "order by extractnum(clock_num),clock_num";
@@ -148,7 +157,7 @@ public class Selects {
             "Select xsite_id \"Id\", name \"Site Name\","
             + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 order by sitetype,upper(name)";
-    public static final String SELECT_DEPOTS4LOOKUP = 
+    public static final String SELECT_DEPOTS4LOOKUP =
             "Select xsite_id \"Id\", name \"Site Name\", "
             + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
             + "from xsite where is_active=1 and sitetype='D' order by upper(name)";
@@ -162,20 +171,20 @@ public class Selects {
 //            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\", "
 //            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
 //            + "from xlowbed,xmachine m where m.xmachine_id=xlowbed.xmachine_id";
-      public static final String SELECT_FROM_LOWBEDS = 
-              "Select xlowbed_id \"Id\","
-              + "concat(xmachine.classify,xmachine.tmvnr) \"TMVnr\","
-              + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine Type\","
-              + "xmachine.reg_nr \"Reg.Nr\","
-              + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\","
-              + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
-              + "from xlowbed, xmachine "
-              + "where xmachine.xmachine_id=xlowbed.xmachine_id";
+    public static final String SELECT_FROM_LOWBEDS =
+            "Select xlowbed_id \"Id\","
+            + "concat(xmachine.classify,xmachine.tmvnr) \"TMVnr\","
+            + "(select machtype from xmachtype where xmachtype_id=xmachine.xmachtype_id) \"Machine Type\","
+            + "xmachine.reg_nr \"Reg.Nr\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.driver_id) \"Driver\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xlowbed.assistant_id) \"Assistant\" "
+            + "from xlowbed, xmachine "
+            + "where xmachine.xmachine_id=xlowbed.xmachine_id";
     public static final String SELECT_ALL_LOWBEDS =
             "select l.xlowbed_id \"Id\",concat(m.classify,m.tmvnr) \"Machine\", "
-                + "concat(d.clock_num,' ',d.first_name) \"Driver\", concat(a.clock_num,' ',a.first_name) \"Assistant\" "
-                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
-                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id";
+            + "concat(d.clock_num,' ',d.first_name) \"Driver\", concat(a.clock_num,' ',a.first_name) \"Assistant\" "
+            + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+            + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id";
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"IId\", concat(m.classify,m.tmvnr) \"TMVnr\", "
             + "(select machtype from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine Type\", reg_nr \"Reg.Nr\", "
@@ -220,13 +229,12 @@ public class Selects {
     public static final String SELECT_MASCHINES4LOOKUP =
             "Select xmachine_id \"Id\", concat(m.classify,tmvnr) \"Fleet Nr\", reg_nr \"Reg.Nr\", "
             + "(select machtype from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine\","
-//            + "(select machtype from xmachtype where xmachtype_id=m.xmachtype2_id) \"Type\" "//"t2.machtype \"Type\", "
-            + "(select s.name from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null) \"Now on site\" "
+            + "(select s.name from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
+            + "xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xsite_id=a.xsite_id and xmachine_id=m.xmachine_id and date_end is null)) \"On site\" "
             + "from xmachine m where not classify is null order by m.classify,cast(m.tmvnr as decimal)";
-//            + "and m.xmachtype2_id=t2.xmachtype_id ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
             + "from xsupplier order by companyname";
-    public static final String SELECT_FROM_STORES = 
+    public static final String SELECT_FROM_STORES =
             "select xstocks_id, name from xstocks";
     public static final String SELECT_FROM_SUPPLIERS =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
@@ -401,7 +409,7 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xloans.requestedby_id) \"Requested by\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xloans.authorizedby_id) \"Authorized by\", "
             + "to_char(issueddate,'DD/MM/YYYY') \"Date issued\", amount \"Amount\" from xloans";
-    public static final String SELECT_LOANS4EMPLOYEE = 
+    public static final String SELECT_LOANS4EMPLOYEE =
             "Select xloans_id \"Id\", to_char(loandate,'DD/MM/YYYY') \"Date\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xloans.authorizedby_id) \"Authorized by\", "
             + "to_char(issueddate,'DD/MM/YYYY') \"Date issued\", amount \"Amount\" "
@@ -455,17 +463,17 @@ public class Selects {
     public static final String SELECT_FROM_MACHINERANTALRATE =
             "select xmachrentalrate_id \"Id\", actual_date \"Date\", ROUND(diesel_price,2) \"Diesel Price\", ROUND(factor,2) \"Factor\" from xmachrentalrate";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE =
-            "select date_required \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
+            "select to_char(date_required,'DD/MM/YYYY') \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
     public static final String GET_TRANSSCHEDULE_BY_DATE =
-            "select date_required, count(*) from xtransscheduleitm group by date_required";
+            "select to_char(date_required,'DD/MM/YYYY'), count(*) from xtransscheduleitm group by date_required";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_MACHINE =
-            "select i.date_required \"Date\", concat(m.classify,m.tmvnr) \"Machine\", count(*) \"Qty\" "
-            + "from xtransscheduleitm i,xmachine m where m.xmachine_id=i.machine_id group by \"Date\",\"Machine\"";
+            "select to_char(i.date_required,'DD/MM/YYYY') \"Date\", concat(m.classify,m.tmvnr) \"Machine\", count(*) \"Qty\" "
+            + "from xtransscheduleitm i,xmachine m where m.xmachine_id=i.machine_id group by \"Date\",i.machine_id";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_FROMSITE =
-            "select i.date_required \"Date\", s.name \"Site (source)\", count(*) \"Qty\" "
+            "select to_char(i.date_required,'DD/MM/YYYY') \"Date\", s.name \"Site (source)\", count(*) \"Qty\" "
             + "from xtransscheduleitm i,xsite s where i.site_from_id=s.xsite_id group by i.date_required,s.name";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_TOSITE =
-            "select i.date_required \"Date\", s.name \"Site (target)\", count(*) \"Qty\" "
+            "select to_char(i.date_required,'DD/MM/YYYY') \"Date\", s.name \"Site (target)\", count(*) \"Qty\" "
             + "from xtransscheduleitm i,xsite s where i.site_to_id=s.xsite_id group by i.date_required,s.name";
     public static final String SELECT_EMPLOYEE_ASSIGNMENTS =
             "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", to_char(date_end,'DD/MM/YYYY') \"to\","
@@ -480,26 +488,23 @@ public class Selects {
             + "from xopmachassing where xmachine_id=# order by xopmachassing_id desc";
     public static final String SELECT_SITE_ASSIGNMENTS =
             "select xopmachassing_id \"Id\", to_char(date_start,'DD/MM/YYYY') \"from\", "
-//            + "to_char(date_end,'DD/MM/YYYY') \"to\","
+            //            + "to_char(date_end,'DD/MM/YYYY') \"to\","
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
             + "from xopmachassing where xsite_id=# and date_end is null order by xopmachassing_id desc";
     public static final String activeEmployeeCondition = "clock_num!='000' and "
             + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
-
-    public static final String SELECT_FROM_XPARTS = 
+    public static final String SELECT_FROM_XPARTS =
             "select xparts_id \"Id\", partnumber \"Part No\", description \"Part Description\", storename \"Store\","
             + "machinemodel \"Machine Model\", quantity \"Quantity\","
             + "(select companyname from xsupplier where xsupplier_id=lastsupplier_id) \"Last Supplier\","
             + "(select companyname from xsupplier where xsupplier_id=prevsupplier_id) \"Previous Supplier\","
             + "priceperunit \"Last Price Per Unit\", purchased \"Purchase Date\" "
             + " from xparts where xpartcategory_id=#";
-    
     public static final String SELECT_ALL_STOCKS =
             "select xstocks_id \"Id\", name \"Name\", "
             + "(select name from xsite where xsite_id=xstocks.xsite_id) \"Site\" "
             + "description \"Description\" from xstocks";
-    
     public static final String SELECT_PART_STOCKS =
             "select xpartstocks.xpartstocks_id \"Id\", companyname \"Supplier\", xstocks.name \"Location\", rest \"Rest\" "
             + " from xpartstocks,xstocks,xsupplier"
@@ -509,26 +514,25 @@ public class Selects {
             "select distinct storename from xparts order by storename";
     public static final String SELECT_DISTINCT_MACHINEMODELS =
             "select distinct machinemodel from xparts order by machinemodel";
-    public static final String SELECT_FROM_ADDSTOCKS = 
-            "Select xaddstocks_id \"Id\", purchase_date \"Purchase Date\", "
+    public static final String SELECT_FROM_ADDSTOCKS =
+            "Select xaddstocks_id \"Id\", to_char(purchase_date,'DD/MM/YYYY') \"Purchase Date\", "
             + "quantity \"Quantity\", priceperunit \"Price per Unit\", "
             + "(Select companyname from xsupplier where xsupplier_id=xaddstocks.xsupplier_id) \"Supplier\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xaddstocks.enteredby_id) \"Entered By\" "
             + "from xaddstocks where xparts_id=# order by purchase_date desc";
     public static final String SELECT_FROM_BOOKOUTS =
-            "Select xbookouts_id \"Id\",issue_date \"Date of Issue\","
+            "Select xbookouts_id \"Id\",to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\","
             + "quantity \"Quantity\", "
             + "(Select name from xsite where xsite_id=xbookouts.xsite_id) \"Depot/Site\","
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xbookouts.xmachine_id) \"For Machine\","
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedby_id) \"Issued By\","
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedto_id) \"Issued To\" "
             + "from xbookouts where xparts_id=# order by issue_date desc";
-    
+
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
     }
-
 //    public static final String[] getStringArray(String select) {
 //        try {
 //            Vector[] body = DashBoard.getExchanger().getTableBody(select);

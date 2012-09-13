@@ -165,12 +165,9 @@ public class EditTripSheetPanel extends RecordEditPanel {
             add(markCB);
             add(dateSP);
 
-//            fromPlaceField = new JTextField();
-//            toPlaceField = new JTextField();
             add(new CardPanel(fromSiteCB, fromPlaceField = new JTextField()));
             add(new CardPanel(toSiteCB, toPlaceField = new JTextField()));
 
-//            add(comboPanelWithLookupBtn(loaded1CB, new MachineLookupAction(loaded1CB, null)));
             add(new CardPanel(loaded1CB, loaded1Field = new JTextField()));
 
             add(isEmptyCB);
@@ -182,7 +179,6 @@ public class EditTripSheetPanel extends RecordEditPanel {
             for (int i = 0; i < 4; i++) {
                 add(new JPanel());
             }
-            //add(comboPanelWithLookupBtn(loaded2CB, new MachineLookupAction(loaded2CB, null)));
             add(new CardPanel(loaded2CB, loaded2Field = new JTextField()));
 
             for (int i = 0; i < 5; i++) {

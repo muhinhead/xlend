@@ -316,33 +316,33 @@ public class DbConnection {
         "alter table xjobcard add vehicle_id3_day7 int",
         "alter table xjobcard add vehicle_id4_day7 int",
         "alter table xjobcard add vehicle_id5_day7 int",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
-        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
+//        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
 
 //        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
@@ -352,7 +352,7 @@ public class DbConnection {
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
 //        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
-            ,"alter table xparts modify quantity decimal(10,2)"
+            "alter table xparts modify quantity decimal(10,2)"
             ,"alter table xbookouts modify quantity decimal(10,2)"
             ,"alter table xaddstocks modify quantity decimal(10,2)"
             ,"alter table xtripsheetpart add loaded1 varchar(64)"
@@ -376,6 +376,34 @@ public class DbConnection {
         return logDBconnection;
     }
 
+    public static String getLogin() {
+        return props.getProperty("dbUser", "sa");
+    }
+    
+    public static String getPassword() {
+        return props.getProperty("dbPassword", "");
+    }
+    
+    public static String getBackupCommand() {
+        return props.getProperty("dbDump", "mysqldump");
+    }
+    
+    public static String getFtpURL() {
+        return props.getProperty("ftpURL", "ec2-23-22-145-131.compute-1.amazonaws.com");
+    }
+    
+    public static String getFtpPath() {
+        return props.getProperty("ftpPath", "/root/backups/");
+    }
+    
+    public static String getFtpLogin() {
+        return props.getProperty("ftpLogin", "jaco"); 
+    }
+    
+    public static String getFtpPassword() {
+        return props.getProperty("ftpLogin", "jaco84oliver"); 
+    }
+    
     public static Connection getConnection() throws RemoteException {
         Connection connection = null;
         try {
@@ -387,8 +415,7 @@ public class DbConnection {
             connection = DriverManager.getConnection(
                     props.getProperty("dbConnection",
                     "jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
-                    props.getProperty("dbUser", "sa"),
-                    props.getProperty("dbPassword", ""));
+                    getLogin(), getPassword());
             connection.setAutoCommit(true);
             RmiMessageSender.isMySQL = (connection.getClass().getCanonicalName().indexOf("mysql") > -1);
         } catch (Exception e) {

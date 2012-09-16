@@ -4,11 +4,14 @@
  */
 package com.xlend;
 
+import com.enterprisedt.net.ftp.FTPConnectMode;
+import com.enterprisedt.net.ftp.FileTransferClient;
 import com.xlend.dbutil.DbConnection;
 import com.xlend.dbutil.SyncPushTimer;
 import com.xlend.orm.Dbversion;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
+//import it.sauronsoftware.ftp4j.FTPClient;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -17,8 +20,10 @@ import java.awt.TrayIcon;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -32,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import migration.MigrationDialog;
 
 /**
@@ -40,7 +46,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    public static final String version = "0.65";
+    public static final String version = "0.65.1";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -54,6 +60,7 @@ public class XlendServer {
     private static Thread syncThread;
     private static boolean isCycle = true;
     private static final int TIMESTEP = 60 * 1000;
+    private static Thread backupThread;
 
     private static boolean compareDbVersions() {
         try {
@@ -70,6 +77,43 @@ public class XlendServer {
             XlendServer.log(ex);
         }
         return false;
+    }
+
+//    private static void ftpUpload(String absolutePath) {
+//        throw new UnsupportedOperationException("Not yet implemented");
+//    }
+    private static boolean upload2FTP(String fileName, String targetName, String fileToRemove) {
+        boolean ok = false;
+        String host = DbConnection.getFtpURL();
+        String user = DbConnection.getFtpLogin();
+        String pwd = DbConnection.getFtpPassword();
+        FileTransferClient ftp = null;
+        try {
+            ftp = new FileTransferClient();
+            ftp.setRemoteHost(host);
+            ftp.setUserName(user);
+            ftp.setPassword(pwd);
+            ftp.getAdvancedFTPSettings().setConnectMode(FTPConnectMode.ACTIVE);
+            XlendServer.log("FTP: connection...");
+            ftp.connect();
+            XlendServer.log("FTP: chdir to /root/backups...");
+            ftp.changeDirectory("root/backups");
+            try {
+                XlendServer.log("FTP: delete old dump " + fileToRemove + "...");
+                ftp.deleteFile(fileToRemove);
+            } catch (Exception eex) {
+            }
+            XlendServer.log("FTP: start upload " + targetName + "...");
+            ftp.uploadFile(fileName, targetName);
+            XlendServer.log("FTP: " + targetName + " uploaded!");
+            ftp.disconnect();
+            ok = true;
+        } catch (Exception ex) {
+            XlendServer.log(ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage() + "\nServer will work as usually",
+                    "FTP upload failed", JOptionPane.WARNING_MESSAGE);
+        }
+        return ok;
     }
 
     private static class CtrlCtrapper extends Thread {
@@ -160,6 +204,9 @@ public class XlendServer {
             }
         };
         rmiServer.start();
+        log("Start backup...");
+        makeBackup();
+        log("Backup completed!");
     }
 
     private static void runSyncService() throws RemoteException {
@@ -183,6 +230,88 @@ public class XlendServer {
             XlendServer.log("ATTENTION! Local and remote database versions "
                     + "does not match, replication doesn't start!");
         }
+    }
+
+    private static void makeBackup() {
+        Process p;
+        String mysqlDumpPath = findPath(DbConnection.getBackupCommand());
+        String[] runCmd = new String[]{mysqlDumpPath, "-u",
+            DbConnection.getLogin(), "-p" + DbConnection.getPassword(), "xlend"
+        };
+        Calendar cal = Calendar.getInstance();
+        File dump = new File("xlend-" + cal.get(Calendar.YEAR) + "-"
+                + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + ".dmp");
+        cal.add(Calendar.DATE, -5);
+        String fileToRemove = "xlend-" + cal.get(Calendar.YEAR) + "-"
+                + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + ".dmp";
+
+        DataInputStream std = null;
+        DataInputStream stderr = null;
+        FileOutputStream dumpStream = null;
+        try {
+            p = Runtime.getRuntime().exec(runCmd);
+            stderr = new DataInputStream(p.getInputStream());
+            std = new DataInputStream(p.getInputStream());
+            dumpStream = new FileOutputStream(dump);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = std.read(buf)) > 0) {
+                dumpStream.write(buf, 0, len);
+            }
+            StringBuffer errbuff = new StringBuffer();
+            String line;
+            while ((line = stderr.readLine()) != null) {
+                errbuff.append(line);
+            }
+            if (errbuff.length() > 0) {
+                JOptionPane.showMessageDialog(null, errbuff.toString(),
+                        "Backup error:", JOptionPane.ERROR_MESSAGE);
+            } else {
+                upload2FTP(dump.getAbsolutePath(), dump.getName(), fileToRemove);
+                File oldDump = new File(fileToRemove);
+                if (oldDump.exists()) {
+                    oldDump.delete();
+                }
+            }
+        } catch (Exception ex) {
+            XlendServer.log(ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage() + "\nServer will work as usually",
+                    "Backup failed", JOptionPane.WARNING_MESSAGE);
+        } finally {
+            try {
+                if (dumpStream != null) {
+                    dumpStream.flush();
+                    dumpStream.close();
+                }
+            } catch (IOException ioe) {
+            }
+        }
+    }
+
+    private static String findPath(String progname) {
+        String initialName = progname;
+        String runCmd = progname;
+        String[] extnesions = new String[]{"", ".exe"};
+        String[] paths = new String[]{"",
+            "C:\\Program Files\\MySQL\\MySQL Server 5.1\\bin\\",
+            "C:\\Program Files\\MySQL\\MySQL Server 5.2\\bin\\",
+            "C:\\Program Files\\MySQL\\MySQL Server 5.3\\bin\\",
+            "C:\\Program Files\\MySQL\\MySQL Server 5.4\\bin\\",
+            "C:\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\"
+        };
+        Process p;
+        for (String path : paths) {
+            for (String extension : extnesions) {
+                try {
+                    p = Runtime.getRuntime().exec(progname = path + runCmd + extension);
+                    return progname;
+                } catch (Exception ex) {
+                }
+            }
+        }
+        return initialName;
     }
 
     public static Image loadImage(String iconName) {

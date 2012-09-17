@@ -107,21 +107,21 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "concat(first_name,' ',sur_name,if(length(ifnull(nick_name,''))=0,'',concat(' (',nick_name,')'))) \"Name\", "
             + "val \"Wage Cat.\" "
-            + ",(select s.name from xsite s,xopmachassing a "
-            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
-            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
-            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"on site\" "
-            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
-            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
-            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
+//            + ",(select s.name from xsite s,xopmachassing a "
+//            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
+//            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
+//            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"on site\" "
+//            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+//            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+//            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
             + "order by extractnum(clock_num),clock_num";
     public static final String SELECT_FROM_EMPLOYEE =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\", "
-            + "(select s.name from xsite s,xopmachassing a "
+            + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\" "
+            + ",(select s.name from xsite s,xopmachassing a "
             + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
             + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
             + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"Now on site\" "
@@ -303,14 +303,14 @@ public class Selects {
     public static final String NOTFIXED_TIMESHEETDATES =
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static final String SELECT_FROM_PAYMENTS =
-            "Select xpayment_id \"Id\", companyname \"Supplier\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Payd By\" "
+            "Select xpayment_id \"Id\", companyname \"Supplier\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Paid By\" "
             + "from xpayment, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
             + "order by paydate desc";
     public static final String SELECT_SUPPLIERS_PAYMENTS =
-            "Select xpayment_id \"Id\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Payd From\", "
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Payd By\" "
+            "Select xpayment_id \"Id\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Paid By\" "
             + "from xpayment, cbitems "
             + "where cbitems.id=xpayment.paidfrom and xsupplier_id=# "
             + "order by paydate desc";

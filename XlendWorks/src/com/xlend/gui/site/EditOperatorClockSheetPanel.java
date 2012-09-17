@@ -232,22 +232,22 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
             Timestamp workFrom[] = new Timestamp[]{
                 xs.getWorkFrom1(), xs.getWorkFrom2(), xs.getWorkFrom3(),
                 xs.getWorkFrom4(), xs.getWorkFrom5(), xs.getWorkFrom6(),
-                xs.getWorkFrom6()
+                xs.getWorkFrom7()
             };
             Timestamp workTo[] = new Timestamp[]{
                 xs.getWorkTo1(), xs.getWorkTo2(), xs.getWorkTo3(),
                 xs.getWorkTo4(), xs.getWorkTo5(), xs.getWorkTo6(),
-                xs.getWorkTo6()
+                xs.getWorkTo7()
             };
             Timestamp standFrom[] = new Timestamp[]{
                 xs.getStandFrom1(), xs.getStandFrom2(), xs.getStandFrom3(),
                 xs.getStandFrom4(), xs.getStandFrom5(), xs.getStandFrom6(),
-                xs.getStandFrom6()
+                xs.getStandFrom7()
             };
             Timestamp standTo[] = new Timestamp[]{
                 xs.getStandTo1(), xs.getStandTo2(), xs.getStandTo3(),
                 xs.getStandTo4(), xs.getStandTo5(), xs.getStandTo6(),
-                xs.getStandTo6()
+                xs.getStandTo7()
             };
 
             idField.setText(xs.getXopclocksheetId().toString());
@@ -272,16 +272,20 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
                     kmStopSP[i].setValue(kmStop[i]);
                 }
                 if (workFrom[i] != null) {
-                    workFromSP[i].setValue(workFrom[i]);
+                    Timestamp dt = workFrom[i];
+                    workFromSP[i].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
                 if (workTo[i] != null) {
-                    workToSP[i].setValue(workTo[i]);
+                    Timestamp dt = workTo[i];
+                    workToSP[i].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
                 if (standFrom[i] != null) {
-                    standFromSP[i].setValue(standFrom[i]);
+                    Timestamp dt = standFrom[i];
+                    standFromSP[i].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
                 if (standTo[i] != null) {
-                    standToSP[i].setValue(standTo[i]);
+                    Timestamp dt = standTo[i];
+                    standToSP[i].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
                 }
                 reasonTF[i].setText(reason[i]);
             }

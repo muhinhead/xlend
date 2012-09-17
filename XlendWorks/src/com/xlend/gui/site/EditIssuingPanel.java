@@ -331,25 +331,32 @@ public class EditIssuingPanel extends RecordEditPanel {
             }
 
             if (xi.getTime1End() != null) {
-                timesSPs[1].setValue(new java.util.Date(xi.getTime1End().getTime()));
+                Timestamp dt = xi.getTime1End();
+                timesSPs[1].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime2End() != null) {
-                timesSPs[3].setValue(new java.util.Date(xi.getTime2End().getTime()));
+                Timestamp dt = xi.getTime2End();
+                timesSPs[3].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime3End() != null) {
-                timesSPs[5].setValue(new java.util.Date(xi.getTime3End().getTime()));
+                Timestamp dt = xi.getTime3End();
+                timesSPs[5].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime4End() != null) {
-                timesSPs[7].setValue(new java.util.Date(xi.getTime4End().getTime()));
+                Timestamp dt = xi.getTime4End();
+                timesSPs[7].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime5End() != null) {
-                timesSPs[9].setValue(new java.util.Date(xi.getTime5End().getTime()));
+                Timestamp dt = xi.getTime5End();
+                timesSPs[9].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime6End() != null) {
-                timesSPs[11].setValue(new java.util.Date(xi.getTime6End().getTime()));
+                Timestamp dt = xi.getTime6End();
+                timesSPs[11].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
             if (xi.getTime7End() != null) {
-                timesSPs[13].setValue(new java.util.Date(xi.getTime7End().getTime()));
+                Timestamp dt = xi.getTime7End();
+                timesSPs[13].setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
 
             if (xi.getHours1End() != null) {

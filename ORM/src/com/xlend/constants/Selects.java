@@ -121,7 +121,7 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\" "
-            + ",(select s.name from xsite s,xopmachassing a "
+            + ",(select max(s.name) from xsite s,xopmachassing a "
             + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
             + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
             + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"Now on site\" "
@@ -146,7 +146,7 @@ public class Selects {
     public static final String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
             + "s.name \"Site\", "
-            + "(select ordernumber from xorder where xorder_id=t.xorder_id) \"Order Nr\" "
+            + "(select max(ordernumber) from xorder where xorder_id=t.xorder_id) \"Order Nr\" "
             + "from xtimesheet t, xsite s "
             + "where t.xsite_id=s.xsite_id and t.xemployee_id = #";
     public static final String SELECT_WAGE4TIMESHEET =
@@ -228,8 +228,8 @@ public class Selects {
             + "where deestdate is null or deestdate > CURDATE()) order by clock_num";
     public static final String SELECT_MASCHINES4LOOKUP =
             "Select xmachine_id \"Id\", concat(m.classify,tmvnr) \"Fleet Nr\", reg_nr \"Reg.Nr\", "
-            + "(select machtype from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine\","
-            + "(select s.name from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
+            + "(select max(machtype) from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine\","
+            + "(select max(s.name) from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
             + "xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xsite_id=a.xsite_id and xmachine_id=m.xmachine_id and date_end is null)) \"On site\" "
             + "from xmachine m where not classify is null order by m.classify,cast(m.tmvnr as decimal)";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "

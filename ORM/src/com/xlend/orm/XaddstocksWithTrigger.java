@@ -13,8 +13,9 @@ import java.sql.Timestamp;
  * @author Nick Mukhin
  */
 public class XaddstocksWithTrigger extends Xaddstocks {
+
     private Double oldQty;
-    
+
     public XaddstocksWithTrigger(Connection connection, Integer xaddstocksId, Integer xpartsId, Date purchaseDate, Integer enteredbyId, Integer xsupplierId, Double priceperunit, Double quantity) {
         super(connection, xaddstocksId, xpartsId, purchaseDate, enteredbyId, xsupplierId, priceperunit, quantity);
         addTriggers();
@@ -26,12 +27,12 @@ public class XaddstocksWithTrigger extends Xaddstocks {
     }
 
     public XaddstocksWithTrigger(Xaddstocks papa) {
-        super(papa.getConnection(),papa.getXaddstocksId(),papa.getXpartsId(),
-                papa.getPurchaseDate(),papa.getEnteredbyId(),papa.getXsupplierId(),
-                papa.getPriceperunit(),papa.getQuantity());
+        super(papa.getConnection(), papa.getXaddstocksId(), papa.getXpartsId(),
+                papa.getPurchaseDate(), papa.getEnteredbyId(), papa.getXsupplierId(),
+                papa.getPriceperunit(), papa.getQuantity());
         setNew(papa.isNew());
     }
-    
+
     @Override
     public void setConnection(Connection connection) {
         super.setConnection(connection);
@@ -40,7 +41,8 @@ public class XaddstocksWithTrigger extends Xaddstocks {
 
     @Override
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        return new XaddstocksWithTrigger((Xaddstocks)super.loadOnId(id));
+        Xaddstocks papa = (Xaddstocks) super.loadOnId(id);
+        return papa == null ? null : new XaddstocksWithTrigger(papa);
     }
 
     @Override
@@ -50,10 +52,9 @@ public class XaddstocksWithTrigger extends Xaddstocks {
         }
         super.setQuantity(quantity);
     }
-    
+
     private void addTriggers() {
         TriggerAdapter t = new TriggerAdapter() {
-
             @Override
             public void afterInsert(DbObject dbObject) throws SQLException {
                 Xaddstocks self = (Xaddstocks) dbObject;
@@ -66,7 +67,7 @@ public class XaddstocksWithTrigger extends Xaddstocks {
                         part.setPriceperunit((Double) self.getPriceperunit());
                         part.setPriceperunit(self.getPriceperunit());
                         part.setPurchased(self.getPurchaseDate());
-                        if (part.getLastsupplierId()!=null && self.getXsupplierId().intValue() != part.getLastsupplierId().intValue()) {
+                        if (part.getLastsupplierId() != null && self.getXsupplierId().intValue() != part.getLastsupplierId().intValue()) {
                             part.setPrevsupplierId(part.getLastsupplierId());
                             part.setLastsupplierId(self.getXsupplierId());
                         }
@@ -92,11 +93,11 @@ public class XaddstocksWithTrigger extends Xaddstocks {
                     }
                 }
             }
-            
+
             @Override
             public void afterDelete(DbObject dbObject) throws SQLException {
                 Xaddstocks self = (Xaddstocks) dbObject;
-                double qty = (self.getQuantity()==null?0:self.getQuantity().doubleValue());
+                double qty = (self.getQuantity() == null ? 0 : self.getQuantity().doubleValue());
                 if (qty > 0) {
                     try {
                         int xpartID = self.getXpartsId();

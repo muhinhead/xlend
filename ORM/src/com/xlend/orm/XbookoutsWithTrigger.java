@@ -41,7 +41,8 @@ public class XbookoutsWithTrigger extends Xbookouts {
 
     @Override
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        return new XbookoutsWithTrigger((Xbookouts)super.loadOnId(id));
+        Xbookouts papa = (Xbookouts) super.loadOnId(id);
+        return papa == null ? null : new XbookoutsWithTrigger(papa);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class XbookoutsWithTrigger extends Xbookouts {
             @Override
             public void afterDelete(DbObject dbObject) throws SQLException {
                 Xbookouts self = (Xbookouts) dbObject;
-                double qty = (self.getQuantity()==null?0:self.getQuantity().doubleValue());
+                double qty = (self.getQuantity() == null ? 0 : self.getQuantity().doubleValue());
                 if (qty > 0) {
                     try {
                         int xpartID = self.getXpartsId();

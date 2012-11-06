@@ -77,6 +77,7 @@ public class EmployeesGrid extends GeneralGridPanel {
                         Xemployee emp = (Xemployee) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
                                 getTableView(), getTableDoc(), getSelect(), emp.getXemployeeId(), getPageSelector().getSelectedIndex());
+                        XlendWorks.refreshEmployeeCache(exchanger);
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -100,6 +101,7 @@ public class EmployeesGrid extends GeneralGridPanel {
                         if (EditEmployeeDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+                            XlendWorks.refreshEmployeeCache(exchanger);
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -123,6 +125,7 @@ public class EmployeesGrid extends GeneralGridPanel {
                             + emp.getFirstName() + " " + emp.getSurName() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(emp);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
+                        XlendWorks.refreshEmployeeCache(exchanger);
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.65.1";
+    public static final String version = "0.65.2";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -197,9 +197,21 @@ public class XlendWorks {
         }
         return list;
     }
+    private static ArrayList<ComboItem> employeesCache = new ArrayList<ComboItem>();
 
-    public static ComboItem[] loadAllEmployees(IMessageSender exchanger) {
-        return loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
+    public static void refreshEmployeeCache(IMessageSender exchanger) {
+        employeesCache.clear();
+        loadEmployees(exchanger);
+    }
+    
+    public static ArrayList<ComboItem> loadAllEmployees(IMessageSender exchanger) {
+        if (employeesCache.isEmpty()) {
+            ComboItem[] emps = loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
+            for (ComboItem ci : emps) {
+                employeesCache.add(ci);
+            }
+        }
+        return employeesCache;
     }
 
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger, String whereCond) {
@@ -1063,7 +1075,7 @@ public class XlendWorks {
 //        }
 //        return arr;
     }
-    
+
     public static String[] loadDistinctMachineModels(IMessageSender exchanger) {
         return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
 //        String ss[] = loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);

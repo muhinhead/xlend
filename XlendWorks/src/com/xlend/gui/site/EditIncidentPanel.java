@@ -502,8 +502,8 @@ class EditIncidentPanel extends RecordEditPanel {
             if (xi.getReportdate() != null) {
                 dateSP.setValue(new java.util.Date(xi.getReportdate().getTime()));
             }
-            otherMachinesTA.setText(xi.getOthermachines());
-            otherPeopleTA.setText(xi.getOtherpeople());
+            otherMachinesTA.setText(xi.getBlobmachines());
+            otherPeopleTA.setText(xi.getBlobpeople());
             if (xi.getXsiteId() != null) {
                 RecordEditPanel.addSiteItem(siteCbModel, xi.getXsiteId());
                 selectComboItem(siteCB, xi.getXsiteId());
@@ -571,8 +571,8 @@ class EditIncidentPanel extends RecordEditPanel {
         if (dt != null) {
             xi.setIncidentdate(new java.sql.Date(dt.getTime()));
         }
-        xi.setOthermachines(otherMachinesTA.getText());
-        xi.setOtherpeople(otherPeopleTA.getText());
+        xi.setBlobmachines(otherMachinesTA.getText());
+        xi.setBlobpeople(otherPeopleTA.getText());
         //selectComboItem(siteCB, xi.getXsiteId());
         xi.setXsiteId(getSelectedCbItem(siteCB));
         xi.setLocation(locationTF.getText());

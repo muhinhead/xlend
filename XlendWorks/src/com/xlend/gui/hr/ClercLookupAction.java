@@ -18,6 +18,6 @@ public class ClercLookupAction extends EmployeeLookupAction {
     }
 
     private static String adjustWhereCond(String whereCond) {
-        return (whereCond == null ? "" : whereCond + " and ") + "wage_category=1";
+        return (whereCond == null ? "" : whereCond + " and ") + "management=1 and wage_category=1";
     }
 }

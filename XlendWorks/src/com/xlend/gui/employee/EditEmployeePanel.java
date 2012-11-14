@@ -57,7 +57,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner contractEndSP;
     private JSpinner rateSP;
     private JComboBox positionCB;
-    private JCheckBox deceasedCb, dismissedCb, abscondedCb;
+    private JCheckBox deceasedCb, dismissedCb, abscondedCb, managementCb;
     private JTextField taxnumField;
     private ImageIcon currentPicture2;
     protected JPanel picPanel2;
@@ -85,6 +85,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner emplStartSP;
     private JLabel siteAssignLbl;
     private JLabel machineAssignLbl;
+    private JLabel managementTeamLbl;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -141,7 +142,12 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 new JLabel("Tax Nr:", SwingConstants.RIGHT),
                 taxnumField = new JTextField()
             }),
-            getGridPanel(phone0NumField = new JTextField(), 3),
+            //            getGridPanel(phone0NumField = new JTextField(), 3),
+            getGridPanel(new JComponent[]{
+                phone0NumField = new JTextField(),
+                managementTeamLbl = new JLabel("Is in management team:", SwingConstants.RIGHT),
+                managementCb = new JCheckBox()
+            }),
             getGridPanel(new JComponent[]{
                 phone1NumField = new JTextField(),
                 new JLabel("Relation to person:", SwingConstants.RIGHT),
@@ -207,6 +213,14 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 resignedDateSP = new SelectedDateSpinner()
             })
         };
+        wageCategoryCB.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboItem ci = (ComboItem) wageCategoryCB.getSelectedItem();
+                managementCb.setVisible(ci.getId() == 1);
+                managementTeamLbl.setVisible(ci.getId() == 1);
+            }
+        });
         siteAssignLbl.setBorder(BorderFactory.createEtchedBorder());
         machineAssignLbl.setBorder(BorderFactory.createEtchedBorder());
 
@@ -225,7 +239,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         }
 
         contractLenCB.setAction(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 adjustEndDate();
@@ -233,35 +246,30 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         });
 
         deceasedCb.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 deceasedDateSP.setVisible(deceasedCb.isSelected());
             }
         });
         dismissedCb.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 dismissedDateSP.setVisible(dismissedCb.isSelected());
             }
         });
         abscondedCb.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 abscondedDateSP.setVisible(abscondedCb.isSelected());
             }
         });
         resignedCb.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 resignedDateSP.setVisible(resignedCb.isSelected());
             }
         });
         contractStartSP.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 adjustEndDate();
@@ -273,7 +281,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     private AbstractAction getAssignmentsAction(String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean ok = true;
@@ -435,6 +442,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 firstNameField.setEnabled(false);
                 surNameField.setEnabled(false);
             }
+            managementCb.setSelected(emp.getManagement()!=null && emp.getManagement()==1);
             fillAssignmentInfo();
         }
     }
@@ -542,6 +550,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
                 emp.setPhoto3(imageData3);
+                emp.setManagement(managementCb.isSelected()?1:0);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {
@@ -587,25 +596,21 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         if (null == picturePopMenu2) {
             picturePopMenu2 = new JPopupMenu();
             picturePopMenu2.add(new AbstractAction("Open in window") {
-
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture2);
                 }
             });
             picturePopMenu2.add(new AbstractAction("Replace image") {
-
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile2();
                 }
             });
             picturePopMenu2.add(new AbstractAction("Save image to file") {
-
                 public void actionPerformed(ActionEvent e) {
                     exportDocImage(imageData2);
                 }
             });
             picturePopMenu2.add(new AbstractAction("Remove image from DB") {
-
                 public void actionPerformed(ActionEvent e) {
                     noImage2();
                 }
@@ -618,25 +623,21 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         if (null == picturePopMenu3) {
             picturePopMenu3 = new JPopupMenu();
             picturePopMenu3.add(new AbstractAction("Open in window") {
-
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture3);
                 }
             });
             picturePopMenu3.add(new AbstractAction("Replace image") {
-
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile3();
                 }
             });
             picturePopMenu3.add(new AbstractAction("Save image to file") {
-
                 public void actionPerformed(ActionEvent e) {
                     exportDocImage(imageData3);
                 }
             });
             picturePopMenu3.add(new AbstractAction("Remove image from DB") {
-
                 public void actionPerformed(ActionEvent e) {
                     noImage3();
                 }
@@ -664,7 +665,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JButton getLoadPictureButton2() {
         JButton loadButton = new JButton("Choose picture...");
         loadButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile2();
             }
@@ -675,7 +675,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JButton getLoadPictureButton3() {
         JButton loadButton = new JButton("Choose picture...");
         loadButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile3();
             }
@@ -771,7 +770,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         picPanel2.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
         ed.addMouseListener(new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture2);
@@ -811,7 +809,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         picPanel3.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
         ed.addMouseListener(new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture3);
@@ -825,7 +822,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     private AbstractAction updateEndContract() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncEndContract();
@@ -848,7 +844,6 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     private ChangeListener startContractChangeListener() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 SpinnerModel dateModel = contractStartSP.getModel();

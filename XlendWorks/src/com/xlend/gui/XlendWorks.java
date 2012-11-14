@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.65.2";
+    public static final String version = "0.65.3";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -62,7 +62,7 @@ public class XlendWorks {
         while (true) {
             try {
                 exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
-                if (login(exchanger)) {
+                if (matchVersions(exchanger) && login(exchanger)) {
                     new DashBoard(exchanger);
                     break;
                 } else {
@@ -203,7 +203,7 @@ public class XlendWorks {
         employeesCache.clear();
         loadEmployees(exchanger);
     }
-    
+
     public static ArrayList<ComboItem> loadAllEmployees(IMessageSender exchanger) {
         if (employeesCache.isEmpty()) {
             ComboItem[] emps = loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
@@ -1022,6 +1022,20 @@ public class XlendWorks {
             }
         }
         return null;
+    }
+
+    private static boolean matchVersions(IMessageSender exchanger) {
+        try {
+            String servVersion = exchanger.getServerVersion();
+            boolean match = servVersion.equals(version);
+            if (!match) {
+                GeneralFrame.errMessageBox("Error:", "Client's software version ("+version+") doesn't match server ("+servVersion+")");
+            }
+            return match;
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return false;
     }
 
     public static String getEmployeeClockNumOnID(IMessageSender exchanger, Integer id) {

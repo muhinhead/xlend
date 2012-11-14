@@ -64,7 +64,7 @@ public class EditApp4LeavePanel extends RecordEditPanel {
         for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
             applicantCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "coalesce(wage_category,1)=1")) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
             approvedByCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -90,7 +90,7 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                 getGridPanel(new JComponent[]{approvedRB = new JRadioButton("Y"), notApprovedRB = new JRadioButton("No")}),
                 getBorderPanel(new JComponent[]{new JPanel(), new JLabel("Approved by:", SwingConstants.RIGHT),
                     comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel),
-                        //approvedLookupAction = new EmployeeLookupAction(approvedByCB, "COALESCE(wage_category,1)=1")
+                        //approvedLookupAction = new EmployeeLookupAction(approvedByCB, "management=1 and COALESCE(wage_category,1)=1")
                         approvedLookupAction = new ClercLookupAction(approvedByCB)
                     )})
             })

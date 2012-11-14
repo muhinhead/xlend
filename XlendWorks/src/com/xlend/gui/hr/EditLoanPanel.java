@@ -60,7 +60,7 @@ class EditLoanPanel extends RecordEditPanel {
 //            authorizedByCbModel.addElement(ci);
             representedByCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "coalesce(wage_category,1)=1")) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
             authorizedByCbModel.addElement(ci);
         }
 
@@ -92,7 +92,7 @@ class EditLoanPanel extends RecordEditPanel {
             }),
             getBorderPanel(new JComponent[]{
                 comboPanelWithLookupBtn(authorizedByCB = new JComboBox(authorizedByCbModel),
-                new EmployeeLookupAction(authorizedByCB, "coalesce(wage_category,1)=1")),
+                new EmployeeLookupAction(authorizedByCB, "management=1 and coalesce(wage_category,1)=1")),
                 new JPanel(),
                 getBorderPanel(new JComponent[]{
                     getGridPanel(new JComponent[]{lblDedStart = new JLabel(" Deduction start:", SwingConstants.RIGHT),

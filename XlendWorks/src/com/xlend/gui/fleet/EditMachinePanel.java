@@ -89,8 +89,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
             "Pay Start Date:", "Pay End Date:", "Assigned to site:"
         };
         labels = createLabelsArray(titles);
-        insurabceAmtSP = new SelectedNumberSpinner(0, 0, 100000, 10);
-        depositAmtSP = new SelectedNumberSpinner(0, 0, 100000, 10);
+        insurabceAmtSP = new SelectedNumberSpinner(0.0, 0.0, 10000000.0, 0.10);
+        depositAmtSP = new SelectedNumberSpinner(0.0, 0.0, 10000000.0, 0.10);
         contractFeeSP = new SelectedNumberSpinner(0, 0, 100000, 10);
         monthlyPaySP = new SelectedNumberSpinner(0, 0, 100000, 10);
         edits = new JComponent[]{
@@ -262,7 +262,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
         machine.setChassisNr(chassisNrField.getText());
         machine.setContractFee((Integer) contractFeeSP.getValue());
         setClassify(machine);
-        machine.setDepositAmt((Integer) depositAmtSP.getValue());
+        machine.setDepositAmt((Double) depositAmtSP.getValue());
         machine.setEngineNr(engineNrField.getText());
         if (!licensed) {
             machine.setExpdate(null);
@@ -270,7 +270,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             dt = (Date) expDateSP.getValue();
             machine.setExpdate(dt == null ? null : new java.sql.Date(dt.getTime()));
         }
-        machine.setInsuranceAmt((Integer) insurabceAmtSP.getValue());
+        machine.setInsuranceAmt((Double) insurabceAmtSP.getValue());
         machine.setInsuranceNr(insuranceNrField.getText());
         machine.setInsuranceTp((String) insuranceTypeCB.getSelectedItem());
         machine.setMonthlyPay((Integer) monthlyPaySP.getValue());

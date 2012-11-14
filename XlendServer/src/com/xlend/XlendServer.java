@@ -46,7 +46,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    public static final String version = "0.65.2";
+    private static final String version = "0.65.3";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -114,6 +114,13 @@ public class XlendServer {
                     "FTP upload failed", JOptionPane.WARNING_MESSAGE);
         }
         return ok;
+    }
+
+    /**
+     * @return the version
+     */
+    public static String getVersion() {
+        return version;
     }
 
     private static class CtrlCtrapper extends Thread {
@@ -294,20 +301,23 @@ public class XlendServer {
         String initialName = progname;
         String runCmd = progname;
         String[] extnesions = new String[]{"", ".exe"};
+        String[] drives = new String[]{"C:", "E:", "D:"};
         String[] paths = new String[]{"",
-            "C:\\Program Files\\MySQL\\MySQL Server 5.1\\bin\\",
-            "C:\\Program Files\\MySQL\\MySQL Server 5.2\\bin\\",
-            "C:\\Program Files\\MySQL\\MySQL Server 5.3\\bin\\",
-            "C:\\Program Files\\MySQL\\MySQL Server 5.4\\bin\\",
-            "C:\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\"
+            "\\Program Files\\MySQL\\MySQL Server 5.1\\bin\\",
+            "\\Program Files\\MySQL\\MySQL Server 5.2\\bin\\",
+            "\\Program Files\\MySQL\\MySQL Server 5.3\\bin\\",
+            "\\Program Files\\MySQL\\MySQL Server 5.4\\bin\\",
+            "\\Program Files\\MySQL\\MySQL Server 5.5\\bin\\"
         };
         Process p;
-        for (String path : paths) {
-            for (String extension : extnesions) {
-                try {
-                    p = Runtime.getRuntime().exec(progname = path + runCmd + extension);
-                    return progname;
-                } catch (Exception ex) {
+        for (String drv : drives) {
+            for (String path : paths) {
+                for (String extension : extnesions) {
+                    try {
+                        p = Runtime.getRuntime().exec(progname = drv + path + runCmd + extension);
+                        return progname;
+                    } catch (Exception ex) {
+                    }
                 }
             }
         }
@@ -404,7 +414,7 @@ public class XlendServer {
     }
 
     private static void showLog() {
-        new LogViewDialog(version, DbConnection.DB_VERSION);
+        new LogViewDialog(getVersion(), DbConnection.DB_VERSION);
     }
 
     public static void setWindowIcon(Window w, String iconName) {

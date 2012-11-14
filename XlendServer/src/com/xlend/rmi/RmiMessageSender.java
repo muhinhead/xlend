@@ -387,4 +387,8 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             }
         }
     }
+
+    public String getServerVersion() throws RemoteException {
+        return XlendServer.getVersion();
+    }
 }

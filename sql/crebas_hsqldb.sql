@@ -260,6 +260,7 @@ create cached table xemployee
     bank_account3     varchar(32),
     branch_code_name3 varchar(32),
     employment_start date,
+    management      bit default 0,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition
 );
@@ -390,8 +391,8 @@ create cached table xmachine
     classify        char(1),
     insurance_nr    varchar(32),
     insurance_tp    varchar(32),
-    insurance_amt   int,
-    deposit_amt     int,
+    insurance_amt   decimal(10,2),
+    deposit_amt     decimal(10,2),
     contract_fee    int,
     monthly_pay     int,
     paystart        date,

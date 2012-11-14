@@ -21,4 +21,5 @@ public interface IMessageSender extends java.rmi.Remote {
     public void startTransaction(String transactionName) throws java.rmi.RemoteException;
     public void commitTransaction() throws java.rmi.RemoteException;
     public void rollbackTransaction(String transactionName) throws java.rmi.RemoteException;
+    public String getServerVersion() throws java.rmi.RemoteException;
 }

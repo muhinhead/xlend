@@ -125,9 +125,9 @@ public class Selects {
             + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
             + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
             + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"Now on site\" "
-            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
-            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
-            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
+//            + ",(select max(concat(m.classify,m.tmvnr)) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+//            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+//            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where xemployee_id>0 "
             + "order by extractnum(clock_num),clock_num";

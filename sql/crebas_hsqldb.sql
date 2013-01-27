@@ -428,6 +428,7 @@ create cached table xwage
     overtime       double,
     doubletime     double,
     stoppeddetails varchar(128),
+    tsnum          int, 
     constraint xwage_pk primary key (xwage_id),
     constraint xwage_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet on delete cascade
 );
@@ -509,6 +510,7 @@ create cached table xorderitem
     priceperone       decimal(10,2) not null,    
     xmachtype_id      int,
     totalvalue        decimal(10,2),
+    description       varchar(255),
     constraint xorderitem_pk primary key (xorderitem_id),
     constraint xoreritem_xorder_fk foreign key (xorder_id) references xorder on delete cascade,
     constraint xorderitem_xmachtype_fk foreign key (xmachtype_id) references xmachtype
@@ -1454,6 +1456,60 @@ create table xaddstocks
     constraint xaddstocks_xparts_fk foreign key (xparts_id) references xparts (xparts_id) on delete cascade,
     constraint xaddstocks_xemployee_fk foreign key (enteredby_id) references xemployee (xemployee_id),
     constraint xaddstocks_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
+);
+
+create table xppetype
+(
+    xppetype_id    int not null auto_increment,
+    xppetype       varchar(64) not null,
+    stocklevel     int not null default 0,
+    constraint xppetype_pk primary key (xppetype_id)
+);
+
+create table xppebuy
+(
+    xppebuy_id      int not null auto_increment,
+    buydate         date not null,
+    boughtby_id     int not null,
+    xsupplier_id    int not null,
+    authorizedby_id int not null,
+    constraint xppebuy_pk primary key (xppebuy_id),
+    constraint xppebuy_xemployee_fk foreign key (boughtby_id) references xemployee (xemployee_id),
+    constraint xppebuy_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),
+    constraint xppebuy_xemployee_fk2 foreign key (authorizedby_id) references xemployee (xemployee_id)
+);
+
+create table xppebuyitem
+(
+    xppebuyitem_id  int not null auto_increment,
+    xppebuy_id      int not null,
+    quantity        int not null,
+    constraint xppebuyitem_pk primary key (xppebuyitem_id),
+    constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id)
+);
+
+create table xppeissue
+(
+    xppeissue_id    int not null auto_increment,
+    issuedate       date not null,
+    issuedby_id     int not null,
+    issuedto_id     int not null,
+    authorizedby_id int not null,
+    constraint xppeissue_pk primary key (xppeissue_id),
+    constraint xppeissue_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),
+    constraint xppeissue_xemployee_fk2 foreign key (issuedto_id) references xemployee (xemployee_id),
+    constraint xppeissue_xemployee_fk3 foreign key (authorizedby_id) references xemployee (xemployee_id)
+);
+
+create table xppeissueitem
+(
+    xppeissueitem_id int not null auto_increment,
+    xppeissue_id     int not null,
+    xppetype_id     int not null,
+    quantity        int not null,
+    constraint xppeissueitem_pk primary key (xppeissueitem_id),
+    constraint xppeissueitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),
+    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)
 );
 
 ----------------- auxiliary tables -------------------

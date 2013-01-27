@@ -47,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.65.3";
+    public static final String version = "0.66";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -72,6 +72,8 @@ public class XlendWorks {
                 logAndShowMessage(ex);
                 if ((serverIP = serverSetup("Check server settings")) == null) {
                     System.exit(1);
+                } else {
+                    DashBoard.saveProps();
                 }
             }
         }
@@ -721,6 +723,18 @@ public class XlendWorks {
         return true;
     }
 
+    public static boolean isXPPEtypeUsed(IMessageSender exchanger, Integer xppetypeID) {
+        try {
+            Vector[] tab = exchanger.getTableBody("select xppebuyitem_id from xppebuyitem where xppetype_id="
+                    + xppetypeID + " union select xppeissueitem_id from xppeissueitem where xppetype_id=" + xppetypeID);
+            Vector rows = tab[1];
+            return rows.size() > 0;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return true;
+    }
+
     public static boolean existsEmployeeWithWageCategory(IMessageSender exchanger, Integer wageCatID) {
         try {
             Vector[] tab = exchanger.getTableBody(
@@ -1029,7 +1043,7 @@ public class XlendWorks {
             String servVersion = exchanger.getServerVersion();
             boolean match = servVersion.equals(version);
             if (!match) {
-                GeneralFrame.errMessageBox("Error:", "Client's software version ("+version+") doesn't match server ("+servVersion+")");
+                GeneralFrame.errMessageBox("Error:", "Client's software version (" + version + ") doesn't match server (" + servVersion + ")");
             }
             return match;
         } catch (RemoteException ex) {

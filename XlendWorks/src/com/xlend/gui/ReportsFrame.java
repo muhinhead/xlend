@@ -1,13 +1,10 @@
 package com.xlend.gui;
 
 import com.xlend.gui.reports.EmployeeReportPanel;
+import com.xlend.gui.reports.LoansReport;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
-import com.xlend.util.PopupDialog;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
@@ -23,10 +20,12 @@ public class ReportsFrame extends GeneralFrame {
 
     private JComponent selectedTab;
     private static String[] sheetList = new String[]{
-        "Creditor Age Analysis", "Employee Summary"
+        "Creditor Age Analysis", "Employee Summary", 
+        "Loans Report", "Incidents Report"
     };
     private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
     private EmployeeReportPanel employeePanel;
+    private LoansReport loansPanel;
     private MyJideTabbedPane reportsTab;
 
     public ReportsFrame(IMessageSender exch) {
@@ -53,6 +52,13 @@ public class ReportsFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUser(sheets()[1]) && ReportsMenuDialog.isCheckedReport(sheets()[1])) {
             reportsTab.addTab(getEmployeePanel(), sheets()[1]);
         }
+        if (XlendWorks.availableForCurrentUser(sheets()[2]) && ReportsMenuDialog.isCheckedReport(sheets()[2])) {
+            reportsTab.addTab(getLoansPanel(), sheets()[2]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[3])) {
+            //reportsTab.addTab(getLoansPanel(), sheets()[3]);
+            GeneralFrame.errMessageBox("!!!", "HERE!");
+        }
         reportsTab.addChangeListener(new ChangeListener() {
 
             @Override
@@ -77,6 +83,13 @@ public class ReportsFrame extends GeneralFrame {
         return employeePanel;
     }
 
+    private JComponent getLoansPanel() {
+        if (loansPanel == null) {
+            registerGrid(loansPanel = new LoansReport(getExchanger()));
+        }
+        return loansPanel;
+    }
+    
     @Override
     protected ActionListener getPrintAction() {
         return new AbstractAction() {
@@ -99,4 +112,5 @@ public class ReportsFrame extends GeneralFrame {
             }
         };
     }
+
 }

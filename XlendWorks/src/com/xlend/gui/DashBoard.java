@@ -422,7 +422,8 @@ public class DashBoard extends AbstractDashBoard {
                         "-----------------------");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            XlendWorks.logAndShowMessage(e);
         }
     }
 

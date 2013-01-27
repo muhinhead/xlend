@@ -209,6 +209,7 @@ public class EditOrderPanel extends RecordEditPanel {
                 java.util.Date dt = (java.util.Date) ordDate.getValue();
                 xorder.setOrderdate(new Date(dt.getTime()));
                 xorder.setContactname(contactName.getText());
+                xorder.setContactphone(contactPhone.getText());
                 xorder.setContactfax(contactFax.getText());
                 xorder.setDeliveryaddress(deliveryAddress.getText());
                 xorder.setInvoiceaddress(invoiceAddress.getText());

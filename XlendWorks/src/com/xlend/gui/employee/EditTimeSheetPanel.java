@@ -26,6 +26,7 @@ import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -90,6 +91,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private JSpinner satDeductSp;
     private JSpinner sunDeductSp;
     private JSpinner[] sps;
+    private JSpinner[] tsNumSps;
     private JTextField[] detailsFlds;
     private Xwage[] dayWages;
     private AbstractAction ordLookupAction;
@@ -99,6 +101,13 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private ChangeListener deductListener;
 //    private Double[] prevDeduct;
     private JLabel[] daysLabels;
+    private JSpinner monTsNum;
+    private JSpinner tueTsNum;
+    private JSpinner wedTsNum;
+    private JSpinner thuTsNum;
+    private JSpinner friTsNum;
+    private JSpinner satTsNum;
+    private JSpinner sunTsNum;
     private String[] days;
     private String[] headers;
 
@@ -149,6 +158,15 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             sunOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             sunDoubleSp = new SelectedNumberSpinner(0, 0, 12, 0.5), //            sunDeductSp = new SelectedNumberSpinner(0, 0, 24, 0.5),
         };
+        tsNumSps = new JSpinner[]{
+            monTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            tueTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            wedTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            thuTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            friTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            satTsNum = new SelectedNumberSpinner(0, 0, 99999, 1),
+            sunTsNum = new SelectedNumberSpinner(0, 0, 99999, 1)
+        };
         detailsFlds = new JTextField[]{
             monDetails = new JTextField(40),
             tueDetails = new JTextField(40),
@@ -182,7 +200,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         edits = new JComponent[]{
             idField = new JTextField(),
             employeeRefBox = new JComboBox(employeeCbModel),
-            comboPanelWithLookupBtn(machineBox = new JComboBox(machineCbModel),new MachineLookupAction(machineBox,null)),
+            comboPanelWithLookupBtn(machineBox = new JComboBox(machineCbModel), new MachineLookupAction(machineBox, null)),
             getGridPanel(weekendSp = new SelectedDateSpinner(), 3),
             siteRefBox = new JComboBox(siteCbModel),
             orderRefBox = new JComboBox(orderCbModel),
@@ -245,13 +263,30 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         JPanel centralPanel = new JPanel(new GridLayout(8, 3));
         uppanel.add(centralPanel, BorderLayout.CENTER);
 
-        JPanel rightPanel = new JPanel(new GridLayout(8, 1));
-        uppanel.add(rightPanel, BorderLayout.EAST);
+//        JPanel rightPanel = new JPanel(new GridLayout(8, 1));
+//        uppanel.add(rightPanel, BorderLayout.EAST);
+//
+//        rightPanel.add(new JLabel("Details"));
+//        rightPanel.add(new JLabel("TimeSheet No"));
+//        for (JTextField tf : detailsFlds) {
+//            rightPanel.add(tf);
+//            rightPanel.add(new JPanel());
+//        }
 
-        rightPanel.add(new JLabel("Details"));
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        uppanel.add(rightPanel, BorderLayout.EAST);
+        JPanel westPanel = new JPanel(new GridLayout(8, 1));
+        JPanel centerPanel = new JPanel(new GridLayout(8, 1));
+        rightPanel.add(westPanel, BorderLayout.WEST);
+        rightPanel.add(centerPanel, BorderLayout.CENTER);
+        westPanel.add(new JLabel("Details", SwingConstants.CENTER));
+        centerPanel.add(new JLabel("TimeSheet No"));
+        int r = 0;
         for (JTextField tf : detailsFlds) {
-            rightPanel.add(tf);
+            westPanel.add(tf);
+            centerPanel.add(tsNumSps[r++]);
         }
+
 
         leftPanel.add(new JPanel());
         for (int l = 0; l < days.length; l++) {
@@ -297,6 +332,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     sps[i * 3 + 2].setValue(w.getDoubletime());
 //                    sps[i * 4 + 3].setValue(w.getDeduction());
                     detailsFlds[i].setText(w.getStoppeddetails());
+                    tsNumSps[i].setValue(w.getTsnum());
                     i++;
                 }
             } catch (RemoteException ex) {
@@ -358,6 +394,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     dayWages[d].setDoubletime(dbl = (Double) sps[d * 3 + 2].getValue());
 //                    dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
                     dayWages[d].setStoppeddetails(detailsFlds[d].getText());
+                    dayWages[d].setTsnum((Integer)tsNumSps[d].getValue());
                     if (norm + over + dbl > 24) {
                         GeneralFrame.errMessageBox("Error:", "Total day time exceeds 24h!");
                         ((JSpinner.DefaultEditor) sps[d * 4].getEditor()).getTextField().requestFocus();
@@ -492,7 +529,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
 //            }
 //        };
 //    }
-
     private void shiftDayLabels() {
         Date weekend = (Date) weekendSp.getValue();
         int d = weekend.getDay();

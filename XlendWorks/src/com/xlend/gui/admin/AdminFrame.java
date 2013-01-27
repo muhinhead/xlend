@@ -28,6 +28,7 @@ public class AdminFrame extends GeneralFrame {
     private WageCategoryGrid wageCategoryPanel;
     private RatedMachinesGrid ratedMachinesPanel;
     private SiteTypeGrid siteTypePanel;
+    private PPEtypeGrid ppeTypePanel;
 
     public AdminFrame(IMessageSender exch) {
         super("Admin Console", exch);
@@ -69,6 +70,7 @@ public class AdminFrame extends GeneralFrame {
                 registerGrid(wageCategoryPanel = new WageCategoryGrid(getExchanger()));
                 registerGrid(ratedMachinesPanel = new RatedMachinesGrid(getExchanger()));
                 registerGrid(siteTypePanel = new SiteTypeGrid(getExchanger()));
+                registerGrid(ppeTypePanel = new PPEtypeGrid(getExchanger()));
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
@@ -85,6 +87,7 @@ public class AdminFrame extends GeneralFrame {
             dictionaryPanel.addTab("Wage Category", wageCategoryPanel);
             dictionaryPanel.addTab("Rated Machines", ratedMachinesPanel);
             dictionaryPanel.addTab("Site Types", siteTypePanel);
+            dictionaryPanel.addTab("PPE Types", ppeTypePanel);
 
             final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
             SwingUtilities.invokeLater(new Runnable() {

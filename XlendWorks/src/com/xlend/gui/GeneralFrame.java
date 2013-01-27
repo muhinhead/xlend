@@ -189,7 +189,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         if (selectedPanel instanceof GeneralGridPanel) {
             GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
             try {
-                RowFilter<MyTableModel, Object> rf = RowFilter.regexFilter(srcField.getText());
+                RowFilter<MyTableModel, Object> rf = RowFilter.regexFilter("(?i)"+srcField.getText());
                 selectedGridPanel.getTableView().getSorter().setRowFilter(rf);
             } catch (Exception ex) {
                 XlendWorks.log(ex);

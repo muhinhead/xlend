@@ -13,11 +13,14 @@ import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.GridLayout;
 import java.sql.Date;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -39,6 +42,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
     private JComboBox measureItemCB;
     private JSpinner priceOneSpin;
     private JSpinner totalValSpin;
+    private JTextArea descriptionField;
     private Xorder xorder;
 
     public EditOrderItemPanel(DbObject dbObject) {
@@ -60,14 +64,14 @@ public class EditOrderItemPanel extends RecordEditPanel {
         };
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
-            itemNumberField = new JTextField(),
-            machineTypeCB = new JComboBox(machineTypeCbModel),
-            requiredDateSpin = new SelectedDateSpinner(),
-            deliverDateSpin = new SelectedDateSpinner(),
-            quantitySpin = new JSpinner(new SpinnerNumberModel()),
-            measureItemCB = new JComboBox(new String[]{"HRS", "RANDS"}),
-            priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),
-            totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1)
+            getGridPanel(itemNumberField = new JTextField(),3),
+            getGridPanel(machineTypeCB = new JComboBox(machineTypeCbModel),2),
+            getGridPanel(requiredDateSpin = new SelectedDateSpinner(),3),
+            getGridPanel(deliverDateSpin = new SelectedDateSpinner(),3),
+            getGridPanel(quantitySpin = new JSpinner(new SpinnerNumberModel()),3),
+            getGridPanel(measureItemCB = new JComboBox(new String[]{"HRS", "RANDS", "EACH"}),2),
+            getGridPanel(priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),3),
+            getGridPanel(totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),3)
         };
         totalValSpin.setEnabled(false);
         requiredDateSpin.setEditor(new JSpinner.DateEditor(requiredDateSpin, "dd/MM/yyyy"));
@@ -95,6 +99,9 @@ public class EditOrderItemPanel extends RecordEditPanel {
         for (int i = 1; i < edits.length; i++) {
             editPanel.add(edits[i]);
         }
+        JScrollPane sb;
+        add(sb = new JScrollPane(descriptionField = new JTextArea(5, 15)));
+        sb.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Comments"));
     }
 
     @Override
@@ -116,6 +123,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             measureItemCB.setSelectedItem(xorditem.getMeasureitem());
             priceOneSpin.setValue(xorditem.getPriceperone());
             totalValSpin.setValue(xorditem.getTotalvalue());
+            descriptionField.setText(xorditem.getDescription());
         }
     }
 
@@ -145,7 +153,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             xorditem.setMeasureitem((String) measureItemCB.getSelectedItem());
             xorditem.setPriceperone((Double) priceOneSpin.getValue());
             xorditem.setTotalvalue((Double) totalValSpin.getValue());
-
+            xorditem.setDescription(descriptionField.getText());
             DbObject saved = DashBoard.getExchanger().saveDbObject(xorditem);
             setDbObject(saved);
             return true;

@@ -8,44 +8,44 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xsalary extends DbObject  {
+public class Xppeissueitem extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xsalaryId = null;
-    private Integer xsalarylistId = null;
-    private Integer xemployeeId = null;
-    private Double amount = null;
+    private Integer xppeissueitemId = null;
+    private Integer xppeissueId = null;
+    private Integer xppetypeId = null;
+    private Integer quantity = null;
 
-    public Xsalary(Connection connection) {
-        super(connection, "xsalary", "xsalary_id");
-        setColumnNames(new String[]{"xsalary_id", "xsalarylist_id", "xemployee_id", "amount"});
+    public Xppeissueitem(Connection connection) {
+        super(connection, "xppeissueitem", "xppeissueitem_id");
+        setColumnNames(new String[]{"xppeissueitem_id", "xppeissue_id", "xppetype_id", "quantity"});
     }
 
-    public Xsalary(Connection connection, Integer xsalaryId, Integer xsalarylistId, Integer xemployeeId, Double amount) {
-        super(connection, "xsalary", "xsalary_id");
-        setNew(xsalaryId.intValue() <= 0);
-//        if (xsalaryId.intValue() != 0) {
-            this.xsalaryId = xsalaryId;
+    public Xppeissueitem(Connection connection, Integer xppeissueitemId, Integer xppeissueId, Integer xppetypeId, Integer quantity) {
+        super(connection, "xppeissueitem", "xppeissueitem_id");
+        setNew(xppeissueitemId.intValue() <= 0);
+//        if (xppeissueitemId.intValue() != 0) {
+            this.xppeissueitemId = xppeissueitemId;
 //        }
-        this.xsalarylistId = xsalarylistId;
-        this.xemployeeId = xemployeeId;
-        this.amount = amount;
+        this.xppeissueId = xppeissueId;
+        this.xppetypeId = xppetypeId;
+        this.quantity = quantity;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xsalary xsalary = null;
+        Xppeissueitem xppeissueitem = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsalary_id,xsalarylist_id,xemployee_id,amount FROM xsalary WHERE xsalary_id=" + id;
+        String stmt = "SELECT xppeissueitem_id,xppeissue_id,xppetype_id,quantity FROM xppeissueitem WHERE xppeissueitem_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xsalary = new Xsalary(getConnection());
-                xsalary.setXsalaryId(new Integer(rs.getInt(1)));
-                xsalary.setXsalarylistId(new Integer(rs.getInt(2)));
-                xsalary.setXemployeeId(new Integer(rs.getInt(3)));
-                xsalary.setAmount(rs.getDouble(4));
-                xsalary.setNew(false);
+                xppeissueitem = new Xppeissueitem(getConnection());
+                xppeissueitem.setXppeissueitemId(new Integer(rs.getInt(1)));
+                xppeissueitem.setXppeissueId(new Integer(rs.getInt(2)));
+                xppeissueitem.setXppetypeId(new Integer(rs.getInt(3)));
+                xppeissueitem.setQuantity(new Integer(rs.getInt(4)));
+                xppeissueitem.setNew(false);
             }
         } finally {
             try {
@@ -54,7 +54,7 @@ public class Xsalary extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xsalary;
+        return xppeissueitem;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -63,28 +63,28 @@ public class Xsalary extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xsalary ("+(getXsalaryId().intValue()!=0?"xsalary_id,":"")+"xsalarylist_id,xemployee_id,amount) values("+(getXsalaryId().intValue()!=0?"?,":"")+"?,?,?)";
+                "INSERT INTO xppeissueitem ("+(getXppeissueitemId().intValue()!=0?"xppeissueitem_id,":"")+"xppeissue_id,xppetype_id,quantity) values("+(getXppeissueitemId().intValue()!=0?"?,":"")+"?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXsalaryId().intValue()!=0) {
-                 ps.setObject(++n, getXsalaryId());
+             if (getXppeissueitemId().intValue()!=0) {
+                 ps.setObject(++n, getXppeissueitemId());
              }
-             ps.setObject(++n, getXsalarylistId());
-             ps.setObject(++n, getXemployeeId());
-             ps.setObject(++n, getAmount());
+             ps.setObject(++n, getXppeissueId());
+             ps.setObject(++n, getXppetypeId());
+             ps.setObject(++n, getQuantity());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXsalaryId().intValue()==0) {
-             stmt = "SELECT max(xsalary_id) FROM xsalary";
+         if (getXppeissueitemId().intValue()==0) {
+             stmt = "SELECT max(xppeissueitem_id) FROM xppeissueitem";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXsalaryId(new Integer(rs.getInt(1)));
+                     setXppeissueitemId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -110,14 +110,14 @@ public class Xsalary extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xsalary " +
-                    "SET xsalarylist_id = ?, xemployee_id = ?, amount = ?" + 
-                    " WHERE xsalary_id = " + getXsalaryId();
+                    "UPDATE xppeissueitem " +
+                    "SET xppeissue_id = ?, xppetype_id = ?, quantity = ?" + 
+                    " WHERE xppeissueitem_id = " + getXppeissueitemId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXsalarylistId());
-                ps.setObject(2, getXemployeeId());
-                ps.setObject(3, getAmount());
+                ps.setObject(1, getXppeissueId());
+                ps.setObject(2, getXppetypeId());
+                ps.setObject(3, getQuantity());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -135,29 +135,29 @@ public class Xsalary extends DbObject  {
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xsalary " +
-                "WHERE xsalary_id = " + getXsalaryId();
+                "DELETE FROM xppeissueitem " +
+                "WHERE xppeissueitem_id = " + getXppeissueitemId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXsalaryId(new Integer(-getXsalaryId().intValue()));
+        setXppeissueitemId(new Integer(-getXppeissueitemId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXsalaryId().intValue() < 0);
+        return (getXppeissueitemId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsalary_id,xsalarylist_id,xemployee_id,amount FROM xsalary " +
+        String stmt = "SELECT xppeissueitem_id,xppeissue_id,xppetype_id,quantity FROM xppeissueitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -167,7 +167,7 @@ public class Xsalary extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xsalary(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),rs.getDouble(4)));
+                lst.add(dbObj=new Xppeissueitem(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),new Integer(rs.getInt(4))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -177,10 +177,10 @@ public class Xsalary extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xsalary[] objects = new Xsalary[lst.size()];
+        Xppeissueitem[] objects = new Xppeissueitem[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xsalary xsalary = (Xsalary) lst.get(i);
-            objects[i] = xsalary;
+            Xppeissueitem xppeissueitem = (Xppeissueitem) lst.get(i);
+            objects[i] = xppeissueitem;
         }
         return objects;
     }
@@ -192,7 +192,7 @@ public class Xsalary extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xsalary_id FROM xsalary " +
+        String stmt = "SELECT xppeissueitem_id FROM xppeissueitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -210,67 +210,67 @@ public class Xsalary extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXsalaryId() + getDelimiter();
+    //    return getXppeissueitemId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xsalaryId;
+        return xppeissueitemId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXsalaryId(id);
+        setXppeissueitemId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXsalaryId() {
-        return xsalaryId;
+    public Integer getXppeissueitemId() {
+        return xppeissueitemId;
     }
 
-    public void setXsalaryId(Integer xsalaryId) throws ForeignKeyViolationException {
-        setWasChanged(this.xsalaryId != null && this.xsalaryId != xsalaryId);
-        this.xsalaryId = xsalaryId;
-        setNew(xsalaryId.intValue() == 0);
+    public void setXppeissueitemId(Integer xppeissueitemId) throws ForeignKeyViolationException {
+        setWasChanged(this.xppeissueitemId != null && this.xppeissueitemId != xppeissueitemId);
+        this.xppeissueitemId = xppeissueitemId;
+        setNew(xppeissueitemId.intValue() == 0);
     }
 
-    public Integer getXsalarylistId() {
-        return xsalarylistId;
+    public Integer getXppeissueId() {
+        return xppeissueId;
     }
 
-    public void setXsalarylistId(Integer xsalarylistId) throws SQLException, ForeignKeyViolationException {
-        if (xsalarylistId!=null && !Xsalarylist.exists(getConnection(),"xsalarylist_id = " + xsalarylistId)) {
-            throw new ForeignKeyViolationException("Can't set xsalarylist_id, foreign key violation: xsalary_xsalarylist_fk");
+    public void setXppeissueId(Integer xppeissueId) throws SQLException, ForeignKeyViolationException {
+        if (xppeissueId!=null && !Xppeissue.exists(getConnection(),"xppeissue_id = " + xppeissueId)) {
+            throw new ForeignKeyViolationException("Can't set xppeissue_id, foreign key violation: xppeissueitem_xppeissue_fk");
         }
-        setWasChanged(this.xsalarylistId != null && !this.xsalarylistId.equals(xsalarylistId));
-        this.xsalarylistId = xsalarylistId;
+        setWasChanged(this.xppeissueId != null && !this.xppeissueId.equals(xppeissueId));
+        this.xppeissueId = xppeissueId;
     }
 
-    public Integer getXemployeeId() {
-        return xemployeeId;
+    public Integer getXppetypeId() {
+        return xppetypeId;
     }
 
-    public void setXemployeeId(Integer xemployeeId) throws SQLException, ForeignKeyViolationException {
-        if (xemployeeId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + xemployeeId)) {
-            throw new ForeignKeyViolationException("Can't set xemployee_id, foreign key violation: xsalary_xemployee_fk");
+    public void setXppetypeId(Integer xppetypeId) throws SQLException, ForeignKeyViolationException {
+        if (xppetypeId!=null && !Xppetype.exists(getConnection(),"xppetype_id = " + xppetypeId)) {
+            throw new ForeignKeyViolationException("Can't set xppetype_id, foreign key violation: xppeissueitem_xppetype_fk");
         }
-        setWasChanged(this.xemployeeId != null && !this.xemployeeId.equals(xemployeeId));
-        this.xemployeeId = xemployeeId;
+        setWasChanged(this.xppetypeId != null && !this.xppetypeId.equals(xppetypeId));
+        this.xppetypeId = xppetypeId;
     }
 
-    public Double getAmount() {
-        return amount;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(Double amount) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.amount != null && !this.amount.equals(amount));
-        this.amount = amount;
+    public void setQuantity(Integer quantity) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.quantity != null && !this.quantity.equals(quantity));
+        this.quantity = quantity;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[4];
-        columnValues[0] = getXsalaryId();
-        columnValues[1] = getXsalarylistId();
-        columnValues[2] = getXemployeeId();
-        columnValues[3] = getAmount();
+        columnValues[0] = getXppeissueitemId();
+        columnValues[1] = getXppeissueId();
+        columnValues[2] = getXppetypeId();
+        columnValues[3] = getQuantity();
         return columnValues;
     }
 
@@ -287,24 +287,24 @@ public class Xsalary extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXsalaryId(Integer.parseInt(flds[0]));
+            setXppeissueitemId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXsalaryId(null);
+            setXppeissueitemId(null);
         }
         try {
-            setXsalarylistId(Integer.parseInt(flds[1]));
+            setXppeissueId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setXsalarylistId(null);
+            setXppeissueId(null);
         }
         try {
-            setXemployeeId(Integer.parseInt(flds[2]));
+            setXppetypeId(Integer.parseInt(flds[2]));
         } catch(NumberFormatException ne) {
-            setXemployeeId(null);
+            setXppetypeId(null);
         }
         try {
-            setAmount(Double.parseDouble(flds[3]));
+            setQuantity(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
-            setAmount(null);
+            setQuantity(null);
         }
     }
 }

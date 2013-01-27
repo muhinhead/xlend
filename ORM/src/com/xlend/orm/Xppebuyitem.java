@@ -8,38 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xwagesum extends DbObject  {
+public class Xppebuyitem extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xwagesumId = null;
-    private Date weekend = null;
+    private Integer xppebuyitemId = null;
+    private Integer xppebuyId = null;
+    private Integer quantity = null;
 
-    public Xwagesum(Connection connection) {
-        super(connection, "xwagesum", "xwagesum_id");
-        setColumnNames(new String[]{"xwagesum_id", "weekend"});
+    public Xppebuyitem(Connection connection) {
+        super(connection, "xppebuyitem", "xppebuyitem_id");
+        setColumnNames(new String[]{"xppebuyitem_id", "xppebuy_id", "quantity"});
     }
 
-    public Xwagesum(Connection connection, Integer xwagesumId, Date weekend) {
-        super(connection, "xwagesum", "xwagesum_id");
-        setNew(xwagesumId.intValue() <= 0);
-//        if (xwagesumId.intValue() != 0) {
-            this.xwagesumId = xwagesumId;
+    public Xppebuyitem(Connection connection, Integer xppebuyitemId, Integer xppebuyId, Integer quantity) {
+        super(connection, "xppebuyitem", "xppebuyitem_id");
+        setNew(xppebuyitemId.intValue() <= 0);
+//        if (xppebuyitemId.intValue() != 0) {
+            this.xppebuyitemId = xppebuyitemId;
 //        }
-        this.weekend = weekend;
+        this.xppebuyId = xppebuyId;
+        this.quantity = quantity;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xwagesum xwagesum = null;
+        Xppebuyitem xppebuyitem = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum WHERE xwagesum_id=" + id;
+        String stmt = "SELECT xppebuyitem_id,xppebuy_id,quantity FROM xppebuyitem WHERE xppebuyitem_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xwagesum = new Xwagesum(getConnection());
-                xwagesum.setXwagesumId(new Integer(rs.getInt(1)));
-                xwagesum.setWeekend(rs.getDate(2));
-                xwagesum.setNew(false);
+                xppebuyitem = new Xppebuyitem(getConnection());
+                xppebuyitem.setXppebuyitemId(new Integer(rs.getInt(1)));
+                xppebuyitem.setXppebuyId(new Integer(rs.getInt(2)));
+                xppebuyitem.setQuantity(new Integer(rs.getInt(3)));
+                xppebuyitem.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +51,7 @@ public class Xwagesum extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xwagesum;
+        return xppebuyitem;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +60,27 @@ public class Xwagesum extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xwagesum ("+(getXwagesumId().intValue()!=0?"xwagesum_id,":"")+"weekend) values("+(getXwagesumId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xppebuyitem ("+(getXppebuyitemId().intValue()!=0?"xppebuyitem_id,":"")+"xppebuy_id,quantity) values("+(getXppebuyitemId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXwagesumId().intValue()!=0) {
-                 ps.setObject(++n, getXwagesumId());
+             if (getXppebuyitemId().intValue()!=0) {
+                 ps.setObject(++n, getXppebuyitemId());
              }
-             ps.setObject(++n, getWeekend());
+             ps.setObject(++n, getXppebuyId());
+             ps.setObject(++n, getQuantity());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXwagesumId().intValue()==0) {
-             stmt = "SELECT max(xwagesum_id) FROM xwagesum";
+         if (getXppebuyitemId().intValue()==0) {
+             stmt = "SELECT max(xppebuyitem_id) FROM xppebuyitem";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXwagesumId(new Integer(rs.getInt(1)));
+                     setXppebuyitemId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +106,13 @@ public class Xwagesum extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xwagesum " +
-                    "SET weekend = ?" + 
-                    " WHERE xwagesum_id = " + getXwagesumId();
+                    "UPDATE xppebuyitem " +
+                    "SET xppebuy_id = ?, quantity = ?" + 
+                    " WHERE xppebuyitem_id = " + getXppebuyitemId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getWeekend());
+                ps.setObject(1, getXppebuyId());
+                ps.setObject(2, getQuantity());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -123,38 +128,31 @@ public class Xwagesum extends DbObject  {
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from xwagesumitem
-            Xwagesumitem[] records = (Xwagesumitem[])Xwagesumitem.load(getConnection(),"xwagesum_id = " + getXwagesumId(),null);
-            for (int i = 0; i<records.length; i++) {
-                Xwagesumitem xwagesumitem = records[i];
-                xwagesumitem.delete();
-            }
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xwagesum " +
-                "WHERE xwagesum_id = " + getXwagesumId();
+                "DELETE FROM xppebuyitem " +
+                "WHERE xppebuyitem_id = " + getXppebuyitemId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXwagesumId(new Integer(-getXwagesumId().intValue()));
+        setXppebuyitemId(new Integer(-getXppebuyitemId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXwagesumId().intValue() < 0);
+        return (getXppebuyitemId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum " +
+        String stmt = "SELECT xppebuyitem_id,xppebuy_id,quantity FROM xppebuyitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -164,7 +162,7 @@ public class Xwagesum extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xwagesum(con,new Integer(rs.getInt(1)),rs.getDate(2)));
+                lst.add(dbObj=new Xppebuyitem(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -174,10 +172,10 @@ public class Xwagesum extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xwagesum[] objects = new Xwagesum[lst.size()];
+        Xppebuyitem[] objects = new Xppebuyitem[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xwagesum xwagesum = (Xwagesum) lst.get(i);
-            objects[i] = xwagesum;
+            Xppebuyitem xppebuyitem = (Xppebuyitem) lst.get(i);
+            objects[i] = xppebuyitem;
         }
         return objects;
     }
@@ -189,7 +187,7 @@ public class Xwagesum extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id FROM xwagesum " +
+        String stmt = "SELECT xppebuyitem_id FROM xppebuyitem " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -207,41 +205,54 @@ public class Xwagesum extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXwagesumId() + getDelimiter();
+    //    return getXppebuyitemId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xwagesumId;
+        return xppebuyitemId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXwagesumId(id);
+        setXppebuyitemId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXwagesumId() {
-        return xwagesumId;
+    public Integer getXppebuyitemId() {
+        return xppebuyitemId;
     }
 
-    public void setXwagesumId(Integer xwagesumId) throws ForeignKeyViolationException {
-        setWasChanged(this.xwagesumId != null && this.xwagesumId != xwagesumId);
-        this.xwagesumId = xwagesumId;
-        setNew(xwagesumId.intValue() == 0);
+    public void setXppebuyitemId(Integer xppebuyitemId) throws ForeignKeyViolationException {
+        setWasChanged(this.xppebuyitemId != null && this.xppebuyitemId != xppebuyitemId);
+        this.xppebuyitemId = xppebuyitemId;
+        setNew(xppebuyitemId.intValue() == 0);
     }
 
-    public Date getWeekend() {
-        return weekend;
+    public Integer getXppebuyId() {
+        return xppebuyId;
     }
 
-    public void setWeekend(Date weekend) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.weekend != null && !this.weekend.equals(weekend));
-        this.weekend = weekend;
+    public void setXppebuyId(Integer xppebuyId) throws SQLException, ForeignKeyViolationException {
+        if (xppebuyId!=null && !Xppebuy.exists(getConnection(),"xppebuy_id = " + xppebuyId)) {
+            throw new ForeignKeyViolationException("Can't set xppebuy_id, foreign key violation: xppebuyitem_xppeby_fk");
+        }
+        setWasChanged(this.xppebuyId != null && !this.xppebuyId.equals(xppebuyId));
+        this.xppebuyId = xppebuyId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.quantity != null && !this.quantity.equals(quantity));
+        this.quantity = quantity;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getXwagesumId();
-        columnValues[1] = getWeekend();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getXppebuyitemId();
+        columnValues[1] = getXppebuyId();
+        columnValues[2] = getQuantity();
         return columnValues;
     }
 
@@ -258,10 +269,19 @@ public class Xwagesum extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXwagesumId(Integer.parseInt(flds[0]));
+            setXppebuyitemId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXwagesumId(null);
+            setXppebuyitemId(null);
         }
-        setWeekend(toDate(flds[1]));
+        try {
+            setXppebuyId(Integer.parseInt(flds[1]));
+        } catch(NumberFormatException ne) {
+            setXppebuyId(null);
+        }
+        try {
+            setQuantity(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setQuantity(null);
+        }
     }
 }

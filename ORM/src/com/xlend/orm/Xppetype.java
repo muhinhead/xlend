@@ -8,38 +8,41 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xwagesum extends DbObject  {
+public class Xppetype extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xwagesumId = null;
-    private Date weekend = null;
+    private Integer xppetypeId = null;
+    private String xppetype = null;
+    private Integer stocklevel = null;
 
-    public Xwagesum(Connection connection) {
-        super(connection, "xwagesum", "xwagesum_id");
-        setColumnNames(new String[]{"xwagesum_id", "weekend"});
+    public Xppetype(Connection connection) {
+        super(connection, "xppetype", "xppetype_id");
+        setColumnNames(new String[]{"xppetype_id", "xppetype", "stocklevel"});
     }
 
-    public Xwagesum(Connection connection, Integer xwagesumId, Date weekend) {
-        super(connection, "xwagesum", "xwagesum_id");
-        setNew(xwagesumId.intValue() <= 0);
-//        if (xwagesumId.intValue() != 0) {
-            this.xwagesumId = xwagesumId;
+    public Xppetype(Connection connection, Integer xppetypeId, String xppetype, Integer stocklevel) {
+        super(connection, "xppetype", "xppetype_id");
+        setNew(xppetypeId.intValue() <= 0);
+//        if (xppetypeId.intValue() != 0) {
+            this.xppetypeId = xppetypeId;
 //        }
-        this.weekend = weekend;
+        this.xppetype = xppetype;
+        this.stocklevel = stocklevel;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xwagesum xwagesum = null;
+        Xppetype xppetype = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum WHERE xwagesum_id=" + id;
+        String stmt = "SELECT xppetype_id,xppetype,stocklevel FROM xppetype WHERE xppetype_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xwagesum = new Xwagesum(getConnection());
-                xwagesum.setXwagesumId(new Integer(rs.getInt(1)));
-                xwagesum.setWeekend(rs.getDate(2));
-                xwagesum.setNew(false);
+                xppetype = new Xppetype(getConnection());
+                xppetype.setXppetypeId(new Integer(rs.getInt(1)));
+                xppetype.setXppetype(rs.getString(2));
+                xppetype.setStocklevel(new Integer(rs.getInt(3)));
+                xppetype.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +51,7 @@ public class Xwagesum extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xwagesum;
+        return xppetype;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +60,27 @@ public class Xwagesum extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xwagesum ("+(getXwagesumId().intValue()!=0?"xwagesum_id,":"")+"weekend) values("+(getXwagesumId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xppetype ("+(getXppetypeId().intValue()!=0?"xppetype_id,":"")+"xppetype,stocklevel) values("+(getXppetypeId().intValue()!=0?"?,":"")+"?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXwagesumId().intValue()!=0) {
-                 ps.setObject(++n, getXwagesumId());
+             if (getXppetypeId().intValue()!=0) {
+                 ps.setObject(++n, getXppetypeId());
              }
-             ps.setObject(++n, getWeekend());
+             ps.setObject(++n, getXppetype());
+             ps.setObject(++n, getStocklevel());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXwagesumId().intValue()==0) {
-             stmt = "SELECT max(xwagesum_id) FROM xwagesum";
+         if (getXppetypeId().intValue()==0) {
+             stmt = "SELECT max(xppetype_id) FROM xppetype";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXwagesumId(new Integer(rs.getInt(1)));
+                     setXppetypeId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +106,13 @@ public class Xwagesum extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xwagesum " +
-                    "SET weekend = ?" + 
-                    " WHERE xwagesum_id = " + getXwagesumId();
+                    "UPDATE xppetype " +
+                    "SET xppetype = ?, stocklevel = ?" + 
+                    " WHERE xppetype_id = " + getXppetypeId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getWeekend());
+                ps.setObject(1, getXppetype());
+                ps.setObject(2, getStocklevel());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,41 +125,37 @@ public class Xwagesum extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
+        if (Xppeissueitem.exists(getConnection(),"xppetype_id = " + getXppetypeId())) {
+            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xppeissueitem_xppetype_fk");
+        }
         if (getTriggers() != null) {
             getTriggers().beforeDelete(this);
         }
-        {// delete cascade from xwagesumitem
-            Xwagesumitem[] records = (Xwagesumitem[])Xwagesumitem.load(getConnection(),"xwagesum_id = " + getXwagesumId(),null);
-            for (int i = 0; i<records.length; i++) {
-                Xwagesumitem xwagesumitem = records[i];
-                xwagesumitem.delete();
-            }
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xwagesum " +
-                "WHERE xwagesum_id = " + getXwagesumId();
+                "DELETE FROM xppetype " +
+                "WHERE xppetype_id = " + getXppetypeId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXwagesumId(new Integer(-getXwagesumId().intValue()));
+        setXppetypeId(new Integer(-getXppetypeId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXwagesumId().intValue() < 0);
+        return (getXppetypeId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id,weekend FROM xwagesum " +
+        String stmt = "SELECT xppetype_id,xppetype,stocklevel FROM xppetype " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -164,7 +165,7 @@ public class Xwagesum extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xwagesum(con,new Integer(rs.getInt(1)),rs.getDate(2)));
+                lst.add(dbObj=new Xppetype(con,new Integer(rs.getInt(1)),rs.getString(2),new Integer(rs.getInt(3))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -174,10 +175,10 @@ public class Xwagesum extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xwagesum[] objects = new Xwagesum[lst.size()];
+        Xppetype[] objects = new Xppetype[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xwagesum xwagesum = (Xwagesum) lst.get(i);
-            objects[i] = xwagesum;
+            Xppetype xppetype = (Xppetype) lst.get(i);
+            objects[i] = xppetype;
         }
         return objects;
     }
@@ -189,7 +190,7 @@ public class Xwagesum extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xwagesum_id FROM xwagesum " +
+        String stmt = "SELECT xppetype_id FROM xppetype " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -207,41 +208,51 @@ public class Xwagesum extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXwagesumId() + getDelimiter();
+    //    return getXppetypeId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xwagesumId;
+        return xppetypeId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXwagesumId(id);
+        setXppetypeId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXwagesumId() {
-        return xwagesumId;
+    public Integer getXppetypeId() {
+        return xppetypeId;
     }
 
-    public void setXwagesumId(Integer xwagesumId) throws ForeignKeyViolationException {
-        setWasChanged(this.xwagesumId != null && this.xwagesumId != xwagesumId);
-        this.xwagesumId = xwagesumId;
-        setNew(xwagesumId.intValue() == 0);
+    public void setXppetypeId(Integer xppetypeId) throws ForeignKeyViolationException {
+        setWasChanged(this.xppetypeId != null && this.xppetypeId != xppetypeId);
+        this.xppetypeId = xppetypeId;
+        setNew(xppetypeId.intValue() == 0);
     }
 
-    public Date getWeekend() {
-        return weekend;
+    public String getXppetype() {
+        return xppetype;
     }
 
-    public void setWeekend(Date weekend) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.weekend != null && !this.weekend.equals(weekend));
-        this.weekend = weekend;
+    public void setXppetype(String xppetype) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.xppetype != null && !this.xppetype.equals(xppetype));
+        this.xppetype = xppetype;
+    }
+
+    public Integer getStocklevel() {
+        return stocklevel;
+    }
+
+    public void setStocklevel(Integer stocklevel) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.stocklevel != null && !this.stocklevel.equals(stocklevel));
+        this.stocklevel = stocklevel;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getXwagesumId();
-        columnValues[1] = getWeekend();
+        Object[] columnValues = new Object[3];
+        columnValues[0] = getXppetypeId();
+        columnValues[1] = getXppetype();
+        columnValues[2] = getStocklevel();
         return columnValues;
     }
 
@@ -258,10 +269,15 @@ public class Xwagesum extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXwagesumId(Integer.parseInt(flds[0]));
+            setXppetypeId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXwagesumId(null);
+            setXppetypeId(null);
         }
-        setWeekend(toDate(flds[1]));
+        setXppetype(flds[1]);
+        try {
+            setStocklevel(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setStocklevel(null);
+        }
     }
 }

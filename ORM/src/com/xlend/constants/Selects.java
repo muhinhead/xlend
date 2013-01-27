@@ -464,6 +464,8 @@ public class Selects {
             "select xmachrentalrate_id \"Id\", actual_date \"Date\", ROUND(diesel_price,2) \"Diesel Price\", ROUND(factor,2) \"Factor\" from xmachrentalrate";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE =
             "select to_char(date_required,'DD/MM/YYYY') \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
+    public static final String SELECT_FROM_XPPETYPE = 
+            "select xppetype_id \"Id\", xppetype \"PPE type\" from xppetype";
     public static final String GET_TRANSSCHEDULE_BY_DATE =
             "select to_char(date_required,'DD/MM/YYYY'), count(*) from xtransscheduleitm group by date_required";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_MACHINE =
@@ -529,6 +531,10 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedto_id) \"Issued To\" "
             + "from xbookouts where xparts_id=# order by issue_date desc";
 
+    public static final String SELECT_LOANLIST = 
+            "Select clock_num,first_name,sur_name,to_char(issueddate,'DD/MM/YYYY'),concat('R',ROUND(amount,2)) "
+            + " from xemployee e, xloans l where l.requestedby_id=e.xemployee_id order by clock_num,issueddate";
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");

@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 public class DbConnection {
 
     private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 34;
-    public static final String DB_VERSION = "0.34";
+    private static final int DB_VERSION_ID = 35;
+    public static final String DB_VERSION = "0.35";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -53,7 +53,7 @@ public class DbConnection {
         //        "alter table xtimesheet alter xorder_id int null",
         //        "alter table xtimesheet add constraint xtimesheet_xorder_fk foreign key (xorder_id) references xorder",
         //        "alter table xemployee drop bank_details",
-//        "drop table xsitediarypart",
+        //        "drop table xsitediarypart",
         //        //"drop table dual",
         //        "create table junk (j char(1), primary key (j))",
         //        "insert into junk values('j')",
@@ -243,124 +243,198 @@ public class DbConnection {
         //        "update xmachine set xmachtype_id=7 where xmachtype_id=3826",
         //        "delete from xmachine where xmachtype_id not in (select xmachtype_id from xmachtype)",
         //32->33    
-//        "alter table xtimesheet modify xsite_id int null",
-//        "alter table xtimesheet add xmachine_id int null",
-//        "alter table xtimesheet add constraint xtimesheet_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)",
-//        "alter table xwage drop deduction",
-//        "drop function extractnum",
-//        "create function extractnum(sval varchar(32)) "
-//        + "returns integer deterministic "
-//        + "begin "
-//        + "   declare sub varchar(32) default '';"
-//        + "   declare i tinyint default 0;"
-//        + "   LP: loop"
-//        + "        set i = i + 1;"
-//        + "        if i > length(sval) then"
-//        + "            leave LP;"
-//        + "        end if;"
-//        + "        if instr('0123456789',substr(sval,i,1))>0 then"
-//        + "            set sub = concat(sub,substr(sval,i,1));"
-//        + "        end if;"
-//        + "   end loop LP;"
-//        + "   return convert(sub, unsigned);"
-//        + "end;",
-//        "drop function extractchars",
-//        "create function extractchars(sval varchar(32)) "
-//        + "returns char(32) deterministic "
-//        + "begin "
-//        + "   declare sub varchar(32) default ''; "
-//        + "   declare i tinyint default 0; "
-//        + "   LP: loop "
-//        + "        set i = i + 1; "
-//        + "        if i > length(sval) then "
-//        + "            leave LP; "
-//        + "        end if; "
-//        + "        if instr('0123456789',substr(sval,i,1))=0 then "
-//        + "            set sub = concat(sub,substr(sval,i,1)); "
-//        + "        end if; "
-//        + "   end loop LP; "
-//        + "   return sub; "
-//        + "end; ",
-//        "alter table xjobcard add vehicle_id1_day1 int",
-//        "alter table xjobcard add vehicle_id2_day1 int",
-//        "alter table xjobcard add vehicle_id3_day1 int",
-//        "alter table xjobcard add vehicle_id4_day1 int",
-//        "alter table xjobcard add vehicle_id5_day1 int",
-//        "alter table xjobcard add vehicle_id1_day2 int",
-//        "alter table xjobcard add vehicle_id2_day2 int",
-//        "alter table xjobcard add vehicle_id3_day2 int",
-//        "alter table xjobcard add vehicle_id4_day2 int",
-//        "alter table xjobcard add vehicle_id5_day2 int",
-//        "alter table xjobcard add vehicle_id1_day3 int",
-//        "alter table xjobcard add vehicle_id2_day3 int",
-//        "alter table xjobcard add vehicle_id3_day3 int",
-//        "alter table xjobcard add vehicle_id4_day3 int",
-//        "alter table xjobcard add vehicle_id5_day3 int",
-//        "alter table xjobcard add vehicle_id1_day4 int",
-//        "alter table xjobcard add vehicle_id2_day4 int",
-//        "alter table xjobcard add vehicle_id3_day4 int",
-//        "alter table xjobcard add vehicle_id4_day4 int",
-//        "alter table xjobcard add vehicle_id5_day4 int",
-//        "alter table xjobcard add vehicle_id1_day5 int",
-//        "alter table xjobcard add vehicle_id2_day5 int",
-//        "alter table xjobcard add vehicle_id3_day5 int",
-//        "alter table xjobcard add vehicle_id4_day5 int",
-//        "alter table xjobcard add vehicle_id5_day5 int",
-//        "alter table xjobcard add vehicle_id1_day6 int",
-//        "alter table xjobcard add vehicle_id2_day6 int",
-//        "alter table xjobcard add vehicle_id3_day6 int",
-//        "alter table xjobcard add vehicle_id4_day6 int",
-//        "alter table xjobcard add vehicle_id5_day6 int",
-//        "alter table xjobcard add vehicle_id1_day7 int",
-//        "alter table xjobcard add vehicle_id2_day7 int",
-//        "alter table xjobcard add vehicle_id3_day7 int",
-//        "alter table xjobcard add vehicle_id4_day7 int",
-//        "alter table xjobcard add vehicle_id5_day7 int",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
+        //        "alter table xtimesheet modify xsite_id int null",
+        //        "alter table xtimesheet add xmachine_id int null",
+        //        "alter table xtimesheet add constraint xtimesheet_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)",
+        //        "alter table xwage drop deduction",
+        //        "drop function extractnum",
+        //        "create function extractnum(sval varchar(32)) "
+        //        + "returns integer deterministic "
+        //        + "begin "
+        //        + "   declare sub varchar(32) default '';"
+        //        + "   declare i tinyint default 0;"
+        //        + "   LP: loop"
+        //        + "        set i = i + 1;"
+        //        + "        if i > length(sval) then"
+        //        + "            leave LP;"
+        //        + "        end if;"
+        //        + "        if instr('0123456789',substr(sval,i,1))>0 then"
+        //        + "            set sub = concat(sub,substr(sval,i,1));"
+        //        + "        end if;"
+        //        + "   end loop LP;"
+        //        + "   return convert(sub, unsigned);"
+        //        + "end;",
+        //        "drop function extractchars",
+        //        "create function extractchars(sval varchar(32)) "
+        //        + "returns char(32) deterministic "
+        //        + "begin "
+        //        + "   declare sub varchar(32) default ''; "
+        //        + "   declare i tinyint default 0; "
+        //        + "   LP: loop "
+        //        + "        set i = i + 1; "
+        //        + "        if i > length(sval) then "
+        //        + "            leave LP; "
+        //        + "        end if; "
+        //        + "        if instr('0123456789',substr(sval,i,1))=0 then "
+        //        + "            set sub = concat(sub,substr(sval,i,1)); "
+        //        + "        end if; "
+        //        + "   end loop LP; "
+        //        + "   return sub; "
+        //        + "end; ",
+        //        "alter table xjobcard add vehicle_id1_day1 int",
+        //        "alter table xjobcard add vehicle_id2_day1 int",
+        //        "alter table xjobcard add vehicle_id3_day1 int",
+        //        "alter table xjobcard add vehicle_id4_day1 int",
+        //        "alter table xjobcard add vehicle_id5_day1 int",
+        //        "alter table xjobcard add vehicle_id1_day2 int",
+        //        "alter table xjobcard add vehicle_id2_day2 int",
+        //        "alter table xjobcard add vehicle_id3_day2 int",
+        //        "alter table xjobcard add vehicle_id4_day2 int",
+        //        "alter table xjobcard add vehicle_id5_day2 int",
+        //        "alter table xjobcard add vehicle_id1_day3 int",
+        //        "alter table xjobcard add vehicle_id2_day3 int",
+        //        "alter table xjobcard add vehicle_id3_day3 int",
+        //        "alter table xjobcard add vehicle_id4_day3 int",
+        //        "alter table xjobcard add vehicle_id5_day3 int",
+        //        "alter table xjobcard add vehicle_id1_day4 int",
+        //        "alter table xjobcard add vehicle_id2_day4 int",
+        //        "alter table xjobcard add vehicle_id3_day4 int",
+        //        "alter table xjobcard add vehicle_id4_day4 int",
+        //        "alter table xjobcard add vehicle_id5_day4 int",
+        //        "alter table xjobcard add vehicle_id1_day5 int",
+        //        "alter table xjobcard add vehicle_id2_day5 int",
+        //        "alter table xjobcard add vehicle_id3_day5 int",
+        //        "alter table xjobcard add vehicle_id4_day5 int",
+        //        "alter table xjobcard add vehicle_id5_day5 int",
+        //        "alter table xjobcard add vehicle_id1_day6 int",
+        //        "alter table xjobcard add vehicle_id2_day6 int",
+        //        "alter table xjobcard add vehicle_id3_day6 int",
+        //        "alter table xjobcard add vehicle_id4_day6 int",
+        //        "alter table xjobcard add vehicle_id5_day6 int",
+        //        "alter table xjobcard add vehicle_id1_day7 int",
+        //        "alter table xjobcard add vehicle_id2_day7 int",
+        //        "alter table xjobcard add vehicle_id3_day7 int",
+        //        "alter table xjobcard add vehicle_id4_day7 int",
+        //        "alter table xjobcard add vehicle_id5_day7 int",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
 
-//        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk056 foreign key (vehicle_id5_day6) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk017 foreign key (vehicle_id1_day7) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk027 foreign key (vehicle_id2_day7) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
-//        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
-//            "alter table xparts modify quantity decimal(10,2)"
-//            ,"alter table xbookouts modify quantity decimal(10,2)"
-//            ,"alter table xaddstocks modify quantity decimal(10,2)"
-//            ,"alter table xtripsheetpart add loaded1 varchar(64)"
-//            ,"alter table xtripsheetpart add loaded2 varchar(64)"
+        //        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk056 foreign key (vehicle_id5_day6) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk017 foreign key (vehicle_id1_day7) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk027 foreign key (vehicle_id2_day7) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
+        //        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
+        //            "alter table xparts modify quantity decimal(10,2)"
+        //            ,"alter table xbookouts modify quantity decimal(10,2)"
+        //            ,"alter table xaddstocks modify quantity decimal(10,2)"
+        //            ,"alter table xtripsheetpart add loaded1 varchar(64)"
+        //            ,"alter table xtripsheetpart add loaded2 varchar(64)"
         //33->34
         "alter table xmachine modify insurance_amt decimal(10,2)",
         "alter table xmachine modify deposit_amt decimal(10,2)",
-        "alter table xemployee add management bit default 0"
+        "alter table xemployee add management bit default 0",
+        "insert into sheet (sheetname,parent_id) "
+        + "select 'Loans Report', sheet_id "
+        + "from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Loans Report')",
+        "insert into reportgroup (sheetgroup_id,sheet_id) "
+        + "select g.sheet_id,i.sheet_id "
+        + " from sheet g, sheet i where g.sheetname='HR' and i.sheetname='Loans Report'"
+        + " and not exists(select * from reportgroup "
+        + " where sheetgroup_id="
+        + "(select sheet_id from sheet"
+        + " where sheetname='HR') and sheet_id=(select sheet_id from sheet where sheetname='Loans Report'))",
+        "insert into sheet (sheetname,parent_id) "
+        + "select 'Incidents Report', sheet_id "
+        + "from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Incidents Report')",
+        "insert into reportgroup (sheetgroup_id,sheet_id) "
+        + "select g.sheet_id,i.sheet_id "
+        + " from sheet g, sheet i where g.sheetname='SITES' and g.parent_id IS NULL and i.sheetname='Incidents Report'"
+        + " and not exists(select * from reportgroup "
+        + " where sheetgroup_id="
+        + "(select sheet_id from sheet"
+        + " where sheetname='SITES' and parent_id IS NULL) and sheet_id=(select sheet_id from sheet where sheetname='Incidents Report'))",
+        //34->35    
+        "alter table xorderitem add description varchar(255)",
+        "alter table xwage add tsnum int",
+        "create table xppetype ("
+        + "    xppetype_id    int not null auto_increment,"
+        + "    xppetype       varchar(64) not null,"
+        + "    stocklevel     int not null default 0,"
+        + "    stamp          timestamp,"
+        + "    constraint xppetype_pk primary key (xppetype_id)"
+        + ")",
+        "create table xppebuy ("
+        + "    xppebuy_id      int not null auto_increment,"
+        + "    buydate         date not null,"
+        + "    boughtby_id     int not null,"
+        + "    xsupplier_id    int not null,"
+        + "    authorizedby_id int not null,"
+        + "    stamp          timestamp,"
+        + "    constraint xppebuy_pk primary key (xppebuy_id),"
+        + "    constraint xppebuy_xemployee_fk foreign key (boughtby_id) references xemployee (xemployee_id),"
+        + "    constraint xppebuy_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),"
+        + "    constraint xppebuy_xemployee_fk2 foreign key (authorizedby_id) references xemployee (xemployee_id)"
+        + ")",
+        "create table xppebuyitem ("
+        + "    xppebuyitem_id  int not null auto_increment,"
+        + "    xppebuy_id      int not null,"
+        + "    xppetype_id     int not null,"
+        + "    quantity        int not null,"
+        + "    stamp           timestamp,"
+        + "    constraint xppebuyitem_pk primary key (xppebuyitem_id),"
+        + "    constraint xppebuyitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
+        + "    constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id)"
+        + ")",
+        "create table xppeissue ("
+        + "    xppeissue_id    int not null auto_increment,"
+        + "    issuedate       date not null,"
+        + "    issuedby_id     int not null,"
+        + "    issuedto_id     int not null,"
+        + "    authorizedby_id int not null,"
+        + "    stamp          timestamp,"
+        + "    constraint xppeissue_pk primary key (xppeissue_id),"
+        + "    constraint xppeissue_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),"
+        + "    constraint xppeissue_xemployee_fk2 foreign key (issuedto_id) references xemployee (xemployee_id),"
+        + "    constraint xppeissue_xemployee_fk3 foreign key (authorizedby_id) references xemployee (xemployee_id)"
+        + ")",
+        "create table xppeissueitem ("
+        + "    xppeissueitem_id int not null auto_increment,"
+        + "    xppeissue_id     int not null,"
+        + "    xppetype_id     int not null,"
+        + "    quantity        int not null,"
+        + "    stamp           timestamp,"
+        + "    constraint xppeissueitem_pk primary key (xppeissueitem_id),"
+        + "    constraint xppeissueitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
+        + "    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)"
+        + ")"
     };
 
     public synchronized static Connection getLogDBconnection() {
@@ -383,31 +457,31 @@ public class DbConnection {
     public static String getLogin() {
         return props.getProperty("dbUser", "sa");
     }
-    
+
     public static String getPassword() {
         return props.getProperty("dbPassword", "");
     }
-    
+
     public static String getBackupCommand() {
         return props.getProperty("dbDump", "mysqldump");
     }
-    
+
     public static String getFtpURL() {
         return props.getProperty("ftpURL", "ec2-23-22-145-131.compute-1.amazonaws.com");
     }
-    
+
     public static String getFtpPath() {
         return props.getProperty("ftpPath", "/root/backups/");
     }
-    
+
     public static String getFtpLogin() {
-        return props.getProperty("ftpLogin", "jaco"); 
+        return props.getProperty("ftpLogin", "jaco");
     }
-    
+
     public static String getFtpPassword() {
-        return props.getProperty("ftpLogin", "jaco84oliver"); 
+        return props.getProperty("ftpLogin", "jaco84oliver");
     }
-    
+
     public static Connection getConnection() throws RemoteException {
         Connection connection = null;
         try {

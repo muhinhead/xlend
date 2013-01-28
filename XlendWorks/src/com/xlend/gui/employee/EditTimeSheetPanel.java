@@ -368,7 +368,8 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 Integer xsiteID = getSelectedCbItem(siteRefBox);
                 ts.setXsiteId(xsiteID);
                 if (!XlendWorks.isActiveSite(DashBoard.getExchanger(),xsiteID)) {
-                    if (GeneralFrame.yesNo("Attention!", "Inactive site selected. Activate it?") == JOptionPane.YES_OPTION) {
+                    if (GeneralFrame.yesNo("Attention!", 
+                            "Inactive site selected. Activate it?") == JOptionPane.YES_OPTION) {
                         XlendWorks.activateSite(DashBoard.getExchanger(),xsiteID);
                     }
                 }

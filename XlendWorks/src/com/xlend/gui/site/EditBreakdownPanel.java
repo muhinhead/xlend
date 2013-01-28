@@ -96,7 +96,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             vehicleByCbModel.addElement(ci);
         }
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }

@@ -80,7 +80,7 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
             for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
                 operatorCbModel.addElement(ci);
             }
-            for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
                 if (ci.getId() != 0) {
                     siteFromCbModel.addElement(ci);
                     siteToCbModel.addElement(ci);

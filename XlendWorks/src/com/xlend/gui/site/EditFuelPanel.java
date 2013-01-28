@@ -69,7 +69,7 @@ class EditFuelPanel extends RecordEditPanel {
         ComboItem unknown = new ComboItem(0, "--Unknown--");
         siteCbModel = new DefaultComboBoxModel();
         siteCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }

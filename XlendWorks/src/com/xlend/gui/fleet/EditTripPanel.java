@@ -115,7 +115,7 @@ public class EditTripPanel extends RecordEditPanel {
             toSiteCbModel = new DefaultComboBoxModel();
             firstTime = true;
         }
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 if (firstTime) {
                     toSiteCbModel.addElement(ci);

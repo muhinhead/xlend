@@ -125,7 +125,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
             assistantCbModel = new DefaultComboBoxModel();
             loaded1CbModel = new DefaultComboBoxModel();
             loaded2CbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
                 if (!ci.getValue().startsWith("--")) {
                     fromSiteCbModel.addElement(ci);
                     toSiteCbModel.addElement(ci);

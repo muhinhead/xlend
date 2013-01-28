@@ -110,7 +110,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             paidByCbModel.addElement(ci);
         }
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }

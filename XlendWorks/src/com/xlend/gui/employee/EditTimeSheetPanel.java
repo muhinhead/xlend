@@ -31,6 +31,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -125,10 +126,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         };
         daysLabels = new JLabel[7];
         dayWages = new Xwage[7];
-//        prevDeduct = new Double[7];
-//        for (int i = 0; i < 7; i++) {
-//            prevDeduct[i] = new Double(0.0);
-//        }
         sps = new JSpinner[]{
             monNormalSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
             monOverSp = new SelectedNumberSpinner(0, 0, 12, 0.5),
@@ -187,7 +184,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         for (ComboItem itm : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
             orderCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadSites(DashBoard.getExchanger(),"1=1")) {
             siteCbModel.addElement(itm);
         }
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
@@ -366,15 +363,15 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             Date weekend = (Date) weekendSp.getValue();
 
             try {
-//                Integer id = ((ComboItem) orderRefBox.getSelectedItem()).getId();
-//                ts.setXorderId(id != null && id > 0 ? id : null);
                 ts.setXorderId(getSelectedCbItem(orderRefBox));
-//                id = ((ComboItem) employeeRefBox.getSelectedItem()).getId();
-//                ts.setXemployeeId(id != null && id > 0 ? id : null);
                 ts.setXemployeeId(getSelectedCbItem(employeeRefBox));
-//                id = ((ComboItem) siteRefBox.getSelectedItem()).getId();
-//                ts.setXsiteId(id != null && id > 0 ? id : null);
-                ts.setXsiteId(getSelectedCbItem(siteRefBox));
+                Integer xsiteID = getSelectedCbItem(siteRefBox);
+                ts.setXsiteId(xsiteID);
+                if (!XlendWorks.isActiveSite(DashBoard.getExchanger(),xsiteID)) {
+                    if (GeneralFrame.yesNo("Attention!", "Inactive site selected. Activate it?") == JOptionPane.YES_OPTION) {
+                        XlendWorks.activateSite(DashBoard.getExchanger(),xsiteID);
+                    }
+                }
                 ts.setXmachineId(getSelectedCbItem(machineBox));
                 ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
                 ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
@@ -392,7 +389,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     dayWages[d].setNormaltime(norm = (Double) sps[d * 3].getValue());
                     dayWages[d].setOvertime(over = (Double) sps[d * 3 + 1].getValue());
                     dayWages[d].setDoubletime(dbl = (Double) sps[d * 3 + 2].getValue());
-//                    dayWages[d].setDeduction((Double) sps[d * 4 + 3].getValue());
                     dayWages[d].setStoppeddetails(detailsFlds[d].getText());
                     dayWages[d].setTsnum((Integer)tsNumSps[d].getValue());
                     if (norm + over + dbl > 24) {
@@ -407,7 +403,6 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
             }
-//            }
         }
         return false;
     }
@@ -469,7 +464,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Site Lookup", siteRefBox,
-                            new SitesGrid(DashBoard.getExchanger(), Selects.SELECT_SITES4LOOKUP, true),
+                            new SitesGrid(DashBoard.getExchanger(), Selects.SELECT_ALLSITES4LOOKUP, true),
                             new String[]{"name"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());

@@ -105,7 +105,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
             machineCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }

@@ -69,7 +69,7 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         siteCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }

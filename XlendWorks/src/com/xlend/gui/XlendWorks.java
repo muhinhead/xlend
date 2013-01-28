@@ -5,6 +5,7 @@ import com.xlend.constants.Selects;
 import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
 import java.awt.Window;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.FileHandler;
@@ -297,7 +299,7 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadAllSites(IMessageSender exchanger) {
+    public static ComboItem[] loadActiveSites(IMessageSender exchanger) {
         return loadSites(exchanger, "is_active=1");
     }
 
@@ -1081,6 +1083,34 @@ public class XlendWorks {
         return null;
     }
 
+    public static boolean isActiveSite(IMessageSender exchanger, Integer xsiteID) {
+        try {
+            Xsite s = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, xsiteID);
+            if (s != null) {
+                return (s.getIsActive() != null && s.getIsActive().intValue() == 1);
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+        return true;
+    }
+
+    public static void activateSite(IMessageSender exchanger, Integer xsiteID) {
+        try {
+            Xsite s = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, xsiteID);
+            if (s != null) {
+                try {
+                    s.setIsActive(1);
+                    exchanger.saveDbObject(s);
+                } catch (Exception ex) {
+                    logAndShowMessage(ex);
+                }
+            }
+        } catch (RemoteException ex) {
+            logAndShowMessage(ex);
+        }
+    }
+    
     public static String getMachineType1(IMessageSender exchanger, Integer machineID) {
         try {
             Xmachine m = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, machineID);

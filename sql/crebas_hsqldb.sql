@@ -1483,6 +1483,7 @@ create table xppebuyitem
 (
     xppebuyitem_id  int not null auto_increment,
     xppebuy_id      int not null,
+    xppetype_id     int not null,
     quantity        int not null,
     constraint xppebuyitem_pk primary key (xppebuyitem_id),
     constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id)

@@ -1427,12 +1427,12 @@ create table xppebuyitem
 (
     xppebuyitem_id  int not null auto_increment,
     xppebuy_id      int not null,
-    xppetype_id     int not null
+    xppetype_id     int not null,
     quantity        int not null,
     stamp           timestamp,
     constraint xppebuyitem_pk primary key (xppebuyitem_id),
     constraint xppebuyitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),
-    constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id)
+    constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id) on delete cascade
 );
 
 create table xppeissue
@@ -1453,7 +1453,7 @@ create table xppeissueitem
 (
     xppeissueitem_id int not null auto_increment,
     xppeissue_id     int not null,
-    xppetype_id     int not null
+    xppetype_id     int not null,
     quantity        int not null,
     stamp           timestamp,
     constraint xppeissueitem_pk primary key (xppeissueitem_id),

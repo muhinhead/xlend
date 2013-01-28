@@ -142,7 +142,7 @@ public class Selects {
             + "e.sur_name \"Surname\", s.name \"Site\", o.ordernumber \"Order Nr\" "
             + "from xtimesheet t,xemployee e, xsite s, xorder o "
             + "where t.xemployee_id=e.xemployee_id "
-            + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id";
+            + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id order by xtimesheet_id desc";
     public static final String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
             + "s.name \"Site\", "
@@ -153,9 +153,13 @@ public class Selects {
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
             + "overtime \"Over Time\", doubletime \"Double Time\", stoppeddetails \"Details\" "
             + "from xwage where xtimesheet_id = #";
+    public static final String SELECT_ALLSITES4LOOKUP =
+            "Select xsite_id \"Id\", name \"Site Name\","
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\", CASEWHEN(is_active,'Yes','No') \"Active\" "
+            + "from xsite order by sitetype,upper(name)";
     public static final String SELECT_SITES4LOOKUP =
             "Select xsite_id \"Id\", name \"Site Name\","
-            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\" "
+            + "(select min(val) from cbitems where substr(val,1,1)=sitetype and name='site_types') \"Type of Site\", CASEWHEN(is_active,'Yes','No') \"Active\" "
             + "from xsite where is_active=1 order by sitetype,upper(name)";
     public static final String SELECT_DEPOTS4LOOKUP =
             "Select xsite_id \"Id\", name \"Site Name\", "

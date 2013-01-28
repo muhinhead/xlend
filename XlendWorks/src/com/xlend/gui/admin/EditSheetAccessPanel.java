@@ -1,5 +1,6 @@
 package com.xlend.gui.admin;
 
+import com.jidesoft.swing.Flashable;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
@@ -8,6 +9,7 @@ import com.xlend.orm.Usersheet;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
@@ -99,7 +101,7 @@ class EditSheetAccessPanel extends RecordEditPanel {
     private JPanel rightPanel(int parent_id, JCheckBox parentCb) {
         ComboItem[] citms = XlendWorks.loadSubSheets(DashBoard.getExchanger(), parent_id);
         JCheckBox[] cbGrp = new JCheckBox[citms.length];
-        JPanel rPanel = new JPanel(new GridLayout(1, citms.length, 5, 5));
+        JPanel rPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));//new JPanel(new GridLayout(1, citms.length, 5, 5));
         rPanel.setBorder(BorderFactory.createEtchedBorder());
         int i = 0;
         for (ComboItem ci : citms) {

@@ -6,8 +6,15 @@ import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -25,15 +32,19 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel siteDiaryPanel;
     private GeneralGridPanel incidentsPanel;
     private GeneralGridPanel operatorClockSheetPanel;
+    private GeneralGridPanel ppeBuysPanel;
+    private GeneralGridPanel ppeIssuesPanel;
     
     private static String[] sheetList = new String[]{
-        "Sites", 
+        "Sites",
         "Diesel Purchases",//"Diesel Rurchases", 
         "Yard Diesel",//Diesel Issuing", 
-        "Consumables", "Breakdowns", 
+        "Consumables", "Breakdowns",
         "Petrol Issued",//Fuel", 
         "Site Diesel",//Issuing", 
-        "Site Diary", "Incidents", "Operator Clock Sheet"
+        "Site Diary", "Incidents",
+        "Operator Clock Sheet",
+        "PPE and Safety"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -82,6 +93,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[9])) {
             workTab.addTab(getOperatorClockSheetPanel(), sheets()[9]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[10])) {
+            workTab.addTab(getPPEandSafetyPanel(), sheets()[10]);
         }
         return workTab;
     }
@@ -204,5 +218,26 @@ public class SitesFrame extends GeneralFrame {
             }
         }
         return operatorClockSheetPanel;
+    }
+
+    private JComponent getPPEandSafetyPanel() {
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        sp.setDividerLocation(250);
+        try {
+            sp.add(ppeBuysPanel = new PPEbuysGrid(getExchanger()));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+            errMessageBox("Error:", ex.getMessage());
+            sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
+        }
+        
+        try {
+            sp.add(ppeIssuesPanel = new PPEissuesGrid(getExchanger()));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+            errMessageBox("Error:", ex.getMessage());
+            sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
+        }
+        return sp;
     }
 }

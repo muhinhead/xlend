@@ -44,10 +44,10 @@ public class BreakdownsGrid extends GeneralGridPanel {
                         Xbreakdown xb = (Xbreakdown) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId(),getPageSelector().getSelectedIndex());
                     }
-                } catch (RemoteException ex) {
-                    XlendWorks.log(ex);
-                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
             }
         };
     }

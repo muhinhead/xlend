@@ -511,6 +511,10 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.PAYMETHODS);
     }
 
+    public static ComboItem[] loadAllPPEtypes(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.SELECT_FROM_XPPETYPE);
+    }
+
 //    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
 //        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
 //    }
@@ -1096,21 +1100,20 @@ public class XlendWorks {
 
     public static String[] loadDistinctStoreNames(IMessageSender exchanger) {
         return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_STORES);
-//        String ss[] = loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_STORES);
-//        ArrayList arr = new ArrayList();
-//        for (String s : ss) {
-//            arr.add(s);
-//        }
-//        return arr;
     }
 
     public static String[] loadDistinctMachineModels(IMessageSender exchanger) {
         return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
-//        String ss[] = loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
-//        ArrayList arr = new ArrayList();
-//        for (String s : ss) {
-//            arr.add(s);
-//        }
-//        return arr;
+    }
+
+    public static String getStockLevels(IMessageSender exchanger, Integer xppetypeID) {
+        if (xppetypeID != null && xppetypeID > 0) {
+            ComboItem[] itms = loadOnSelect(exchanger, "select " + xppetypeID
+                    + ", (select ifnull(sum(quantity),0) from xppebuyitem where xppetype_id=" + xppetypeID + ") - "
+                    + "(select ifnull(sum(quantity),0) from xppeissueitem where xppetype_id=" + xppetypeID + ")");
+            return itms[0].getValue();
+        } else {
+            return "0";
+        }
     }
 }

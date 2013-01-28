@@ -232,7 +232,7 @@ public class Selects {
             + "(select max(s.name) from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
             + "xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xsite_id=a.xsite_id and xmachine_id=m.xmachine_id and date_end is null)) \"On site\" "
             + "from xmachine m where not classify is null order by m.classify,cast(m.tmvnr as decimal)";
-    public static final String SUPPLIERS = "Select xsupplier_id \"Id\",companyname \"Company Name\" "
+    public static final String SUPPLIERS = "Select xsupplier_id \"Id\",substr(companyname,1,20) \"Company Name\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_FROM_STORES =
             "select xstocks_id, name from xstocks";
@@ -534,6 +534,20 @@ public class Selects {
     public static final String SELECT_LOANLIST = 
             "Select clock_num,first_name,sur_name,to_char(issueddate,'DD/MM/YYYY'),concat('R',ROUND(amount,2)) "
             + " from xemployee e, xloans l where l.requestedby_id=e.xemployee_id order by clock_num,issueddate";
+
+    public static final String SELECT_FROM_PPEBUYS = 
+            "Select xppebuy_id \"Id\", to_char(buydate,'DD/MM/YYYY') \"Purchase Date\",  "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.boughtby_id) \"Bought By\",  "
+            + "(Select companyname from xsupplier where xsupplier_id=xppebuy.xsupplier_id) \"Supplier\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.authorizedby_id) \"Authorized By\" "
+            + "from xppebuy order by buydate desc";
+
+    public static final String SELECT_FROM_PPEISSUES = 
+            "select xppeissue_id \"Id\", to_char(issuedate,'DD/MM/YYYY') \"Issue Date\",  "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedby_id) \"Issued By\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedto_id) \"Issued To\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
+            + "from xppeissue order by issuedate desc";
     
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",

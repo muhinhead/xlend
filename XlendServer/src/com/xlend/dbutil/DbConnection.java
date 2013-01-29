@@ -408,6 +408,7 @@ public class DbConnection {
         + "    xppebuy_id      int not null,"
         + "    xppetype_id     int not null,"
         + "    quantity        int not null,"
+        + "    priceperunit    decimal (8,2),"
         + "    stamp           timestamp,"
         + "    constraint xppebuyitem_pk primary key (xppebuyitem_id),"
         + "    constraint xppebuyitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
@@ -434,7 +435,8 @@ public class DbConnection {
         + "    constraint xppeissueitem_pk primary key (xppeissueitem_id),"
         + "    constraint xppeissueitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
         + "    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)"
-        + ")"
+        + ")",
+        "alter table xppebuyitem add priceperunit decimal (8,2)"
     };
 
     public synchronized static Connection getLogDBconnection() {

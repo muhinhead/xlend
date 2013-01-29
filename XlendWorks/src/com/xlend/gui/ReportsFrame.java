@@ -56,8 +56,8 @@ public class ReportsFrame extends GeneralFrame {
             reportsTab.addTab(getLoansPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[3])) {
-            //reportsTab.addTab(getLoansPanel(), sheets()[3]);
-            GeneralFrame.errMessageBox("!!!", "HERE!");
+            reportsTab.addTab(getLoansPanel(), sheets()[3]);
+//            GeneralFrame.errMessageBox("!!!", "HERE!");
         }
         reportsTab.addChangeListener(new ChangeListener() {
 

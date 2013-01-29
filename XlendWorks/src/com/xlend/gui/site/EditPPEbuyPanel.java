@@ -5,6 +5,7 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
+import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xppebuy;
 import com.xlend.orm.Xppebuyitem;
 import com.xlend.orm.Xsitediaryitem;
@@ -63,6 +64,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
         private JComboBox ppeTypeCB;
         private DefaultComboBoxModel ppeTypeCbModel;
         private JSpinner qtySP;
+        private JSpinner priceSP;
         private JLabel stockLevelLB;
 
         ItemPanel(Xppebuyitem item) {
@@ -71,19 +73,20 @@ class EditPPEbuyPanel extends RecordEditPanel {
             stockLevelLB = new JLabel("", SwingConstants.RIGHT);
             stockLevelLB.setBorder(BorderFactory.createEtchedBorder());
             ppeTypeCbModel = new DefaultComboBoxModel();
+            ppeTypeCbModel.addElement(new ComboItem(0, "--select PPE here--"));
             for (ComboItem ci : XlendWorks.loadAllPPEtypes(DashBoard.getExchanger())) {
                 ppeTypeCbModel.addElement(ci);
             }
             add(markCB = new JCheckBox(), BorderLayout.WEST);
             add(comboPanelWithLookupBtn(ppeTypeCB = new JComboBox(ppeTypeCbModel),
                     new PPElookupAction(ppeTypeCB)), BorderLayout.CENTER);
-            qtySP = new SelectedNumberSpinner(0, 0, 999999, 1);
-            JPanel rightGridPanel = new JPanel(new GridLayout(1, 2));
-            rightGridPanel.add(qtySP);
+//            qtySP = new SelectedNumberSpinner(0, 0, 999999, 1);
+            JPanel rightGridPanel = new JPanel(new GridLayout(1, 3));
+            rightGridPanel.add(qtySP = new SelectedNumberSpinner(0, 0, 999999, 1));
+            rightGridPanel.add(priceSP = new SelectedNumberSpinner(.0, .0, 999999.99, .1));
             rightGridPanel.add(stockLevelLB);
             add(rightGridPanel, BorderLayout.EAST);
             ppeTypeCB.addActionListener(new AbstractAction() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     updateStockLevels();
@@ -92,29 +95,37 @@ class EditPPEbuyPanel extends RecordEditPanel {
             load();
         }
 
-        private void updateStockLevels() {
-            stockLevelLB.setText("" + XlendWorks.getStockLevels(DashBoard.getExchanger(), getSelectedCbItem(ppeTypeCB)));
+        public void updateStockLevels() {
+            Integer xppetypeID = getSelectedCbItem(ppeTypeCB);
+            stockLevelLB.setText(XlendWorks.getStockLevels(DashBoard.getExchanger(), xppetypeID));
+            priceSP.setValue(Double.parseDouble(XlendWorks.getLastPPEprice(DashBoard.getExchanger(), xppetypeID)));
         }
-        
+
         private void load() {
             if (getItem() != null) {
                 selectComboItem(ppeTypeCB, getItem().getXppetypeId());
                 qtySP.setValue(getItem().getQuantity());
+                priceSP.setValue(getItem().getPriceperunit());
             }
+            updateStockLevels();
         }
 
         public boolean save() throws Exception {
             boolean isNew = false;
-            if (getItem() == null) {
-                item = new Xppebuyitem(null);
-                getItem().setXppebuyitemId(0);
-                Xppebuy xb = (Xppebuy) getDbObject();
-                getItem().setXppebuyId(xb.getXppebuyId());
-                isNew = true;
+            if (getSelectedCbItem(ppeTypeCB) != null) {
+                if (getItem() == null) {
+                    item = new Xppebuyitem(null);
+                    getItem().setXppebuyitemId(0);
+                    Xppebuy xb = (Xppebuy) getDbObject();
+                    getItem().setXppebuyId(xb.getXppebuyId());
+                    isNew = true;
+                }
+                getItem().setXppetypeId(getSelectedCbItem(ppeTypeCB));
+                getItem().setQuantity((Integer) qtySP.getValue());
+                getItem().setPriceperunit((Double) priceSP.getValue());
+                return saveDbRecord(getItem(), isNew);
             }
-            getItem().setXppetypeId(getSelectedCbItem(ppeTypeCB));
-            getItem().setQuantity((Integer) qtySP.getValue());
-            return saveDbRecord(getItem(), isNew);
+            return true;
         }
 
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
@@ -176,7 +187,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
                 comboPanelWithLookupBtn(boughtByCB = new JComboBox(boughtByCbModel), new EmployeeLookupAction(boughtByCB)),
                 new JPanel()}),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel), new EmployeeLookupAction(supplierCB)),
+                comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel), new SupplierLookupAction(supplierCB)),
                 new JPanel()
             }),
             getGridPanel(new JComponent[]{
@@ -199,11 +210,12 @@ class EditPPEbuyPanel extends RecordEditPanel {
 
         hdrPanel = getBorderPanel(new JComponent[]{
                     markAllCB = new JCheckBox(),
-                    new JPanel(),
-                    rghtHdrPanel = new JPanel(new GridLayout(1, 2))
+                    rghtHdrPanel = new JPanel(new GridLayout(1, 4))
                 });
-        rghtHdrPanel.add(new JLabel("Quantity:", SwingConstants.LEFT));
-        rghtHdrPanel.add(new JLabel("Stock Levels:", SwingConstants.LEFT));
+        rghtHdrPanel.add(new JPanel());
+        rghtHdrPanel.add(new JLabel("Quantity:", SwingConstants.RIGHT));
+        rghtHdrPanel.add(new JLabel("Price per Unit:", SwingConstants.RIGHT));
+        rghtHdrPanel.add(new JLabel("Stock Levels:", SwingConstants.RIGHT));
         downGridPanel.add(hdrPanel);
 
         markAllCB.addActionListener(new AbstractAction() {
@@ -217,13 +229,13 @@ class EditPPEbuyPanel extends RecordEditPanel {
         add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
         scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Items Bought"));
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        scrollPane.setPreferredSize(new Dimension(d.width / 3, 300));
+        scrollPane.setPreferredSize(new Dimension(d.width / 3, 400));
     }
 
     private JPanel createItmBtnPanel() {
         JPanel itemBtnPanel = new JPanel(new GridLayout(1, 2));
         JButton addBtn;
-        itemBtnPanel.add(addBtn=new JButton(new AbstractAction("+") {
+        itemBtnPanel.add(addBtn = new JButton(new AbstractAction("+") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new ItemPanel(null));
@@ -232,7 +244,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
         }));
         addBtn.setToolTipText("Add Item");
         JButton delBtn;
-        itemBtnPanel.add(delBtn=new JButton(new AbstractAction("x") {
+        itemBtnPanel.add(delBtn = new JButton(new AbstractAction("x") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ItemPanel p : childRows) {
@@ -275,7 +287,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
             } catch (RemoteException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 XlendWorks.log(ex);
-            }            
+            }
         }
     }
 

@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -91,7 +92,11 @@ public class EditPPEissuePanel extends RecordEditPanel {
         }
 
         private void updateStockLevels() {
-            stockLevelLB.setText("" + XlendWorks.getStockLevels(DashBoard.getExchanger(), getSelectedCbItem(ppeTypeCB)));
+            String slevel = XlendWorks.getStockLevels(DashBoard.getExchanger(), getSelectedCbItem(ppeTypeCB));
+            int ilevel = Integer.parseInt(slevel);
+            SpinnerNumberModel model = (SpinnerNumberModel) qtySP.getModel();
+            model.setMaximum(ilevel);
+            stockLevelLB.setText(slevel);
         }
 
         private void load() {

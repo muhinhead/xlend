@@ -49,7 +49,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.66";
+    public static final String version = "0.66.1";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1110,7 +1110,7 @@ public class XlendWorks {
             logAndShowMessage(ex);
         }
     }
-    
+
     public static String getMachineType1(IMessageSender exchanger, Integer machineID) {
         try {
             Xmachine m = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, machineID);
@@ -1145,5 +1145,17 @@ public class XlendWorks {
         } else {
             return "0";
         }
+    }
+
+    public static String getLastPPEprice(IMessageSender exchanger, Integer xppetypeID) {
+        if (xppetypeID != null && xppetypeID > 0) {
+            ComboItem[] itms = loadOnSelect(exchanger, "select "
+                    + xppetypeID + ", ifnull(priceperunit,0.0) from xppebuyitem where xppebuyitem_id="
+                    + "(select max(xppebuyitem_id) from xppebuyitem where xppetype_id=" + xppetypeID + ")");
+            if (itms.length > 0) {
+                return itms[0].getValue();
+            }
+        }
+        return "0";
     }
 }

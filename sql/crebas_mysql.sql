@@ -1429,6 +1429,7 @@ create table xppebuyitem
     xppebuy_id      int not null,
     xppetype_id     int not null,
     quantity        int not null,
+    priceperunit    decimal (8,2),
     stamp           timestamp,
     constraint xppebuyitem_pk primary key (xppebuyitem_id),
     constraint xppebuyitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),
@@ -1458,7 +1459,7 @@ create table xppeissueitem
     stamp           timestamp,
     constraint xppeissueitem_pk primary key (xppeissueitem_id),
     constraint xppeissueitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),
-    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)
+    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id) on delete cascade
 );
 
 #----------------- auxiliary tables -------------------

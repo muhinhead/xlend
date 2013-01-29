@@ -71,6 +71,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
             stockLevelLB = new JLabel("", SwingConstants.RIGHT);
             stockLevelLB.setBorder(BorderFactory.createEtchedBorder());
             ppeTypeCbModel = new DefaultComboBoxModel();
+            ppeTypeCbModel.addElement(new ComboItem(0, "--select PPE here--"));
             for (ComboItem ci : XlendWorks.loadAllPPEtypes(DashBoard.getExchanger())) {
                 ppeTypeCbModel.addElement(ci);
             }
@@ -108,16 +109,19 @@ public class EditPPEissuePanel extends RecordEditPanel {
 
         public boolean save() throws Exception {
             boolean isNew = false;
-            if (getItem() == null) {
-                item = new Xppeissueitem(null);
-                getItem().setXppeissueitemId(0);
-                Xppeissue xi = (Xppeissue) getDbObject();
-                getItem().setXppeissueId(xi.getXppeissueId());
-                isNew = true;
+            if (getSelectedCbItem(ppeTypeCB) != null) {
+                if (getItem() == null) {
+                    item = new Xppeissueitem(null);
+                    getItem().setXppeissueitemId(0);
+                    Xppeissue xi = (Xppeissue) getDbObject();
+                    getItem().setXppeissueId(xi.getXppeissueId());
+                    isNew = true;
+                }
+                getItem().setXppetypeId(getSelectedCbItem(ppeTypeCB));
+                getItem().setQuantity((Integer) qtySP.getValue());
+                return saveDbRecord(getItem(), isNew);
             }
-            getItem().setXppetypeId(getSelectedCbItem(ppeTypeCB));
-            getItem().setQuantity((Integer) qtySP.getValue());
-            return saveDbRecord(getItem(), isNew);
+            return true;
         }
 
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
@@ -220,11 +224,11 @@ public class EditPPEissuePanel extends RecordEditPanel {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         scrollPane.setPreferredSize(new Dimension(d.width / 3, 300));
     }
-    
+
     private JPanel createItmBtnPanel() {
         JPanel itemBtnPanel = new JPanel(new GridLayout(1, 2));
         JButton addBtn;
-        itemBtnPanel.add(addBtn=new JButton(new AbstractAction("+") {
+        itemBtnPanel.add(addBtn = new JButton(new AbstractAction("+") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new ItemPanel(null));
@@ -233,7 +237,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
         }));
         addBtn.setToolTipText("Add Item");
         JButton delBtn;
-        itemBtnPanel.add(delBtn=new JButton(new AbstractAction("x") {
+        itemBtnPanel.add(delBtn = new JButton(new AbstractAction("x") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ItemPanel p : childRows) {
@@ -254,7 +258,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
         }));
         delBtn.setToolTipText("Delete Item(s)");
         return itemBtnPanel;
-    }    
+    }
 
     @Override
     public void loadData() {
@@ -275,7 +279,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
             } catch (RemoteException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 XlendWorks.log(ex);
-            }            
+            }
         }
     }
 
@@ -308,9 +312,9 @@ public class EditPPEissuePanel extends RecordEditPanel {
                 }
             }
         }
-        return ok;        
+        return ok;
     }
-    
+
     private void redrawRows() {
         downGridPanel.setVisible(false);
         downGridPanel.removeAll();
@@ -320,5 +324,5 @@ public class EditPPEissuePanel extends RecordEditPanel {
         }
         downGridPanel.repaint();
         downGridPanel.setVisible(true);
-    }    
+    }
 }

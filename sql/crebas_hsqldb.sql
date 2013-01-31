@@ -1514,6 +1514,29 @@ create table xppeissueitem
     constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)
 );
 
+create table xmachservice
+(
+    xmachservice_id  int not null auto_increment,
+    servicedate      date not null,
+    entrydate        date not null,
+    servicedby_id    int not null,
+    assistedby_id    int not null,
+    xmachine_id      int not null,
+    engine_oil       varchar(128),
+    hydraulic_oil    varchar(128),
+    brake_fluid      varchar(128),
+    transmission_oil varchar(128),
+    gearbox_oil      varchar(128),
+    anti_freeze      varchar(128),
+    diff_checked1    varchar(128),
+    diff_checked2    varchar(128),
+    diff_checked3    varchar(128),
+    constraint xmachservice_pk primary key (xmachservice_id),
+    constraint xmachservice_xemployee_fk foreign key (servicedby_id) references xemployee (xemployee_id),
+    constraint xmachservice_xemployee_fk2 foreign key (assistedby_id) references xemployee (xemployee_id),
+    constraint xmachservice_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)
+);
+
 ----------------- auxiliary tables -------------------
 
 create view v_userprofile as 

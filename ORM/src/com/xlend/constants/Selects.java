@@ -553,6 +553,14 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
             + "from xppeissue order by issuedate desc";
     
+    public static final String SELECT_FROM_MACHSERVICE =
+            "select xmachservice_id \"Id\", to_char(servicedate,'DD/MM/YYYY') \"Service Date\", "
+            + "to_char(entrydate,'DD/MM/YYYY') \"Entry Date\", "
+            + "(select max(concat(classify,tmvnr)) from xmachine where xmachine_id=xmachservice.xmachine_id) \"Machine\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Serviced By\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Assisted By\" "
+            + "from xmachservice order by servicedate desc";
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");

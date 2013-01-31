@@ -2,9 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
-import java.awt.Component;
 import java.rmi.RemoteException;
-import java.util.Properties;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -26,9 +24,11 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel machineRentalRatesPanel;
     private GeneralGridPanel poolVehiclesPanel;
     private GeneralGridPanel companyVehiclesPanel;
+    private GeneralGridPanel machineServicesPanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", 
-        "Company Vehicles", "Machine Rental Rates"};
+        "Company Vehicles", "Machine Rental Rates", "Service"
+    };
 
     public FleetFrame(IMessageSender exch) {
         super("Fleet", exch);
@@ -62,6 +62,9 @@ public class FleetFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
             fleetTab.addTab(getMachineRentalRates(), sheets()[5]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
+            fleetTab.addTab(getMachineServices(), sheets()[6]);
         }
         return fleetTab;
     }
@@ -137,4 +140,16 @@ public class FleetFrame extends GeneralFrame {
         }
         return companyVehiclesPanel;
     }    
+
+    private JPanel getMachineServices() {
+        if(machineServicesPanel == null) {
+            try {
+                registerGrid(machineServicesPanel = new ServiceGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return machineServicesPanel;
+    }
 }

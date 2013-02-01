@@ -6,11 +6,14 @@ package com.xlend.gui.employee;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
+import com.xlend.gui.admin.XlendMasterTableView;
 import com.xlend.gui.assign.EmployeeAssignmentDialog;
 import com.xlend.gui.assign.EmployeeAssignmentPanel;
+import com.xlend.gui.hr.PPEissueItemsGrid;
+import com.xlend.gui.hr.PPEissues2employeeGrid;
 import com.xlend.gui.hr.TimeSheetsGrid;
+import com.xlend.mvc.Controller;
 import com.xlend.orm.Xemployee;
-import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -26,8 +29,6 @@ import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -342,6 +343,20 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             TimeSheetsGrid tsSheet = new TimeSheetsGrid(DashBoard.getExchanger(),
                     Selects.SELECT_TIMESHEETS4EMPLOYEE.replace("#", "" + employee_id), false);
             tp.add(tsSheet, "Time Sheeets");
+            JPanel ppesPanel = new JPanel(new BorderLayout());
+
+            PPEissueItemsGrid itemsGrid = new PPEissueItemsGrid(DashBoard.getExchanger(), 0);
+            Controller detailController = itemsGrid.getController();
+            XlendMasterTableView masterView = new XlendMasterTableView(DashBoard.getExchanger(), detailController, "xppeissue_id", 0);
+            
+            PPEissues2employeeGrid issuesGrid = new PPEissues2employeeGrid(DashBoard.getExchanger(), employee_id, masterView);
+
+            ppesPanel.add(issuesGrid, BorderLayout.WEST);
+            JPanel itemShell = new JPanel(new BorderLayout());
+            itemShell.add(itemsGrid, BorderLayout.WEST);
+            ppesPanel.add(itemShell, BorderLayout.CENTER);
+
+            tp.add(ppesPanel, "PPE Issued");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
@@ -442,7 +457,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 firstNameField.setEnabled(false);
                 surNameField.setEnabled(false);
             }
-            managementCb.setSelected(emp.getManagement()!=null && emp.getManagement()==1);
+            managementCb.setSelected(emp.getManagement() != null && emp.getManagement() == 1);
             fillAssignmentInfo();
         }
     }
@@ -550,7 +565,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhoto(imageData);
                 emp.setPhoto2(imageData2);
                 emp.setPhoto3(imageData3);
-                emp.setManagement(managementCb.isSelected()?1:0);
+                emp.setManagement(managementCb.isSelected() ? 1 : 0);
                 setDbObject(DashBoard.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {

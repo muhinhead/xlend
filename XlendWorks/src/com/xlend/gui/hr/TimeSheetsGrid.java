@@ -28,7 +28,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
     static {
         maxWidths.put(0, 40);
         maxWidths.put(1, 250);
-        maxWidths.put(2, 250);
+        maxWidths.put(3, 400);
     }
 
     public TimeSheetsGrid(IMessageSender exchanger) throws RemoteException {

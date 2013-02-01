@@ -553,6 +553,16 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
             + "from xppeissue order by issuedate desc";
     
+    public static final String SELECT_FROM_PPEISSUES4EMPLOYEE =
+            "select xppeissue_id \"Id\", to_char(issuedate,'DD/MM/YYYY') \"Issue Date\",  "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedby_id) \"Issued By\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
+            + "from xppeissue where issuedto_id=# order by issuedate desc";
+    
+    public static final String SELECT_FROM_PPEISSUEITEMS =
+            "select i.xppeissueitem_id \"Id\", t.xppetype \"PPE\", i.quantity \"Quantity\" "
+            + "from xppeissueitem i,xppetype t where i.xppetype_id=t.xppetype_id order by t.xppetype";
+    
     public static final String SELECT_FROM_MACHSERVICE =
             "select xmachservice_id \"Id\", to_char(servicedate,'DD/MM/YYYY') \"Service Date\", "
             + "to_char(entrydate,'DD/MM/YYYY') \"Entry Date\", "

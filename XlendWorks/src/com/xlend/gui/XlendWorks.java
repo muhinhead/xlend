@@ -5,7 +5,6 @@ import com.xlend.constants.Selects;
 import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.remote.IMessageSender;
 import java.awt.Image;
 import java.awt.Window;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.logging.FileHandler;
@@ -49,7 +47,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.66.2";
+    public static final String version = "0.66.3";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1021,6 +1019,27 @@ public class XlendWorks {
         return null;
     }
 
+    public static String[] findLastService(IMessageSender exchanger, Xmachine xmachine) {
+        if (xmachine != null) {
+            try {
+                DbObject[] obs = exchanger.getDbObjects(Xmachservice.class,
+                        "xmachservice_id=(select max(xmachservice_id) from xmachservice where xmachine_id="+xmachine.getXmachineId()+")", null);
+                if (obs.length > 0) {
+                    Xmachservice ms = (Xmachservice) obs[0];
+                    String[] ans = new String[2];
+                    XDate xdt = new XDate(ms.getServicedate().getTime());
+                    ans[0] = xdt.toString();
+                    Xemployee serviceMan = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, ms.getServicedbyId());
+                    ans[1] = serviceMan.getClockNum()+" "+serviceMan.getFirstName();
+                    return ans;
+                }
+            } catch (RemoteException ex) {
+                logAndShowMessage(ex);
+            }
+        }
+        return null;
+    }
+    
     public static String[] findCurrentAssignment(IMessageSender exchanger, Xmachine xmachine) {
         if (xmachine != null) {
             try {

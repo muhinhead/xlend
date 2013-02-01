@@ -62,6 +62,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
     private boolean licensed;
     private JLabel siteAssignLbl;
     private JLabel operatorAssignLbl;
+    private JLabel lastServiceDateLBL;
+    private JLabel lastServicedByLBL;
 
     public EditMachinePanel(DbObject dbObject) {
         super(dbObject);
@@ -86,7 +88,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
             "Vehicle Nr:", "Engine Nr:", "Chassis Nr:",
             "Insurance Nr:", "Insurance Type:", "Insurance Amt:",
             "Deposit Amt:", "Contract Fee:", "Monthly Pay:",
-            "Pay Start Date:", "Pay End Date:", "Assigned to site:"
+            "Pay Start Date:", "Pay End Date:", "Assigned to site:",
+            "Last Service:", "Serviced By:"
         };
         labels = createLabelsArray(titles);
         insurabceAmtSP = new SelectedNumberSpinner(0.0, 0.0, 10000000.0, 0.10);
@@ -114,8 +117,12 @@ class EditMachinePanel extends EditPanelWithPhoto {
             contractFeeSP,
             monthlyPaySP,
             payStartDateSP = new SelectedDateSpinner(),
-            payEndDateSP = new SelectedDateSpinner()
-        };
+            payEndDateSP = new SelectedDateSpinner(),
+            lastServiceDateLBL = new JLabel(""),
+            lastServicedByLBL = new JLabel(""),};
+
+        lastServiceDateLBL.setBorder(BorderFactory.createEtchedBorder());
+        lastServicedByLBL.setBorder(BorderFactory.createEtchedBorder());
 
         expDateSP.addChangeListener(expDateSPchangeListener());
         licensedChB.addActionListener(licensedChBaction());
@@ -151,9 +158,11 @@ class EditMachinePanel extends EditPanelWithPhoto {
         componentRows.add(new JComponent[]{labels[idx++], insuranceNrField, labels[idx++], insuranceTypeCB, labels[idx++], insurabceAmtSP});
         componentRows.add(new JComponent[]{labels[idx++], depositAmtSP, labels[idx++], contractFeeSP, new JPanel(), new JPanel()});
         componentRows.add(new JComponent[]{labels[idx++], monthlyPaySP, labels[idx++], payStartDateSP, labels[idx++], payEndDateSP});
-        componentRows.add(new JComponent[]{labels[idx++], siteAssignLbl = new JLabel("site"), 
-            new JLabel("operator:",SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
-            new JButton(getAssignmentsAction("Assignments..."))});
+        componentRows.add(new JComponent[]{labels[idx++], siteAssignLbl = new JLabel("site"),
+                    new JLabel("operator:", SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
+                    new JButton(getAssignmentsAction("Assignments..."))});
+        componentRows.add(new JComponent[]{labels[idx++], lastServiceDateLBL, new JPanel(), new JPanel(), new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], lastServicedByLBL, new JPanel(), new JPanel(), new JPanel(), new JPanel()});
 
         siteAssignLbl.setBorder(BorderFactory.createEtchedBorder());
         operatorAssignLbl.setBorder(BorderFactory.createEtchedBorder());
@@ -233,6 +242,7 @@ class EditMachinePanel extends EditPanelWithPhoto {
             adjustLicenseFierlds();
             repaintLicFields();
             fillAssignmentInfo();
+            fillLastServiceInfo();
         }
         syncTypes();
         if (machine != null && machine.getXmachtype2Id() != null) {
@@ -306,7 +316,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
     private ActionListener machType2CBreloadAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncTypes();
@@ -340,7 +349,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
     private ActionListener licensedChBaction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 licensed = licensedChB.isSelected();
@@ -375,7 +383,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
     private ChangeListener expDateSPchangeListener() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 repaintLicFields();
@@ -385,7 +392,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
     private AbstractAction getAssignmentsAction(String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean ok = true;
@@ -409,8 +415,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
             }
         };
     }
-    
-        private void fillAssignmentInfo() {
+
+    private void fillAssignmentInfo() {
         String[] lbls = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), (Xmachine) getDbObject());
         if (lbls != null && lbls.length > 1) {
             siteAssignLbl.setText(lbls[0]);
@@ -421,4 +427,14 @@ class EditMachinePanel extends EditPanelWithPhoto {
         }
     }
 
+    private void fillLastServiceInfo() {
+        String[] lbls = XlendWorks.findLastService(DashBoard.getExchanger(), (Xmachine) getDbObject());
+        if (lbls!=null && lbls.length>1) {
+            lastServiceDateLBL.setText(lbls[0]);
+            lastServicedByLBL.setText(lbls[1]);
+        } else {
+            lastServiceDateLBL.setText("");
+            lastServicedByLBL.setText("");
+        }
+    }
 }

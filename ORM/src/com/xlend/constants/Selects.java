@@ -235,7 +235,7 @@ public class Selects {
             + "(select max(machtype) from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine\","
             + "(select max(s.name) from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
             + "xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xsite_id=a.xsite_id and xmachine_id=m.xmachine_id and date_end is null)) \"On site\" "
-            + "from xmachine m where not classify is null order by m.classify,cast(m.tmvnr as decimal)";
+            + "from xmachine m where not classify is null ";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",substr(companyname,1,20) \"Company Name\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_FROM_STORES =
@@ -249,17 +249,20 @@ public class Selects {
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\" "
             + "from xsupplier order by companyname";
-    public static final String SELECT_FROM_DIESELPCHS =
-            "Select xdieselpchs_id \"Id\", companyname \"Supplier\", purchased \"Date\", "
-            + "amount_liters \"Amount(liters)\", amount_rands \"Amount(Rands)\" "
-            + "from xdieselpchs,xsupplier where xsupplier.xsupplier_id=xdieselpchs.xsupplier_id";
-    public static final String SELECT_FROM_DIESELCARD =
-            "Select xdieselcard_id \"Id\", carddate \"Date\", "
-            + "concat(classify,tmvnr) \"Machine\", "
-            + "concat(substr(first_name,1,1),'.',sur_name,' (',clock_num,')') \"Operator\", "
-            + "name \"Site\", amount_liters \"Liters\" from xdieselcard,xmachine,xemployee,xsite "
-            + "where xdieselcard.xmachine_id=xmachine.xmachine_id and xdieselcard.xsite_id=xsite.xsite_id "
-            + "and xdieselcard.operator_id=xemployee.xemployee_id";
+//    public static final String SELECT_FROM_DIESELPCHS =
+//            "Select xdieselpchs_id \"Id\", companyname \"Supplier\", purchased \"Date\", "
+//            + "amount_liters \"Amount(liters)\", amount_rands \"Amount(Rands)\" "
+//            + "from xdieselpchs,xsupplier where xsupplier.xsupplier_id=xdieselpchs.xsupplier_id";
+//    public static final String SELECT_FROM_DIESELCARD =
+//            "Select xdieselcard_id \"Id\", carddate \"Date\", "
+//            + "concat(classify,tmvnr) \"Machine\", "
+//            + "concat(substr(first_name,1,1),'.',sur_name,' (',clock_num,')') \"Operator\", "
+//            + "name \"Site\", amount_liters \"Liters\" from xdieselcard,xmachine,xemployee,xsite "
+//            + "where xdieselcard.xmachine_id=xmachine.xmachine_id and xdieselcard.xsite_id=xsite.xsite_id "
+//            + "and xdieselcard.operator_id=xemployee.xemployee_id";
+    public static final String SELECT_FROM_DIESELCARTS =
+            "select xdieselcart_id \"Id\", fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", litres \"Litres\","
+            + "CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\"  from xdieselcart";
     public static final String PAYMETHODS =
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
     public static final String SELECT_FROM_CONSUMABLES =

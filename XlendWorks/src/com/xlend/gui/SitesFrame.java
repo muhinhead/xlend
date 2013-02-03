@@ -1,14 +1,9 @@
 package com.xlend.gui;
 
 import com.xlend.gui.site.*;
-import com.xlend.gui.work.DieselCardsGrid;
 import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
-import java.awt.Component;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,12 +18,12 @@ import javax.swing.SwingConstants;
 public class SitesFrame extends GeneralFrame {
 
     private GeneralGridPanel sitesPanel = null;
-    private GeneralGridPanel disprchsPanel = null;
-    private GeneralGridPanel dieselIsissPanel = null;
+//    private GeneralGridPanel disprchsPanel = null;
+//    private GeneralGridPanel dieselIsissPanel = null;
     private GeneralGridPanel consumablesPanel = null;
     private GeneralGridPanel breakdownsPanel;
     private GeneralGridPanel fuelPanel;
-    private GeneralGridPanel issuePanel;
+//    private GeneralGridPanel issuePanel;
     private GeneralGridPanel siteDiaryPanel;
     private GeneralGridPanel incidentsPanel;
     private GeneralGridPanel operatorClockSheetPanel;
@@ -37,12 +32,14 @@ public class SitesFrame extends GeneralFrame {
     
     private static String[] sheetList = new String[]{
         "Sites",
-        "Diesel Purchases",//"Diesel Rurchases", 
-        "Yard Diesel",//Diesel Issuing", 
-        "Consumables", "Breakdowns",
+//        "Diesel Purchases",//"Diesel Rurchases", 
+//        "Yard Diesel",//Diesel Issuing", 
+        "Consumables", 
+        "Breakdowns",
         "Petrol Issued",//Fuel", 
-        "Site Diesel",//Issuing", 
-        "Site Diary", "Incidents",
+        //"Site Diesel",//Issuing", 
+        "Site Diary", 
+        "Incidents",
         "Operator Clock Sheet",
         "PPE and Safety"
     };
@@ -67,35 +64,35 @@ public class SitesFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
             workTab.addTab(getSitesPanel(), sheets()[0]);
         }
+//        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+//            workTab.addTab(getDieselPrchsPanel(), sheets()[1]);
+//        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
+//            workTab.addTab(getDieselCardsPanel(), sheets()[2]);
+//        }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            workTab.addTab(getDieselPrchsPanel(), sheets()[1]);
+            workTab.addTab(getConsumablesPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
-            workTab.addTab(getDieselCardsPanel(), sheets()[2]);
+            workTab.addTab(getBreakdownsPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            workTab.addTab(getConsumablesPanel(), sheets()[3]);
+            workTab.addTab(getFuelPanel(), sheets()[3]);
         }
+//        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
+//            workTab.addTab(getIssuesPanel(), sheets()[6]);
+//        }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            workTab.addTab(getBreakdownsPanel(), sheets()[4]);
+            workTab.addTab(getSiteDiaryPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
-            workTab.addTab(getFuelPanel(), sheets()[5]);
+            workTab.addTab(getIncidentsPanel(), sheets()[5]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
-            workTab.addTab(getIssuesPanel(), sheets()[6]);
+            workTab.addTab(getOperatorClockSheetPanel(), sheets()[6]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[7])) {
-            workTab.addTab(getSiteDiaryPanel(), sheets()[7]);
-        }
-        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
-            workTab.addTab(getIncidentsPanel(), sheets()[8]);
-        }
-        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
-            workTab.addTab(getOperatorClockSheetPanel(), sheets()[9]);
-        }
-        if (XlendWorks.availableForCurrentUser(sheets()[10])) {
-            workTab.addTab(getPPEandSafetyPanel(), sheets()[10]);
+            workTab.addTab(getPPEandSafetyPanel(), sheets()[7]);
         }
         return workTab;
     }
@@ -112,29 +109,29 @@ public class SitesFrame extends GeneralFrame {
         return sitesPanel;
     }
 
-    private JPanel getDieselPrchsPanel() {
-        if (disprchsPanel == null) {
-            try {
-                registerGrid(disprchsPanel = new DieselPurchaseGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return disprchsPanel;
-    }
-
-    private JPanel getDieselCardsPanel() {
-        if (dieselIsissPanel == null) {
-            try {
-                registerGrid(dieselIsissPanel = new DieselCardsGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return dieselIsissPanel;
-    }
+//    private JPanel getDieselPrchsPanel() {
+//        if (disprchsPanel == null) {
+//            try {
+//                registerGrid(disprchsPanel = new DieselPurchaseGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return disprchsPanel;
+//    }
+//
+//    private JPanel getDieselCardsPanel() {
+//        if (dieselIsissPanel == null) {
+//            try {
+//                registerGrid(dieselIsissPanel = new DieselCardsGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return dieselIsissPanel;
+//    }
 
     private JPanel getConsumablesPanel() {
         if (consumablesPanel == null) {
@@ -172,17 +169,17 @@ public class SitesFrame extends GeneralFrame {
         return fuelPanel;
     }
 
-    private JPanel getIssuesPanel() {
-        if (issuePanel == null) {
-            try {
-                registerGrid(issuePanel = new IssueGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return issuePanel;
-    }
+//    private JPanel getIssuesPanel() {
+//        if (issuePanel == null) {
+//            try {
+//                registerGrid(issuePanel = new IssueGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return issuePanel;
+//    }
 
     private JPanel getSiteDiaryPanel() {
         if (siteDiaryPanel == null) {

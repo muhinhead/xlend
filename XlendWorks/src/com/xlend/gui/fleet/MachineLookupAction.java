@@ -30,7 +30,8 @@ public class MachineLookupAction extends AbstractAction {
             LookupDialog ld = new LookupDialog("Machines Lookup", machineCB,
                     new MachineGrid(DashBoard.getExchanger(),
                     Selects.SELECT_MASCHINES4LOOKUP
-                    + (additionalCondition == null ? "" : (" and " + additionalCondition)), false),
+                    + (additionalCondition == null ? "" : (" and " + additionalCondition))
+                    + " order by m.classify,cast(m.tmvnr as decimal)", false),
                     new String[]{"tmvnr", "reg_nr"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

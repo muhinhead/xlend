@@ -3,6 +3,7 @@ package com.xlend.gui;
 import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -24,10 +25,12 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel machineRentalRatesPanel;
     private GeneralGridPanel poolVehiclesPanel;
     private GeneralGridPanel companyVehiclesPanel;
+    private GeneralGridPanel dieselCartsPanel;
     private GeneralGridPanel machineServicesPanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", 
-        "Company Vehicles", "Machine Rental Rates", "Service"
+        "Company Vehicles", "Machine Rental Rates", "Diesel Carts", 
+        "Service"
     };
 
     public FleetFrame(IMessageSender exch) {
@@ -64,7 +67,10 @@ public class FleetFrame extends GeneralFrame {
             fleetTab.addTab(getMachineRentalRates(), sheets()[5]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
-            fleetTab.addTab(getMachineServices(), sheets()[6]);
+            fleetTab.addTab(getDieselCarts(), sheets()[6]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[7])) {
+            fleetTab.addTab(getMachineServices(), sheets()[7]);
         }
         return fleetTab;
     }
@@ -151,5 +157,17 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         return machineServicesPanel;
+    }
+
+    private JComponent getDieselCarts() {
+        if (dieselCartsPanel == null) {
+            try {
+                registerGrid(dieselCartsPanel = new DieselCartsGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return dieselCartsPanel;
     }
 }

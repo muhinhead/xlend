@@ -5,6 +5,7 @@ import com.xlend.gui.GeneralGridPanel;
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.admin.XlendMasterTableView;
 import com.xlend.orm.Xppeissue;
 import com.xlend.orm.Xppeissueitem;
 import com.xlend.orm.dbobject.DbObject;
@@ -22,15 +23,20 @@ import javax.swing.JOptionPane;
  */
 public class PPEissuesGrid extends GeneralGridPanel {
 
-    private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+    protected static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
         maxWidths.put(0, 40);
+        maxWidths.put(1, 250);
     }
 
     public PPEissuesGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_PPEISSUES, maxWidths, false);
         setBorder(BorderFactory.createTitledBorder("Output"));
+    }
+    
+    public PPEissuesGrid(IMessageSender exchanger, int xemployee_id,XlendMasterTableView masterView) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_PPEISSUES4EMPLOYEE.replaceAll("#", ""+xemployee_id), maxWidths, true, masterView);
     }
 
     @Override

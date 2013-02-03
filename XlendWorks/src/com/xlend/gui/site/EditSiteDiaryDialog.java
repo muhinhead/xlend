@@ -1,7 +1,6 @@
 package com.xlend.gui.site;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.orm.Xissuing;
 import com.xlend.orm.Xsitediary;
 import com.xlend.orm.dbobject.DbObject;
 

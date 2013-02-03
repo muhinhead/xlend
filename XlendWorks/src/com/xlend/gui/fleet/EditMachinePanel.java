@@ -1,6 +1,5 @@
 package com.xlend.gui.fleet;
 
-import com.xlend.constants.Selects;
 import com.xlend.gui.*;
 import com.xlend.gui.assign.MachineAssignmentDialog;
 import com.xlend.gui.assign.MachineAssignmentPanel;
@@ -13,7 +12,6 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -21,34 +19,25 @@ import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author nick
  */
-class EditMachinePanel extends EditPanelWithPhoto {
-
-    private JTextField idField;
+public class EditMachinePanel extends AbstractMechDevicePanel {
     private JSpinner tmvnrTextSP;
     private JComboBox machineTypeCB;
     private DefaultComboBoxModel machineTypeCbModel;
     private JComboBox machType2CB;
     private DefaultComboBoxModel machineType2CbModel;
-    private JTextField regNrField;
 //    private SelectedDateSpinner licenseDateSP;
-    private JCheckBox licensedChB;
-    private SelectedDateSpinner expDateSP;
-    private JLabel licenseStatusLBL;
+//    private JCheckBox licensedChB;
     private DefaultComboBoxModel licenseStatusCbModel;
     private JFormattedTextField vehicleNrField;
     private JTextField engineNrField;
-    private JTextField chassisNrField;
 //    private JSpinner classifySP;
     private JTextField insuranceNrField;
     private JComboBox insuranceTypeCB;
@@ -58,8 +47,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
     private JSpinner monthlyPaySP;
     private SelectedDateSpinner payStartDateSP;
     private SelectedDateSpinner payEndDateSP;
-    private JTabbedPane tabbedPane;
-    private boolean licensed;
+//    private JTabbedPane tabbedPane;
+//    private boolean licensed;
     private JLabel siteAssignLbl;
     private JLabel operatorAssignLbl;
     private JLabel lastServiceDateLBL;
@@ -123,11 +112,8 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
         lastServiceDateLBL.setBorder(BorderFactory.createEtchedBorder());
         lastServicedByLBL.setBorder(BorderFactory.createEtchedBorder());
-
-        expDateSP.addChangeListener(expDateSPchangeListener());
-        licensedChB.addActionListener(licensedChBaction());
-        licenseStatusLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-//        licenseStatusLBL.setForeground(Color.green);
+        licenseExpSetup();
+        
         machineTypeCB.addActionListener(machType2CBreloadAction());
 //        Dimension prefs = licenseStatusCB.getEditor().getEditorComponent().getPreferredSize();
 //        licenseStatusCB.getEditor().getEditorComponent().setMaximumSize(new Dimension(100,prefs.height));
@@ -251,6 +237,12 @@ class EditMachinePanel extends EditPanelWithPhoto {
 
     }
 
+    protected void adjustLicenseFierlds() {
+        super.adjustLicenseFierlds();
+        labels[6].setVisible(licensed);
+        labels[7].setVisible(licensed);
+    }
+    
     protected String getFleetNumberChar() {
         return "M";
     }
@@ -307,12 +299,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
         return false;
     }
 
-    private JComponent getTabbedPanel() {
-        tabbedPane = new MyJideTabbedPane();
-        tabbedPane.add(getPicPanel(), "Photo");
-        tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 400));
-        return tabbedPane;
-    }
 
     private ActionListener machType2CBreloadAction() {
         return new AbstractAction() {
@@ -345,49 +331,6 @@ class EditMachinePanel extends EditPanelWithPhoto {
                 XlendWorks.log(ex);
             }
         }
-    }
-
-    private ActionListener licensedChBaction() {
-        return new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                licensed = licensedChB.isSelected();
-                adjustLicenseFierlds();
-            }
-        };
-    }
-
-    private void adjustLicenseFierlds() {
-        expDateSP.setVisible(licensed);
-        licenseStatusLBL.setVisible(licensed);
-        labels[6].setVisible(licensed);
-        labels[7].setVisible(licensed);
-    }
-
-    private void repaintLicFields() {
-        Date expDt = (Date) expDateSP.getValue();
-        Date today = Calendar.getInstance().getTime();
-        long diff = (expDt.getTime() - today.getTime()) / (1000 * 3600 * 24);
-        licenseStatusLBL.setForeground(Color.black);
-        licenseStatusLBL.setBackground(Color.white);
-        if (expDt.before(today)) {
-            licenseStatusLBL.setForeground(Color.red);
-            licenseStatusLBL.setText("Expired");
-        } else if (diff <= 60) {
-            licenseStatusLBL.setForeground(Color.blue);
-            licenseStatusLBL.setText("2 Month Warning");
-        } else {
-            licenseStatusLBL.setText("Current");
-        }
-    }
-
-    private ChangeListener expDateSPchangeListener() {
-        return new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                repaintLicFields();
-            }
-        };
     }
 
     private AbstractAction getAssignmentsAction(String title) {
@@ -437,4 +380,5 @@ class EditMachinePanel extends EditPanelWithPhoto {
             lastServicedByLBL.setText("");
         }
     }
+
 }

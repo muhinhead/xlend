@@ -4,7 +4,6 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xissuing;
 import com.xlend.orm.Xsitediary;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;

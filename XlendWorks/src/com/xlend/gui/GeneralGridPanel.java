@@ -16,7 +16,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public abstract class GeneralGridPanel extends DbTableGridPanel {
 
-    public static final int PAGESIZE = 250;
+    public static final int PAGESIZE = 500;
     private String select;
     protected IMessageSender exchanger;
     public boolean isExternalView = false;

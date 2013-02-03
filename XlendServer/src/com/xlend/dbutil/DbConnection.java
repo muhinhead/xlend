@@ -18,8 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,8 +26,8 @@ import java.util.logging.Logger;
 public class DbConnection {
 
     private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 36;
-    public static final String DB_VERSION = "0.36";
+    private static final int DB_VERSION_ID = 37;
+    public static final String DB_VERSION = "0.37";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -460,6 +458,24 @@ public class DbConnection {
         + "    constraint xmachservice_xemployee_fk foreign key (servicedby_id) references xemployee (xemployee_id),"
         + "    constraint xmachservice_xemployee_fk2 foreign key (assistedby_id) references xemployee (xemployee_id),"
         + "    constraint xmachservice_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)"
+        + ")",
+        //36->37
+        "drop table xdieselpchs",
+        "drop table xdieselcard",
+        "drop table xissuing",
+        "create table xdieselcart"
+        + "("
+        + "    xdieselcart_id   int not null auto_increment,"
+        + "    fleet_nr         int not null,"
+        + "    reg_nr           varchar(32),"
+        + "    expdate          date,"
+        + "    litres           int not null,"
+        + "    chassis_nr       varchar(32),"
+        + "    assigned_id      int,"
+        + "    stamp            timestamp,"
+        + "    photo            mediumblob,"
+        + "    constraint xdieselcart_pk primary key (xdieselcart_id),"
+        + "    constraint xdieselcart_xmachine_fk foreign key (assigned_id) references xmachine (xmachine_id)"
         + ")"
     };
 

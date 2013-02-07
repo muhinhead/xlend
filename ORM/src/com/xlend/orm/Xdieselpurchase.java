@@ -8,50 +8,47 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xpayment extends DbObject  {
+public class Xdieselpurchase extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xpaymentId = null;
+    private Integer xdieselpurchaseId = null;
     private Integer xsupplierId = null;
-    private Date paydate = null;
-    private Double ammount = null;
-    private Integer paidfrom = null;
-    private Integer paydbyId = null;
+    private Date purchaseDate = null;
+    private Double litres = null;
+    private Double randFactor = null;
 
-    public Xpayment(Connection connection) {
-        super(connection, "xpayment", "xpayment_id");
-        setColumnNames(new String[]{"xpayment_id", "xsupplier_id", "paydate", "ammount", "paidfrom", "paydby_id"});
+    public Xdieselpurchase(Connection connection) {
+        super(connection, "xdieselpurchase", "xdieselpurchase_id");
+        setColumnNames(new String[]{"xdieselpurchase_id", "xsupplier_id", "purchase_date", "litres", "rand_factor"});
     }
 
-    public Xpayment(Connection connection, Integer xpaymentId, Integer xsupplierId, Date paydate, Double ammount, Integer paidfrom, Integer paydbyId) {
-        super(connection, "xpayment", "xpayment_id");
-        setNew(xpaymentId.intValue() <= 0);
-//        if (xpaymentId.intValue() != 0) {
-            this.xpaymentId = xpaymentId;
+    public Xdieselpurchase(Connection connection, Integer xdieselpurchaseId, Integer xsupplierId, Date purchaseDate, Double litres, Double randFactor) {
+        super(connection, "xdieselpurchase", "xdieselpurchase_id");
+        setNew(xdieselpurchaseId.intValue() <= 0);
+//        if (xdieselpurchaseId.intValue() != 0) {
+            this.xdieselpurchaseId = xdieselpurchaseId;
 //        }
         this.xsupplierId = xsupplierId;
-        this.paydate = paydate;
-        this.ammount = ammount;
-        this.paidfrom = paidfrom;
-        this.paydbyId = paydbyId;
+        this.purchaseDate = purchaseDate;
+        this.litres = litres;
+        this.randFactor = randFactor;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xpayment xpayment = null;
+        Xdieselpurchase xdieselpurchase = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpayment_id,xsupplier_id,paydate,ammount,paidfrom,paydby_id FROM xpayment WHERE xpayment_id=" + id;
+        String stmt = "SELECT xdieselpurchase_id,xsupplier_id,purchase_date,litres,rand_factor FROM xdieselpurchase WHERE xdieselpurchase_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xpayment = new Xpayment(getConnection());
-                xpayment.setXpaymentId(new Integer(rs.getInt(1)));
-                xpayment.setXsupplierId(new Integer(rs.getInt(2)));
-                xpayment.setPaydate(rs.getDate(3));
-                xpayment.setAmmount(rs.getDouble(4));
-                xpayment.setPaidfrom(new Integer(rs.getInt(5)));
-                xpayment.setPaydbyId(new Integer(rs.getInt(6)));
-                xpayment.setNew(false);
+                xdieselpurchase = new Xdieselpurchase(getConnection());
+                xdieselpurchase.setXdieselpurchaseId(new Integer(rs.getInt(1)));
+                xdieselpurchase.setXsupplierId(new Integer(rs.getInt(2)));
+                xdieselpurchase.setPurchaseDate(rs.getDate(3));
+                xdieselpurchase.setLitres(rs.getDouble(4));
+                xdieselpurchase.setRandFactor(rs.getDouble(5));
+                xdieselpurchase.setNew(false);
             }
         } finally {
             try {
@@ -60,7 +57,7 @@ public class Xpayment extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xpayment;
+        return xdieselpurchase;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -69,30 +66,29 @@ public class Xpayment extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xpayment ("+(getXpaymentId().intValue()!=0?"xpayment_id,":"")+"xsupplier_id,paydate,ammount,paidfrom,paydby_id) values("+(getXpaymentId().intValue()!=0?"?,":"")+"?,?,?,?,?)";
+                "INSERT INTO xdieselpurchase ("+(getXdieselpurchaseId().intValue()!=0?"xdieselpurchase_id,":"")+"xsupplier_id,purchase_date,litres,rand_factor) values("+(getXdieselpurchaseId().intValue()!=0?"?,":"")+"?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXpaymentId().intValue()!=0) {
-                 ps.setObject(++n, getXpaymentId());
+             if (getXdieselpurchaseId().intValue()!=0) {
+                 ps.setObject(++n, getXdieselpurchaseId());
              }
              ps.setObject(++n, getXsupplierId());
-             ps.setObject(++n, getPaydate());
-             ps.setObject(++n, getAmmount());
-             ps.setObject(++n, getPaidfrom());
-             ps.setObject(++n, getPaydbyId());
+             ps.setObject(++n, getPurchaseDate());
+             ps.setObject(++n, getLitres());
+             ps.setObject(++n, getRandFactor());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXpaymentId().intValue()==0) {
-             stmt = "SELECT max(xpayment_id) FROM xpayment";
+         if (getXdieselpurchaseId().intValue()==0) {
+             stmt = "SELECT max(xdieselpurchase_id) FROM xdieselpurchase";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXpaymentId(new Integer(rs.getInt(1)));
+                     setXdieselpurchaseId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -118,16 +114,15 @@ public class Xpayment extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xpayment " +
-                    "SET xsupplier_id = ?, paydate = ?, ammount = ?, paidfrom = ?, paydby_id = ?" + 
-                    " WHERE xpayment_id = " + getXpaymentId();
+                    "UPDATE xdieselpurchase " +
+                    "SET xsupplier_id = ?, purchase_date = ?, litres = ?, rand_factor = ?" + 
+                    " WHERE xdieselpurchase_id = " + getXdieselpurchaseId();
             try {
                 ps = getConnection().prepareStatement(stmt);
                 ps.setObject(1, getXsupplierId());
-                ps.setObject(2, getPaydate());
-                ps.setObject(3, getAmmount());
-                ps.setObject(4, getPaidfrom());
-                ps.setObject(5, getPaydbyId());
+                ps.setObject(2, getPurchaseDate());
+                ps.setObject(3, getLitres());
+                ps.setObject(4, getRandFactor());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -145,29 +140,29 @@ public class Xpayment extends DbObject  {
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xpayment " +
-                "WHERE xpayment_id = " + getXpaymentId();
+                "DELETE FROM xdieselpurchase " +
+                "WHERE xdieselpurchase_id = " + getXdieselpurchaseId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXpaymentId(new Integer(-getXpaymentId().intValue()));
+        setXdieselpurchaseId(new Integer(-getXdieselpurchaseId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXpaymentId().intValue() < 0);
+        return (getXdieselpurchaseId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpayment_id,xsupplier_id,paydate,ammount,paidfrom,paydby_id FROM xpayment " +
+        String stmt = "SELECT xdieselpurchase_id,xsupplier_id,purchase_date,litres,rand_factor FROM xdieselpurchase " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -177,7 +172,7 @@ public class Xpayment extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xpayment(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getDate(3),rs.getDouble(4),new Integer(rs.getInt(5)),new Integer(rs.getInt(6))));
+                lst.add(dbObj=new Xdieselpurchase(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getDate(3),rs.getDouble(4),rs.getDouble(5)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -187,10 +182,10 @@ public class Xpayment extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xpayment[] objects = new Xpayment[lst.size()];
+        Xdieselpurchase[] objects = new Xdieselpurchase[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xpayment xpayment = (Xpayment) lst.get(i);
-            objects[i] = xpayment;
+            Xdieselpurchase xdieselpurchase = (Xdieselpurchase) lst.get(i);
+            objects[i] = xdieselpurchase;
         }
         return objects;
     }
@@ -202,7 +197,7 @@ public class Xpayment extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xpayment_id FROM xpayment " +
+        String stmt = "SELECT xdieselpurchase_id FROM xdieselpurchase " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -220,27 +215,27 @@ public class Xpayment extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXpaymentId() + getDelimiter();
+    //    return getXdieselpurchaseId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xpaymentId;
+        return xdieselpurchaseId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXpaymentId(id);
+        setXdieselpurchaseId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXpaymentId() {
-        return xpaymentId;
+    public Integer getXdieselpurchaseId() {
+        return xdieselpurchaseId;
     }
 
-    public void setXpaymentId(Integer xpaymentId) throws ForeignKeyViolationException {
-        setWasChanged(this.xpaymentId != null && this.xpaymentId != xpaymentId);
-        this.xpaymentId = xpaymentId;
-        setNew(xpaymentId.intValue() == 0);
+    public void setXdieselpurchaseId(Integer xdieselpurchaseId) throws ForeignKeyViolationException {
+        setWasChanged(this.xdieselpurchaseId != null && this.xdieselpurchaseId != xdieselpurchaseId);
+        this.xdieselpurchaseId = xdieselpurchaseId;
+        setNew(xdieselpurchaseId.intValue() == 0);
     }
 
     public Integer getXsupplierId() {
@@ -249,60 +244,45 @@ public class Xpayment extends DbObject  {
 
     public void setXsupplierId(Integer xsupplierId) throws SQLException, ForeignKeyViolationException {
         if (xsupplierId!=null && !Xsupplier.exists(getConnection(),"xsupplier_id = " + xsupplierId)) {
-            throw new ForeignKeyViolationException("Can't set xsupplier_id, foreign key violation: xpayment_xsupplier_fk");
+            throw new ForeignKeyViolationException("Can't set xsupplier_id, foreign key violation: xdieselpurchase_xsupplier_fk");
         }
         setWasChanged(this.xsupplierId != null && !this.xsupplierId.equals(xsupplierId));
         this.xsupplierId = xsupplierId;
     }
 
-    public Date getPaydate() {
-        return paydate;
+    public Date getPurchaseDate() {
+        return purchaseDate;
     }
 
-    public void setPaydate(Date paydate) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.paydate != null && !this.paydate.equals(paydate));
-        this.paydate = paydate;
+    public void setPurchaseDate(Date purchaseDate) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.purchaseDate != null && !this.purchaseDate.equals(purchaseDate));
+        this.purchaseDate = purchaseDate;
     }
 
-    public Double getAmmount() {
-        return ammount;
+    public Double getLitres() {
+        return litres;
     }
 
-    public void setAmmount(Double ammount) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.ammount != null && !this.ammount.equals(ammount));
-        this.ammount = ammount;
+    public void setLitres(Double litres) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.litres != null && !this.litres.equals(litres));
+        this.litres = litres;
     }
 
-    public Integer getPaidfrom() {
-        return paidfrom;
+    public Double getRandFactor() {
+        return randFactor;
     }
 
-    public void setPaidfrom(Integer paidfrom) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.paidfrom != null && !this.paidfrom.equals(paidfrom));
-        this.paidfrom = paidfrom;
-    }
-
-    public Integer getPaydbyId() {
-        return paydbyId;
-    }
-
-    public void setPaydbyId(Integer paydbyId) throws SQLException, ForeignKeyViolationException {
-        if (null != paydbyId)
-            paydbyId = paydbyId == 0 ? null : paydbyId;
-        if (paydbyId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + paydbyId)) {
-            throw new ForeignKeyViolationException("Can't set paydby_id, foreign key violation: xpayment_xemployee_fk");
-        }
-        setWasChanged(this.paydbyId != null && !this.paydbyId.equals(paydbyId));
-        this.paydbyId = paydbyId;
+    public void setRandFactor(Double randFactor) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.randFactor != null && !this.randFactor.equals(randFactor));
+        this.randFactor = randFactor;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[6];
-        columnValues[0] = getXpaymentId();
+        Object[] columnValues = new Object[5];
+        columnValues[0] = getXdieselpurchaseId();
         columnValues[1] = getXsupplierId();
-        columnValues[2] = getPaydate();
-        columnValues[3] = getAmmount();
-        columnValues[4] = getPaidfrom();
-        columnValues[5] = getPaydbyId();
+        columnValues[2] = getPurchaseDate();
+        columnValues[3] = getLitres();
+        columnValues[4] = getRandFactor();
         return columnValues;
     }
 
@@ -319,30 +299,25 @@ public class Xpayment extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXpaymentId(Integer.parseInt(flds[0]));
+            setXdieselpurchaseId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXpaymentId(null);
+            setXdieselpurchaseId(null);
         }
         try {
             setXsupplierId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
             setXsupplierId(null);
         }
-        setPaydate(toDate(flds[2]));
+        setPurchaseDate(toDate(flds[2]));
         try {
-            setAmmount(Double.parseDouble(flds[3]));
+            setLitres(Double.parseDouble(flds[3]));
         } catch(NumberFormatException ne) {
-            setAmmount(null);
+            setLitres(null);
         }
         try {
-            setPaidfrom(Integer.parseInt(flds[4]));
+            setRandFactor(Double.parseDouble(flds[4]));
         } catch(NumberFormatException ne) {
-            setPaidfrom(null);
-        }
-        try {
-            setPaydbyId(Integer.parseInt(flds[5]));
-        } catch(NumberFormatException ne) {
-            setPaydbyId(null);
+            setRandFactor(null);
         }
     }
 }

@@ -236,6 +236,7 @@ public class Selects {
             + "(select max(s.name) from xsite s,xopmachassing a where s.xsite_id=a.xsite_id and a.xmachine_id=m.xmachine_id and date_end is null and "
             + "xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xsite_id=a.xsite_id and xmachine_id=m.xmachine_id and date_end is null)) \"On site\" "
             + "from xmachine m where not classify is null ";
+    public static final String DIESELCARTS = "select xdieselcart_id, fleet_nr from xdieselcart order by fleet_nr";
     public static final String SUPPLIERS = "Select xsupplier_id \"Id\",substr(companyname,1,20) \"Company Name\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_FROM_STORES =
@@ -249,6 +250,15 @@ public class Selects {
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\" "
             + "from xsupplier order by companyname";
+    public static final String SELECT_DIESELCARTS4LOOKUP = 
+            "select xdieselcart_id\"Id\",fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", "
+            + "chassis_nr \"Chassis Nr\" from xdieselcart order by fleet_nr";
+    public static final String SELECT_FROM_DIESELPURCHASES =
+            "select xdieselpurchase_id \"Id\", "
+            + "(select companyname from xsupplier where xsupplier_id=xdieselpurchase.xsupplier_id) \"Supplier\", "
+            + "to_char(purchase_date,'DD/MM/YYYY') \"Date of Purchase\", litres \"Litres\", "
+            + "ROUND(rand_factor,2) \"Rand Factor\", ROUND(litres*rand_factor) \"Total R\" "
+            + " from xdieselpurchase order by purchase_date desc";
 //    public static final String SELECT_FROM_DIESELPCHS =
 //            "Select xdieselpchs_id \"Id\", companyname \"Supplier\", purchased \"Date\", "
 //            + "amount_liters \"Amount(liters)\", amount_rands \"Amount(Rands)\" "
@@ -263,6 +273,13 @@ public class Selects {
     public static final String SELECT_FROM_DIESELCARTS =
             "select xdieselcart_id \"Id\", fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", litres \"Litres\","
             + "CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\"  from xdieselcart";
+    public static final String SELECT_FROM_DIESELCARTISSUES = 
+            "select xdieselcartissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\","
+            + "(select fleet_nr from xdieselcart where xdieselcart_id=xdieselcartissue.xdieselcart_id) \"Fleet Nr of Diesel Cart\","
+            + "liters \"Liters\","
+            + "(select companyname from xsupplier where xsupplier_id=xdieselcartissue.xsupplier_id) \"From Supplier\" "
+            + " from xdieselcartissue order by issue_date desc";
     public static final String PAYMETHODS =
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
     public static final String SELECT_FROM_CONSUMABLES =
@@ -310,13 +327,13 @@ public class Selects {
     public static final String NOTFIXED_TIMESHEETDATES =
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static final String SELECT_FROM_PAYMENTS =
-            "Select xpayment_id \"Id\", companyname \"Supplier\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
+            "Select xpayment_id \"Id\", companyname \"Supplier\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Paid By\" "
             + "from xpayment, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
             + "order by paydate desc";
     public static final String SELECT_SUPPLIERS_PAYMENTS =
-            "Select xpayment_id \"Id\", paydate \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
+            "Select xpayment_id \"Id\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Paid By\" "
             + "from xpayment, cbitems "
             + "where cbitems.id=xpayment.paidfrom and xsupplier_id=# "

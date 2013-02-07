@@ -1438,6 +1438,61 @@ create table xdieselcart
     constraint xdieselcart_xmachine_fk foreign key (assigned_id) references xmachine (xmachine_id)
 );
 
+create table xdieselpurchase
+(
+    xdieselpurchase_id int not null auto_increment,
+    xsupplier_id       int not null,
+    purchase_date      date not null,
+    litres             decimal(6,2) not null,
+    rand_factor        decimal(5,2) not null,
+    constraint xdieselpurchase_pk primary key (xdieselpurchase_id),
+    constraint xdieselpurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
+);
+
+create table xdieselcartissue
+(
+    xdieselcartissue_id int not null auto_increment,
+    issue_date          date not null,
+    driver_id           int not null,
+    xdieselcart_id      int not null,
+    liters              decimal(6,2) not null,
+    xsupplier_id        int not null,
+    constraint xdieselcartissue_pk primary key (xdieselcartissue_id),
+    constraint xdieselcartissue_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
+    constraint xdieselcartissue_xdieselcart_fk foreign key (xdieselcart_id) references xdieselcart (xdieselcart_id),
+    constraint xdieselcartissue_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
+);
+
+create table xdiesel2plant
+(
+    xdiesel2plant_id  int not null auto_increment,
+    xdieselcart_id    int not null,
+    start_date        date,
+    driver_id         int not null,
+    constraint xdiesel2plant_pk primary key (xdiesel2plant_id),
+    constraint xdiesel2plant_xdieselcart_fk foreign key (xdieselcart_id) references xdieselcart (xdieselcart_id),
+    constraint xdiesel2plant_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id)
+);
+
+create table xdiesel2plantitem
+(
+    xdiesel2plantitem_id int not null auto_increment,
+    xdiesel2plant_id     int not null,
+    add_date             date not null,
+    xmachine_id          int not null,
+    xsite_id             int not null,
+    operator_id          int not null,
+    hour_meter           int not null,
+    issuedby_id          int not null,
+    liters               decimal(6,2) not null,
+    constraint xdiesel2plantitem_pk primary key (xdiesel2plantitem_id),
+    constraint xdiesel2plantitem_xdiesel2plant_fk foreign key (xdiesel2plant_id) references xdiesel2plant (xdiesel2plant_id),
+    constraint xdiesel2plantitem_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
+    constraint xdiesel2plantitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
+    constraint xdiesel2plantitem_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
+    constraint xdiesel2plantitem_xemployee_fk2 foreign key (issuedby_id) references xemployee (xemployee_id)
+);
+
 ----------------- auxiliary tables -------------------
 
 create view v_userprofile as 

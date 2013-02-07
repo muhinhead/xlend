@@ -2,6 +2,8 @@ package com.xlend.gui.fleet;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
+import com.xlend.gui.site.IssueToDieselCartGrid;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xdieselcart;
 import com.xlend.orm.dbobject.ComboItem;
@@ -11,7 +13,10 @@ import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.rmi.RemoteException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
@@ -80,8 +85,8 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
             getGridPanel(new JComponent[]{
                 new JPanel(),
                 new JLabel("Assigned to Vehicle:", SwingConstants.RIGHT),
-                comboPanelWithLookupBtn(assignedVehicleCB = new JComboBox(assignedVehicleCbModel), 
-                    new MachineLookupAction(assignedVehicleCB, "(m.classify='P' or m.classify='V')")),
+                comboPanelWithLookupBtn(assignedVehicleCB = new JComboBox(assignedVehicleCbModel),
+                new MachineLookupAction(assignedVehicleCB, "(m.classify='P' or m.classify='V')")),
                 new JPanel(),
                 new JPanel()
             })
@@ -103,6 +108,20 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
         licStatusLBL.setVisible(licensed);
     }
 
+    protected JComponent getTabbedPanel() {
+        JComponent pane = super.getTabbedPanel();
+        Xdieselcart xc = (Xdieselcart) getDbObject();
+        if (xc != null) {
+            try {
+                pane.add("Input",new IssueToDieselCartGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
+                pane.add("Output",new JPanel());
+            } catch (RemoteException ex) {
+                XlendWorks.logAndShowMessage(ex);
+            }
+        }
+        return pane;
+    }
+
     @Override
     public void loadData() {
         Xdieselcart xc = (Xdieselcart) getDbObject();
@@ -111,7 +130,7 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
             if (xc.getExpdate() != null) {
                 expDateSP.setValue(new java.util.Date(xc.getExpdate().getTime()));
                 licensedChB.setSelected(true);
-            } 
+            }
             fleetNrSP.setValue(xc.getFleetNr());
             regNrField.setText(xc.getRegNr());
             licensedChB.setSelected(licensed = (xc.getExpdate() != null));

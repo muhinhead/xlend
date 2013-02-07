@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.site.IssueToDieselCartGrid;
 import com.xlend.gui.site.*;
 import com.xlend.gui.work.SitesGrid;
 import com.xlend.remote.IMessageSender;
@@ -30,6 +31,8 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel ppeBuysPanel;
     private GeneralGridPanel ppeIssuesPanel;
     private GeneralGridPanel issueToDieselCartPanel;
+    private GeneralGridPanel dieselToPlantPanel;
+    
     
     private static String[] sheetList = new String[]{
         "Sites",
@@ -43,7 +46,8 @@ public class SitesFrame extends GeneralFrame {
         "Incidents",
         "Operator Clock Sheet",
         "PPE and Safety",
-        "Issue to Diesel Cart"
+        "Issue to Diesel Cart",
+        "Diesel to Plant"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -98,6 +102,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[8])) {
             workTab.addTab(getIssueToDieselCartPanel(), sheets()[8]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
+            workTab.addTab(getDieselToPlantPanel(), sheets()[9]);
         }
         return workTab;
     }
@@ -233,6 +240,18 @@ public class SitesFrame extends GeneralFrame {
         }
         return issueToDieselCartPanel;
     }
+
+    private JComponent getDieselToPlantPanel() {
+        if (dieselToPlantPanel == null) {
+            try {
+                registerGrid(dieselToPlantPanel = new DieselToPlantGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return dieselToPlantPanel;
+    }
     
     private JComponent getPPEandSafetyPanel() {
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -254,5 +273,6 @@ public class SitesFrame extends GeneralFrame {
         }
         return sp;
     }
+
 
 }

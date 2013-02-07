@@ -1,7 +1,9 @@
-package com.xlend.gui;
+package com.xlend.gui.site;
 
-import com.xlend.gui.site.EditIssueToDieselDialog;
 import com.xlend.constants.Selects;
+import com.xlend.gui.GeneralFrame;
+import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xdieselcartissue;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
@@ -15,6 +17,7 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 public class IssueToDieselCartGrid extends GeneralGridPanel {
+
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
@@ -25,9 +28,13 @@ public class IssueToDieselCartGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_DIESELCARTISSUES, maxWidths, false);
     }
 
+    public IssueToDieselCartGrid(IMessageSender exchanger, int xdieselcart_id) throws RemoteException {
+        super(exchanger, Selects.SELECT_DIESELCARTISSUES.replace("#", "" + xdieselcart_id), maxWidths, true);
+    }
+
     @Override
     protected AbstractAction addAction() {
-         return new AbstractAction("Add Issue") {
+        return new AbstractAction("Add Issue") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -90,5 +97,4 @@ public class IssueToDieselCartGrid extends GeneralGridPanel {
             }
         };
     }
-    
 }

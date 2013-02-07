@@ -11,6 +11,8 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -18,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
@@ -90,8 +93,25 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
         setPreferredSize(new Dimension(400, getPreferredSize().height));
+        supplierCB.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                recalcSupplierBalance();
+            }
+        });
+        supplierCB.setSelectedIndex(0);
     }
 
+    private void recalcSupplierBalance() {
+        Integer supplierID = getSelectedCbItem(supplierCB);
+        if (supplierID != null) {
+            java.util.Date dt = (java.util.Date) purchaseDateSP.getValue();
+            String sBalance = XlendWorks.calcDieselBalanceAtSupplier(
+                    DashBoard.getExchanger(), supplierID, dt);
+            balanceAvailableLBL.setText(sBalance);
+        }
+    }
+    
     @Override
     public void loadData() {
         Xdieselpurchase xdp = (Xdieselpurchase) getDbObject();
@@ -101,6 +121,7 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
             purchaseDateSP.setValue(new java.util.Date(xdp.getPurchaseDate().getTime()));
             litresPurchasedSP.setValue(xdp.getLitres());
             randFactorSP.setValue(xdp.getRandFactor());
+            recalcSupplierBalance();
         }
     }
 

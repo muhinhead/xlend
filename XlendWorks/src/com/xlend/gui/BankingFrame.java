@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
+import com.xlend.gui.banking.DieselPurchaseGrid;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -15,10 +16,11 @@ public class BankingFrame extends GeneralFrame {
 
     private AccountsGrid bankAccountsPanel;
     private static String[] sheetList = new String[]{
-        "Accounts", "Bank Balance"
+        "Accounts", "Bank Balance", "Diesel Purchase"
     };
-    private AccountsGrid accountsPanel;
-    private BankBalanceGrid balancePanel;
+    private GeneralGridPanel accountsPanel;
+    private GeneralGridPanel balancePanel;
+    private GeneralGridPanel dieselPurchasePanel;
     
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
@@ -41,6 +43,9 @@ public class BankingFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
             bankTab.addTab(getBalancePanel(), sheets()[1]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
+            bankTab.addTab(getDieselPurchasePanel(), sheets()[2]);
         }
         return bankTab;
     }
@@ -69,4 +74,15 @@ public class BankingFrame extends GeneralFrame {
         return balancePanel;
     }
     
+    private JPanel getDieselPurchasePanel() {
+        if (dieselPurchasePanel == null) {
+            try {
+                registerGrid(dieselPurchasePanel = new DieselPurchaseGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return dieselPurchasePanel;
+    }
 }

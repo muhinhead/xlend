@@ -39,7 +39,7 @@ public abstract class EditRecordDialog extends PopupDialog {
 
 //        applyButton.setToolTipText("Apply changes to database");
         saveButton.setToolTipText("Save changes and close dialog");
-        cancelButton.setToolTipText("Discard changes and clode dialog");
+        cancelButton.setToolTipText("Discard changes and close dialog");
         
         getContentPane().add(new JPanel(), BorderLayout.WEST);
         getContentPane().add(new JPanel(), BorderLayout.EAST);

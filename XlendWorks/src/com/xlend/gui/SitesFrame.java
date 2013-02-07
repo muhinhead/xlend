@@ -29,6 +29,7 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel operatorClockSheetPanel;
     private GeneralGridPanel ppeBuysPanel;
     private GeneralGridPanel ppeIssuesPanel;
+    private GeneralGridPanel issueToDieselCartPanel;
     
     private static String[] sheetList = new String[]{
         "Sites",
@@ -41,7 +42,8 @@ public class SitesFrame extends GeneralFrame {
         "Site Diary", 
         "Incidents",
         "Operator Clock Sheet",
-        "PPE and Safety"
+        "PPE and Safety",
+        "Issue to Diesel Cart"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -93,6 +95,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[7])) {
             workTab.addTab(getPPEandSafetyPanel(), sheets()[7]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
+            workTab.addTab(getIssueToDieselCartPanel(), sheets()[8]);
         }
         return workTab;
     }
@@ -217,6 +222,18 @@ public class SitesFrame extends GeneralFrame {
         return operatorClockSheetPanel;
     }
 
+    private JComponent getIssueToDieselCartPanel() {
+        if (issueToDieselCartPanel == null) {
+            try {
+                registerGrid(issueToDieselCartPanel = new IssueToDieselCartGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return issueToDieselCartPanel;
+    }
+    
     private JComponent getPPEandSafetyPanel() {
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         sp.setDividerLocation(250);
@@ -237,4 +254,5 @@ public class SitesFrame extends GeneralFrame {
         }
         return sp;
     }
+
 }

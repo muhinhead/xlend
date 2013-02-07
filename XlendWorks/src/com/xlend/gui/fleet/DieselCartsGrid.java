@@ -27,6 +27,11 @@ public class DieselCartsGrid extends GeneralGridPanel {
     public DieselCartsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_DIESELCARTS, maxWidths, false);
     }
+    
+    public DieselCartsGrid(IMessageSender exchanger, 
+            String select, boolean readOnly) throws RemoteException {
+        super(exchanger, select, maxWidths, false);
+    }
 
     @Override
     protected AbstractAction addAction() {
@@ -37,8 +42,9 @@ public class DieselCartsGrid extends GeneralGridPanel {
                     EditDieselCartDialog ed = new EditDieselCartDialog("Add Diesel Cart",null);
                     if (EditDieselCartDialog.okPressed) {
                         Xdieselcart xc = (Xdieselcart) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), 
-                                xc.getXdieselcartId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger,
+                                getTableView(), getTableDoc(), getSelect(), xc.getXdieselcartId(), 
+                                getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,7 +62,7 @@ public class DieselCartsGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 try {
                     Xdieselcart xc = (Xdieselcart) exchanger.loadDbObjectOnID(Xdieselcart.class, id);
-                    new EditDieselCartDialog("Edit Cart Record", xc);
+                    new EditDieselCartDialog("Edit Diesel Cart", xc);
                     if (EditDieselCartDialog.okPressed) {
                         GeneralFrame.updateGrid(exchanger, getTableView(),
                                 getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
@@ -71,7 +77,7 @@ public class DieselCartsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Cart") {
+        return new AbstractAction("Delete Diesel Cart") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

@@ -14,6 +14,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -501,6 +503,10 @@ public class XlendWorks {
     public static ComboItem[] loadEmployees(IMessageSender exchanger) { //, boolean freeOnly) {
 //        String select = freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES;
         return loadOnSelect(exchanger, Selects.EMPLOYEES);
+    }
+
+    public static ComboItem[] loadAllDieselCarts(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, Selects.DIESELCARTS);
     }
 
     public static ComboItem[] loadAllSuppliers(IMessageSender exchanger) {
@@ -1023,14 +1029,14 @@ public class XlendWorks {
         if (xmachine != null) {
             try {
                 DbObject[] obs = exchanger.getDbObjects(Xmachservice.class,
-                        "xmachservice_id=(select max(xmachservice_id) from xmachservice where xmachine_id="+xmachine.getXmachineId()+")", null);
+                        "xmachservice_id=(select max(xmachservice_id) from xmachservice where xmachine_id=" + xmachine.getXmachineId() + ")", null);
                 if (obs.length > 0) {
                     Xmachservice ms = (Xmachservice) obs[0];
                     String[] ans = new String[2];
                     XDate xdt = new XDate(ms.getServicedate().getTime());
                     ans[0] = xdt.toString();
                     Xemployee serviceMan = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, ms.getServicedbyId());
-                    ans[1] = serviceMan.getClockNum()+" "+serviceMan.getFirstName();
+                    ans[1] = serviceMan.getClockNum() + " " + serviceMan.getFirstName();
                     return ans;
                 }
             } catch (RemoteException ex) {
@@ -1039,7 +1045,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static String[] findCurrentAssignment(IMessageSender exchanger, Xmachine xmachine) {
         if (xmachine != null) {
             try {
@@ -1156,7 +1162,7 @@ public class XlendWorks {
     }
 
     public static String getStockLevels(IMessageSender exchanger, Integer xppetypeID) {
-        if (xppetypeID != null && xppetypeID > 0) {
+        if (xppetypeID != null && xppetypeID.intValue() > 0) {
             ComboItem[] itms = loadOnSelect(exchanger, "select " + xppetypeID
                     + ", (select ifnull(sum(quantity),0) from xppebuyitem where xppetype_id=" + xppetypeID + ") - "
                     + "(select ifnull(sum(quantity),0) from xppeissueitem where xppetype_id=" + xppetypeID + ")");
@@ -1167,10 +1173,38 @@ public class XlendWorks {
     }
 
     public static String getLastPPEprice(IMessageSender exchanger, Integer xppetypeID) {
-        if (xppetypeID != null && xppetypeID > 0) {
+        if (xppetypeID != null && xppetypeID.intValue() > 0) {
             ComboItem[] itms = loadOnSelect(exchanger, "select "
                     + xppetypeID + ", ifnull(priceperunit,0.0) from xppebuyitem where xppebuyitem_id="
                     + "(select max(xppebuyitem_id) from xppebuyitem where xppetype_id=" + xppetypeID + ")");
+            if (itms.length > 0) {
+                return itms[0].getValue();
+            }
+        }
+        return "0";
+    }
+
+    public static String calcDieselBalanceAtCart(IMessageSender exchanger, Integer dieselCartId, java.util.Date dt) {
+        if (dieselCartId != null && dieselCartId.intValue()>0) {
+            String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
+            ComboItem[] itms = loadOnSelect(exchanger, "select " + dieselCartId + ","
+                    + "(select ifnull(sum(liters),0) from xdieselcartissue where xdieselcart_id=" + dieselCartId + " and issue_date<='" + sDate + "') - "
+                    + "(select ifnull(sum(liters),0) from xdiesel2plantitem i, xdiesel2plant p "
+                    + "where i.xdiesel2plant_id=p.xdiesel2plant_id and "
+                    + "p.xdieselcart_id=" + dieselCartId + " and i.add_date<='" + sDate + "')");
+            if (itms.length > 0) {
+                return itms[0].getValue();
+            }
+        }
+        return "0";
+    }
+    
+    public static String calcDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
+        if (xsupplierId != null && xsupplierId.intValue() > 0) {
+            String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
+            ComboItem[] itms = loadOnSelect(exchanger, "select " + xsupplierId + ","
+                    + "(select ifnull(sum(litres),0) from xdieselpurchase where xsupplier_id=" + xsupplierId + " and purchase_date<='" + sDate + "') - "
+                    + "(select ifnull(sum(liters),0) from xdieselcartissue where xsupplier_id=" + xsupplierId + " and issue_date<='" + sDate + "')");
             if (itms.length > 0) {
                 return itms[0].getValue();
             }

@@ -1,22 +1,24 @@
-package com.xlend.gui.site;
+package com.xlend.gui.banking;
 
 import com.xlend.gui.EditRecordDialog;
+import com.xlend.orm.Xdieselpurchase;
 import com.xlend.orm.dbobject.DbObject;
 
 /**
  *
  * @author Nick Mukhin
  */
-public class EditPPEbuyDialog extends EditRecordDialog {
+public class EditDieselPurchaseDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
-    public EditPPEbuyDialog(String title, DbObject obj) {
+
+    public EditDieselPurchaseDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
-        super.fillContent(new EditPPEbuyPanel((DbObject) getObject()));
+        super.fillContent(new EditDieselPurchasePanel((Xdieselpurchase) getObject()));
     }
 
     @Override

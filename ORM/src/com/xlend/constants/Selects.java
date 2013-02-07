@@ -1,10 +1,5 @@
 package com.xlend.constants;
 
-//import com.xlend.gui.DashBoard;
-//import com.xlend.gui.GeneralFrame;
-import java.rmi.RemoteException;
-import java.util.Vector;
-
 /**
  *
  * @author Nick Mukhin
@@ -280,6 +275,17 @@ public class Selects {
             + "liters \"Liters\","
             + "(select companyname from xsupplier where xsupplier_id=xdieselcartissue.xsupplier_id) \"From Supplier\" "
             + " from xdieselcartissue order by issue_date desc";
+    public static final String SELECT_DIESELCARTISSUES = 
+            "select xdieselcartissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\","
+            + "liters \"Liters\","
+            + "(select companyname from xsupplier where xsupplier_id=xdieselcartissue.xsupplier_id) \"From Supplier\" "
+            + " from xdieselcartissue where xdieselcart_id=# order by issue_date desc";
+    public static final String SELECT_FROM_DIESEL2PLANT =
+            "select xdiesel2plant_id \"Id\",to_char(start_date,'DD/MM/YYYY') \"Date\", "
+            + "(select fleet_nr from xdieselcart where xdieselcart_id=xdiesel2plant.xdieselcart_id) \"Fleet Nr of Diesel Cart\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\" "
+            + "from xdiesel2plant order by start_date desc";
     public static final String PAYMETHODS =
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
     public static final String SELECT_FROM_CONSUMABLES =

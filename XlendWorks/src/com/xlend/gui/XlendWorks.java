@@ -1185,7 +1185,7 @@ public class XlendWorks {
     }
 
     public static String calcDieselBalanceAtCart(IMessageSender exchanger, Integer dieselCartId, java.util.Date dt) {
-        if (dieselCartId != null && dieselCartId.intValue()>0) {
+        if (dieselCartId != null && dieselCartId.intValue() > 0) {
             String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
             ComboItem[] itms = loadOnSelect(exchanger, "select " + dieselCartId + ","
                     + "(select ifnull(sum(liters),0) from xdieselcartissue where xdieselcart_id=" + dieselCartId + " and issue_date<='" + sDate + "') - "
@@ -1198,7 +1198,7 @@ public class XlendWorks {
         }
         return "0";
     }
-    
+
     public static String calcDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
         if (xsupplierId != null && xsupplierId.intValue() > 0) {
             String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
@@ -1210,5 +1210,19 @@ public class XlendWorks {
             }
         }
         return "0";
+    }
+
+    public static String getPrevHourMeter(IMessageSender exchanger, Integer xdiesel2plantitemID, Integer machineID) {
+        if (machineID != null) {
+            ComboItem[] itms = loadOnSelect(exchanger,
+                    "select " + machineID + ", hour_meter "
+                    + "from xdiesel2plantitem where xdiesel2plantitem_id="
+                    + "(select max(xdiesel2plantitem_id) from xdiesel2plantitem where xmachine_id="
+                    + machineID + (xdiesel2plantitemID == null ? "" : " and xdiesel2plantitem_id<" + xdiesel2plantitemID) + ")");
+            if (itms.length > 0) {
+                return itms[0].getValue();
+            }
+        }
+        return "";
     }
 }

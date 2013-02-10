@@ -13,8 +13,6 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.event.ActionEvent;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;

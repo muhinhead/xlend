@@ -54,7 +54,7 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
                     try {
                         Xdieselpurchase xdp = (Xdieselpurchase) exchanger.loadDbObjectOnID(Xdieselpurchase.class, id);
                         new EditDieselPurchaseDialog("Edit Diesel Purchase", xdp);
-                        if (EditBalanceDialog.okPressed) {
+                        if (EditDieselPurchaseDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {

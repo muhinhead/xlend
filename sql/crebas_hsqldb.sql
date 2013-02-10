@@ -1467,7 +1467,7 @@ create table xdiesel2plant
 (
     xdiesel2plant_id  int not null auto_increment,
     xdieselcart_id    int not null,
-    start_date        date,
+    last_date        date,
     driver_id         int not null,
     constraint xdiesel2plant_pk primary key (xdiesel2plant_id),
     constraint xdiesel2plant_xdieselcart_fk foreign key (xdieselcart_id) references xdieselcart (xdieselcart_id),
@@ -1482,7 +1482,7 @@ create table xdiesel2plantitem
     xmachine_id          int not null,
     xsite_id             int not null,
     operator_id          int not null,
-    hour_meter           int not null,
+    hour_meter           decimal(9,1) not null,
     issuedby_id          int not null,
     liters               decimal(6,2) not null,
     constraint xdiesel2plantitem_pk primary key (xdiesel2plantitem_id),

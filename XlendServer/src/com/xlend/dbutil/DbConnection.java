@@ -482,7 +482,7 @@ public class DbConnection {
         + "    xdieselpurchase_id int not null auto_increment,"
         + "    xsupplier_id       int not null,"
         + "    purchase_date      date not null,"
-        + "    litres             decimal(6,2) not null,"
+        + "    litres             decimal(8,2) not null,"
         + "    rand_factor        decimal(5,2) not null,"
         + "    stamp              timestamp,"
         + "    constraint xdieselpurchase_pk primary key (xdieselpurchase_id),"
@@ -531,7 +531,20 @@ public class DbConnection {
         + "    constraint xdiesel2plantitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
         + "    constraint xdiesel2plantitem_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),"
         + "    constraint xdiesel2plantitem_xemployee_fk2 foreign key (issuedby_id) references xemployee (xemployee_id)"
-        + ")"
+        + ")",
+        "alter table xdieselpurchase modify litres decimal(8,2)",
+        "insert into sheet (sheetname,parent_id) "
+        + "select 'Assignments Report', sheet_id "
+        + "  from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Assignments Report')",
+        "insert into reportgroup (sheetgroup_id,sheet_id) "
+        + "select g.sheet_id,i.sheet_id "
+        + "  from sheet g, sheet i where g.sheetname='HR' and i.sheetname='Assignments Report' "
+        + "   and not exists(select * "
+        + "                    from reportgroup"
+        + "                    where sheetgroup_id = (select sheet_id"
+        + "                                             from sheet"
+        + "                                            where sheetname='HR')"
+        + "               and sheet_id=(select sheet_id from sheet where sheetname='Assignments Report'))"
     };
 
     public synchronized static Connection getLogDBconnection() {

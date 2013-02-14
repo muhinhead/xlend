@@ -20,38 +20,41 @@ public class LoansReport extends GeneralReportPanel {
 
     @Override
     protected JEditorPane createEditorPanel() {
-        StringBuffer html = new StringBuffer(
-                "<html>"
-                + "<table border=\"0\">"
-                + "<tr><table>"
-                + "<tr>"
-                + "<td rowspan=\"3\" style=\"font-size: " + (zoomer.getValue() - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                + "<th style=\"font-size: " + (zoomer.getValue() * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
-                + "</tr>"
-                + "<tr><tr></tr>"
-                //                + "<th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\">Outstanding Ammounts</th>"
-                + "</tr><tr> </tr>"
-                + "</table></tr>"
-                + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
-                + "<th align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Clock No</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">First Name</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Surname</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Date issued</th>"
-                + "<th width=\"10%\" align=\"right\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Amount</th>"
-                //                + "<th width=\"10%\" align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">&gt 120</th>"
-                //                + "<th width=\"10%\" align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Total</th>"
-                + getLoansInfoHTML()
-                + "</tr>"
-                //                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\">Total:</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total30) + ">R " + stdFormat(total30) + "</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total60) + ">R " + stdFormat(total60) + "</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total90) + ">R " + stdFormat(total90) + "</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total120) + ">R " + stdFormat(total120) + "</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total0) + ">R " + stdFormat(total0) + "</th>"
-                //                + "<th align=\"right\" style=\"font-size: "+zoomer.getValue()+"%; font-family: sans-serif\" " + getColor(total) + ">R " + stdFormat(total) + "</th></tr>"
-                + "</table></tr>"
-                + "</table>"
-                + "</html>");
+        if (html == null) {
+            prevZoomerValue = zoomer.getValue();
+            html = new StringBuffer(
+                    "<html>"
+                    + "<table border=\"0\">"
+                    + "<tr><table>"
+                    + "<tr>"
+                    + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
+                    + "</tr>"
+                    + "</tr>"
+                    + "</table></tr>"
+                    + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
+                    + "<th align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Clock No</th>"
+                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">First Name</th>"
+                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Surname</th>"
+                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Date issued</th>"
+                    + "<th align=\"left\" width=\"10%\" align=\"right\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Amount</th>"
+                    //                + "<th width=\"10%\" align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\">&gt 120</th>"
+                    //                + "<th width=\"10%\" align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\">Total</th>"
+                    + getLoansInfoHTML()
+                    + "</tr>"
+                    //                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\">Total:</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total30) + ">R " + stdFormat(total30) + "</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total60) + ">R " + stdFormat(total60) + "</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total90) + ">R " + stdFormat(total90) + "</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total120) + ">R " + stdFormat(total120) + "</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total0) + ">R " + stdFormat(total0) + "</th>"
+                    //                + "<th align=\"right\" style=\"font-size: "+prevZoomerValue+"%; font-family: sans-serif\" " + getColor(total) + ">R " + stdFormat(total) + "</th></tr>"
+                    + "</table></tr>"
+                    + "</table>"
+                    + "</html>");
+        } else {
+            adjustCache();
+        }
         editorPanel = new JEditorPane("text/html", html.toString());
         return editorPanel;
     }
@@ -71,7 +74,7 @@ public class LoansReport extends GeneralReportPanel {
                     if (c == 0) {
                         curClockNum = ceil;
                     }
-                    body.append("<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">"
+                    body.append("<td "+(c==ceils.size()-1?"align=\"right\" ":"")+" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">"
                             + (curClockNum.equals(prevClockNum) && c < 3 ? "" : ceil)
                             + "</td>");
                     if (c == ceils.size() - 1) {

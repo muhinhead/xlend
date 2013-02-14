@@ -6,17 +6,12 @@ import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Hashtable;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -45,9 +40,9 @@ public class EmployeeReportPanel extends GeneralReportPanel {
         upperPane.add(new JLabel("  Wage Category:"));
         upperPane.add(categoryCB = new JComboBox(cats));
         categoryCB.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
+                html = null;
                 updateReport();
             }
         });
@@ -55,33 +50,37 @@ public class EmployeeReportPanel extends GeneralReportPanel {
 
     @Override
     protected JEditorPane createEditorPanel() {
-        StringBuffer html = new StringBuffer("<html>"
-                + "<table border=\"0\">"
-                + "<tr><table>"
-                + "<tr>"
-                + "<td rowspan=\"3\" style=\"font-size: " + (zoomer.getValue()-10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                + "<th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
-                + "</tr>"
-                + "<tr><th style=\"font-size: " + (zoomer.getValue()*1.2) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString()+"</th>"
-                + "</tr><tr> </tr>"
-                + "</table></tr>"
-                + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
-                + "<th width=\"15%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Name</th>"
-                + "<th width=\"15%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Surname</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">ID Number</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Tel Number 1</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Tel Number 2</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Work Position</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Rate of Pay</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Contract Duration</th>"
-                + "<th width=\"10%\" align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">Start Date</th>"
-                + getEmployeeListHTML()
-                + "</tr>"
-                + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\"> </th>"
-                + "</table></tr>"
-                + "</table>"
-                + "</html>");
-
+        if (html == null) {
+            prevZoomerValue = zoomer.getValue();
+            html = new StringBuffer("<html>"
+                    + "<table border=\"0\">"
+                    + "<tr><table>"
+                    + "<tr>"
+                    + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
+                    + "</tr>"
+                    + "<tr><th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</th>"
+                    + "</tr><tr> </tr>"
+                    + "</table></tr>"
+                    + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
+                    + "<th width=\"15%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Name</th>"
+                    + "<th width=\"15%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Surname</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">ID Number</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Tel Number 1</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Tel Number 2</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Work Position</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Rate of Pay</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Contract Duration</th>"
+                    + "<th width=\"10%\" align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Start Date</th>"
+                    + getEmployeeListHTML()
+                    + "</tr>"
+                    + "<tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\"> </th>"
+                    + "</table></tr>"
+                    + "</table>"
+                    + "</html>");
+        } else {
+            adjustCache();
+        }
         editorPanel = new JEditorPane("text/html", html.toString());
         return editorPanel;
     }
@@ -115,4 +114,5 @@ public class EmployeeReportPanel extends GeneralReportPanel {
     private static String ifNull(String s) {
         return s == null ? "" : s;
     }
+
 }

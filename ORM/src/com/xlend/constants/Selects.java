@@ -565,6 +565,26 @@ public class Selects {
             "Select clock_num,first_name,sur_name,to_char(issueddate,'DD/MM/YYYY'),concat('R',ROUND(amount,2)) "
             + " from xemployee e, xloans l where l.requestedby_id=e.xemployee_id order by clock_num,issueddate";
 
+    public static final String SELECT_ASSIGNMENTSREPORT = 
+            "select s.name, "
+            + "concat(ifnull(o1.ordernumber,''),ifnull(concat(', ',o2.ordernumber),''),ifnull(concat(', ',o3.ordernumber),'')),"
+            + "concat(ifnull(c1.companyname,''),ifnull(concat(', ',c2.companyname),''),ifnull(concat(', ',c3.companyname),'')),"
+            + "ifnull(concat(m.classify,m.tmvnr,ifnull(concat(' (',t.machtype,')'),'')),'- w/o -'),"
+            + "ifnull(e.clock_num,'- w/o -'),e.first_name,e.sur_name,to_char(a.date_start,'DD/MM/YYYY') "
+            + "from xopmachassing a "
+            + "left join xemployee e on e.xemployee_id=a.xemployee_id "
+            + "left join xmachine m on m.xmachine_id=a.xmachine_id "
+            + "left join xmachtype t on t.xmachtype_id=m.xmachtype_id "
+            + "left join xsite s on s.xsite_id=a.xsite_id "
+            + "left join xorder o1 on o1.xorder_id=s.xorder_id "
+            + "left join xorder o2 on o2.xorder_id=s.xorder2_id "
+            + "left join xorder o3 on o3.xorder_id=s.xorder3_id "
+            + "left join xclient c1 on c1.xclient_id=o1.xclient_id "
+            + "left join xclient c2 on c2.xclient_id=o2.xclient_id "
+            + "left join xclient c3 on c3.xclient_id=o3.xclient_id "
+            + "where a.date_end is null and not ifnull(a.xemployee_id,a.xmachine_id) is null "
+            + "order by s.name";
+    
     public static final String SELECT_FROM_PPEBUYS = 
             "Select xppebuy_id \"Id\", to_char(buydate,'DD/MM/YYYY') \"Purchase Date\",  "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.boughtby_id) \"Bought By\",  "

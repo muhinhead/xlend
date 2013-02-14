@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.xlend.gui.reports.EmployeeReportPanel;
+import com.xlend.gui.reports.IncidentsReport;
 import com.xlend.gui.reports.LoansReport;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
@@ -20,13 +21,16 @@ public class ReportsFrame extends GeneralFrame {
 
     private JComponent selectedTab;
     private static String[] sheetList = new String[]{
-        "Creditor Age Analysis", "Employee Summary", 
-        "Loans Report", "Incidents Report"
+        "Creditor Age Analysis", "Employee Summary",
+        "Loans Report", "Incidents Report",
+        "Assignments Report"
     };
     private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
     private EmployeeReportPanel employeePanel;
     private LoansReport loansPanel;
+    private AssignmentsReport assignmentsPanel;
     private MyJideTabbedPane reportsTab;
+    private IncidentsReport incidentsPanel;
 
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
@@ -56,11 +60,14 @@ public class ReportsFrame extends GeneralFrame {
             reportsTab.addTab(getLoansPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[3])) {
-//            reportsTab.addTab(getLoansPanel(), sheets()[3]);
-            GeneralFrame.errMessageBox("!!!", "HERE!");
+            reportsTab.addTab(getIncidentsPanel(), sheets()[3]);
+//            GeneralFrame.errMessageBox("Sorry!", "Incidents Report is under construction");
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[4])) {
+            reportsTab.addTab(getAssignmentsPanel(), sheets()[4]);
+//            GeneralFrame.errMessageBox("Sorry!", "Assignments Report is under construction");
         }
         reportsTab.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 selectedTab = (JComponent) reportsTab.getSelectedComponent();
@@ -89,11 +96,24 @@ public class ReportsFrame extends GeneralFrame {
         }
         return loansPanel;
     }
-    
+
+    private JComponent getAssignmentsPanel() {
+        if (assignmentsPanel == null) {
+            registerGrid(assignmentsPanel = new AssignmentsReport(getExchanger()));
+        }
+        return assignmentsPanel;
+    }
+
+    private JComponent getIncidentsPanel() {
+        if (incidentsPanel == null) {
+            registerGrid(incidentsPanel = new IncidentsReport(getExchanger()));
+        }
+        return incidentsPanel;
+    }
+
     @Override
     protected ActionListener getPrintAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (selectedTab instanceof SuppliersCreditorsReportPanel) {
@@ -112,5 +132,4 @@ public class ReportsFrame extends GeneralFrame {
             }
         };
     }
-
 }

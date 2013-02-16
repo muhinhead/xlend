@@ -102,13 +102,13 @@ public class Selects {
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "concat(first_name,' ',sur_name,if(length(ifnull(nick_name,''))=0,'',concat(' (',nick_name,')'))) \"Name\", "
             + "val \"Wage Cat.\" "
-//            + ",(select s.name from xsite s,xopmachassing a "
-//            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
-//            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
-//            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"on site\" "
-//            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
-//            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
-//            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
+            //            + ",(select s.name from xsite s,xopmachassing a "
+            //            + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
+            //            + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
+            //            + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"on site\" "
+            //            + ",(select concat(m.classify,m.tmvnr) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+            //            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+            //            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
             + "order by extractnum(clock_num),clock_num";
@@ -120,9 +120,9 @@ public class Selects {
             + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
             + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "
             + " where xemployee_id=xemployee.xemployee_id and xsite_id=a.xsite_id and date_end is null)) \"Now on site\" "
-//            + ",(select max(concat(m.classify,m.tmvnr)) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
-//            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
-//            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
+            //            + ",(select max(concat(m.classify,m.tmvnr)) from xmachine m,xopmachassing a where a.xemployee_id=xemployee.xemployee_id and m.xmachine_id=a.xmachine_id and date_end is null "
+            //            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
+            //            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where xemployee_id>0 "
             + "order by extractnum(clock_num),clock_num";
@@ -245,7 +245,7 @@ public class Selects {
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\" "
             + "from xsupplier order by companyname";
-    public static final String SELECT_DIESELCARTS4LOOKUP = 
+    public static final String SELECT_DIESELCARTS4LOOKUP =
             "select xdieselcart_id\"Id\",fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", "
             + "chassis_nr \"Chassis Nr\" from xdieselcart order by fleet_nr";
     public static final String SELECT_FROM_DIESELPURCHASES =
@@ -268,14 +268,14 @@ public class Selects {
     public static final String SELECT_FROM_DIESELCARTS =
             "select xdieselcart_id \"Id\", fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", litres \"Litres\","
             + "CASEWHEN(expdate is null,'',CASEWHEN(expdate<now(),'Expired','Normal')) \"License Status\"  from xdieselcart";
-    public static final String SELECT_FROM_DIESELCARTISSUES = 
+    public static final String SELECT_FROM_DIESELCARTISSUES =
             "select xdieselcartissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\","
             + "(select fleet_nr from xdieselcart where xdieselcart_id=xdieselcartissue.xdieselcart_id) \"Fleet Nr of Diesel Cart\","
             + "liters \"Liters\","
             + "(select companyname from xsupplier where xsupplier_id=xdieselcartissue.xsupplier_id) \"From Supplier\" "
             + " from xdieselcartissue order by issue_date desc";
-    public static final String SELECT_DIESELCARTISSUES = 
+    public static final String SELECT_DIESELCARTISSUES =
             "select xdieselcartissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\","
             + "liters \"Liters\","
@@ -494,7 +494,7 @@ public class Selects {
             "select xmachrentalrate_id \"Id\", actual_date \"Date\", ROUND(diesel_price,2) \"Diesel Price\", ROUND(factor,2) \"Factor\" from xmachrentalrate";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE =
             "select to_char(date_required,'DD/MM/YYYY') \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
-    public static final String SELECT_FROM_XPPETYPE = 
+    public static final String SELECT_FROM_XPPETYPE =
             "select xppetype_id \"Id\", xppetype \"PPE type\" from xppetype";
     public static final String GET_TRANSSCHEDULE_BY_DATE =
             "select to_char(date_required,'DD/MM/YYYY'), count(*) from xtransscheduleitm group by date_required";
@@ -560,12 +560,22 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedby_id) \"Issued By\","
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbookouts.issuedto_id) \"Issued To\" "
             + "from xbookouts where xparts_id=# order by issue_date desc";
-
-    public static final String SELECT_LOANLIST = 
+    public static final String SELECT_LOANLIST =
             "Select clock_num,first_name,sur_name,to_char(issueddate,'DD/MM/YYYY'),concat('R',ROUND(amount,2)) "
             + " from xemployee e, xloans l where l.requestedby_id=e.xemployee_id order by clock_num,issueddate";
-
-    public static final String SELECT_ASSIGNMENTSREPORT = 
+    public static final String SELECT_INCIDENTSREPORT =
+            "select ifnull(e.first_name,'-unknown-'), ifnull(e.clock_num,'-'), to_char(i.incidentdate,'DD/MM/YYYY'),"
+            + "i.estimated_cost,"
+            + "concat(m.classify,m.tmvnr,ifnull(concat(' (',t.machtype,')'),'')),"
+            + "i.description "
+            + "from xincidents i "
+            + "left join xemployeeincident ei on ei.xincidents_id=i.xincidents_id "
+            + "left join xemployee e on e.xemployee_id=ei.xemployee_id "
+            + "left join xmachineincident mi on mi.xincidents_id=i.xincidents_id "
+            + "left join xmachine m on m.xmachine_id=mi.xmachine_id "
+            + "left join xmachtype t on t.xmachtype_id=m.xmachtype_id "
+            + "order by e.clock_num, i.incidentdate";
+    public static final String SELECT_ASSIGNMENTSREPORT =
             "select s.name, "
             + "concat(ifnull(o1.ordernumber,''),ifnull(concat(', ',o2.ordernumber),''),ifnull(concat(', ',o3.ordernumber),'')),"
             + "concat(ifnull(c1.companyname,''),ifnull(concat(', ',c2.companyname),''),ifnull(concat(', ',c3.companyname),'')),"
@@ -584,31 +594,26 @@ public class Selects {
             + "left join xclient c3 on c3.xclient_id=o3.xclient_id "
             + "where a.date_end is null and not ifnull(a.xemployee_id,a.xmachine_id) is null "
             + "order by s.name";
-    
-    public static final String SELECT_FROM_PPEBUYS = 
+    public static final String SELECT_FROM_PPEBUYS =
             "Select xppebuy_id \"Id\", to_char(buydate,'DD/MM/YYYY') \"Purchase Date\",  "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.boughtby_id) \"Bought By\",  "
             + "(Select companyname from xsupplier where xsupplier_id=xppebuy.xsupplier_id) \"Supplier\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.authorizedby_id) \"Authorized By\" "
             + "from xppebuy order by buydate desc";
-
-    public static final String SELECT_FROM_PPEISSUES = 
+    public static final String SELECT_FROM_PPEISSUES =
             "select xppeissue_id \"Id\", to_char(issuedate,'DD/MM/YYYY') \"Issue Date\",  "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedby_id) \"Issued By\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedto_id) \"Issued To\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
             + "from xppeissue order by issuedate desc";
-    
     public static final String SELECT_FROM_PPEISSUES4EMPLOYEE =
             "select xppeissue_id \"Id\", to_char(issuedate,'DD/MM/YYYY') \"Issue Date\",  "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.issuedby_id) \"Issued By\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppeissue.authorizedby_id) \"Authorized By\" "
             + "from xppeissue where issuedto_id=# order by issuedate desc";
-    
     public static final String SELECT_FROM_PPEISSUEITEMS =
             "select i.xppeissueitem_id \"Id\", t.xppetype \"PPE\", i.quantity \"Quantity\" "
             + "from xppeissueitem i,xppetype t where i.xppetype_id=t.xppetype_id order by t.xppetype";
-    
     public static final String SELECT_FROM_MACHSERVICE =
             "select xmachservice_id \"Id\", to_char(servicedate,'DD/MM/YYYY') \"Service Date\", "
             + "to_char(entrydate,'DD/MM/YYYY') \"Entry Date\", "
@@ -616,7 +621,7 @@ public class Selects {
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Serviced By\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Assisted By\" "
             + "from xmachservice order by servicedate desc";
-    
+
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");

@@ -286,6 +286,15 @@ public class Selects {
             + "(select fleet_nr from xdieselcart where xdieselcart_id=xdiesel2plant.xdieselcart_id) \"Fleet Nr of Diesel Cart\","
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\" "
             + "from xdiesel2plant order by last_date desc";
+    public static final String SELECT_DIESEL2PLANT = 
+            "select i.xdiesel2plantitem_id \"Id\", to_char(i.add_date,'DD/MM/YYYY') \"Date\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\", "
+            + "(select name from xsite where xsite_id=i.xsite_id) \"Site\","
+            + "(select concat(classify,tmvnr) from xmachine where xmachine_id=i.xmachine_id) \"Machine\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=i.operator_id) \"Operator\", "
+            + "i.liters \"Liters\" "
+            + "from xdiesel2plantitem i, xdiesel2plant dp where dp.xdiesel2plant_id=i.xdiesel2plant_id "
+            + "and dp.xdieselcart_id=# order by add_date desc";
     public static final String PAYMETHODS =
             "Select xpaidmethod_id, method from xpaidmethod order by xpaidmethod_id";
     public static final String SELECT_FROM_CONSUMABLES =

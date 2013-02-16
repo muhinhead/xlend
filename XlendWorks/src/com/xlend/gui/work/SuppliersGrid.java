@@ -28,7 +28,7 @@ public class SuppliersGrid extends GeneralGridPanel {
 //        maxWidths.put(3, 200);
 //        maxWidths.put(4, 200);
     }
-    
+
     public SuppliersGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_SUPPLIERS, maxWidths, false);
     }
@@ -36,20 +36,18 @@ public class SuppliersGrid extends GeneralGridPanel {
     public SuppliersGrid(IMessageSender exchanger, String select, boolean readonly) throws RemoteException {
         super(exchanger, select, maxWidths, readonly);
     }
-    
 
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Supplier") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditSupplierDialog ed = new EditSupplierDialog("New Supplier", null);
                     if (EditSupplierDialog.okPressed) {
                         Xsupplier xsup = (Xsupplier) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                getSelect(), xsup.getXsupplierId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                getSelect(), xsup.getXsupplierId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -62,7 +60,6 @@ public class SuppliersGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -71,7 +68,7 @@ public class SuppliersGrid extends GeneralGridPanel {
                         Xsupplier xsup = (Xsupplier) exchanger.loadDbObjectOnID(Xsupplier.class, id);
                         new EditSupplierDialog("Edit Supplier", xsup);
                         if (EditSupplierDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -85,16 +82,15 @@ public class SuppliersGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xsupplier xsup = (Xsupplier) exchanger.loadDbObjectOnID(Xsupplier.class, id);
-                    if (xsup !=null && GeneralFrame.yesNo("Attention!", "Do you want to delete supplier ["
+                    if (xsup != null && GeneralFrame.yesNo("Attention!", "Do you want to delete supplier ["
                             + xsup.getCompanyname() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xsup);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

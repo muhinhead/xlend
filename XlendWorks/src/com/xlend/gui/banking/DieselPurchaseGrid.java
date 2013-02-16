@@ -24,7 +24,6 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Diesel Purchase") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -39,14 +38,12 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
             }
-
         };
     }
 
     @Override
     protected AbstractAction editAction() {
-         return new AbstractAction("Edit Diesel Purchase") {
-
+        return new AbstractAction("Edit Diesel Purchase") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -69,7 +66,6 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Diesel Purchase") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -87,5 +83,4 @@ public class DieselPurchaseGrid extends GeneralGridPanel {
             }
         };
     }
-
 }

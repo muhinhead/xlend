@@ -37,7 +37,7 @@ public class PurchaseLookupAction extends AbstractAction {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
     }
-    
+
     public static void setXmachineID(Integer xmachineID) {
         xmachine_id = xmachineID;
     }

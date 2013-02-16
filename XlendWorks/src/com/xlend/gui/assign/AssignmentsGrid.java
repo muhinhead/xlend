@@ -36,7 +36,6 @@ public class AssignmentsGrid extends GeneralGridPanel {
     protected AbstractAction addAction() {
         if (getSelect().indexOf(MARK) > 0) {
             return new AbstractAction("Add new assignment") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int p = getSelect().indexOf(MARK);
@@ -68,7 +67,6 @@ public class AssignmentsGrid extends GeneralGridPanel {
     protected AbstractAction delAction() {
         if (getSelect().indexOf(MARK) < 0) {
             return new AbstractAction("Delete record") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int id = getSelectedID();

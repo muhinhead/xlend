@@ -53,9 +53,9 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
             getGridPanel(idField = new JTextField(), 4),
             getGridPanel(dateSP = new SelectedDateSpinner(), 4),
             comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-                new MachineLookupAction(machineCB, null)),//Selects.notAssignedMachinesCondition)),
+            new MachineLookupAction(machineCB, null)),//Selects.notAssignedMachinesCondition)),
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel),
-                new EmployeeLookupAction(operatorCB, null))//Selects.notAssignedOperatorCondition))
+            new EmployeeLookupAction(operatorCB, null))//Selects.notAssignedOperatorCondition))
         };
         idField.setEnabled(false);
         dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
@@ -110,7 +110,7 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                 } else {
                     previous.setDateEnd(new java.sql.Date(dt.getTime()));
                     previous.setXemployeeId(previous.getXemployeeId());
-                    previous.setXmachineId(previous.getXmachineId()==0?null:previous.getXmachineId());
+                    previous.setXmachineId(previous.getXmachineId() == 0 ? null : previous.getXmachineId());
                     previous = (Xopmachassing) DashBoard.getExchanger().saveDbObject(previous);
                     ok = true;
                 }

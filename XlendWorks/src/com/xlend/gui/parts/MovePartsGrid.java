@@ -18,6 +18,7 @@ import javax.swing.AbstractAction;
  * @author nick
  */
 public abstract class MovePartsGrid extends GeneralGridPanel {
+
     protected static EditXpartPanel xpartsPanel;
 
     public MovePartsGrid(IMessageSender exchanger, String select, HashMap<Integer, Integer> maxWidths, EditXpartPanel xpartsPane) throws RemoteException {
@@ -39,5 +40,4 @@ public abstract class MovePartsGrid extends GeneralGridPanel {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
     }
-    
 }

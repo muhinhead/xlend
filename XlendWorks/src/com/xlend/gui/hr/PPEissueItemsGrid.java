@@ -19,9 +19,9 @@ public class PPEissueItemsGrid extends GeneralGridPanel {
         maxWidths.put(0, 40);
         maxWidths.put(2, 250);
     }
-    
+
     public PPEissueItemsGrid(IMessageSender exchanger, int xppeissue_id) throws RemoteException {
-        super(exchanger,Selects.SELECT_FROM_PPEISSUEITEMS.replace("=0","="+xppeissue_id), maxWidths, true);
+        super(exchanger, Selects.SELECT_FROM_PPEISSUEITEMS.replace("=0", "=" + xppeissue_id), maxWidths, true);
     }
 
     @Override

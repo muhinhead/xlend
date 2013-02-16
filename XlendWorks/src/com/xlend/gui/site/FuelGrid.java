@@ -23,27 +23,24 @@ public class FuelGrid extends GeneralGridPanel {
 //    static {
 //        maxWidths.put(0, 40);
 //    }
-
     public FuelGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_FUELS, getMaxWidths(new int[]{40}), false);
     }
-    
+
     public FuelGrid(IMessageSender exchanger, String select) throws RemoteException {
-        super(exchanger, select, getMaxWidths(new int[]{40,70,70,100,100}), true);
+        super(exchanger, select, getMaxWidths(new int[]{40, 70, 70, 100, 100}), true);
     }
-    
-    
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Record") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditFuelDialog ed = new EditFuelDialog("Add Record", null);
                     if (EditFuelDialog.okPressed) {
                         Xfuel xb = (Xfuel) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXfuelId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXfuelId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,16 +53,15 @@ public class FuelGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xfuel xfl  = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
+                        Xfuel xfl = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
                         new EditFuelDialog("Edit Entry", xfl);
                         if (EditFuelDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -79,16 +75,15 @@ public class FuelGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                    Xfuel xfl  = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
-                    if (xfl !=null && GeneralFrame.yesNo("Attention!", 
+                    Xfuel xfl = (Xfuel) exchanger.loadDbObjectOnID(Xfuel.class, id);
+                    if (xfl != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xfl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -98,5 +93,4 @@ public class FuelGrid extends GeneralGridPanel {
             }
         };
     }
-    
 }

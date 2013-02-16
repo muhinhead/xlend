@@ -28,7 +28,7 @@ public class LoansReport extends GeneralReportPanel {
                     + "<tr><table>"
                     + "<tr>"
                     + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
+                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
                     + "</tr>"
                     + "</tr>"
                     + "</table></tr>"
@@ -74,7 +74,7 @@ public class LoansReport extends GeneralReportPanel {
                     if (c == 0) {
                         curClockNum = ceil;
                     }
-                    body.append("<td "+(c==ceils.size()-1?"align=\"right\" ":"")+" style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">"
+                    body.append("<td " + (c == ceils.size() - 1 ? "align=\"right\" " : "") + " style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">"
                             + (curClockNum.equals(prevClockNum) && c < 3 ? "" : ceil)
                             + "</td>");
                     if (c == ceils.size() - 1) {

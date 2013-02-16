@@ -75,7 +75,6 @@ public abstract class PagesPanel extends JPanel {
         this.parent_id = papa_id;
 
         activatePopup(addAction = new AbstractAction("Add image(s)") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {

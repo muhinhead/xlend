@@ -91,7 +91,6 @@ public class AdminFrame extends GeneralFrame {
 
             final DbTableView tv = (DbTableView) machineTypesPanel.getController().getViews().get(0);
             SwingUtilities.invokeLater(new Runnable() {
-
                 public void run() {
                     tv.gotoRow(0);
                 }

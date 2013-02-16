@@ -19,13 +19,13 @@ public abstract class GeneralReportPanel extends JPanel {
     protected JScrollPane scrollPane;
     protected StringBuffer html;
     private JLabel procLbl;
-    protected int prevZoomerValue = 0;
+    protected int prevZoomerValue = 100;
 
     public GeneralReportPanel(IMessageSender exchanger) {
         super(new BorderLayout());
         upperPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         add(upperPane, BorderLayout.NORTH);
-        upperPane.add(zoomer = new JSlider(50, 120));
+        upperPane.add(zoomer = new JSlider(50, 150));
         upperPane.add(procLbl = new JLabel("%" + zoomer.getValue()));
         zoomer.addChangeListener(new ChangeListener() {
             @Override
@@ -37,15 +37,22 @@ public abstract class GeneralReportPanel extends JPanel {
         setExchanger(exchanger);
     }
 
-    protected static String adjustFontSize(StringBuffer html, int oldZoomValue, int newZoomValue) {
-        int p = html.indexOf("\"font-size: " + oldZoomValue + "%");
-        int pp = 0;
-        while (p >= 0) {
-            pp = html.indexOf("%;", p);
-            html.replace(p, pp, "\"font-size: " + newZoomValue);
-            p = html.indexOf("\"font-size:", pp);
+    protected static boolean adjustFontSize(StringBuffer html, int oldZoomValue, int newZoomValue) {
+        boolean updated = (oldZoomValue != newZoomValue);
+        if (updated) {
+            String fs = "\"font-size: ";
+            double factor = (double) newZoomValue / (double) oldZoomValue;
+            int p = html.indexOf(fs);
+            int pp = 0;
+            while (p >= 0) {
+                pp = html.indexOf("%", p);
+                int oldSize = Integer.parseInt(html.substring(p + fs.length(), pp));
+                Integer newSize = new Integer((int) (oldSize * factor));
+                html.replace(p + fs.length(), pp, newSize.toString());
+                p = html.indexOf(fs, pp);
+            }
         }
-        return html.toString();
+        return updated;
     }
 
     protected void setExchanger(IMessageSender exchanger) {
@@ -69,11 +76,16 @@ public abstract class GeneralReportPanel extends JPanel {
     }
 
     protected void adjustCache() {
-        adjustFontSize(html, prevZoomerValue - 10, zoomer.getValue() - 10);
-        adjustFontSize(html, (int) (prevZoomerValue * 1.2), (int) (zoomer.getValue() * 1.2));
-        adjustFontSize(html, prevZoomerValue, zoomer.getValue());
-        prevZoomerValue = zoomer.getValue();
+        if (prevZoomerValue != zoomer.getValue()) {
+//            adjustFontSize(html, (int) (prevZoomerValue * 1.4), (int) (zoomer.getValue() * 1.4));
+//            adjustFontSize(html, (int) (prevZoomerValue * 1.2), (int) (zoomer.getValue() * 1.2));
+//            adjustFontSize(html, (int) (prevZoomerValue * 1.1), (int) (zoomer.getValue() * 1.1));
+//            adjustFontSize(html, prevZoomerValue - 10, zoomer.getValue() - 10);
+            adjustFontSize(html, prevZoomerValue, zoomer.getValue());
+            prevZoomerValue = zoomer.getValue();
+        }
     }
+
     protected abstract JEditorPane createEditorPanel();
 
     public JEditorPane getEditorPanel() {

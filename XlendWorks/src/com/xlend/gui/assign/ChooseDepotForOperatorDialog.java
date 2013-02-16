@@ -51,7 +51,6 @@ public class ChooseDepotForOperatorDialog extends PopupDialog {
         add(mainPanel);
         JPanel btnPanel = new JPanel(new FlowLayout());
         btnPanel.add(okButton = new JButton(okAction = new AbstractAction(" Ok ") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ComboItem ci = (ComboItem) siteCB.getSelectedItem();

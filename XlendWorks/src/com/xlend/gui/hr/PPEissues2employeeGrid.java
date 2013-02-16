@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
  */
 public class PPEissues2employeeGrid extends PPEissuesGrid {
 
-    public PPEissues2employeeGrid(IMessageSender exchanger, int xemployee_id,XlendMasterTableView masterView) throws RemoteException {
+    public PPEissues2employeeGrid(IMessageSender exchanger, int xemployee_id, XlendMasterTableView masterView) throws RemoteException {
         super(exchanger, xemployee_id, masterView);
 //        setBorder(BorderFactory.createTitledBorder("Output"));
     }

@@ -9,8 +9,9 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditSiteTypeDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditSiteTypeDialog(String title, DbObject obj) {
         super(title, obj);
     }

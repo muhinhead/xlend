@@ -35,27 +35,25 @@ public class BreakdownsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Breakdown") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditBreakdownDialog ed = new EditBreakdownDialog("Add breakdown", null);
                     if (EditBreakdownDialog.okPressed) {
                         Xbreakdown xb = (Xbreakdown) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xb.getXbreakdownId(), getPageSelector().getSelectedIndex());
                     }
-                    } catch (RemoteException ex) {
-                        XlendWorks.log(ex);
-                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
-                    }
+                } catch (RemoteException ex) {
+                    XlendWorks.log(ex);
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
             }
         };
     }
 
     @Override
     protected AbstractAction editAction() {
-         return new AbstractAction("Edit Entry") {
-
+        return new AbstractAction("Edit Entry") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -64,7 +62,7 @@ public class BreakdownsGrid extends GeneralGridPanel {
                         Xbreakdown xb = (Xbreakdown) exchanger.loadDbObjectOnID(Xbreakdown.class, id);
                         new EditBreakdownDialog("Edit breakdown", xb);
                         if (EditBreakdownDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -78,16 +76,15 @@ public class BreakdownsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xbreakdown xb = (Xbreakdown) exchanger.loadDbObjectOnID(Xbreakdown.class, id);
-                    if (xb !=null && GeneralFrame.yesNo("Attention!", 
+                    if (xb != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete breakdown?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xb);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -97,5 +94,4 @@ public class BreakdownsGrid extends GeneralGridPanel {
             }
         };
     }
-
 }

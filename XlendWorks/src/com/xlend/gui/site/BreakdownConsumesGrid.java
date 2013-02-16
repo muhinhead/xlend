@@ -58,11 +58,10 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
     protected AbstractAction addAction() {
         //TODO
         return new AbstractAction("Add") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if (xbreakdownID==0 && GeneralFrame.yesNo("Attention!", 
+                    if (xbreakdownID == 0 && GeneralFrame.yesNo("Attention!",
                             "Do you want to save parent record first?") == JOptionPane.YES_OPTION) {
                         try {
                             if (parentPanel.save()) {
@@ -81,7 +80,7 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
                         EditBreakConsumeDialog bcd = new EditBreakConsumeDialog("Add Purchase", null);
                         if (bcd.okPressed) {
                             Xbreakconsume breakconsume = (Xbreakconsume) bcd.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect().replace("= 0", "= "+xbreakdownID),
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect().replace("= 0", "= " + xbreakdownID),
                                     breakconsume.getXbreakconsumeId(), getPageSelector().getSelectedIndex());
                         }
                     }
@@ -97,7 +96,6 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
     protected AbstractAction editAction() {
         //TODO
         return new AbstractAction("Edit") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -124,7 +122,6 @@ public class BreakdownConsumesGrid extends GeneralGridPanel {
     protected AbstractAction delAction() {
         //TODO
         return new AbstractAction("Del") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

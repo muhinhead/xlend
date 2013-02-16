@@ -110,7 +110,7 @@ public class GroupTableGridPanel extends JPanel {
             try {
                 DbObject[] recs = getRecs(row);
                 if (GeneralFrame.yesNo("Attention!", "Do you want to delete schedule of "
-                        + recs.length + " item" 
+                        + recs.length + " item"
                         + (recs.length > 1 ? "s" : "") + "?") == JOptionPane.YES_OPTION) {
                     for (DbObject rec : recs) {
                         exchanger.deleteObject(rec);

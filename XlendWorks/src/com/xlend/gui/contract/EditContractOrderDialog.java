@@ -9,13 +9,14 @@ import com.xlend.orm.Xorder;
  * @author Nick Mukhin
  */
 public class EditContractOrderDialog extends EditOrderDialog {
+
     public static boolean okPressed;
     public static Xcontract xcontract;
 
     public EditContractOrderDialog(String title, Object obj) {
         super(title, obj);
     }
-    
+
     private void setXcontract() {
         EditContractOrderPanel editPanel = (EditContractOrderPanel) getEditPanel();
         editPanel.setXcontract(xcontract);
@@ -31,7 +32,7 @@ public class EditContractOrderDialog extends EditOrderDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

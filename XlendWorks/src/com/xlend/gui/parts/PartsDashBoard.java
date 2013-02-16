@@ -82,7 +82,6 @@ public class PartsDashBoard extends AbstractDashBoard {
         main.add(liquidsButton);
 
         machinesButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (XlendWorks.availableForCurrentUser(sheets()[0])) {
@@ -92,13 +91,12 @@ public class PartsDashBoard extends AbstractDashBoard {
                         showPartsCategoriesFrame(machinePartsFrame);
                     }
                 } else {
-                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[0]);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module " + sheets()[0]);
                 }
             }
         });
 
         trucksButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (XlendWorks.availableForCurrentUser(sheets()[1])) {
@@ -108,13 +106,12 @@ public class PartsDashBoard extends AbstractDashBoard {
                         showPartsCategoriesFrame(trucksPartsFrame);
                     }
                 } else {
-                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[1]);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module " + sheets()[1]);
                 }
             }
         });
 
         vehiclesButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (XlendWorks.availableForCurrentUser(sheets()[2])) {
@@ -124,13 +121,12 @@ public class PartsDashBoard extends AbstractDashBoard {
                         showPartsCategoriesFrame(vehiclesePartsFrame);
                     }
                 } else {
-                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[2]);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module " + sheets()[2]);
                 }
             }
         });
 
         miscButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (XlendWorks.availableForCurrentUser(sheets()[3])) {
@@ -140,13 +136,12 @@ public class PartsDashBoard extends AbstractDashBoard {
                         showPartsCategoriesFrame(miscPartsFrame);
                     }
                 } else {
-                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[3]);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module " + sheets()[3]);
                 }
             }
         });
 
         liquidsButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (XlendWorks.availableForCurrentUser(sheets()[4])) {
@@ -156,7 +151,7 @@ public class PartsDashBoard extends AbstractDashBoard {
                         showPartsCategoriesFrame(liquidsPartsFrame);
                     }
                 } else {
-                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module "+sheets()[4]);
+                    GeneralFrame.infoMessageBox("Sorry!", "Access denied to module " + sheets()[4]);
                 }
             }
         });
@@ -204,7 +199,6 @@ public class PartsDashBoard extends AbstractDashBoard {
     public static PartsDashBoard getInstance() {
         return instance;
     }
-
 //    private ActionListener lackOfPermissionsAction() {
 //        return new AbstractAction() {
 //

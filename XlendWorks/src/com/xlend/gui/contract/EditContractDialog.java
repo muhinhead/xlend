@@ -21,7 +21,7 @@ public class EditContractDialog extends EditRecordDialog {
         EditContractPanel editPanel = (EditContractPanel) getEditPanel();
         editPanel.setXclient(xclient);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditContractPanel((Xcontract) getObject()));
@@ -32,8 +32,8 @@ public class EditContractDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
-     @Override
+
+    @Override
     public void dispose() {
         super.dispose();
         EditContractDialog.xclient = null;

@@ -11,7 +11,7 @@ public class EditPoolVehiclePanel extends EditMachinePanel {
     public EditPoolVehiclePanel(DbObject dbObject) {
         super(dbObject);
     }
-    
+
     protected String getFleetNumberChar() {
         return "V";
     }

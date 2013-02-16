@@ -36,11 +36,10 @@ public class ClientOrdersGrid extends GeneralGridPanel {
                     Xclient.class, Integer.parseInt(getSelect().substring(p + whereId.length() - 1)));
         }
     }
-    
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Order") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -62,7 +61,6 @@ public class ClientOrdersGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -86,7 +84,6 @@ public class ClientOrdersGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -105,7 +102,7 @@ public class ClientOrdersGrid extends GeneralGridPanel {
             }
         };
     }
-    
+
     /**
      * @return the xorder
      */

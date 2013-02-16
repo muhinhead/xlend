@@ -27,7 +27,7 @@ public class AccountLookupAction extends AbstractAction {
         try {
             LookupDialog ld = new LookupDialog("Account Lookup", accountCB,
                     new AccountsGrid(DashBoard.getExchanger()),
-                    new String[]{"accname","accnumber","bank","branch"});
+                    new String[]{"accname", "accnumber", "bank", "branch"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }

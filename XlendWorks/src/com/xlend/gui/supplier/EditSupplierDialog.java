@@ -8,6 +8,7 @@ import com.xlend.orm.Xsupplier;
  * @author Nick Mukhin
  */
 public class EditSupplierDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditSupplierDialog(String title, Object obj) {

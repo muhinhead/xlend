@@ -120,7 +120,7 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
                 cb.setPreferredSize(new Dimension(130, cb.getPreferredSize().height));
                 cb.setWide(true);
             }
-                    
+
             load();
         }
 
@@ -261,7 +261,6 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
         hdrPanel.add(getGridPanel(new JComponent[]{new JLabel("Operator", SwingConstants.CENTER), new JLabel("Completed", SwingConstants.RIGHT)}));
 
         selectAllCB.setAction(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (RowPanel p : childRows) {
@@ -284,7 +283,6 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
 
     private AbstractAction addLineAction(final String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new RowPanel(null));
@@ -295,7 +293,6 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
 
     private AbstractAction delLineAction(final String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (RowPanel p : childRows) {

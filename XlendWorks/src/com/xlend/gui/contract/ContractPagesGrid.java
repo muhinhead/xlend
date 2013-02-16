@@ -39,7 +39,6 @@ public class ContractPagesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Contract Page(s)") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -60,13 +59,13 @@ public class ContractPagesGrid extends GeneralGridPanel {
                             contractPage.setXcontractId(contract_id);
                             contractPage.setDescription("Page " + n);
                             contractPage.setPagenum(n++);
-                            String extension = f.getName().substring(f.getName().lastIndexOf(".")+1);
+                            String extension = f.getName().substring(f.getName().lastIndexOf(".") + 1);
                             contractPage.setFileextension(extension);
                             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
                             contractPage.setNew(true);
                             DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
                         }
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
 
                 } catch (Exception ex) {
@@ -80,7 +79,6 @@ public class ContractPagesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -89,7 +87,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                         Xcontractpage contractPage = (Xcontractpage) exchanger.loadDbObjectOnID(Xcontractpage.class, id);
                         new EditContractPageDialog("Edit Contract Page", contractPage);
                         if (EditContractPageDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -103,7 +101,6 @@ public class ContractPagesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -112,7 +109,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                     if (contractPage != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract page No_"
                             + contractPage.getPagenum() + "?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(contractPage);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

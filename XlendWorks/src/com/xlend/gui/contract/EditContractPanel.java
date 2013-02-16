@@ -185,7 +185,7 @@ public class EditContractPanel extends RecordEditPanel {
         tp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 250));
         try {
             ordGrid = new OrdersGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id),false);
+                    Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id), false);
             tp.add(ordGrid, "Orders");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
@@ -195,7 +195,6 @@ public class EditContractPanel extends RecordEditPanel {
 
     private AbstractAction clientRefLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 showClientLookup();

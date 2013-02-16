@@ -14,8 +14,8 @@ class EditHourCompareDialog extends EditRecordDialog {
     public EditHourCompareDialog(String title, Object obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditHourComparePanel((Xhourcompare) getObject()));
     }

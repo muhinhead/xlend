@@ -68,25 +68,21 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         if (null == picturePopMenu) {
             picturePopMenu = new JPopupMenu();
             picturePopMenu.add(new AbstractAction("Open in window") {
-
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture);
                 }
             });
             picturePopMenu.add(new AbstractAction("Replace image") {
-
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile();
                 }
             });
             picturePopMenu.add(new AbstractAction("Save image to file") {
-
                 public void actionPerformed(ActionEvent e) {
                     exportDocImage(imageData);
                 }
             });
             picturePopMenu.add(new AbstractAction("Remove image from DB") {
-
                 public void actionPerformed(ActionEvent e) {
                     noImage();
                 }
@@ -120,7 +116,6 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
     private JButton getLoadPictureButton() {
         JButton loadButton = new JButton("Choose picture...");
         loadButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile();
             }
@@ -164,7 +159,7 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         String tmpImgFile = "$$$.img";
         currentPicture = new ImageIcon(imageData);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension d = new Dimension(screenSize.width/3,screenSize.height/3);
+        Dimension d = new Dimension(screenSize.width / 3, screenSize.height / 3);
         JScrollPane sp = null;
         int height = 1;
         int wscale = 1;
@@ -186,7 +181,6 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
         ed.addMouseListener(new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture);

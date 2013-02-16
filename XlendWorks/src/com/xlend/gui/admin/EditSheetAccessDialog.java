@@ -8,6 +8,7 @@ import com.xlend.orm.Userprofile;
  * @author Nick Mukhin
  */
 public class EditSheetAccessDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditSheetAccessDialog(String title, Object obj) {

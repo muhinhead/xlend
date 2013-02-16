@@ -29,7 +29,7 @@ class EditQuotaPagePanel extends EditPagePanel {
             }
         }
     }
-    
+
     @Override
     public boolean save() throws Exception {
         Xquotationpage qpage = (Xquotationpage) getDbObject();

@@ -117,7 +117,6 @@ class EditFuelPanel extends RecordEditPanel {
 
     private ChangeListener yesNoSwitchedAction() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 showHideSupplierCB();
@@ -144,16 +143,16 @@ class EditFuelPanel extends RecordEditPanel {
             } else {
                 asmtRb.setSelected(true);
             }
-            if (xfl.getLiters()!=null) {
-                litersSP.setValue(new Double((Integer)xfl.getLiters()));
+            if (xfl.getLiters() != null) {
+                litersSP.setValue(new Double((Integer) xfl.getLiters()));
             }
-            if (xfl.getAmmount()!=null) {
+            if (xfl.getAmmount() != null) {
                 amountSP.setValue(xfl.getAmmount());
             }
-            if (xfl.getIssuedbyId()!=null) {
+            if (xfl.getIssuedbyId() != null) {
                 selectComboItem(issuedByCB, xfl.getIssuedbyId());
             }
-            if (xfl.getIssuedtoId()!=null) {
+            if (xfl.getIssuedtoId() != null) {
                 selectComboItem(issuedToCB, xfl.getIssuedtoId());
             }
             if (xfl.getXsupplierId() != null) {
@@ -205,7 +204,7 @@ class EditFuelPanel extends RecordEditPanel {
                 xfl.setLiters(ival);
             }
             xfl.setXsiteId(getSelectedCbItem(siteCB));
-            xfl.setXsupplierId(cashRb.isSelected()?null:getSelectedCbItem(supplierCB));
+            xfl.setXsupplierId(cashRb.isSelected() ? null : getSelectedCbItem(supplierCB));
             xfl.setIssuedbyId(getSelectedCbItem(issuedByCB));
             xfl.setIssuedtoId(getSelectedCbItem(issuedToCB));
             return saveDbRecord(xfl, isNew);

@@ -28,6 +28,7 @@ import javax.swing.border.BevelBorder;
  * @author nick
  */
 public class EditMachinePanel extends AbstractMechDevicePanel {
+
     private JSpinner tmvnrTextSP;
     private JComboBox machineTypeCB;
     private DefaultComboBoxModel machineTypeCbModel;
@@ -113,7 +114,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         lastServiceDateLBL.setBorder(BorderFactory.createEtchedBorder());
         lastServicedByLBL.setBorder(BorderFactory.createEtchedBorder());
         licenseExpSetup();
-        
+
         machineTypeCB.addActionListener(machType2CBreloadAction());
 //        Dimension prefs = licenseStatusCB.getEditor().getEditorComponent().getPreferredSize();
 //        licenseStatusCB.getEditor().getEditorComponent().setMaximumSize(new Dimension(100,prefs.height));
@@ -242,7 +243,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         labels[6].setVisible(licensed);
         labels[7].setVisible(licensed);
     }
-    
+
     protected String getFleetNumberChar() {
         return "M";
     }
@@ -298,7 +299,6 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         }
         return false;
     }
-
 
     private ActionListener machType2CBreloadAction() {
         return new AbstractAction() {
@@ -372,7 +372,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
 
     private void fillLastServiceInfo() {
         String[] lbls = XlendWorks.findLastService(DashBoard.getExchanger(), (Xmachine) getDbObject());
-        if (lbls!=null && lbls.length>1) {
+        if (lbls != null && lbls.length > 1) {
             lastServiceDateLBL.setText(lbls[0]);
             lastServicedByLBL.setText(lbls[1]);
         } else {
@@ -380,5 +380,4 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             lastServicedByLBL.setText("");
         }
     }
-
 }

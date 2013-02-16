@@ -29,7 +29,7 @@ class EditOrderPagePanel extends EditPagePanel {
             }
         }
     }
-    
+
     @Override
     public boolean save() throws Exception {
         Xorderpage opage = (Xorderpage) getDbObject();

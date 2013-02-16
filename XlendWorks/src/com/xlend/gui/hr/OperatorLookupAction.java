@@ -11,7 +11,7 @@ public class OperatorLookupAction extends EmployeeLookupAction {
     public OperatorLookupAction(JComboBox cBox, String whereCond) {
         super(cBox, adjustWhereCond(whereCond));
     }
-    
+
     public OperatorLookupAction(JComboBox cBox) {
         this(cBox, null);
     }

@@ -47,7 +47,6 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add RFQ") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -70,7 +69,6 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -94,12 +92,11 @@ public class ClientQuotationsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
-                        Xquotation itm = (Xquotation) exchanger.loadDbObjectOnID(Xquotation.class, id);
+                    Xquotation itm = (Xquotation) exchanger.loadDbObjectOnID(Xquotation.class, id);
                     if (itm != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract [RefNr_"
                             + itm.getRfcnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);

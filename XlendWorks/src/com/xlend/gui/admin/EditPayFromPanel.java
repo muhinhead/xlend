@@ -55,7 +55,7 @@ class EditPayFromPanel extends RecordEditPanel {
             itm.setCbitemId(0);
             isNew = true;
         }
-        itm.setId((Integer)codeSpinner.getValue());
+        itm.setId((Integer) codeSpinner.getValue());
         itm.setName("paidfrom");
         itm.setVal(paySourceField.getText());
         return saveDbRecord(itm, isNew);

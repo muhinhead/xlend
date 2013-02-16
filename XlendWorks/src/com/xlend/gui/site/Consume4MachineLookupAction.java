@@ -25,8 +25,8 @@ class Consume4MachineLookupAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            String select = Selects.SELECT_FROM_CONSUMABLES 
-                    + (EditBreakConsumeDialog.getXmachineID() == null ? "" : (" and con.xmachine_id=" 
+            String select = Selects.SELECT_FROM_CONSUMABLES
+                    + (EditBreakConsumeDialog.getXmachineID() == null ? "" : (" and con.xmachine_id="
                     + EditBreakConsumeDialog.getXmachineID()));
             LookupDialog ld = new LookupDialog("Purchases Lookup", consumeCB,
                     new ConsumablesGrid(DashBoard.getExchanger(), select, false),

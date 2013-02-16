@@ -32,16 +32,14 @@ public class QuotationsGrid extends GeneralGridPanel {
     public QuotationsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_QUOTATIONS, maxWidths, false);
     }
-    
+
     public QuotationsGrid(IMessageSender exchanger, String select) throws RemoteException {
         super(exchanger, select, maxWidths, true);
     }
-    
 
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Quotation") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -49,7 +47,7 @@ public class QuotationsGrid extends GeneralGridPanel {
                     if (EditQuotaDialog.okPressed) {
                         Xquotation xq = (Xquotation) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xq.getXquotationId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), xq.getXquotationId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -62,7 +60,6 @@ public class QuotationsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -72,7 +69,7 @@ public class QuotationsGrid extends GeneralGridPanel {
                         new EditQuotaDialog("Edit Quotation", xq);
                         if (EditQuotaDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -86,16 +83,15 @@ public class QuotationsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xquotation xq = (Xquotation) exchanger.loadDbObjectOnID(Xquotation.class, id);
-                    if (xq!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  [" 
-                            + xq.getRfcnumber() + "]?")== JOptionPane.YES_OPTION) {
+                    if (xq != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  ["
+                            + xq.getRfcnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xq);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

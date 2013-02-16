@@ -18,11 +18,10 @@ public class EditContractPageDialog extends EditRecordDialog {
     @Override
     protected void fillContent() {
         super.fillContent(new EditContractPagePanel((Xcontractpage) getObject()));
-    }    
+    }
 
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

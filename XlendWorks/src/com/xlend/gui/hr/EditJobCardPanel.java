@@ -92,7 +92,6 @@ class EditJobCardPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(dateSP);
         weekendSP.setEditor(new JSpinner.DateEditor(weekendSP, "dd/MM/yyyy"));
         weekendSP.getModel().addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 shiftDayLabels();
@@ -125,9 +124,9 @@ class EditJobCardPanel extends RecordEditPanel {
             panels[i] = new JPanel(new BorderLayout());
             panels[i].add(new JScrollPane(commentsTAs[offset] = new JTextArea(2, 10)));
             panels[i].add(getBorderPanel(new JComponent[]{
-//                        new JLabel("machine:"),
-//                        comboPanelWithLookupBtn(vehicleCBs[offset], new MachineLookupAction(vehicleCBs[offset], null)),
-//                        comboPanelWithLookupBtn(machineCBs[offset], new MachineLookupAction(machineCBs[offset], null))
+                        //                        new JLabel("machine:"),
+                        //                        comboPanelWithLookupBtn(vehicleCBs[offset], new MachineLookupAction(vehicleCBs[offset], null)),
+                        //                        comboPanelWithLookupBtn(machineCBs[offset], new MachineLookupAction(machineCBs[offset], null))
                         vehicleCBs[offset],
                         machineCBs[offset]
                     }), BorderLayout.SOUTH);
@@ -169,37 +168,31 @@ class EditJobCardPanel extends RecordEditPanel {
                 xj.getMachineId3Day1(),
                 xj.getMachineId4Day1(),
                 xj.getMachineId5Day1(),
-                
                 xj.getMachineId1Day2(),
                 xj.getMachineId2Day2(),
                 xj.getMachineId3Day2(),
                 xj.getMachineId4Day2(),
                 xj.getMachineId5Day2(),
-                
                 xj.getMachineId1Day3(),
                 xj.getMachineId2Day3(),
                 xj.getMachineId3Day3(),
                 xj.getMachineId4Day3(),
                 xj.getMachineId5Day3(),
-                
                 xj.getMachineId1Day4(),
                 xj.getMachineId2Day4(),
                 xj.getMachineId3Day4(),
                 xj.getMachineId4Day4(),
                 xj.getMachineId5Day4(),
-                
                 xj.getMachineId1Day5(),
                 xj.getMachineId2Day5(),
                 xj.getMachineId3Day5(),
                 xj.getMachineId4Day5(),
                 xj.getMachineId5Day5(),
-                
                 xj.getMachineId1Day6(),
                 xj.getMachineId2Day6(),
                 xj.getMachineId3Day6(),
                 xj.getMachineId4Day6(),
                 xj.getMachineId5Day6(),
-                
                 xj.getMachineId1Day7(),
                 xj.getMachineId2Day7(),
                 xj.getMachineId3Day7(),
@@ -212,81 +205,69 @@ class EditJobCardPanel extends RecordEditPanel {
                 xj.getVehicleId3Day1(),
                 xj.getVehicleId4Day1(),
                 xj.getVehicleId5Day1(),
-                
                 xj.getVehicleId1Day2(),
                 xj.getVehicleId2Day2(),
                 xj.getVehicleId3Day2(),
                 xj.getVehicleId4Day2(),
                 xj.getVehicleId5Day2(),
-                
                 xj.getVehicleId1Day3(),
                 xj.getVehicleId2Day3(),
                 xj.getVehicleId3Day3(),
                 xj.getVehicleId4Day3(),
                 xj.getVehicleId5Day3(),
-                
                 xj.getVehicleId1Day4(),
                 xj.getVehicleId2Day4(),
                 xj.getVehicleId3Day4(),
                 xj.getVehicleId4Day4(),
                 xj.getVehicleId5Day4(),
-                
                 xj.getVehicleId1Day5(),
                 xj.getVehicleId2Day5(),
                 xj.getVehicleId3Day5(),
                 xj.getVehicleId4Day5(),
                 xj.getVehicleId5Day5(),
-                
                 xj.getVehicleId1Day6(),
                 xj.getVehicleId2Day6(),
                 xj.getVehicleId3Day6(),
                 xj.getVehicleId4Day6(),
                 xj.getVehicleId5Day6(),
-                
                 xj.getVehicleId1Day7(),
                 xj.getVehicleId2Day7(),
                 xj.getVehicleId3Day7(),
                 xj.getVehicleId4Day7(),
                 xj.getVehicleId5Day7()
             };
-            
+
             String comments[] = new String[]{
                 xj.getJob1Day1(),
                 xj.getJob2Day1(),
                 xj.getJob3Day1(),
                 xj.getJob4Day1(),
                 xj.getJob5Day1(),
-                
                 xj.getJob1Day2(),
                 xj.getJob2Day2(),
                 xj.getJob3Day2(),
                 xj.getJob4Day2(),
                 xj.getJob5Day2(),
-                
                 xj.getJob1Day3(),
                 xj.getJob2Day3(),
                 xj.getJob3Day3(),
                 xj.getJob4Day3(),
                 xj.getJob5Day3(),
-                
                 xj.getJob1Day4(),
                 xj.getJob2Day4(),
                 xj.getJob3Day4(),
                 xj.getJob4Day4(),
                 xj.getJob5Day4(),
-                
                 xj.getJob1Day5(),
                 xj.getJob2Day5(),
                 xj.getJob3Day5(),
                 xj.getJob4Day5(),
                 xj.getJob5Day5(),
-                
                 xj.getJob1Day6(),
                 xj.getJob2Day6(),
                 xj.getJob3Day6(),
                 xj.getJob4Day6(),
                 xj.getJob5Day6(),
-                
                 xj.getJob1Day7(),
                 xj.getJob2Day7(),
                 xj.getJob3Day7(),
@@ -315,7 +296,7 @@ class EditJobCardPanel extends RecordEditPanel {
     public boolean save() throws Exception {
         boolean isNew = false;
         Xjobcard xj = (Xjobcard) getDbObject();
-        if (xj==null) {
+        if (xj == null) {
             isNew = true;
             xj = new Xjobcard(null);
             xj.setXjobcardId(0);
@@ -329,105 +310,105 @@ class EditJobCardPanel extends RecordEditPanel {
         if (dt != null) {
             xj.setCarddate(new java.sql.Date(dt.getTime()));
         }
-        int i=0;
+        int i = 0;
         xj.setMachineId1Day1(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day1(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day1(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day1(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day1(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day2(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day2(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day2(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day2(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day2(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day3(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day3(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day3(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day3(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day3(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day4(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day4(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day4(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day4(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day4(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day5(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day5(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day5(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day5(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day5(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day6(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day6(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day6(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day6(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day6(getSelectedCbItem(machineCBs[i++]));
-        
+
         xj.setMachineId1Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId2Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId3Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId4Day7(getSelectedCbItem(machineCBs[i++]));
         xj.setMachineId5Day7(getSelectedCbItem(machineCBs[i++]));
-        
+
         i = 0;
         xj.setVehicleId1Day1(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day1(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day1(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day1(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day1(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day2(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day2(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day2(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day2(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day2(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day3(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day3(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day3(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day3(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day3(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day4(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day4(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day4(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day4(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day4(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day5(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day5(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day5(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day5(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day5(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day6(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day6(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day6(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day6(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day6(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         xj.setVehicleId1Day7(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId2Day7(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId3Day7(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId4Day7(getSelectedCbItem(vehicleCBs[i++]));
         xj.setVehicleId5Day7(getSelectedCbItem(vehicleCBs[i++]));
-        
+
         i = 0;
         xj.setJob1Day1(commentsTAs[i++].getText());
         xj.setJob2Day1(commentsTAs[i++].getText());
         xj.setJob3Day1(commentsTAs[i++].getText());
         xj.setJob4Day1(commentsTAs[i++].getText());
         xj.setJob5Day1(commentsTAs[i++].getText());
-        
+
         xj.setJob1Day2(commentsTAs[i++].getText());
         xj.setJob2Day2(commentsTAs[i++].getText());
         xj.setJob3Day2(commentsTAs[i++].getText());
         xj.setJob4Day2(commentsTAs[i++].getText());
         xj.setJob5Day2(commentsTAs[i++].getText());
-        
+
         xj.setJob1Day3(commentsTAs[i++].getText());
         xj.setJob2Day3(commentsTAs[i++].getText());
         xj.setJob3Day3(commentsTAs[i++].getText());
@@ -439,25 +420,25 @@ class EditJobCardPanel extends RecordEditPanel {
         xj.setJob3Day4(commentsTAs[i++].getText());
         xj.setJob4Day4(commentsTAs[i++].getText());
         xj.setJob5Day4(commentsTAs[i++].getText());
-        
+
         xj.setJob1Day5(commentsTAs[i++].getText());
         xj.setJob2Day5(commentsTAs[i++].getText());
         xj.setJob3Day5(commentsTAs[i++].getText());
         xj.setJob4Day5(commentsTAs[i++].getText());
         xj.setJob5Day5(commentsTAs[i++].getText());
-        
+
         xj.setJob1Day6(commentsTAs[i++].getText());
         xj.setJob2Day6(commentsTAs[i++].getText());
         xj.setJob3Day6(commentsTAs[i++].getText());
         xj.setJob4Day6(commentsTAs[i++].getText());
         xj.setJob5Day6(commentsTAs[i++].getText());
-        
+
         xj.setJob1Day7(commentsTAs[i++].getText());
         xj.setJob2Day7(commentsTAs[i++].getText());
         xj.setJob3Day7(commentsTAs[i++].getText());
         xj.setJob4Day7(commentsTAs[i++].getText());
         xj.setJob5Day7(commentsTAs[i++].getText());
-        
+
         return saveDbRecord(xj, isNew);
     }
 }

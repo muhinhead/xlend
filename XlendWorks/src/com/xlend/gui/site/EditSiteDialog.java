@@ -22,7 +22,7 @@ public class EditSiteDialog extends EditRecordDialog {
         EditSitePanel editPanel = (EditSitePanel) getEditPanel();
         editPanel.setXorder(xorder);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditSitePanel((Xsite) getObject()));
@@ -33,7 +33,7 @@ public class EditSiteDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

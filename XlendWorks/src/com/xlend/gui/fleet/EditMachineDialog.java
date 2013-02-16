@@ -8,6 +8,7 @@ import com.xlend.orm.Xmachine;
  * @author Nick Mukhin
  */
 class EditMachineDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditMachineDialog(String title, Object obj) {
@@ -22,5 +23,5 @@ class EditMachineDialog extends EditRecordDialog {
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }    
+    }
 }

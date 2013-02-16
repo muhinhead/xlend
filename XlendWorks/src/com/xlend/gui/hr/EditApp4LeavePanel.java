@@ -90,9 +90,8 @@ public class EditApp4LeavePanel extends RecordEditPanel {
                 getGridPanel(new JComponent[]{approvedRB = new JRadioButton("Y"), notApprovedRB = new JRadioButton("No")}),
                 getBorderPanel(new JComponent[]{new JPanel(), new JLabel("Approved by:", SwingConstants.RIGHT),
                     comboPanelWithLookupBtn(approvedByCB = new JComboBox(approvedByCbModel),
-                        //approvedLookupAction = new EmployeeLookupAction(approvedByCB, "management=1 and COALESCE(wage_category,1)=1")
-                        approvedLookupAction = new ClercLookupAction(approvedByCB)
-                    )})
+                    //approvedLookupAction = new EmployeeLookupAction(approvedByCB, "management=1 and COALESCE(wage_category,1)=1")
+                    approvedLookupAction = new ClercLookupAction(approvedByCB))})
             })
         };
         for (JSpinner sp : new JSpinner[]{appDateSP, fromDateSP, toDateSP}) {
@@ -210,7 +209,6 @@ public class EditApp4LeavePanel extends RecordEditPanel {
 
     private ChangeListener yesNoApprovedAction() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 enableApprovedComboBox(approvedRB.isSelected());
@@ -228,7 +226,6 @@ public class EditApp4LeavePanel extends RecordEditPanel {
 
     private ChangeListener calcDaysAction() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 Date dtStart = (Date) fromDateSP.getValue();

@@ -137,7 +137,6 @@ public class DashBoard extends AbstractDashBoard {
         main.add(logoutButton);
 
         adminButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (adminFrame == null) {
@@ -154,7 +153,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         docsButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
@@ -171,7 +169,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         partsbutton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
@@ -181,7 +178,6 @@ public class DashBoard extends AbstractDashBoard {
                     partsDashBoard.setVisible(true);
                     partsDashBoard.requestFocus();
                     java.awt.EventQueue.invokeLater(new Runnable() {
-
                         @Override
                         public void run() {
                             partsDashBoard.toFront();
@@ -193,7 +189,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         sitesButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (sitesFrame == null) {
@@ -210,7 +205,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         reportsButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ReportsMenuDialog();
@@ -221,7 +215,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         hrbutton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (hrFrame == null) {
@@ -238,7 +231,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         fleetbutton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fleetFrame == null) {
@@ -255,7 +247,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         logisticsButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (logisticsFrame == null) {
@@ -272,7 +263,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         bankingbutton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (bankingFrame == null) {
@@ -289,7 +279,6 @@ public class DashBoard extends AbstractDashBoard {
         });
 
         logoutButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);

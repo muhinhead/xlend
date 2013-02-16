@@ -45,8 +45,8 @@ public class EditAccountPanel extends RecordEditPanel {
             getGridPanel(idField = new JTextField(), 3),
             namesCB = new JComboBox(nameCbModel),
             accNumberField = new JTextField(10),
-            getGridPanel(bankField = new JTextField(5),2),
-            getGridPanel(branchField = new JTextField(6),2)
+            getGridPanel(bankField = new JTextField(5), 2),
+            getGridPanel(branchField = new JTextField(6), 2)
         };
         namesCB.setEditable(true);
         idField.setEnabled(false);
@@ -74,7 +74,7 @@ public class EditAccountPanel extends RecordEditPanel {
             xa.setXaccountId(0);
             isNew = true;
         }
-        xa.setAccname((String)namesCB.getSelectedItem());
+        xa.setAccname((String) namesCB.getSelectedItem());
         xa.setAccnumber(accNumberField.getText());
         xa.setBank(bankField.getText());
         xa.setBranch(branchField.getText());

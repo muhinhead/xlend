@@ -9,6 +9,7 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class MachineAssignmentDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public MachineAssignmentDialog(String title, DbObject obj) {

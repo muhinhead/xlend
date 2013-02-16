@@ -82,11 +82,10 @@ public class EditUserPanel extends ProfilePanel {
 
     private AbstractAction detailedAccessAction() {
         return new AbstractAction("Document access...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (getDbObject()==null) {
-                    JOptionPane.showMessageDialog(pagesdPanel, "Save user record first!", 
+                if (getDbObject() == null) {
+                    JOptionPane.showMessageDialog(pagesdPanel, "Save user record first!",
                             "Attention!", JOptionPane.WARNING_MESSAGE);
                 } else {
                     new EditSheetAccessDialog("Document access", getDbObject());

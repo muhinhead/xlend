@@ -32,14 +32,13 @@ public class AllTripsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Trip") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditTripDialog ed = new EditTripDialog("Add Trip", null);
                     if (EditTripDialog.okPressed) {
                         Xtrip xt = (Xtrip) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xt.getXtripId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xt.getXtripId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -51,8 +50,7 @@ public class AllTripsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-         return new AbstractAction("Edit Trip") {
-
+        return new AbstractAction("Edit Trip") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -61,7 +59,7 @@ public class AllTripsGrid extends GeneralGridPanel {
                         Xtrip xt = (Xtrip) exchanger.loadDbObjectOnID(Xtrip.class, id);
                         new EditTripDialog("Edit Trip", xt);
                         if (EditTripDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -74,17 +72,16 @@ public class AllTripsGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-         return new AbstractAction("Delete Trip") {
-
+        return new AbstractAction("Delete Trip") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xtrip xt = (Xtrip) exchanger.loadDbObjectOnID(Xtrip.class, id);
-                    if (xt !=null && GeneralFrame.yesNo("Attention!", 
+                    if (xt != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xt);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

@@ -57,9 +57,9 @@ public class EmployeeReportPanel extends GeneralReportPanel {
                     + "<tr><table>"
                     + "<tr>"
                     + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
+                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
                     + "</tr>"
-                    + "<tr><th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</th>"
+                    + "<tr><th style=\"font-size: " + (int)(prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</th>"
                     + "</tr><tr> </tr>"
                     + "</table></tr>"
                     + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
@@ -114,5 +114,4 @@ public class EmployeeReportPanel extends GeneralReportPanel {
     private static String ifNull(String s) {
         return s == null ? "" : s;
     }
-
 }

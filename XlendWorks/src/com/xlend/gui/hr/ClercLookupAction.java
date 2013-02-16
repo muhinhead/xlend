@@ -12,7 +12,7 @@ public class ClercLookupAction extends EmployeeLookupAction {
     public ClercLookupAction(JComboBox cBox, String whereCond) {
         super(cBox, adjustWhereCond(whereCond));
     }
-    
+
     public ClercLookupAction(JComboBox cBox) {
         this(cBox, Selects.activeEmployeeCondition);
     }

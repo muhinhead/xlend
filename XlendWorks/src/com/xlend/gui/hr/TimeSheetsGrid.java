@@ -48,7 +48,6 @@ public class TimeSheetsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Timesheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditTimeSheetDialog ed;
@@ -59,7 +58,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                         if (EditTimeSheetDialog.okPressed) {
                             Xtimesheet ts = (Xtimesheet) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(),getPageSelector().getSelectedIndex());
+                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(), getPageSelector().getSelectedIndex());
                         }
                     } else if (inEmloyee) {
                         GeneralFrame.infoMessageBox("Attention!", "Save contract please before adding orders");
@@ -68,7 +67,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                         if (EditTimeSheetDialog.okPressed) {
                             Xtimesheet ts = (Xtimesheet) ed.getEditPanel().getDbObject();
                             GeneralFrame.updateGrid(exchanger,
-                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(),getPageSelector().getSelectedIndex());
+                                    getTableView(), getTableDoc(), getSelect(), ts.getXtimesheetId(), getPageSelector().getSelectedIndex());
                         }
                     }
                 } catch (RemoteException ex) {
@@ -82,7 +81,6 @@ public class TimeSheetsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -94,13 +92,13 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                             EditTimeSheetDialog od = new EditTimeSheetDialog("Edit time sheet for employee", ts);
                             if (EditTimeSheetDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger,
-                                        getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                        getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                             }
                         } else {
                             new EditTimeSheetDialog("Edit Timesheet", ts);
                             if (EditTimeSheetDialog.okPressed) {
                                 GeneralFrame.updateGrid(exchanger, getTableView(),
-                                        getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                        getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {
@@ -115,7 +113,6 @@ public class TimeSheetsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -124,7 +121,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                     if (ts != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete timesheet?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(ts);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

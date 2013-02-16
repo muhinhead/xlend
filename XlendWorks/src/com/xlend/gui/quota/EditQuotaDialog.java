@@ -9,6 +9,7 @@ import com.xlend.orm.Xquotation;
  * @author Nick Mukhin
  */
 public class EditQuotaDialog extends EditRecordDialog {
+
     public static boolean okPressed;
     public static Xclient xclient;
 
@@ -20,7 +21,7 @@ public class EditQuotaDialog extends EditRecordDialog {
         EditQuotaPanel editPanel = (EditQuotaPanel) getEditPanel();
         editPanel.setXclient(xclient);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditQuotaPanel((Xquotation) getObject()));
@@ -31,11 +32,10 @@ public class EditQuotaDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
-    
-     @Override
+
+    @Override
     public void dispose() {
         super.dispose();
         EditQuotaDialog.xclient = null;
-    }     
+    }
 }

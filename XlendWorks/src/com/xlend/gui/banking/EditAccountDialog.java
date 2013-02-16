@@ -9,13 +9,14 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditAccountDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditAccountDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditAccountPanel((Xaccounts) getObject()));
     }

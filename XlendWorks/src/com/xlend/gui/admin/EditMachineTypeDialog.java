@@ -8,13 +8,14 @@ import com.xlend.orm.dbobject.DbObject;
  *
  * @author Nick Mukhin
  */
-class EditMachineTypeDialog  extends EditRecordDialog {
+class EditMachineTypeDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditMachineTypeDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditMachineTypePanel((Xmachtype) getObject()));
@@ -23,5 +24,5 @@ class EditMachineTypeDialog  extends EditRecordDialog {
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }   
+    }
 }

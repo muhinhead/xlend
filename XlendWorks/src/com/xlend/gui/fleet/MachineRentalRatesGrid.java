@@ -32,7 +32,6 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Rental Rates List") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -40,7 +39,7 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                     if (EditMachineRentalRatesDialog.okPressed) {
                         Xmachrentalrate xmr = (Xmachrentalrate) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xmr.getXmachrentalrateId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), xmr.getXmachrentalrateId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -53,7 +52,6 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Rental Rates List") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -63,7 +61,7 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                         new EditMachineRentalRatesDialog("Edit Rental Rates List", xmr);
                         if (EditMachineRentalRatesDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -77,7 +75,6 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Rental Rates List") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -85,10 +82,10 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
                     try {
                         Xmachrentalrate xmr = (Xmachrentalrate) exchanger.loadDbObjectOnID(Xmachrentalrate.class, id);
                         if (xmr != null) {
-                            if (GeneralFrame.yesNo("Attention!", 
+                            if (GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this rates list?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(xmr);
-                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                                GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                             }
                         }
                     } catch (RemoteException ex) {
@@ -99,5 +96,4 @@ public class MachineRentalRatesGrid extends GeneralGridPanel {
             }
         };
     }
-    
 }

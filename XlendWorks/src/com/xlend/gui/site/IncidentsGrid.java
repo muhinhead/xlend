@@ -34,14 +34,13 @@ public class IncidentsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Incident") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditIncidentDialog ed = new EditIncidentDialog("Add Incident", null);
                     if (EditIncidentDialog.okPressed) {
                         Xincidents xi = (Xincidents) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xi.getXincidentsId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xi.getXincidentsId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -54,7 +53,6 @@ public class IncidentsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Incident") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -63,7 +61,7 @@ public class IncidentsGrid extends GeneralGridPanel {
                         Xincidents xi = (Xincidents) exchanger.loadDbObjectOnID(Xincidents.class, id);
                         new EditIncidentDialog("Edit Incident", xi);
                         if (EditIncidentDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -77,7 +75,6 @@ public class IncidentsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Incident") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -86,7 +83,7 @@ public class IncidentsGrid extends GeneralGridPanel {
                     if (xi != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xi);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

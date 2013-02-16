@@ -109,7 +109,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         refreshButton = new ToolBarButton("refresh.png");
         refreshButton.setToolTipText("Refresh data");
         refreshButton.addActionListener(new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 refreshGrids();
             }
@@ -119,7 +118,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         exitButton = new ToolBarButton("exit.png");
         exitButton.setToolTipText("Hide this window");
         exitButton.addActionListener(new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
             }
@@ -140,7 +138,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         toolBar.add(exitButton);
         aboutButton.setToolTipText("About program...");
         aboutButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AboutDialog();
@@ -154,7 +151,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         mainPanel = getMainPanel();
         getContentPane().add(mainPanel, BorderLayout.CENTER);
         mainPanel.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 searchButton.setSelected(false);
@@ -176,7 +172,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     private KeyAdapter getSrcFieldKeyListener() {
         return new KeyAdapter() {
-
             @Override
             public void keyReleased(KeyEvent e) {
                 highlightFound();
@@ -189,7 +184,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         if (selectedPanel instanceof GeneralGridPanel) {
             GeneralGridPanel selectedGridPanel = (GeneralGridPanel) selectedPanel;
             try {
-                RowFilter<MyTableModel, Object> rf = RowFilter.regexFilter("(?i)"+srcField.getText());
+                RowFilter<MyTableModel, Object> rf = RowFilter.regexFilter("(?i)" + srcField.getText());
                 selectedGridPanel.getTableView().getSorter().setRowFilter(rf);
             } catch (Exception ex) {
                 XlendWorks.log(ex);
@@ -207,7 +202,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     private ActionListener getSearchAction() {
         return new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean pressed = searchButton.isSelected();
@@ -276,7 +270,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         JMenu m = createMenu("File", "File Operations");
         JMenuItem mi = createMenuItem("Hide", "Hide this window");
         mi.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
             }
@@ -317,13 +310,12 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     protected void setMenuStatusMicroHelp(final JMenuItem m, final String msg) {
         m.addChangeListener(new ChangeListener() {
-
             public void stateChanged(ChangeEvent e) {
                 statusLabel2.setText(msg == null ? m.getText() : msg);
             }
         });
     }
-    
+
     public static void updateGrid(IMessageSender exchanger,
             ITableView view, DbTableDocument doc, String select, Integer id, int page)
             throws RemoteException {
@@ -434,7 +426,6 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 
     protected ActionListener getPrintAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 notImplementedYet();

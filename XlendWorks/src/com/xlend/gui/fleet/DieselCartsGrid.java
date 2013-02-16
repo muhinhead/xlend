@@ -27,8 +27,8 @@ public class DieselCartsGrid extends GeneralGridPanel {
     public DieselCartsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_DIESELCARTS, maxWidths, false);
     }
-    
-    public DieselCartsGrid(IMessageSender exchanger, 
+
+    public DieselCartsGrid(IMessageSender exchanger,
             String select, boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, false);
     }
@@ -39,11 +39,11 @@ public class DieselCartsGrid extends GeneralGridPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditDieselCartDialog ed = new EditDieselCartDialog("Add Diesel Cart",null);
+                    EditDieselCartDialog ed = new EditDieselCartDialog("Add Diesel Cart", null);
                     if (EditDieselCartDialog.okPressed) {
                         Xdieselcart xc = (Xdieselcart) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xc.getXdieselcartId(), 
+                                getTableView(), getTableDoc(), getSelect(), xc.getXdieselcartId(),
                                 getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {

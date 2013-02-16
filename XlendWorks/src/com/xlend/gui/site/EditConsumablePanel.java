@@ -35,7 +35,6 @@ import javax.swing.event.ChangeListener;
 public class EditConsumablePanel extends RecordEditPanel {
 
     private static final double TAX_PROC = 1.14;
-    
     public static Xconsume sampleRecord;
     private JTextField idField;
     private DefaultComboBoxModel supplierCbModel;

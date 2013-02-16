@@ -99,9 +99,9 @@ class EditXbookOutPanel extends RecordEditPanel {
     @Override
     public void loadData() {
         Xbookouts bookOut = (Xbookouts) getDbObject();
-        if (bookOut!=null) {
+        if (bookOut != null) {
             idField.setText(bookOut.getXbookoutsId().toString());
-            if (bookOut.getIssueDate()!=null) {
+            if (bookOut.getIssueDate() != null) {
                 Date dt = bookOut.getIssueDate();
                 issueDateSP.setValue(new java.util.Date(dt.getTime()));
             }
@@ -119,7 +119,7 @@ class EditXbookOutPanel extends RecordEditPanel {
         XbookoutsWithTrigger bookOut = (XbookoutsWithTrigger) getDbObject();
         if (bookOut == null) {
             isNew = true;
-            bookOut = new XbookoutsWithTrigger((Connection)null);
+            bookOut = new XbookoutsWithTrigger((Connection) null);
             bookOut.setXbookoutsId(0);
         }
         Double qty = (Double) quantitySP.getValue();

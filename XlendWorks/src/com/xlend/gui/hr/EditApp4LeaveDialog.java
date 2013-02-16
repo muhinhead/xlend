@@ -9,13 +9,14 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 class EditApp4LeaveDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditApp4LeaveDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditApp4LeavePanel((Xappforleave) getObject()));
     }
@@ -24,5 +25,4 @@ class EditApp4LeaveDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

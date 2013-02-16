@@ -8,6 +8,7 @@ import com.xlend.orm.Xfuel;
  * @author Nick Mukhin
  */
 class EditFuelDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditFuelDialog(String title, Object obj) {
@@ -23,5 +24,4 @@ class EditFuelDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

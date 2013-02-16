@@ -8,6 +8,7 @@ import com.xlend.orm.Xemployee;
  * @author Nick Mukhin
  */
 public class EditEmployeeDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditEmployeeDialog(String title, Object obj) {
@@ -22,5 +23,5 @@ public class EditEmployeeDialog extends EditRecordDialog {
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }    
+    }
 }

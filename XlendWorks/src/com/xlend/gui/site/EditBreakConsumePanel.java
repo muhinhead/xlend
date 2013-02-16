@@ -60,7 +60,6 @@ class EditBreakConsumePanel extends RecordEditPanel {
             getGridPanel(amtRandsLB = new JLabel("", SwingConstants.RIGHT), 4)
         };
         breakConsumeCB.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncLabels();
@@ -94,7 +93,7 @@ class EditBreakConsumePanel extends RecordEditPanel {
             breakConsumeCbModel.addElement(ci);
         }
     }
-    
+
     @Override
     public boolean save() throws Exception {
         Xbreakconsume xbc = (Xbreakconsume) getDbObject();

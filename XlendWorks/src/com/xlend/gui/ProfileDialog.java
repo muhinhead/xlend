@@ -64,7 +64,6 @@ public abstract class ProfileDialog extends PopupDialog {
         getContentPane().add(mainPanel, BorderLayout.CENTER);
         JPanel btnPanel = new JPanel();
         btnPanel.add(saveButton = new JButton(saveAction = new AbstractAction("Save") {
-
             private final String TRANSNAME = "CLIENTPROFILESAVE";
 
             @Override
@@ -94,7 +93,6 @@ public abstract class ProfileDialog extends PopupDialog {
             }
         }));
         btnPanel.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

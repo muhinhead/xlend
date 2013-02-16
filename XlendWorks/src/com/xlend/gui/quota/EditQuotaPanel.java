@@ -64,7 +64,6 @@ class EditQuotaPanel extends EditPanelWithPhoto {
     @Override
     protected void fillContent() {
         showHideRFaction = new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 showHideResponseFields();
@@ -275,7 +274,6 @@ class EditQuotaPanel extends EditPanelWithPhoto {
 
     private AbstractAction clientRefLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {

@@ -15,9 +15,8 @@ public class XlendMasterTableView extends DbMasterTableView {
 
     protected IMessageSender exchanger;
 
-    public XlendMasterTableView(IMessageSender exchanger, 
-            Controller detailController, String dependFiled, int masterColNum) 
-    {
+    public XlendMasterTableView(IMessageSender exchanger,
+            Controller detailController, String dependFiled, int masterColNum) {
         super(detailController, dependFiled, masterColNum);
         this.exchanger = exchanger;
     }
@@ -42,7 +41,7 @@ public class XlendMasterTableView extends DbMasterTableView {
             detailsDocument.get(n).setSelectStatement(newSelect);
             detailsDocument.get(n).setBody(exchanger.getTableBody(newSelect));
         } catch (RemoteException ex) {
-            Vector[] body = new Vector[] {
+            Vector[] body = new Vector[]{
                 new Vector(), new Vector()
             };
             body[0].add("null");

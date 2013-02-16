@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
  * @author Nick Mukhin
  */
 public class PPElookupAction extends AbstractAction {
+
     private final JComboBox ppeTypeCB;
 
     public PPElookupAction(JComboBox ppeTypeCB) {
@@ -24,10 +25,10 @@ public class PPElookupAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            LookupDialog ld = new LookupDialog("PPE Types Lookup",ppeTypeCB,
-                    new PPEtypeGrid(DashBoard.getExchanger()),new String[]{"xppetype"});
+            LookupDialog ld = new LookupDialog("PPE Types Lookup", ppeTypeCB,
+                    new PPEtypeGrid(DashBoard.getExchanger()), new String[]{"xppetype"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
-    }    
+    }
 }

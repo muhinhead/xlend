@@ -31,11 +31,10 @@ public class LowBedGrid extends GeneralGridPanel {
     public LowBedGrid(IMessageSender exchanger, String select, boolean b) throws RemoteException {
         super(exchanger, select, maxWidths, b);
     }
-    
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Low-Bed") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -43,7 +42,7 @@ public class LowBedGrid extends GeneralGridPanel {
                     if (EditLowBedDialog.okPressed) {
                         Xlowbed lb = (Xlowbed) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), lb.getXmachineId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), lb.getXmachineId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,7 +55,6 @@ public class LowBedGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -66,7 +64,7 @@ public class LowBedGrid extends GeneralGridPanel {
                         new EditLowBedDialog("Edit Low-Bed", xlb);
                         if (EditLowBedDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -80,7 +78,6 @@ public class LowBedGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -88,7 +85,7 @@ public class LowBedGrid extends GeneralGridPanel {
                     Xlowbed xlb = (Xlowbed) exchanger.loadDbObjectOnID(Xlowbed.class, id);
                     if (xlb != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xlb);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -96,5 +93,5 @@ public class LowBedGrid extends GeneralGridPanel {
                 }
             }
         };
-    }    
+    }
 }

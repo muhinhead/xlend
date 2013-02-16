@@ -18,27 +18,26 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 public class PaymentsGrid extends GeneralGridPanel {
-    
+
     public PaymentsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_PAYMENTS, getMaxWidths(new int[]{40}), false);
     }
 
     public PaymentsGrid(IMessageSender exchanger, String select) throws RemoteException {
-        super(exchanger, select, getMaxWidths(new int[]{40,70,70,100,100}), true);
+        super(exchanger, select, getMaxWidths(new int[]{40, 70, 70, 100, 100}), true);
     }
 
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Payment") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditPaymentDialog ed = new EditPaymentDialog("New Payment", null);
                     if (EditPaymentDialog.okPressed) {
                         Xpayment xpay = (Xpayment) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                getSelect(), xpay.getXpaymentId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                getSelect(), xpay.getXpaymentId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -51,7 +50,6 @@ public class PaymentsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -60,7 +58,7 @@ public class PaymentsGrid extends GeneralGridPanel {
                         Xpayment xpay = (Xpayment) exchanger.loadDbObjectOnID(Xpayment.class, id);
                         new EditPaymentDialog("Edit Payment", xpay);
                         if (EditPaymentDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -74,7 +72,6 @@ public class PaymentsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -83,7 +80,7 @@ public class PaymentsGrid extends GeneralGridPanel {
                     if (xpay != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this payment?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xpay);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

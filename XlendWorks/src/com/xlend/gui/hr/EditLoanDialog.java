@@ -9,12 +9,13 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditLoanDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditLoanDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditLoanPanel((Xloans) getObject()));
@@ -24,5 +25,4 @@ public class EditLoanDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

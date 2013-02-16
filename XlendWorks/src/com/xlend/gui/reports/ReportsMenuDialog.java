@@ -85,7 +85,6 @@ public class ReportsMenuDialog extends PopupDialog {
 
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnPanel.add(okButton = new JButton(okAction = new AbstractAction("Ok") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = true;
@@ -93,7 +92,6 @@ public class ReportsMenuDialog extends PopupDialog {
             }
         }));
         btnPanel.add(cancelButton = new JButton(cancelAction = new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = false;
@@ -110,7 +108,6 @@ public class ReportsMenuDialog extends PopupDialog {
 
     private AbstractAction toggleButtonAction(String sheetName) {
         return new AbstractAction(sheetName) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 JToggleButton repGrdpBtn = (JToggleButton) e.getSource();

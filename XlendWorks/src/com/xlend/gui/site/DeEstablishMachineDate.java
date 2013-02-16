@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
  * @author Nick Mukhin
  */
 public class DeEstablishMachineDate extends PopupDialog {
+
     public static boolean okPressed = false;
     private JButton okBtn;
     private JButton cancelBtn;
@@ -25,14 +26,14 @@ public class DeEstablishMachineDate extends PopupDialog {
     public DeEstablishMachineDate(String title, JSpinner dtSp) {
         super(null, title, dtSp);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent();
         okPressed = false;
         JSpinner dateSp = (JSpinner) getObject();
         JLabel lbl = new JLabel("  De-establishment date:", SwingUtilities.RIGHT);
-        JPanel centerJPanel = new JPanel(new BorderLayout(10,10));
+        JPanel centerJPanel = new JPanel(new BorderLayout(10, 10));
         centerJPanel.add(lbl, BorderLayout.WEST);
         JPanel datePanel = new JPanel(new BorderLayout());
         datePanel.add(dateSp, BorderLayout.WEST);
@@ -44,7 +45,6 @@ public class DeEstablishMachineDate extends PopupDialog {
         getContentPane().add(centerJPanel, BorderLayout.CENTER);
         getContentPane().add(btnPanel, BorderLayout.SOUTH);
         okBtn = new JButton(okAction = new AbstractAction("Ok") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = true;
@@ -52,7 +52,6 @@ public class DeEstablishMachineDate extends PopupDialog {
             }
         });
         cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 okPressed = false;
@@ -64,7 +63,7 @@ public class DeEstablishMachineDate extends PopupDialog {
         getRootPane().setDefaultButton(okBtn);
         setResizable(false);
     }
-    
+
     @Override
     public void freeResources() {
         okBtn.removeActionListener(okAction);
@@ -72,5 +71,4 @@ public class DeEstablishMachineDate extends PopupDialog {
         cancelBtn.removeActionListener(cancelAction);
         cancelAction = null;
     }
-    
 }

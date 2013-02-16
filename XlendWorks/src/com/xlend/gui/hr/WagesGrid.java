@@ -27,19 +27,18 @@ public class WagesGrid extends GeneralGridPanel {
     public WagesGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_WAGES, maxWidths, false);
     }
-    
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Wage List") {
-
-           @Override
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditWagesDialog ed = new EditWagesDialog("New Wage List", null);
                     if (EditWagesDialog.okPressed) {
                         Xwagesum xs = (Xwagesum) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                getSelect(), xs.getXwagesumId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                getSelect(), xs.getXwagesumId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -52,7 +51,6 @@ public class WagesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -61,7 +59,7 @@ public class WagesGrid extends GeneralGridPanel {
                         Xwagesum xs = (Xwagesum) exchanger.loadDbObjectOnID(Xwagesum.class, id);
                         new EditWagesDialog("Edit Wage List", xs);
                         if (EditWagesDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -75,16 +73,15 @@ public class WagesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xwagesum xs = (Xwagesum) exchanger.loadDbObjectOnID(Xwagesum.class, id);
-                    if (xs !=null && GeneralFrame.yesNo("Attention!", 
+                    if (xs != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this entry?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xs);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -94,5 +91,4 @@ public class WagesGrid extends GeneralGridPanel {
             }
         };
     }
-
 }

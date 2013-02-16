@@ -39,7 +39,6 @@ public class ClientsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Client") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -47,7 +46,7 @@ public class ClientsGrid extends GeneralGridPanel {
                     if (EditClientDialog.okPressed) {
                         Xclient xclient = (Xclient) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
-                                xclient.getXclientId(),getPageSelector().getSelectedIndex());
+                                xclient.getXclientId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -60,7 +59,6 @@ public class ClientsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -70,7 +68,7 @@ public class ClientsGrid extends GeneralGridPanel {
                         new EditClientDialog("Edit Client", xclient);
                         if (EditClientDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -84,7 +82,6 @@ public class ClientsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -94,7 +91,7 @@ public class ClientsGrid extends GeneralGridPanel {
                             + xclient.getCompanyname() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xclient);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                                getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     ex.printStackTrace();

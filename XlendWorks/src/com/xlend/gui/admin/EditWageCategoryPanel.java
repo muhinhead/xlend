@@ -55,7 +55,7 @@ class EditWageCategoryPanel extends RecordEditPanel {
             itm.setCbitemId(0);
             isNew = true;
         }
-        itm.setId((Integer)codeSpinner.getValue());
+        itm.setId((Integer) codeSpinner.getValue());
         itm.setName("wage_category");
         itm.setVal(wageCategoryField.getText());
         return saveDbRecord(itm, isNew);

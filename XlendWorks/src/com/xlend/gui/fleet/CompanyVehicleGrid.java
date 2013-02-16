@@ -29,7 +29,7 @@ public class CompanyVehicleGrid extends GeneralGridPanel {
                 "classify='M'", "classify='P'"), maxWidths, false);
     }
 
-    public CompanyVehicleGrid(IMessageSender exchanger, String select, 
+    public CompanyVehicleGrid(IMessageSender exchanger, String select,
             boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, readOnly);
     }
@@ -37,7 +37,6 @@ public class CompanyVehicleGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Company Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -54,11 +53,10 @@ public class CompanyVehicleGrid extends GeneralGridPanel {
             }
         };
     }
-   
+
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Company Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -82,7 +80,6 @@ public class CompanyVehicleGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Pool Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

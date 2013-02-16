@@ -18,23 +18,22 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 public class HourCompareGrid extends GeneralGridPanel {
-    
+
     public HourCompareGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_HOURCOMPARE, getMaxWidths(new int[]{40,150,100}), false);
+        super(exchanger, Selects.SELECT_FROM_HOURCOMPARE, getMaxWidths(new int[]{40, 150, 100}), false);
     }
 
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Hour Comparison") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditHourCompareDialog ed = new EditHourCompareDialog("New Hour Comparison", null);
                     if (EditHourCompareDialog.okPressed) {
                         Xhourcompare xc = (Xhourcompare) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                getSelect(), xc.getXhourcompareId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                getSelect(), xc.getXhourcompareId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -47,7 +46,6 @@ public class HourCompareGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Hour Comparison") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -56,8 +54,8 @@ public class HourCompareGrid extends GeneralGridPanel {
                         Xhourcompare xc = (Xhourcompare) exchanger.loadDbObjectOnID(Xhourcompare.class, id);
                         new EditHourCompareDialog("Edit Hour Comparison", xc);
                         if (EditHourCompareDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
-                                    getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
+                                    getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -71,7 +69,6 @@ public class HourCompareGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -80,7 +77,7 @@ public class HourCompareGrid extends GeneralGridPanel {
                     if (xc != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xc);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

@@ -251,7 +251,6 @@ class EditIncidentPanel extends RecordEditPanel {
 
         JPanel machinesButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         machinesButtonPanel.add(new JButton(new AbstractAction("+") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childMachineRows.add(new MachineRowPanel(null));
@@ -259,7 +258,6 @@ class EditIncidentPanel extends RecordEditPanel {
             }
         }));
         machinesButtonPanel.add(new JButton(new AbstractAction("x") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean ok = false;
@@ -304,7 +302,6 @@ class EditIncidentPanel extends RecordEditPanel {
 
         JPanel peopleButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         peopleButtonPanel.add(new JButton(new AbstractAction("+") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childPeopleRows.add(new PeopleRowPanel(null));
@@ -312,7 +309,6 @@ class EditIncidentPanel extends RecordEditPanel {
             }
         }));
         peopleButtonPanel.add(new JButton(new AbstractAction("x") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean ok = false;
@@ -479,7 +475,6 @@ class EditIncidentPanel extends RecordEditPanel {
 
     private ActionListener verifiedAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 vfComp.setVisible(verifiedRB.isSelected());

@@ -77,7 +77,7 @@ class EditMachineTypePanel extends RecordEditPanel {
         }
         mt.setMachtype(nameField.getText());
         mt.setClassify(classField.getText().length() > 1 ? classField.getText().substring(0, 1) : classField.getText());
-        if (parentID != null && mt.getXmachtypeId().intValue()!=parentID.intValue()) {
+        if (parentID != null && mt.getXmachtypeId().intValue() != parentID.intValue()) {
             mt.setParenttypeId(parentID);
         }
         ok = saveDbRecord(mt, isNew);

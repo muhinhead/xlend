@@ -25,9 +25,8 @@ import javax.swing.JPanel;
  */
 public abstract class ProfilePanel extends RecordEditPanel {
 
-    
     protected int profile_id;
-    
+
     private static ComboItem[] getComboItems(String select, ComboItem unknown) {
         Vector itemsVector = null;
         try {

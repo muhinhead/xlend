@@ -20,9 +20,9 @@ import javax.swing.JPanel;
  */
 public abstract class AbstractDashBoard extends JFrame {
 //    protected IMessageSender msgSender;
+
     private static final String PROPERTYFILENAME = "XlendWorks.config";
     protected TexturedPanel main;
-
 //    public IMessageSender getMsgSender() {
 //        return msgSender;
 //    }
@@ -35,9 +35,9 @@ public abstract class AbstractDashBoard extends JFrame {
     protected int dashHeight;
 
     protected abstract String getBackGroundImage();
-    
+
     public abstract void lowLevelInit();
-    
+
     protected class WinListener extends WindowAdapter {
 
         public WinListener(JFrame frame) {
@@ -47,7 +47,7 @@ public abstract class AbstractDashBoard extends JFrame {
             exit();
         }
     }
-    
+
     protected class LayerPanel extends JLayeredPane {
 
         LayerPanel() {
@@ -75,7 +75,7 @@ public abstract class AbstractDashBoard extends JFrame {
         XlendWorks.setWindowIcon(this, "Xcost.png");
 //        addWindowListener(new DashBoard.WinListener(this));
         controlsPanel = new JPanel(new BorderLayout());
-        
+
         setLayout(new BorderLayout());
 
         LayerPanel layers = new LayerPanel();
@@ -91,7 +91,7 @@ public abstract class AbstractDashBoard extends JFrame {
 
         getContentPane().add(layers, BorderLayout.CENTER);
     }
-    
+
     public static void centerWindow(JFrame frame) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = frame.getSize();
@@ -110,7 +110,7 @@ public abstract class AbstractDashBoard extends JFrame {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
     }
-    
+
     public static float getXratio(JFrame frame) {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         return (float) frame.getWidth() / d.width;
@@ -129,10 +129,9 @@ public abstract class AbstractDashBoard extends JFrame {
     public void setVisible(boolean show) {
         super.setVisible(show);
     }
-    
+
     protected void exit() {
         dispose();
         System.exit(1);
     }
-    
 }

@@ -40,7 +40,7 @@ public abstract class EditRecordDialog extends PopupDialog {
 //        applyButton.setToolTipText("Apply changes to database");
         saveButton.setToolTipText("Save changes and close dialog");
         cancelButton.setToolTipText("Discard changes and close dialog");
-        
+
         getContentPane().add(new JPanel(), BorderLayout.WEST);
         getContentPane().add(new JPanel(), BorderLayout.EAST);
         getContentPane().add(editPanel, BorderLayout.CENTER);
@@ -78,10 +78,8 @@ public abstract class EditRecordDialog extends PopupDialog {
 //            }
 //        };
 //    }
-
     protected AbstractAction getSaveAction() {
         return new AbstractAction("Save") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -102,7 +100,6 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     protected AbstractAction getCancelAction() {
         return new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

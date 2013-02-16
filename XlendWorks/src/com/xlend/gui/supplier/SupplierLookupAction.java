@@ -17,18 +17,17 @@ import javax.swing.JComboBox;
 public class SupplierLookupAction extends AbstractAction {
 
     private JComboBox supplierCB;
-    
-    public SupplierLookupAction(JComboBox cBox){
+
+    public SupplierLookupAction(JComboBox cBox) {
         super("...");
         this.supplierCB = cBox;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         showSupplierLookup();
     }
 
-    
     private void showSupplierLookup() {
         try {
             LookupDialog ld = new LookupDialog("Suppliers Lookup", supplierCB,
@@ -37,5 +36,5 @@ public class SupplierLookupAction extends AbstractAction {
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
-    }    
+    }
 }

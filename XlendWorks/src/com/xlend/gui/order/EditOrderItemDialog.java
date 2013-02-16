@@ -16,7 +16,7 @@ public class EditOrderItemDialog extends EditRecordDialog {
     public EditOrderItemDialog(String title, Object obj) {
         super(title, obj);
     }
-    
+
     private void setXorder() {
         EditOrderItemPanel editPanel = (EditOrderItemPanel) getEditPanel();
         editPanel.setXorder(xorder);
@@ -32,18 +32,19 @@ public class EditOrderItemDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();
         EditOrderItemDialog.xorder = null;
     }
-    
+
     private static String getItemId(Object ob) {
         Xorderitem itm = (Xorderitem) ob;
-        if (itm!=null) {
-            return " "+itm.getXorderitemId();
-        } else 
+        if (itm != null) {
+            return " " + itm.getXorderitemId();
+        } else {
             return " null";
+        }
     }
 }

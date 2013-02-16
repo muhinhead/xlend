@@ -8,6 +8,7 @@ import com.xlend.orm.Xmachine;
  * @author Nick Mukhin
  */
 class EditTrackDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditTrackDialog(String title, Object obj) {

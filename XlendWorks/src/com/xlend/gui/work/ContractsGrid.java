@@ -20,11 +20,12 @@ import javax.swing.JOptionPane;
 public class ContractsGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+
     static {
         maxWidths.put(0, 40);
         maxWidths.put(1, 150);
     }
-    
+
     public ContractsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_CONTRACTS, maxWidths, false);
     }
@@ -36,15 +37,14 @@ public class ContractsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Contract") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditContractDialog ed = new EditContractDialog("New Contract", null);
                     if (EditContractDialog.okPressed) {
                         Xcontract xcontract = (Xcontract) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, 
-                                getTableView(), getTableDoc(), getSelect(), xcontract.getXcontractId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger,
+                                getTableView(), getTableDoc(), getSelect(), xcontract.getXcontractId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -57,7 +57,6 @@ public class ContractsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -67,7 +66,7 @@ public class ContractsGrid extends GeneralGridPanel {
                         new EditContractDialog("Edit Contract", xcontract);
                         if (EditContractDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -81,16 +80,15 @@ public class ContractsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xcontract xcontract = (Xcontract) exchanger.loadDbObjectOnID(Xcontract.class, id);
-                    if (xcontract!=null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  [" 
-                            + xcontract.getContractref() + "]?")== JOptionPane.YES_OPTION) {
+                    if (xcontract != null && GeneralFrame.yesNo("Attention!", "Do you want to delete contract  ["
+                            + xcontract.getContractref() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xcontract);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

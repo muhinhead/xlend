@@ -32,7 +32,7 @@ public class EditTimeSheetDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();

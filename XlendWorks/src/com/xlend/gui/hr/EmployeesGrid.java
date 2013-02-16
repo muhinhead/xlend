@@ -41,7 +41,6 @@ public class EmployeesGrid extends GeneralGridPanel {
         JPanel upperPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         upperPanel.add(showDisappearedCB = new JCheckBox("Show dismissed/resigned/absconded/deceased"));
         showDisappearedCB.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -52,7 +51,7 @@ public class EmployeesGrid extends GeneralGridPanel {
                 setSelect(newSelect);
                 td.setSelectStatement(newSelect);
                 try {
-                    td.setBody(exchanger.getTableBody(newSelect,0,PAGESIZE));
+                    td.setBody(exchanger.getTableBody(newSelect, 0, PAGESIZE));
                     updatePageCounter(newSelect);
                     GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                 } catch (RemoteException ex) {
@@ -68,7 +67,6 @@ public class EmployeesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Employee") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -90,7 +88,6 @@ public class EmployeesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -115,7 +112,6 @@ public class EmployeesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

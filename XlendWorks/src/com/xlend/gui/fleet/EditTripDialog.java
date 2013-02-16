@@ -15,7 +15,7 @@ public class EditTripDialog extends EditRecordDialog {
     public EditTripDialog(String title, Object obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditTripPanel((Xtrip) getObject()));
@@ -25,11 +25,10 @@ public class EditTripDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();
         EditTripPanel.setXlowbed(null);
     }
 }
-

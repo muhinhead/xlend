@@ -126,7 +126,7 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
             String sBalance = XlendWorks.calcDieselBalanceAtSupplier(
                     DashBoard.getExchanger(), supplierID, dt);
             SpinnerNumberModel spModel = (SpinnerNumberModel) litresIssuedSP.getModel();
-            spModel.setMaximum(Double.parseDouble(sBalance)+0.01);
+            spModel.setMaximum(Double.parseDouble(sBalance) + 0.01);
             balanceSupplierLBL.setText(sBalance);
         }
     }

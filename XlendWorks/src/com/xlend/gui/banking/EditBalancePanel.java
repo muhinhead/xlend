@@ -107,7 +107,6 @@ public class EditBalancePanel extends RecordEditPanel {
 
         private ChangeListener changeAccTotalListener() {
             return new ChangeListener() {
-
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     recalc();
@@ -155,7 +154,6 @@ public class EditBalancePanel extends RecordEditPanel {
         hdrPanel = new JPanel(new GridLayout(1, 3));
         hdrPanel.add(selectAllCB = new JCheckBox());
         selectAllCB.setAction(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (RowPanel p : childRows) {
@@ -201,7 +199,6 @@ public class EditBalancePanel extends RecordEditPanel {
 
     private AbstractAction getAddLineAction() {
         return new AbstractAction("Add record") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new RowPanel(null));
@@ -212,7 +209,6 @@ public class EditBalancePanel extends RecordEditPanel {
 
     private AbstractAction getDeleteLineAction() {
         return new AbstractAction("Delete record(s)") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
 

@@ -32,7 +32,6 @@ public class RatedMachinesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Rated Machine") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -51,7 +50,6 @@ public class RatedMachinesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Rated Machine") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -75,7 +73,6 @@ public class RatedMachinesGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Rate Machine") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -83,7 +80,7 @@ public class RatedMachinesGrid extends GeneralGridPanel {
                     try {
                         Cbitems itm = (Cbitems) exchanger.loadDbObjectOnID(Cbitems.class, id);
                         if (itm != null) {
-                            if (GeneralFrame.yesNo("Attention!", 
+                            if (GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(itm);
                                 GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

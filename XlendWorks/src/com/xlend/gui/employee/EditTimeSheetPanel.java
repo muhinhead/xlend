@@ -184,7 +184,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         for (ComboItem itm : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
             orderCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadSites(DashBoard.getExchanger(),"1=1")) {
+        for (ComboItem itm : XlendWorks.loadSites(DashBoard.getExchanger(), "1=1")) {
             siteCbModel.addElement(itm);
         }
         for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
@@ -367,10 +367,10 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 ts.setXemployeeId(getSelectedCbItem(employeeRefBox));
                 Integer xsiteID = getSelectedCbItem(siteRefBox);
                 ts.setXsiteId(xsiteID);
-                if (!XlendWorks.isActiveSite(DashBoard.getExchanger(),xsiteID)) {
-                    if (GeneralFrame.yesNo("Attention!", 
+                if (!XlendWorks.isActiveSite(DashBoard.getExchanger(), xsiteID)) {
+                    if (GeneralFrame.yesNo("Attention!",
                             "Inactive site selected. Activate it?") == JOptionPane.YES_OPTION) {
-                        XlendWorks.activateSite(DashBoard.getExchanger(),xsiteID);
+                        XlendWorks.activateSite(DashBoard.getExchanger(), xsiteID);
                     }
                 }
                 ts.setXmachineId(getSelectedCbItem(machineBox));
@@ -391,7 +391,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     dayWages[d].setOvertime(over = (Double) sps[d * 3 + 1].getValue());
                     dayWages[d].setDoubletime(dbl = (Double) sps[d * 3 + 2].getValue());
                     dayWages[d].setStoppeddetails(detailsFlds[d].getText());
-                    dayWages[d].setTsnum((Integer)tsNumSps[d].getValue());
+                    dayWages[d].setTsnum((Integer) tsNumSps[d].getValue());
                     if (norm + over + dbl > 24) {
                         GeneralFrame.errMessageBox("Error:", "Total day time exceeds 24h!");
                         ((JSpinner.DefaultEditor) sps[d * 4].getEditor()).getTextField().requestFocus();

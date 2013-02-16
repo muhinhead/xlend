@@ -55,7 +55,7 @@ class EditRatedMachinePanel extends RecordEditPanel {
             itm.setCbitemId(0);
             isNew = true;
         }
-        itm.setId((Integer)codeSpinner.getValue());
+        itm.setId((Integer) codeSpinner.getValue());
         itm.setName("rated_machines");
         itm.setVal(ratedMachineField.getText());
         return saveDbRecord(itm, isNew);

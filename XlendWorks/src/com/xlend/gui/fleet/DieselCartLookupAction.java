@@ -17,18 +17,17 @@ import javax.swing.JComboBox;
 public class DieselCartLookupAction extends AbstractAction {
 
     private JComboBox dieselCartCB;
-    
-    public DieselCartLookupAction(JComboBox cBox){
+
+    public DieselCartLookupAction(JComboBox cBox) {
         super("...");
         this.dieselCartCB = cBox;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         showSupplierLookup();
     }
 
-    
     private void showSupplierLookup() {
         try {
             LookupDialog ld = new LookupDialog("Diesel Cart Lookup", dieselCartCB,
@@ -37,5 +36,5 @@ public class DieselCartLookupAction extends AbstractAction {
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
-    }    
+    }
 }

@@ -177,7 +177,6 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         }
         weekendSP.setEditor(new JSpinner.DateEditor(weekendSP, "dd/MM/yyyy"));
         weekendSP.getModel().addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 shiftDayLabels();
@@ -323,121 +322,121 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         xs.setKmStop5((Integer) kmStopSP[4].getValue());
         xs.setKmStop6((Integer) kmStopSP[5].getValue());
         xs.setKmStop7((Integer) kmStopSP[6].getValue());
-        
+
         dt = (Date) workFromSP[0].getValue();
         if (dt != null) {
-            xs.setWorkFrom1(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom1(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[1].getValue();
         if (dt != null) {
-            xs.setWorkFrom2(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom2(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[2].getValue();
         if (dt != null) {
-            xs.setWorkFrom3(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom3(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[3].getValue();
         if (dt != null) {
-            xs.setWorkFrom4(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom4(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[4].getValue();
         if (dt != null) {
-            xs.setWorkFrom5(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom5(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[5].getValue();
         if (dt != null) {
-            xs.setWorkFrom6(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom6(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workFromSP[6].getValue();
         if (dt != null) {
-            xs.setWorkFrom7(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkFrom7(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
 
         dt = (Date) workToSP[0].getValue();
         if (dt != null) {
-            xs.setWorkTo1(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo1(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[1].getValue();
         if (dt != null) {
-            xs.setWorkTo2(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo2(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[2].getValue();
         if (dt != null) {
-            xs.setWorkTo3(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo3(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[3].getValue();
         if (dt != null) {
-            xs.setWorkTo4(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo4(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[4].getValue();
         if (dt != null) {
-            xs.setWorkTo5(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo5(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[5].getValue();
         if (dt != null) {
-            xs.setWorkTo6(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo6(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) workToSP[6].getValue();
         if (dt != null) {
-            xs.setWorkTo7(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setWorkTo7(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
 
         dt = (Date) standFromSP[0].getValue();
         if (dt != null) {
-            xs.setStandFrom1(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom1(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[1].getValue();
         if (dt != null) {
-            xs.setStandFrom2(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom2(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[2].getValue();
         if (dt != null) {
-            xs.setStandFrom3(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom3(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[3].getValue();
         if (dt != null) {
-            xs.setStandFrom4(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom4(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[4].getValue();
         if (dt != null) {
-            xs.setStandFrom5(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom5(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[5].getValue();
         if (dt != null) {
-            xs.setStandFrom6(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom6(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standFromSP[6].getValue();
         if (dt != null) {
-            xs.setStandFrom7(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandFrom7(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
 
         dt = (Date) standToSP[0].getValue();
         if (dt != null) {
-            xs.setStandTo1(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo1(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[1].getValue();
         if (dt != null) {
-            xs.setStandTo2(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo2(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[2].getValue();
         if (dt != null) {
-            xs.setStandTo3(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo3(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[3].getValue();
         if (dt != null) {
-            xs.setStandTo4(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo4(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[4].getValue();
         if (dt != null) {
-            xs.setStandTo5(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo5(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[5].getValue();
         if (dt != null) {
-            xs.setStandTo6(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo6(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         dt = (Date) standToSP[6].getValue();
         if (dt != null) {
-            xs.setStandTo7(new Timestamp(dt.getTime()+TimeZone.getDefault().getOffset(dt.getTime())));
+            xs.setStandTo7(new Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
         }
         xs.setReason1(reasonTF[0].getText());
         xs.setReason2(reasonTF[1].getText());
@@ -446,7 +445,7 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         xs.setReason5(reasonTF[4].getText());
         xs.setReason6(reasonTF[5].getText());
         xs.setReason7(reasonTF[6].getText());
-        
+
         return saveDbRecord(xs, isNew);
     }
 }

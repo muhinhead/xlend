@@ -64,14 +64,14 @@ public class EditOrderItemPanel extends RecordEditPanel {
         };
         JComponent[] edits = new JComponent[]{
             idField = new JTextField(),
-            getGridPanel(itemNumberField = new JTextField(),3),
-            getGridPanel(machineTypeCB = new JComboBox(machineTypeCbModel),2),
-            getGridPanel(requiredDateSpin = new SelectedDateSpinner(),3),
-            getGridPanel(deliverDateSpin = new SelectedDateSpinner(),3),
-            getGridPanel(quantitySpin = new JSpinner(new SpinnerNumberModel()),3),
-            getGridPanel(measureItemCB = new JComboBox(new String[]{"HRS", "RANDS", "EACH"}),2),
-            getGridPanel(priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),3),
-            getGridPanel(totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1),3)
+            getGridPanel(itemNumberField = new JTextField(), 3),
+            getGridPanel(machineTypeCB = new JComboBox(machineTypeCbModel), 2),
+            getGridPanel(requiredDateSpin = new SelectedDateSpinner(), 3),
+            getGridPanel(deliverDateSpin = new SelectedDateSpinner(), 3),
+            getGridPanel(quantitySpin = new JSpinner(new SpinnerNumberModel()), 3),
+            getGridPanel(measureItemCB = new JComboBox(new String[]{"HRS", "RANDS", "EACH"}), 2),
+            getGridPanel(priceOneSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1), 3),
+            getGridPanel(totalValSpin = new SelectedNumberSpinner(0.0, 0.0, 1000000.00, 0.1), 3)
         };
         totalValSpin.setEnabled(false);
         requiredDateSpin.setEditor(new JSpinner.DateEditor(requiredDateSpin, "dd/MM/yyyy"));
@@ -170,7 +170,6 @@ public class EditOrderItemPanel extends RecordEditPanel {
 
     private ChangeListener calcTotalValueAction() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (priceOneSpin.getValue() != null && quantitySpin.getValue() != null) {

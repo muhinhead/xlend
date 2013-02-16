@@ -225,7 +225,6 @@ public class EditOrderPanel extends RecordEditPanel {
 
     protected AbstractAction clientRefLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -245,7 +244,6 @@ public class EditOrderPanel extends RecordEditPanel {
 
     protected AbstractAction contractRefLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -267,7 +265,6 @@ public class EditOrderPanel extends RecordEditPanel {
 
     private AbstractAction rfcRefRefLookup() {
         return new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -289,7 +286,6 @@ public class EditOrderPanel extends RecordEditPanel {
 
     private ActionListener getClientRefChangedAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncCombos();

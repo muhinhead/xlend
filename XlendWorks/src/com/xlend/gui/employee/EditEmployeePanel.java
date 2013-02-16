@@ -348,7 +348,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             PPEissueItemsGrid itemsGrid = new PPEissueItemsGrid(DashBoard.getExchanger(), 0);
             Controller detailController = itemsGrid.getController();
             XlendMasterTableView masterView = new XlendMasterTableView(DashBoard.getExchanger(), detailController, "xppeissue_id", 0);
-            
+
             PPEissues2employeeGrid issuesGrid = new PPEissues2employeeGrid(DashBoard.getExchanger(), employee_id, masterView);
 
             ppesPanel.add(issuesGrid, BorderLayout.WEST);

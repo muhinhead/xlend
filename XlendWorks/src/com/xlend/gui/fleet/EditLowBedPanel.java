@@ -61,9 +61,9 @@ public class EditLowBedPanel extends RecordEditPanel {
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 7),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel),
-                new MachineLookupAction(machineCB, null)),4),
-            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)),2),
-            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)),2)
+            new MachineLookupAction(machineCB, null)), 4),
+            getGridPanel(comboPanelWithLookupBtn(driverCB = new JComboBox(driverCbModel), new EmployeeLookupAction(driverCB)), 2),
+            getGridPanel(comboPanelWithLookupBtn(assistantCB = new JComboBox(assistantCbModel), new EmployeeLookupAction(assistantCB)), 2)
         };
 
         idField.setEnabled(false);
@@ -123,7 +123,7 @@ public class EditLowBedPanel extends RecordEditPanel {
         JTabbedPane tp = new MyJideTabbedPane();
         try {
             JScrollPane sp = new JScrollPane(new TripsGrid(DashBoard.getExchanger(), (Xlowbed) getDbObject(), this));
-            sp.setPreferredSize(new Dimension(700,200));
+            sp.setPreferredSize(new Dimension(700, 200));
             tp.add(sp, "Trips");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);

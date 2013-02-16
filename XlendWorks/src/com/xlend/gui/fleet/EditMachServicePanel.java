@@ -215,17 +215,17 @@ public class EditMachServicePanel extends RecordEditPanel {
 
     @Override
     public boolean save() throws Exception {
-        if (getSelectedCbItem(machineCB)==null) {
+        if (getSelectedCbItem(machineCB) == null) {
             GeneralFrame.errMessageBox("Attention!", "Select serviced machine please");
             machineCB.requestFocus();
             return false;
         }
-        if (getSelectedCbItem(servicedByCB)==null) {
+        if (getSelectedCbItem(servicedByCB) == null) {
             GeneralFrame.errMessageBox("Attention!", "Select employee here please");
             servicedByCB.requestFocus();
             return false;
         }
-        if (getSelectedCbItem(assistedByCB)==null) {
+        if (getSelectedCbItem(assistedByCB) == null) {
             GeneralFrame.errMessageBox("Attention!", "Select employee here please");
             assistedByCB.requestFocus();
             return false;

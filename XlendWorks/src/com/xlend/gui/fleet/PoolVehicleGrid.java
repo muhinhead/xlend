@@ -29,15 +29,14 @@ public class PoolVehicleGrid extends GeneralGridPanel {
                 "classify='M'", "classify='V'"), maxWidths, false);
     }
 
-    public PoolVehicleGrid(IMessageSender exchanger, String select, 
+    public PoolVehicleGrid(IMessageSender exchanger, String select,
             boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, readOnly);
     }
-    
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Pool Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -45,7 +44,7 @@ public class PoolVehicleGrid extends GeneralGridPanel {
                     if (EditPoolVehicleDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -54,11 +53,10 @@ public class PoolVehicleGrid extends GeneralGridPanel {
             }
         };
     }
-   
+
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Pool Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -68,7 +66,7 @@ public class PoolVehicleGrid extends GeneralGridPanel {
                         new EditPoolVehicleDialog("Edit Pool Vehicle", machine);
                         if (EditPoolVehicleDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -82,7 +80,6 @@ public class PoolVehicleGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Pool Vehicle") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -91,7 +88,7 @@ public class PoolVehicleGrid extends GeneralGridPanel {
                     if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Pool Vehicle [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

@@ -9,13 +9,14 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick
  */
 public class EditAbsenteismDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditAbsenteismDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditAbsenteismPanel((Xabsenteeism) getObject()));
     }
@@ -24,5 +25,4 @@ public class EditAbsenteismDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

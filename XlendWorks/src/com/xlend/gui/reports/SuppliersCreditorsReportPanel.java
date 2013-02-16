@@ -32,9 +32,9 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
                     + "<tr><table>"
                     + "<tr>"
                     + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Supplier and Creditor Report</th>"
+                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Supplier and Creditor Report</th>"
                     + "</tr>"
-                    + "<tr><th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\">Outstanding Ammounts</th>"
+                    + "<tr><th style=\"font-size: " + (int)(prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Outstanding Ammounts</th>"
                     + "</tr><tr> </tr>"
                     + "</table></tr>"
                     + "<table frame=\"abowe\" ><tr bgcolor=\"#dedede\"><th align=\"left\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Supplier Name</th>"
@@ -64,7 +64,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     }
 
     private String getColor(double sum) {//style=\"font-size: 160%; font-family: sans-serif\"
-        return (sum > 0.0 ? "color=\"#ff0000\"" : sum < 0.0 ? "color=\"#0000ff\"" : "") + "style=\"font-size: " 
+        return (sum > 0.0 ? "color=\"#ff0000\"" : sum < 0.0 ? "color=\"#0000ff\"" : "") + "style=\"font-size: "
                 + zoomer.getValue() + "%; font-family: arial\"";
     }
 

@@ -111,7 +111,7 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
             balanceAvailableLBL.setText(sBalance);
         }
     }
-    
+
     @Override
     public void loadData() {
         Xdieselpurchase xdp = (Xdieselpurchase) getDbObject();
@@ -138,8 +138,8 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         if (dt != null) {
             xdp.setPurchaseDate(new java.sql.Date(dt.getTime()));
         }
-        xdp.setRandFactor((Double)randFactorSP.getValue());
-        xdp.setLitres((Double)litresPurchasedSP.getValue());
+        xdp.setRandFactor((Double) randFactorSP.getValue());
+        xdp.setLitres((Double) litresPurchasedSP.getValue());
         xdp.setXsupplierId(getSelectedCbItem(supplierCB));
         return saveDbRecord(xdp, isNew);
     }

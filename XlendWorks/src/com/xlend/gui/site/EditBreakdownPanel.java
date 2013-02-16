@@ -132,7 +132,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             comboPanelWithLookupBtn(attendedByCB = new JComboBox(attendedByCbModel), new EmployeeLookupAction(attendedByCB)),
             comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
             getGridPanel(repairDateSP = new SelectedDateSpinner(), 3),
-            getGridPanel(new JComponent[]{problemRepairedCb = new JCheckBox(), 
+            getGridPanel(new JComponent[]{problemRepairedCb = new JCheckBox(),
                 new JLabel("Operator at fault?:", SwingConstants.RIGHT), operatorFaultCb = new JCheckBox()}),
             //            descrOfBreakdownField = new JTextField(40),
             //            getGridPanel(operatorFaultCb = new JCheckBox(), 3),
@@ -164,7 +164,6 @@ class EditBreakdownPanel extends RecordEditPanel {
 //        add(new JButton("!!!!"));
 //        add(getPurchasesPanel());
         machineCB.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 ComboItem mitm = (ComboItem) machineCB.getSelectedItem();
@@ -179,7 +178,7 @@ class EditBreakdownPanel extends RecordEditPanel {
         String title = "Purchases";
         try {
             purPanel = new BreakdownConsumesGrid(DashBoard.getExchanger(),
-                    Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id), 
+                    Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id),
                     getSelectedCbItem(machineCB), this);
             purPanel.setPreferredSize(new Dimension(purPanel.getPreferredSize().width, 200));
             purPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), title));
@@ -305,7 +304,6 @@ class EditBreakdownPanel extends RecordEditPanel {
 
     private AbstractAction getMachineCBaction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncPurchases();

@@ -35,7 +35,7 @@ public class EditTripEstablishingPanel extends RecordEditPanel implements EditSu
             "Distance Travelled Loaded (km):"
         };
         edits = new JComponent[]{
-            getGridPanel(new JComponent[]{comboPanelWithLookupBtn(siteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(siteCB)), otherSiteField=new JTextField()}),
+            getGridPanel(new JComponent[]{comboPanelWithLookupBtn(siteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(siteCB)), otherSiteField = new JTextField()}),
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(EditTripPanel.machineCbModel), new MachineLookupAction(machineCB, null)), 2),
             getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(EditTripPanel.operatorCbModel), new EmployeeLookupAction(operatorCB)), 2),
             getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
@@ -63,7 +63,7 @@ public class EditTripEstablishingPanel extends RecordEditPanel implements EditSu
             }
             selectComboItem(operatorCB, trip.getOperatorId());
             otherSiteField.setText(trip.getOthersite());
-            if (trip.getTositeId()==null || trip.getTositeId()==0) {
+            if (trip.getTositeId() == null || trip.getTositeId() == 0) {
                 siteCB.setSelectedIndex(EditTripPanel.toSiteCbModel.getSize());
             }
         }

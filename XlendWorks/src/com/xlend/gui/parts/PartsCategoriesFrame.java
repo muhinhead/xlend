@@ -55,7 +55,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
     protected AbstractAction getAddSubcategoryAction() {
         if (addSubcategoryAction == null) {
             addSubcategoryAction = new AbstractAction("Add subcategory") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
@@ -84,7 +83,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
     protected AbstractAction getDeleteSubcategoryAction() {
         if (deleteSubcategoryAction == null) {
             deleteSubcategoryAction = new AbstractAction("Delete category") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     EditCategoryPanel.parentID = getCurCategoryID();
@@ -113,7 +111,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
     protected AbstractAction getEditSubcategoryAction() {
         if (editSubcategoryAction == null) {
             editSubcategoryAction = new AbstractAction("Edit category") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     EditCategoryPanel.parentID = getCurCategoryID();
@@ -140,7 +137,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
 
     private KeyListener getSrcFieldKeyListener() {
         return new KeyAdapter() {
-
             @Override
             public void keyReleased(KeyEvent e) {
                 highlightFound();
@@ -274,7 +270,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
         toolBar.add(exitButton);
         aboutButton.setToolTipText("About program...");
         aboutButton.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AboutDialog();
@@ -283,7 +278,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
 
         exitButton.setToolTipText("Close this window");
         exitButton.addActionListener(new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
             }
@@ -317,7 +311,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
 
     protected void setMenuStatusMicroHelp(final JMenuItem m, final String msg) {
         m.addChangeListener(new ChangeListener() {
-
             public void stateChanged(ChangeEvent e) {
                 statusLabel2.setText(msg == null ? m.getText() : msg);
             }
@@ -333,7 +326,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
         JMenu m = createMenu("File", "File Operations");
         JMenuItem mi = createMenuItem("Hide", "Hide this window");
         mi.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
             }
@@ -439,7 +431,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
 
     protected ActionListener getPrintAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 notImplementedYet();
@@ -449,7 +440,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
 
     private ActionListener getSearchAction() {
         return new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean pressed = searchButton.isSelected();
@@ -478,7 +468,6 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
             fillTree();
 
             leftTree.addTreeSelectionListener(new TreeSelectionListener() {
-
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     Xpartcategory xpc = getCurrentXpartcategory();

@@ -31,7 +31,6 @@ public class AbsenteismGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Absenteism") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -52,7 +51,6 @@ public class AbsenteismGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -76,13 +74,12 @@ public class AbsenteismGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xabsenteeism xa = (Xabsenteeism) exchanger.loadDbObjectOnID(Xabsenteeism.class, id);
-                    if (xa != null && GeneralFrame.yesNo("Attention!", 
+                    if (xa != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xa);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

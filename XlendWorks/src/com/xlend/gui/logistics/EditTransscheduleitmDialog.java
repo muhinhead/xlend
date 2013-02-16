@@ -9,6 +9,7 @@ import java.awt.Dimension;
  * @author Nick Mukhin
  */
 class EditTransscheduleitmDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditTransscheduleitmDialog(String title, Object obj) {
@@ -18,11 +19,11 @@ class EditTransscheduleitmDialog extends EditRecordDialog {
     @Override
     protected void fillContent() {
         super.fillContent(new EditTransscheduleitmPanel((DbObject[]) getObject()));
-        setPreferredSize(new Dimension(getPreferredSize().width,500));
+        setPreferredSize(new Dimension(getPreferredSize().width, 500));
     }
 
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }    
+    }
 }

@@ -254,7 +254,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
 
     private void addListeners() {
         dieselPriceSP.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 isBchanged = true;
@@ -275,7 +274,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         });
         for (int i = 0; i < litersHoursSPs.length; i++) {
             litersHoursSPs[i].addChangeListener(new ChangeListener() {
-
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     if (!isBchanged) {
@@ -297,7 +295,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
             });
         }
         factorSP.addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 for (JLabel lb : factorLBLs) {
@@ -319,7 +316,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         });
         for (int i = 0; i < drySPs.length; i++) {
             drySPs[i].addChangeListener(new ChangeListener() {
-
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     if (!isBchanged) {
@@ -340,7 +336,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         }
         for (int i = 0; i < realWetSPs.length; i++) {
             realWetSPs[i].addChangeListener(new ChangeListener() {
-
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     JSpinner sp = (JSpinner) e.getSource();
@@ -356,7 +351,6 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         }
         for (int i = 0; i < goodWetSPs.length; i++) {
             goodWetSPs[i].addChangeListener(new ChangeListener() {
-
                 @Override
                 public void stateChanged(ChangeEvent e) {
                     JSpinner sp = (JSpinner) e.getSource();

@@ -21,11 +21,11 @@ public class BankingFrame extends GeneralFrame {
     private GeneralGridPanel accountsPanel;
     private GeneralGridPanel balancePanel;
     private GeneralGridPanel dieselPurchasePanel;
-    
+
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
     }
-    
+
     @Override
     protected String[] getSheetList() {
         return sheetList;
@@ -63,7 +63,7 @@ public class BankingFrame extends GeneralFrame {
     }
 
     private JPanel getBalancePanel() {
-         if (balancePanel == null) {
+        if (balancePanel == null) {
             try {
                 registerGrid(balancePanel = new BankBalanceGrid(getExchanger()));
             } catch (RemoteException ex) {
@@ -73,7 +73,7 @@ public class BankingFrame extends GeneralFrame {
         }
         return balancePanel;
     }
-    
+
     private JPanel getDieselPurchasePanel() {
         if (dieselPurchasePanel == null) {
             try {

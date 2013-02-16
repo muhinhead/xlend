@@ -32,17 +32,15 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel ppeIssuesPanel;
     private GeneralGridPanel issueToDieselCartPanel;
     private GeneralGridPanel dieselToPlantPanel;
-    
-    
     private static String[] sheetList = new String[]{
         "Sites",
-//        "Diesel Purchases",//"Diesel Rurchases", 
-//        "Yard Diesel",//Diesel Issuing", 
-        "Consumables", 
+        //        "Diesel Purchases",//"Diesel Rurchases", 
+        //        "Yard Diesel",//Diesel Issuing", 
+        "Consumables",
         "Breakdowns",
         "Petrol Issued",//Fuel", 
         //"Site Diesel",//Issuing", 
-        "Site Diary", 
+        "Site Diary",
         "Incidents",
         "Operator Clock Sheet",
         "PPE and Safety",
@@ -144,7 +142,6 @@ public class SitesFrame extends GeneralFrame {
 //        }
 //        return dieselIsissPanel;
 //    }
-
     private JPanel getConsumablesPanel() {
         if (consumablesPanel == null) {
             try {
@@ -192,7 +189,6 @@ public class SitesFrame extends GeneralFrame {
 //        }
 //        return issuePanel;
 //    }
-
     private JPanel getSiteDiaryPanel() {
         if (siteDiaryPanel == null) {
             try {
@@ -252,7 +248,7 @@ public class SitesFrame extends GeneralFrame {
         }
         return dieselToPlantPanel;
     }
-    
+
     private JComponent getPPEandSafetyPanel() {
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         sp.setDividerLocation(250);
@@ -263,7 +259,7 @@ public class SitesFrame extends GeneralFrame {
             errMessageBox("Error:", ex.getMessage());
             sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
         }
-        
+
         try {
             sp.add(ppeIssuesPanel = new PPEissuesGrid(getExchanger()));
         } catch (RemoteException ex) {
@@ -273,6 +269,4 @@ public class SitesFrame extends GeneralFrame {
         }
         return sp;
     }
-
-
 }

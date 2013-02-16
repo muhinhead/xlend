@@ -9,13 +9,14 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditWagesDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditWagesDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditWagesPanel((Xwagesum) getObject()));
     }

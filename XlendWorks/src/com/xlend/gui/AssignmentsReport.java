@@ -26,12 +26,12 @@ public class AssignmentsReport extends GeneralReportPanel {
                     + "<table border=\"0\">"
                     + "<tr><table>"
                     + "<tr>"
-                    + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Assignments Report</th>"
+                    + "<td rowspan=\"3\" style=\"font-size: " + (int)(prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Assignments Report</th>"
                     + "</tr>"
-                    + "<tr><th style=\"font-size: " + (prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Operators and machines working on sites</th>"
-//                    + "<tr><tr></tr>"
-//                    + "</tr><tr> "
+                    + "<tr><th style=\"font-size: " + (int)(prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Operators and machines working on sites</th>"
+                    //                    + "<tr><tr></tr>"
+                    //                    + "</tr><tr> "
                     + "</tr>"
                     + "</table></tr>"
                     + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
@@ -83,9 +83,9 @@ public class AssignmentsReport extends GeneralReportPanel {
                     }
                     body.append("<td style=\"font-size: ").append(zoomer.getValue())
                             .append("%; font-family: sans-serif\">")
-                            .append(curSite.equals(prevSite) && c == 0 ? "---" 
-                            : (curOrder.equals(prevOrder) && c == 1 ? "---" 
-                            : (curClient.equals(prevClient) && c == 2 ?"---":ceil))).append("</td>");
+                            .append(curSite.equals(prevSite) && c == 0 ? "---"
+                            : (curOrder.equals(prevOrder) && c == 1 ? "---"
+                            : (curClient.equals(prevClient) && c == 2 ? "---" : ceil))).append("</td>");
                     if (c == ceils.size() - 1) {
                         prevSite = curSite;
                         prevOrder = curOrder;

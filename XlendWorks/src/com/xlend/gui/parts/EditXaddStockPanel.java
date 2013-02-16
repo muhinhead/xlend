@@ -78,7 +78,7 @@ class EditXaddStockPanel extends RecordEditPanel {
         XaddstocksWithTrigger ads = (XaddstocksWithTrigger) getDbObject();
         if (ads != null) {
             idField.setText(ads.getXaddstocksId().toString());
-            if (ads.getPurchaseDate()!=null) {
+            if (ads.getPurchaseDate() != null) {
                 Date dt = ads.getPurchaseDate();
                 purchaseDateSP.setValue(new java.util.Date(dt.getTime()));
             }
@@ -94,7 +94,7 @@ class EditXaddStockPanel extends RecordEditPanel {
         XaddstocksWithTrigger ads = (XaddstocksWithTrigger) getDbObject();
         boolean isNew = false;
         if (ads == null) {
-            ads = new XaddstocksWithTrigger((Connection)null);
+            ads = new XaddstocksWithTrigger((Connection) null);
             ads.setXaddstocksId(0);
             isNew = true;
         }

@@ -60,7 +60,6 @@ public class ConfigEditor extends PopupDialog {
         JPanel imageFolderPanel = new JPanel(new BorderLayout(5, 5));
         imageFolderPanel.add(imageDirField, BorderLayout.CENTER);
         imageFolderPanel.add(chooseFldrBtn = new JButton(chooseFldrAct = new AbstractAction("...") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 chooseFolder();
@@ -78,7 +77,6 @@ public class ConfigEditor extends PopupDialog {
 
         JPanel btnPanel = new JPanel();
         btnPanel.add(testBtn = new JButton(testAction = new AbstractAction("Test connection") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 String serverIP = addressField.getText() + ":" + portSpinner.getValue();
@@ -91,7 +89,6 @@ public class ConfigEditor extends PopupDialog {
             }
         }));
         btnPanel.add(okBtn = new JButton(okAction = new AbstractAction("Ok") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -99,7 +96,6 @@ public class ConfigEditor extends PopupDialog {
         }) {
         });
         btnPanel.add(cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 addressField.setText("");
@@ -122,7 +118,6 @@ public class ConfigEditor extends PopupDialog {
         chooser.setAcceptAllFileFilterUsed(false);
 
         chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-
             @Override
             public boolean accept(File pathname) {
                 return pathname.isDirectory();

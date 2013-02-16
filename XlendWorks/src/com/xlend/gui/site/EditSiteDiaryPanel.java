@@ -113,23 +113,21 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             day6valueField = new JTextField(6);
             day7valueField = new JTextField(6);
 
-            add(markCB,BorderLayout.WEST);
+            add(markCB, BorderLayout.WEST);
             add(getGridPanel(new JComponent[]{
                         machineTypeLBL, machineCB, operatorNameCB, operatorNumberCB,
                         day1valueField, day2valueField, day3valueField, day4valueField, day5valueField, day6valueField, day7valueField
                     }));
 
             machineCB.addActionListener(new AbstractAction() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Integer machineID = getSelectedCbItem(machineCB);
                     machineTypeLBL.setText(XlendWorks.getMachineType1(DashBoard.getExchanger(), machineID));
                 }
             });
-            
-            operatorNameCB.addActionListener(new AbstractAction() {
 
+            operatorNameCB.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (!isNumberChanged) {
@@ -142,7 +140,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             });
             final JTextComponent tc = (JTextComponent) operatorNumberCB.getEditor().getEditorComponent();
             tc.addKeyListener(new KeyAdapter() {
-
                 public void keyPressed(KeyEvent e) {
                     if (!isNameChanged) {
                         isNumberChanged = true;
@@ -168,8 +165,9 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 day5valueField.setText(item.getDay5value());
                 day6valueField.setText(item.getDay6value());
                 day7valueField.setText(item.getDay7value());
-            } else
+            } else {
                 machineCB.setSelectedIndex(0);
+            }
             shiftDayLabels();
         }
 
@@ -322,7 +320,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
         scrollPane.setPreferredSize(new Dimension(2 * d.width / 3, 400));
 
         weekEndingSP.getModel().addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 shiftDayLabels();
@@ -330,7 +327,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
         });
         Util.addFocusSelectAllAction(weekEndingSP);
         markAllCB.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ItemPanel p : childRows) {
@@ -363,7 +359,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
 
     private AbstractAction getAddLineAction() {
         return new AbstractAction("Add line") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new ItemPanel(null));
@@ -386,7 +381,6 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
 
     private AbstractAction getDeleteLineAction() {
         return new AbstractAction("Delete line(s)") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (ItemPanel p : childRows) {

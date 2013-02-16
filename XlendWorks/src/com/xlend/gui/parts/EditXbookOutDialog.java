@@ -11,18 +11,18 @@ import com.xlend.orm.dbobject.DbObject;
 class EditXbookOutDialog extends EditRecordDialog {
 
     public static boolean okPressed;
-    
+
     EditXbookOutDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
-        super.fillContent(new EditXbookOutPanel((DbObject)getObject()));
+        super.fillContent(new EditXbookOutPanel((DbObject) getObject()));
     }
 
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }       
+    }
 }

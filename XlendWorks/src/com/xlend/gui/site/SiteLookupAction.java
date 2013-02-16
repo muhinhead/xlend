@@ -40,7 +40,7 @@ public class SiteLookupAction extends AbstractAction {
             ComboItem citm = (ComboItem) siteCB.getSelectedItem();
             String slct = getLookupSelect();
             if (citm != null) {
-                slct = slct.replaceFirst("is_active=1", "(is_active=1 or xsite_id="+citm.getId()+")");
+                slct = slct.replaceFirst("is_active=1", "(is_active=1 or xsite_id=" + citm.getId() + ")");
             }
             LookupDialog ld = new LookupDialog("Site Lookup", siteCB,
                     new SitesGrid(DashBoard.getExchanger(),

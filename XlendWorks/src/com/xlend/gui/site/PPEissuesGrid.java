@@ -34,9 +34,9 @@ public class PPEissuesGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_PPEISSUES, maxWidths, false);
         setBorder(BorderFactory.createTitledBorder("Output"));
     }
-    
-    public PPEissuesGrid(IMessageSender exchanger, int xemployee_id,XlendMasterTableView masterView) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_PPEISSUES4EMPLOYEE.replaceAll("#", ""+xemployee_id), maxWidths, true, masterView);
+
+    public PPEissuesGrid(IMessageSender exchanger, int xemployee_id, XlendMasterTableView masterView) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_PPEISSUES4EMPLOYEE.replaceAll("#", "" + xemployee_id), maxWidths, true, masterView);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PPEissuesGrid extends GeneralGridPanel {
                         Xppeissue xi = (Xppeissue) exchanger.loadDbObjectOnID(Xppeissue.class, id);
                         new EditPPEissueDialog("Edit Issue", xi);
                         if (EditPPEissueDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), 
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
                                     getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {

@@ -9,6 +9,7 @@ import com.xlend.orm.Xorder;
  * @author Nick Mukhin
  */
 public class EditOrderDialog extends EditRecordDialog {
+
     public static boolean okPressed;
     public static Xclient xclient;
 
@@ -20,7 +21,7 @@ public class EditOrderDialog extends EditRecordDialog {
         EditOrderPanel editPanel = (EditOrderPanel) getEditPanel();
         editPanel.setXclient(xclient);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditOrderPanel((Xorder) getObject()));
@@ -31,10 +32,10 @@ public class EditOrderDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
-     @Override
+
+    @Override
     public void dispose() {
         super.dispose();
         EditOrderDialog.xclient = null;
-    }    
+    }
 }

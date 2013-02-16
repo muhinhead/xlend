@@ -24,7 +24,6 @@ public class BankBalanceGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Balance Record") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -45,7 +44,6 @@ public class BankBalanceGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Balance Record") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -67,8 +65,7 @@ public class BankBalanceGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-         return new AbstractAction("Delete Record") {
-
+        return new AbstractAction("Delete Record") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

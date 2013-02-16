@@ -14,7 +14,7 @@ public class EditPaymentDialog extends EditRecordDialog {
     public EditPaymentDialog(String title, Object obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditPaymentPanel((Xpayment) getObject()));
@@ -24,5 +24,4 @@ public class EditPaymentDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-    
 }

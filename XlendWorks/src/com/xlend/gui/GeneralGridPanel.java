@@ -50,7 +50,6 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         super.init(acts, select, tableBody, maxWidths, tabView);
 
         getPageSelector().addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getProgressBar().setIndeterminate(false);
@@ -58,7 +57,6 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
 //                    filterPanel.setEnabled(false);
 //                }
                 Thread r = new Thread() {
-
                     public void run() {
                         getPageSelector().setEnabled(false);
                         int pageNum = getPageSelector().getSelectedIndex();
@@ -99,7 +97,7 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         }
         getPageSelector().setModel(model);
         //getPageSelector().setEnabled(pagesCount>1);
-        showPageSelector(pagesCount>1);
+        showPageSelector(pagesCount > 1);
     }
 
     protected void refresh() {

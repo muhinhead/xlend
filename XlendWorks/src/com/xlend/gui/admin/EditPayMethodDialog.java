@@ -9,8 +9,9 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 class EditPayMethodDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditPayMethodDialog(String title, DbObject obj) {
         super(title, obj);
     }

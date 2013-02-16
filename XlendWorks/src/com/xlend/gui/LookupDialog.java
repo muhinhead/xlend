@@ -57,7 +57,6 @@ public class LookupDialog extends PopupDialog {
         getContentPane().add(centerPanel, BorderLayout.CENTER);
 
         filterField.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyReleased(KeyEvent e) {
                 String select = originalSelect;
@@ -92,7 +91,6 @@ public class LookupDialog extends PopupDialog {
         okBtn = new JButton(okAction = selectionAction("Pick up"));
         getRootPane().setDefaultButton(okBtn);
         cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 choosedID = null;
@@ -105,7 +103,6 @@ public class LookupDialog extends PopupDialog {
 
         grid.getTableView().removeMouseListener(grid.getDoubleClickAdapter());
         grid.getTableView().addMouseListener(new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     okAction.actionPerformed(null);
@@ -135,7 +132,6 @@ public class LookupDialog extends PopupDialog {
 
     private AbstractAction selectionAction(String title) {
         return new AbstractAction(title) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 boolean found = false;

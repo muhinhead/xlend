@@ -45,14 +45,14 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
             getGridPanel(comboPanelWithLookupBtn(machineCB = new JComboBox(EditTripPanel.machineCbModel), new MachineLookupAction(machineCB, null)), 2),
             getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(EditTripPanel.operatorCbModel), new EmployeeLookupAction(operatorCB)), 2),
             getGridPanel(comboPanelWithLookupBtn(inSiteCB = new JComboBox(inSiteCbModel), new SiteLookupAction(inSiteCB)), 2),
-            getGridPanel(new JComponent[]{comboPanelWithLookupBtn(toSiteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(toSiteCB)), otherSiteField=new JTextField()}),
+            getGridPanel(new JComponent[]{comboPanelWithLookupBtn(toSiteCB = new JComboBox(EditTripPanel.toSiteCbModel), new SiteLookupAction(toSiteCB)), otherSiteField = new JTextField()}),
             getGridPanel(distanceEmptySP = new SelectedNumberSpinner(0, 0, 10000, 1), 5),
             getGridPanel(distanceLoadedSP = new SelectedNumberSpinner(0, 0, 10000, 1), 5)
         };
         otherSiteField.setVisible(false);
         toSiteCB.addActionListener(EditTripPanel.otherSiteAction(otherSiteField));
         organizePanels(titles, edits, null);
-        machineCB.addActionListener(EditTripPanel.syncOperatorAction(machineCB, operatorCB));        
+        machineCB.addActionListener(EditTripPanel.syncOperatorAction(machineCB, operatorCB));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
             }
             selectComboItem(operatorCB, trip.getOperatorId());
             otherSiteField.setText(trip.getOthersite());
-            if (trip.getTositeId()==null || trip.getTositeId()==0) {
+            if (trip.getTositeId() == null || trip.getTositeId() == 0) {
                 toSiteCB.setSelectedIndex(EditTripPanel.toSiteCbModel.getSize());
             }
         }

@@ -31,7 +31,6 @@ public class SalaryListsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Salary List") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -39,7 +38,7 @@ public class SalaryListsGrid extends GeneralGridPanel {
                     if (EditSalaryListDialog.okPressed) {
                         Xsalarylist xl = (Xsalarylist) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xl.getXsalarylistId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), xl.getXsalarylistId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -52,7 +51,6 @@ public class SalaryListsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -62,7 +60,7 @@ public class SalaryListsGrid extends GeneralGridPanel {
                         new EditSalaryListDialog("Edit Salary List", xl);
                         if (EditSalaryListDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -76,7 +74,6 @@ public class SalaryListsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -85,7 +82,7 @@ public class SalaryListsGrid extends GeneralGridPanel {
                     if (xl != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this list?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

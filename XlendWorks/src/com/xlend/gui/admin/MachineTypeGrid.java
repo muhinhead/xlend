@@ -61,7 +61,6 @@ public class MachineTypeGrid extends GeneralGridPanel {
 //            return null;
 //        }
         return new AbstractAction(isExternalView ? "Add Type" : "Add Subtype") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -85,7 +84,6 @@ public class MachineTypeGrid extends GeneralGridPanel {
 //            return null;
 //        }
         return new AbstractAction("Edit " + (isExternalView ? "Machine Type" : "Subtype")) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -113,7 +111,6 @@ public class MachineTypeGrid extends GeneralGridPanel {
 //            return null;
 //        }
         return new AbstractAction("Delete Machine " + (isExternalView ? "Type(s)" : "Subtype(s)")) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -123,7 +120,7 @@ public class MachineTypeGrid extends GeneralGridPanel {
                             String select = setParentID();
                             Xmachtype mt = (Xmachtype) exchanger.loadDbObjectOnID(Xmachtype.class, id);
                             exchanger.deleteObject(mt);
-                            
+
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), select, null,
                                     getPageSelector().getSelectedIndex());
                         } catch (RemoteException ex) {

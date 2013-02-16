@@ -8,12 +8,13 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditDieselToPlantDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditDieselToPlantDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditDieselToPlantPanel((DbObject) getObject()));

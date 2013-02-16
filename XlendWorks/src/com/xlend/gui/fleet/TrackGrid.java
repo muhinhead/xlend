@@ -29,7 +29,7 @@ public class TrackGrid extends GeneralGridPanel {
                 "classify='M'", "classify='T'"), maxWidths, false);
     }
 
-    public TrackGrid(IMessageSender exchanger, String select, 
+    public TrackGrid(IMessageSender exchanger, String select,
             boolean readOnly) throws RemoteException {
         super(exchanger, select, maxWidths, readOnly);
     }
@@ -37,7 +37,6 @@ public class TrackGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Truck") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -45,7 +44,7 @@ public class TrackGrid extends GeneralGridPanel {
                     if (EditTrackDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -58,7 +57,6 @@ public class TrackGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -68,7 +66,7 @@ public class TrackGrid extends GeneralGridPanel {
                         new EditTrackDialog("Edit Truck", machine);
                         if (EditTrackDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -82,7 +80,6 @@ public class TrackGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -91,7 +88,7 @@ public class TrackGrid extends GeneralGridPanel {
                     if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Truck [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -100,5 +97,4 @@ public class TrackGrid extends GeneralGridPanel {
             }
         };
     }
-    
 }

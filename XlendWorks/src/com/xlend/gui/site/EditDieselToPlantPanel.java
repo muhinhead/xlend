@@ -97,7 +97,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                         DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
                                 "xsite_id=" + siteID + " and xmachine_id=" + machineID + " and xemployee_id=" + operatorID + " and date_end is null", null);
                         if (recs.length == 0) {
-                            GeneralFrame.infoMessageBox("Attention!","This operator was not assigned to this site and machne");
+                            GeneralFrame.infoMessageBox("Attention!", "This operator was not assigned to this site and machne");
                         }
                     } catch (RemoteException ex) {
                         GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -144,11 +144,11 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
             add(centerPanel, BorderLayout.CENTER);
             setPreferredSize(new Dimension(500, getPreferredSize().height));
             load();
-            
+
             siteCB.addActionListener(checkAssignmentsAction);
             operatorCB.addActionListener(checkAssignmentsAction);
             machineCB.addActionListener(checkAssignmentsAction);
-            
+
             machineCB.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

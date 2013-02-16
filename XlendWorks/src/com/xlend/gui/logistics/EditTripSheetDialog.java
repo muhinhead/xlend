@@ -11,11 +11,12 @@ import com.xlend.orm.dbobject.DbObject;
 public class EditTripSheetDialog extends EditRecordDialog {
 
     public static boolean okPressed;
-    
+
     public EditTripSheetDialog(String title, DbObject obj) {
         super(title, obj);
     }
-     @Override
+
+    @Override
     protected void fillContent() {
         super.fillContent(new EditTripSheetPanel((Xtripsheet) getObject()));
     }
@@ -23,5 +24,5 @@ public class EditTripSheetDialog extends EditRecordDialog {
     @Override
     protected void setOkPressed(boolean b) {
         okPressed = b;
-    }     
+    }
 }

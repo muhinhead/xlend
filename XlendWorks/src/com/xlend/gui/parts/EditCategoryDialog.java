@@ -9,9 +9,10 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditCategoryDialog extends EditRecordDialog {
+
     public static boolean okPressed;
     private EditCategoryPanel edPanel;
-    
+
     public EditCategoryDialog(String title, DbObject obj) {
         super(title, obj);
     }

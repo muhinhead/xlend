@@ -169,7 +169,7 @@ public abstract class RecordEditPanel extends JPanel {
             }
         }
         if (id != null) {
-            ComboItem ci = new ComboItem(id, "--unknown or inactive ("+id+")--");
+            ComboItem ci = new ComboItem(id, "--unknown or inactive (" + id + ")--");
             DefaultComboBoxModel cmb = (DefaultComboBoxModel) cb.getModel();
             cmb.addElement(ci);
             cb.setSelectedItem(ci);

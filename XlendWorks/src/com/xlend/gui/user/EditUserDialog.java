@@ -1,7 +1,6 @@
 package com.xlend.gui.user;
 
 //import com.csa.orm.Userprofile;
-
 import com.xlend.gui.ProfileDialog;
 import com.xlend.gui.ProfilePanel;
 import com.xlend.orm.Userprofile;

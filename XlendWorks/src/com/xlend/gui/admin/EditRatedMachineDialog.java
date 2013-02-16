@@ -9,8 +9,9 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 class EditRatedMachineDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditRatedMachineDialog(String title, DbObject obj) {
         super(title, obj);
     }
@@ -25,4 +26,3 @@ class EditRatedMachineDialog extends EditRecordDialog {
         okPressed = b;
     }
 }
-

@@ -18,12 +18,12 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 class AddStocksGrid extends MovePartsGrid {
-    
+
     public AddStocksGrid(IMessageSender exchanger, int part_id, EditXpartPanel xpartsPane) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_ADDSTOCKS.replaceAll("#", "" + (EditXaddStockPanel.partID = part_id)),
                 null, xpartsPane);
     }
-    
+
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Record") {
@@ -48,7 +48,7 @@ class AddStocksGrid extends MovePartsGrid {
             }
         };
     }
-    
+
     @Override
     protected AbstractAction delAction() {
         if (!XlendWorks.isCurrentAdmin()) {
@@ -77,5 +77,5 @@ class AddStocksGrid extends MovePartsGrid {
                 }
             };
         }
-    }    
+    }
 }

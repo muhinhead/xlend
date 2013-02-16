@@ -56,7 +56,6 @@ public class OrderPagesPanel extends PagesPanel {
             btn.setToolTipText(lbl);
             btn.setTag(xorderPage);
             AbstractAction editAction = new AbstractAction("Edit page") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
@@ -72,7 +71,6 @@ public class OrderPagesPanel extends PagesPanel {
             JPopupMenu pm = new JPopupMenu();
             pm.add(editAction);
             pm.add(new AbstractAction("Delete page") {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (GeneralFrame.yesNo("Attention!", "Do you want to delete order page No_"

@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 public class TripSheetGrid extends GeneralGridPanel {
-    
+
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
@@ -27,15 +27,14 @@ public class TripSheetGrid extends GeneralGridPanel {
 //        maxWidths.put(3, 200);
 //        maxWidths.put(4, 200);
     }
-    
+
     public TripSheetGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_TRIPSHEET, maxWidths, false);        
+        super(exchanger, Selects.SELECT_FROM_TRIPSHEET, maxWidths, false);
     }
 
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Tripsheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -43,7 +42,7 @@ public class TripSheetGrid extends GeneralGridPanel {
                     if (EditTripSheetDialog.okPressed) {
                         Xtripsheet xt = (Xtripsheet) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xt.getXtripsheetId(),getPageSelector().getSelectedIndex());
+                                getSelect(), xt.getXtripsheetId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,7 +55,6 @@ public class TripSheetGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Tripsheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -66,7 +64,7 @@ public class TripSheetGrid extends GeneralGridPanel {
                         new EditTripSheetDialog("Edit Tripsheet", xt);
                         if (EditTripSheetDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -80,16 +78,15 @@ public class TripSheetGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Tripsheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xtripsheet xt = (Xtripsheet) exchanger.loadDbObjectOnID(Xtripsheet.class, id);
-                    if (xt !=null && GeneralFrame.yesNo("Attention!", 
+                    if (xt != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this tripsheet]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xt);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -99,5 +96,4 @@ public class TripSheetGrid extends GeneralGridPanel {
             }
         };
     }
-    
 }

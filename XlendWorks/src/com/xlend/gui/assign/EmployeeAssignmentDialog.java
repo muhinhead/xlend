@@ -11,6 +11,7 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EmployeeAssignmentDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EmployeeAssignmentDialog(String title, DbObject obj) {

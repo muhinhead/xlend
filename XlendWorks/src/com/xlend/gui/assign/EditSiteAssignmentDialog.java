@@ -10,14 +10,14 @@ import com.xlend.orm.dbobject.DbObject;
 class EditSiteAssignmentDialog extends EditRecordDialog {
 
     public static boolean okPressed;
-    
+
     public EditSiteAssignmentDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
-        super.fillContent(new EditSiteAssignmentPanel((DbObject)getObject()));
+        super.fillContent(new EditSiteAssignmentPanel((DbObject) getObject()));
     }
 
     @Override

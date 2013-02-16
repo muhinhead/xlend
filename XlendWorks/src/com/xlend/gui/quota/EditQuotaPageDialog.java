@@ -15,11 +15,11 @@ class EditQuotaPageDialog extends EditRecordDialog {
     public EditQuotaPageDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditQuotaPagePanel((Xquotationpage) getObject()));
-    }    
+    }
 
     @Override
     protected void setOkPressed(boolean b) {

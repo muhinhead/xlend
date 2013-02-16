@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
  * @author nick
  */
 public abstract class AbstractMechDevicePanel extends EditPanelWithPhoto {
+
     protected JTextField chassisNrField;
     protected SelectedDateSpinner expDateSP;
     protected JTextField idField;
@@ -73,7 +74,6 @@ public abstract class AbstractMechDevicePanel extends EditPanelWithPhoto {
         licensedChB.addActionListener(licensedChBaction());
         licenseStatusLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     }
-    
 
     protected JComponent getTabbedPanel() {
         tabbedPane = new MyJideTabbedPane();
@@ -81,7 +81,7 @@ public abstract class AbstractMechDevicePanel extends EditPanelWithPhoto {
         tabbedPane.setPreferredSize(new Dimension(tabbedPane.getPreferredSize().width, 400));
         return tabbedPane;
     }
-    
+
     protected void repaintLicFields() {
         Date expDt = (Date) expDateSP.getValue();
         Date today = Calendar.getInstance().getTime();
@@ -98,5 +98,4 @@ public abstract class AbstractMechDevicePanel extends EditPanelWithPhoto {
             licenseStatusLBL.setText("Current");
         }
     }
-    
 }

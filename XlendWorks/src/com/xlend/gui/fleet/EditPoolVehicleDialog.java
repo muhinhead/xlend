@@ -8,6 +8,7 @@ import com.xlend.orm.Xmachine;
  * @author Nick Mukhin
  */
 public class EditPoolVehicleDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditPoolVehicleDialog(String title, Object obj) {
@@ -23,5 +24,4 @@ public class EditPoolVehicleDialog extends EditRecordDialog {
     protected void setOkPressed(boolean b) {
         okPressed = b;
     }
-
 }

@@ -41,7 +41,6 @@ public class EditSiteTypePanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
         siteTypeField.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyTyped(KeyEvent e) {
                 codeField.setText("");

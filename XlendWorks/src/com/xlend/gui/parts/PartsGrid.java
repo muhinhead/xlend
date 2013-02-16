@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 class PartsGrid extends GeneralGridPanel {
 
 //    private int cartegoryID;
-
     public PartsGrid(IMessageSender exchanger, int category_id) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_XPARTS.replaceAll("#", "" + category_id), null, false);
 //        EditXpartPanel.setCategoryID(//cartegoryID = 
@@ -37,7 +36,6 @@ class PartsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Part") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -58,7 +56,6 @@ class PartsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Part") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -82,7 +79,6 @@ class PartsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Part") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -138,14 +134,13 @@ class PartsGrid extends GeneralGridPanel {
 
     private AbstractAction getBookOutAction(final String label) {
         return new AbstractAction(label) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditXbookOutPanel.partID = getSelectedID();
                 if (EditXbookOutPanel.partID > 0) {
                     try {
                         Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, EditXbookOutPanel.partID);
-                        EditXbookOutDialog ed = new EditXbookOutDialog(label+" (part No_"+part.getPartnumber()+")", null);
+                        EditXbookOutDialog ed = new EditXbookOutDialog(label + " (part No_" + part.getPartnumber() + ")", null);
                         if (EditXbookOutDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
                                     EditXbookOutPanel.partID, getPageSelector().getSelectedIndex());
@@ -161,7 +156,6 @@ class PartsGrid extends GeneralGridPanel {
 
     private AbstractAction getAddStockAction(final String label) {
         return new AbstractAction(label) {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO:
@@ -169,7 +163,7 @@ class PartsGrid extends GeneralGridPanel {
                 if (EditXaddStockPanel.partID > 0) {
                     try {
                         Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, EditXaddStockPanel.partID);
-                        EditXaddStockDialog ed = new EditXaddStockDialog(label+" (part No_"+part.getPartnumber()+")", null);
+                        EditXaddStockDialog ed = new EditXaddStockDialog(label + " (part No_" + part.getPartnumber() + ")", null);
                         if (EditXaddStockDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
                                     EditXaddStockPanel.partID, getPageSelector().getSelectedIndex());
@@ -182,7 +176,6 @@ class PartsGrid extends GeneralGridPanel {
             }
         };
     }
-
 //    /**
 //     * @return the cartegoryID
 //     */

@@ -40,7 +40,6 @@ class OrderItemsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Item") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditOrderItemDialog ed;
@@ -50,7 +49,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                         ed = new EditOrderItemDialog("New Order Item", null);
                         if (EditOrderItemDialog.okPressed) {
                             Xorderitem xitm = (Xorderitem) ed.getEditPanel().getDbObject();
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xitm.getXorderitemId(),getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xitm.getXorderitemId(), getPageSelector().getSelectedIndex());
                         }
                     } else {
                         GeneralFrame.infoMessageBox("Attention!", "Save order please before adding items");
@@ -66,7 +65,6 @@ class OrderItemsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -76,7 +74,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                         EditOrderItemDialog.xorder = getXorder();
                         new EditOrderItemDialog("Edit Order Item", itm);
                         if (EditOrderItemDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -90,7 +88,6 @@ class OrderItemsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -100,7 +97,7 @@ class OrderItemsGrid extends GeneralGridPanel {
                             + itm.getItemnumber() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(itm);
                         GeneralFrame.updateGrid(exchanger, getTableView(),
-                                getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                                getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

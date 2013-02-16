@@ -31,7 +31,6 @@ class PaidMethodsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Method") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -50,7 +49,6 @@ class PaidMethodsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Method") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -74,7 +72,6 @@ class PaidMethodsGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Method") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

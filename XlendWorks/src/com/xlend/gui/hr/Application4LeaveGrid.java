@@ -31,7 +31,6 @@ public class Application4LeaveGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New App for Leave") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -51,8 +50,7 @@ public class Application4LeaveGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-       return new AbstractAction("Edit Entry") {
-
+        return new AbstractAction("Edit Entry") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -76,13 +74,12 @@ public class Application4LeaveGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xappforleave xl = (Xappforleave) exchanger.loadDbObjectOnID(Xappforleave.class, id);
-                    if (xl != null && GeneralFrame.yesNo("Attention!", 
+                    if (xl != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xl);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

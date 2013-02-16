@@ -215,7 +215,6 @@ class EditLoanPanel extends RecordEditPanel {
 
     private ActionListener checkTransport() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 deductEnable();

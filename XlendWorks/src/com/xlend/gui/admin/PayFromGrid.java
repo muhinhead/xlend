@@ -32,7 +32,6 @@ public class PayFromGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Pay Source") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -51,7 +50,6 @@ public class PayFromGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Method") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -75,7 +73,6 @@ public class PayFromGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Method") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

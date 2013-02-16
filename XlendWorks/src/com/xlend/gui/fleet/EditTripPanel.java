@@ -174,7 +174,6 @@ public class EditTripPanel extends RecordEditPanel {
         organizePanels(titles, edits, null);
 
         lowbedCB.addActionListener(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 syncDriverAndAssistant();
@@ -396,7 +395,6 @@ public class EditTripPanel extends RecordEditPanel {
 
     private ActionListener typeSwitchAction() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 switchDetailPanel();
@@ -438,7 +436,6 @@ public class EditTripPanel extends RecordEditPanel {
 
     public static AbstractAction syncOperatorAction(final JComboBox machineCB, final JComboBox operatorCB) {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {

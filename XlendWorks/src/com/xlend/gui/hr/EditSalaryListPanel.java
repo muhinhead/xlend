@@ -48,7 +48,7 @@ class EditSalaryListPanel extends RecordEditPanel {
             this.xsalary = xsalary;
             employeeCbModel = new DefaultComboBoxModel();
             markCB = new JCheckBox();
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(),"management=1 and coalesce(wage_category,1)=1")) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
                 employeeCbModel.addElement(ci);
             }
             employeeCB = new JComboBox(employeeCbModel);
@@ -140,7 +140,7 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     @Override
     protected void fillContent() {
-        
+
         childRows = new ArrayList<SalaryPanel>();
         toDelete = new ArrayList<SalaryPanel>();
         String[] titles = new String[]{
@@ -170,7 +170,6 @@ class EditSalaryListPanel extends RecordEditPanel {
         hdrPanel.add(getBorderPanel(new JComponent[]{selectAllCB = new JCheckBox(), new JLabel(hdrs[0], SwingConstants.CENTER)}));
         hdrPanel.add(new JLabel(hdrs[1], SwingConstants.CENTER));
         selectAllCB.setAction(new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (SalaryPanel p : childRows) {
@@ -182,7 +181,7 @@ class EditSalaryListPanel extends RecordEditPanel {
         add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
         scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Records"));
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        scrollPane.setPreferredSize(new Dimension(d.width/3, 400));
+        scrollPane.setPreferredSize(new Dimension(d.width / 3, 400));
     }
 
     private String getAddedList() {
@@ -208,7 +207,6 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     private AbstractAction getAddLineAction() {
         return new AbstractAction("Add") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 childRows.add(new SalaryPanel(null));
@@ -219,7 +217,6 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     private AbstractAction getAddAllLineAction() {
         return new AbstractAction("Add all") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 Hashtable<Integer, Double> amtSet = new Hashtable<Integer, Double>();
@@ -231,7 +228,7 @@ class EditSalaryListPanel extends RecordEditPanel {
                 }
 
                 childRows.clear();
-                ComboItem[] emlist = XlendWorks.loadAllEmployees(DashBoard.getExchanger(),"management=1 and coalesce(wage_category,1)=1");
+                ComboItem[] emlist = XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1");
                 for (ComboItem ci : emlist) {
                     SalaryPanel p = new SalaryPanel(null);
                     Integer id = p.getSelectedEmployeeID();
@@ -248,7 +245,6 @@ class EditSalaryListPanel extends RecordEditPanel {
 
     private AbstractAction getDeleteLineAction() {
         return new AbstractAction("Remove") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
 

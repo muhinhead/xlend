@@ -10,6 +10,7 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 class EditJobCardDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditJobCardDialog(String title, DbObject obj) {

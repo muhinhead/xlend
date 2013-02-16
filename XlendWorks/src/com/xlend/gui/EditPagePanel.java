@@ -119,7 +119,6 @@ public abstract class EditPagePanel extends RecordEditPanel {
     private JButton getLoadPictureButton() {
         loadButton = new JButton("Choose picture...");
         loadButton.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile();
             }
@@ -209,7 +208,6 @@ public abstract class EditPagePanel extends RecordEditPanel {
             picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
             if ("jpg jpeg png gif".indexOf(fileExtension.toLowerCase()) > 0) {
                 ed.addMouseListener(new MouseAdapter() {
-
                     public void mouseClicked(MouseEvent e) {
                         if (e.getClickCount() == 2) {
                             viewDocumentImage();
@@ -238,7 +236,6 @@ public abstract class EditPagePanel extends RecordEditPanel {
         if (null == picturePopMenu) {
             picturePopMenu = new JPopupMenu();
             picturePopMenu.add(new AbstractAction("Open in window") {
-
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
 //                    setEnabled(true);
@@ -252,20 +249,17 @@ public abstract class EditPagePanel extends RecordEditPanel {
                 }
             });
             picturePopMenu.add(new AbstractAction("Replace attachment") {
-
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile();
                 }
             });
             picturePopMenu.add(new AbstractAction("Save attachment to file") {
-
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
                     exportDocImage((byte[]) page.getPagescan(), page.getFileextension());
                 }
             });
             picturePopMenu.add(new AbstractAction("Remove attachment from DB") {
-
                 public void actionPerformed(ActionEvent e) {
                     IPage page = (IPage) getDbObject();
                     try {

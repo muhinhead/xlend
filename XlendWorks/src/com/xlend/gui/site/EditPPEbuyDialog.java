@@ -8,12 +8,13 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditPPEbuyDialog extends EditRecordDialog {
+
     public static boolean okPressed;
-    
+
     public EditPPEbuyDialog(String title, DbObject obj) {
         super(title, obj);
     }
-    
+
     @Override
     protected void fillContent() {
         super.fillContent(new EditPPEbuyPanel((DbObject) getObject()));

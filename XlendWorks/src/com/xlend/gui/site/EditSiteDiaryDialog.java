@@ -9,6 +9,7 @@ import com.xlend.orm.dbobject.DbObject;
  * @author Nick Mukhin
  */
 public class EditSiteDiaryDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditSiteDiaryDialog(String title, DbObject obj) {

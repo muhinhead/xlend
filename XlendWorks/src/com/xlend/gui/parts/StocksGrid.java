@@ -15,7 +15,7 @@ public class StocksGrid extends GeneralGridPanel {
     public StocksGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_ALL_STOCKS, null, false);
     }
-    
+
     @Override
     protected AbstractAction addAction() {
         return null;
@@ -30,5 +30,4 @@ public class StocksGrid extends GeneralGridPanel {
     protected AbstractAction delAction() {
         return null;
     }
-    
 }

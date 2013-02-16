@@ -32,7 +32,6 @@ public class WageCategoryGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Wage Category") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -51,7 +50,6 @@ public class WageCategoryGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Category") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -75,7 +73,6 @@ public class WageCategoryGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Category") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -84,9 +81,9 @@ public class WageCategoryGrid extends GeneralGridPanel {
                         Cbitems itm = (Cbitems) exchanger.loadDbObjectOnID(Cbitems.class, id);
                         if (itm != null) {
                             if (XlendWorks.existsEmployeeWithWageCategory(exchanger, itm.getId())) {
-                                GeneralFrame.errMessageBox("Error:", 
+                                GeneralFrame.errMessageBox("Error:",
                                         "There are some employees on this category, it couldn't be removed!");
-                            } else if (GeneralFrame.yesNo("Attention!", 
+                            } else if (GeneralFrame.yesNo("Attention!",
                                     "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                                 exchanger.deleteObject(itm);
                                 GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

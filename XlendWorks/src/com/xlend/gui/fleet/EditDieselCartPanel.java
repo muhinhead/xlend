@@ -113,8 +113,8 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
         Xdieselcart xc = (Xdieselcart) getDbObject();
         if (xc != null) {
             try {
-                pane.add("Input",new IssueToDieselCartGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
-                pane.add("Output",new JPanel());
+                pane.add("Input", new IssueToDieselCartGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
+                pane.add("Output", new JPanel());
             } catch (RemoteException ex) {
                 XlendWorks.logAndShowMessage(ex);
             }

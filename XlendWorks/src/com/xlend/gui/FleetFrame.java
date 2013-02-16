@@ -28,8 +28,8 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel dieselCartsPanel;
     private GeneralGridPanel machineServicesPanel;
     private static String[] sheetList = new String[]{
-        "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles", 
-        "Company Vehicles", "Machine Rental Rates", "Diesel Carts", 
+        "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles",
+        "Company Vehicles", "Machine Rental Rates", "Diesel Carts",
         "Service"
     };
 
@@ -110,7 +110,7 @@ public class FleetFrame extends GeneralFrame {
         }
         return lowbedsPanel;
     }
-    
+
     private JPanel getMachineRentalRates() {
         if (machineRentalRatesPanel == null) {
             try {
@@ -122,7 +122,7 @@ public class FleetFrame extends GeneralFrame {
         }
         return machineRentalRatesPanel;
     }
-    
+
     private JPanel getPoolVehiclesPanel() {
         if (poolVehiclesPanel == null) {
             try {
@@ -145,10 +145,10 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         return companyVehiclesPanel;
-    }    
+    }
 
     private JPanel getMachineServices() {
-        if(machineServicesPanel == null) {
+        if (machineServicesPanel == null) {
             try {
                 registerGrid(machineServicesPanel = new ServiceGrid(getExchanger()));
             } catch (RemoteException ex) {

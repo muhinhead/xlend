@@ -12,9 +12,10 @@ import javax.swing.JComboBox;
 
 /**
  *
- * @author Nick Mukhin 
+ * @author Nick Mukhin
  */
 public class LowBedLookupAction extends AbstractAction {
+
     private final JComboBox lowbedCB;
 
     public LowBedLookupAction(JComboBox cb) {
@@ -27,7 +28,7 @@ public class LowBedLookupAction extends AbstractAction {
         try {
             LookupDialog ld = new LookupDialog("Low-bed Lookup", lowbedCB,
                     new LowBedGrid(DashBoard.getExchanger(), Selects.SELECT_ALL_LOWBEDS, true),
-                    new String[]{"l.xlowbed_id","m.classify+m.tmvnr", "d.clock_num", "d.first_name", "a.clock_num", "a.first_name"});
+                    new String[]{"l.xlowbed_id", "m.classify+m.tmvnr", "d.clock_num", "d.first_name", "a.clock_num", "a.first_name"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }

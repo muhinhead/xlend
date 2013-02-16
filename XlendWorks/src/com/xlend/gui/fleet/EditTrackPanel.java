@@ -11,7 +11,7 @@ class EditTrackPanel extends EditMachinePanel {
     public EditTrackPanel(DbObject dbObject) {
         super(dbObject);
     }
-    
+
     protected String getFleetNumberChar() {
         return "T";
     }

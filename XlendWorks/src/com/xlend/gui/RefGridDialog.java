@@ -27,7 +27,6 @@ public class RefGridDialog extends PopupDialog {
         super.fillContent();
         JPanel downBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         downBtnPanel.add(closeBtn = new JButton(closeAction = new AbstractAction("Close") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();

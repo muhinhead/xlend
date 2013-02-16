@@ -117,7 +117,6 @@ public class LoginImagedDialog extends PopupDialog {
         JMenuBar bar = new JMenuBar();
         JMenu m = new JMenu("Options");
         m.add(new JMenuItem(new AbstractAction("Settings") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 String newAddress = XlendWorks.serverSetup("Options");
@@ -145,7 +144,6 @@ public class LoginImagedDialog extends PopupDialog {
         m = new JMenu(item);
         it = m.add(new JMenuItem("Tiny"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel");
@@ -156,7 +154,6 @@ public class LoginImagedDialog extends PopupDialog {
 //        ch.randelshofer.quaqua.QuaquaLookAndFeel
         it = m.add(new JMenuItem("Quaqua"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
@@ -168,7 +165,6 @@ public class LoginImagedDialog extends PopupDialog {
 
         it = m.add(new JMenuItem("Nimbus"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -178,7 +174,6 @@ public class LoginImagedDialog extends PopupDialog {
         });
         it = m.add(new JMenuItem("Nimrod"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel");
@@ -188,7 +183,6 @@ public class LoginImagedDialog extends PopupDialog {
         });
         it = m.add(new JMenuItem("Plastic"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
@@ -198,7 +192,6 @@ public class LoginImagedDialog extends PopupDialog {
         });
         it = m.add(new JMenuItem("System"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -208,7 +201,6 @@ public class LoginImagedDialog extends PopupDialog {
         });
         it = m.add(new JMenuItem("Java"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -218,7 +210,6 @@ public class LoginImagedDialog extends PopupDialog {
         });
         it = m.add(new JMenuItem("Motif"));
         it.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 try {
                     setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -245,7 +236,6 @@ public class LoginImagedDialog extends PopupDialog {
 
     private ActionListener okButtonListener() {
         return new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 String login = (String) loginField.getSelectedItem();

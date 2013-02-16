@@ -117,7 +117,6 @@ class EditSheetAccessPanel extends RecordEditPanel {
 
     private ChangeListener parentCbChangeListener() {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (!insideChildCb) {
@@ -145,7 +144,6 @@ class EditSheetAccessPanel extends RecordEditPanel {
 
     private ChangeListener childCbChangeListener(final JCheckBox parentCb) {
         return new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 JCheckBox cb = (JCheckBox) e.getSource();

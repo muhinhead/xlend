@@ -31,7 +31,6 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Clock Sheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -39,7 +38,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                     if (EditOperatorClockSheetDialog.okPressed) {
                         Xopclocksheet xl = (Xopclocksheet) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xl.getXopclocksheetId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), xl.getXopclocksheetId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -52,7 +51,6 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Clock Sheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -61,7 +59,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                         Xopclocksheet xi = (Xopclocksheet) exchanger.loadDbObjectOnID(Xopclocksheet.class, id);
                         new EditOperatorClockSheetDialog("Edit Clock Sheet", xi);
                         if (EditOperatorClockSheetDialog.okPressed) {
-                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -75,7 +73,6 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Clock Sheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -84,7 +81,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                     if (xi != null && GeneralFrame.yesNo("Attention!",
                             "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xi);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

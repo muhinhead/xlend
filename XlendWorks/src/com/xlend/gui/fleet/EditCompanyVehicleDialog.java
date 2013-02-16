@@ -8,6 +8,7 @@ import com.xlend.orm.Xmachine;
  * @author Nick Mukhin
  */
 public class EditCompanyVehicleDialog extends EditRecordDialog {
+
     public static boolean okPressed;
 
     public EditCompanyVehicleDialog(String title, Object obj) {

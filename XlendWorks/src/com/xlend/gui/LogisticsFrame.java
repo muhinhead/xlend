@@ -19,7 +19,6 @@ public class LogisticsFrame extends GeneralFrame {
 
     private GeneralGridPanel tripSheetPanel = null;
     private GeneralGridPanel tripPanel = null;
-
     private static String[] sheetList = new String[]{
         "Trip Sheets", "Transport Schedule", "Trips"
     };
@@ -63,7 +62,7 @@ public class LogisticsFrame extends GeneralFrame {
         }
         return tripSheetPanel;
     }
-    
+
     private JPanel getTripsPanel() {
         if (tripPanel == null) {
             try {

@@ -15,9 +15,8 @@ class EditCategoryPanel extends RecordEditPanel {
 
     private JTextField idField;
     private JTextField categoryNameField;
-
     public static int parentID;
-    
+
     public EditCategoryPanel(DbObject dbObject) {
         super(dbObject);
     }
@@ -48,7 +47,7 @@ class EditCategoryPanel extends RecordEditPanel {
     public boolean save() throws Exception {
         boolean isNew = false;
         Xpartcategory xpc = (Xpartcategory) getDbObject();
-        if (xpc==null) {
+        if (xpc == null) {
             isNew = true;
             xpc = new Xpartcategory(null);
             xpc.setXpartcategoryId(0);

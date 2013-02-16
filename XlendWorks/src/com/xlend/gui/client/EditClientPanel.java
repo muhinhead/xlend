@@ -133,7 +133,7 @@ public class EditClientPanel extends RecordEditPanel {
                     Selects.SELECT_QUOTATIONS4CLIENTS.replace("#", "" + client_id)), "RFQs");
             tp.add(ordersGrid = new ClientOrdersGrid(DashBoard.getExchanger(),
                     Selects.SELECT_ORDERS4CLIENT.replace("#", "" + client_id)), "Orders");
-            Dimension prefDimension = new Dimension(500,200);
+            Dimension prefDimension = new Dimension(500, 200);
             clientsGrid.setPreferredSize(prefDimension);
             ordersGrid.setPreferredSize(prefDimension);
             rfqsGrid.setPreferredSize(prefDimension);

@@ -35,14 +35,13 @@ public class SiteDiaryGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Record") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     EditSiteDiaryDialog ed = new EditSiteDiaryDialog("Add Record", null);
                     if (EditSiteDiaryDialog.okPressed) {
                         Xsitediary xd = (Xsitediary) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xd.getXsitediaryId(),getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), xd.getXsitediaryId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -55,7 +54,6 @@ public class SiteDiaryGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -65,7 +63,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
                         new EditSiteDiaryDialog("Edit Record", xd);
                         if (EditSiteDiaryDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -78,8 +76,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-       return new AbstractAction("Delete Entry") {
-
+        return new AbstractAction("Delete Entry") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -87,7 +84,7 @@ public class SiteDiaryGrid extends GeneralGridPanel {
                     Xsitediary xd = (Xsitediary) exchanger.loadDbObjectOnID(Xsitediary.class, id);
                     if (xd != null && GeneralFrame.yesNo("Attention!", "Do you want to delete record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xd);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

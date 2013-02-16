@@ -33,7 +33,6 @@ public class LoansGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Loan") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -41,7 +40,7 @@ public class LoansGrid extends GeneralGridPanel {
                     if (EditLoanDialog.okPressed) {
                         Xloans xl = (Xloans) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), xl.getXloansId(),getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), xl.getXloansId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -54,7 +53,6 @@ public class LoansGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Loan") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -64,7 +62,7 @@ public class LoansGrid extends GeneralGridPanel {
                         new EditLoanDialog("Edit Loan", xl);
                         if (EditLoanDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
-                                    getTableDoc(), getSelect(), id,getPageSelector().getSelectedIndex());
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);
@@ -78,7 +76,6 @@ public class LoansGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Entry") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -86,7 +83,7 @@ public class LoansGrid extends GeneralGridPanel {
                     Xloans xl = (Xloans) exchanger.loadDbObjectOnID(Xloans.class, id);
                     if (xl != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(xl);
-                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,getPageSelector().getSelectedIndex());
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);

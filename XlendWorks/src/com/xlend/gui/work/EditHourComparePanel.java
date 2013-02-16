@@ -156,7 +156,6 @@ class EditHourComparePanel extends RecordEditPanel {
         organizePanels(titles, edits, null);
 
         monthYearSP.getModel().addChangeListener(new ChangeListener() {
-
             @Override
             public void stateChanged(ChangeEvent e) {
                 adjustDaysColumns();
@@ -174,7 +173,6 @@ class EditHourComparePanel extends RecordEditPanel {
         JPanel downBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         downBtnPanel.add(new JLabel("Details:"));
         downBtnPanel.add(new JButton(new AbstractAction("OCS") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -187,7 +185,6 @@ class EditHourComparePanel extends RecordEditPanel {
         }));
 
         downBtnPanel.add(new JButton(new AbstractAction("STD") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 java.util.Date dt = (java.util.Date) monthYearSP.getValue();
@@ -206,7 +203,6 @@ class EditHourComparePanel extends RecordEditPanel {
             }
         }));
         downBtnPanel.add(new JButton(new AbstractAction("TSH") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -225,13 +221,11 @@ class EditHourComparePanel extends RecordEditPanel {
 
     private AbstractAction getAutoFillAction() {
         return new AbstractAction("Autofill") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (JOptionPane.showConfirmDialog(null,
                         "Manual input will be overwritten. Are you sure?", "Warning!",
-                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) 
-                {
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     updateSiteDiaryLine();
                     updateTimeSheetLine();
                     updateOperatorClockSheetLine();
@@ -329,7 +323,6 @@ class EditHourComparePanel extends RecordEditPanel {
         }
     }
 
-    
     @Override
     public void loadData() {
         Xhourcompare xh = (Xhourcompare) getDbObject();

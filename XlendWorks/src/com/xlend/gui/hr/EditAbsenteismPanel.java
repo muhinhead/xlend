@@ -113,7 +113,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         ComboItem unknown = new ComboItem(0, "--unknown--");
         reportedToCbModel.addElement(unknown);
         reportedByCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(),Selects.activeEmployeeCondition)) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), Selects.activeEmployeeCondition)) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
             employeeCbModel.addElement(ci);
@@ -126,8 +126,8 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 medicalCondRB = new JRadioButton("Medical Conditions")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel), 
-                    new EmployeeLookupAction(employeeCB)),
+                comboPanelWithLookupBtn(employeeCB = new JComboBox(employeeCbModel),
+                new EmployeeLookupAction(employeeCB)),
                 new JPanel(),
                 funeralRB = new JRadioButton("Funeral")
             }),
@@ -156,14 +156,14 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 licenseProblemRB = new JRadioButton("License problem")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), 
-                    new EmployeeLookupAction(reportedByCB)),
+                comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel),
+                new EmployeeLookupAction(reportedByCB)),
                 new JPanel(),
                 ppeAndSafetyRB = new JRadioButton("PPE & Safety")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), 
-                    new ClercLookupAction(reportedToCB)),
+                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel),
+                new ClercLookupAction(reportedToCB)),
                 new JPanel(),
                 wageDisputeRB = new JRadioButton("Wage Dispute")
             }),
@@ -182,8 +182,8 @@ public class EditAbsenteismPanel extends RecordEditPanel {
                 workAccidentRB = new JRadioButton("Work Accident")
             }),
             getGridPanel(new JComponent[]{
-                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel), 
-                    new ClercLookupAction(grantedByCB)),
+                comboPanelWithLookupBtn(grantedByCB = new JComboBox(grantedByCbModel),
+                new ClercLookupAction(grantedByCB)),
                 new JPanel(),
                 noReasonRB = new JRadioButton("No Reason")
             })
@@ -192,9 +192,9 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(dateSP);
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
-        
+
         permGrantedLabel = labels[9];
-        
+
         JPanel downPanel = new JPanel(new GridLayout(1, 2));
         JScrollPane sp;
         downPanel.add(sp = new JScrollPane(reasonTextArea = new JTextArea(5, 30),
@@ -233,12 +233,11 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         for (JRadioButton rb : reasonRBgroup) {
             reasonGroup.add(rb);
         }
-        
-        employeeCB.addActionListener(new ActionListener() {
 
+        employeeCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isSalesCategory = (XlendWorks.getWageCategory(getSelectedCbItem(employeeCB)) == 1); 
+                boolean isSalesCategory = (XlendWorks.getWageCategory(getSelectedCbItem(employeeCB)) == 1);
                 permGrantedYesRB.setVisible(isSalesCategory);
                 permGrantedNoRB.setVisible(isSalesCategory);
                 permGrantedLabel.setEnabled(isSalesCategory);

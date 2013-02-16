@@ -31,7 +31,6 @@ public class JobCardGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Job Card") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -52,7 +51,6 @@ public class JobCardGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction editAction() {
         return new AbstractAction("Edit Job Card") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -75,7 +73,6 @@ public class JobCardGrid extends GeneralGridPanel {
     @Override
     protected AbstractAction delAction() {
         return new AbstractAction("Delete Clock Sheet") {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

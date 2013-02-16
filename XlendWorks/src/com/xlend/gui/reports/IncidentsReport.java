@@ -65,8 +65,9 @@ public class IncidentsReport extends GeneralReportPanel {
                 body.append("<tr>");
                 for (int c = 0; c < ceils.size(); c++) {
                     String ceil = (String) ceils.get(c);
-                    body.append("<td style=\"font-size: ").append(zoomer.getValue()).append("%;")
-                            .append(c == 3 ? "align=\"right\"" : "")
+                    body.append("<td ")
+//                            .append(c == 3 ? "align=\"right\" " : "")
+                            .append("style=\"font-size: ").append(zoomer.getValue()).append("%;")
                             .append("font-family: sans-serif\">")
                             .append(c < 2 && prevClockNo.equals(curClockNo) ? "" : ceil).append("</td>");
                     if (c == ceils.size() - 1) {

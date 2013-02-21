@@ -3,10 +3,19 @@ package com.xlend.gui;
 import com.xlend.constants.Selects;
 import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -14,22 +23,40 @@ import javax.swing.JEditorPane;
  */
 public class AssignmentsReport extends GeneralReportPanel {
 
+    private final SelectedDateSpinner onDateSP;
+    private final JButton filterBtn;
+    private final String OLD_WHERE = "where a.date_end is null";
+
     public AssignmentsReport(IMessageSender exchanger) {
         super(exchanger);
+        upperPane.add(new JLabel("On date:"));
+        upperPane.add(onDateSP = new SelectedDateSpinner());
+        upperPane.add(filterBtn = new JButton(new AbstractAction("show") {//null, new ImageIcon(Util.loadImage("filter-icon.png"))) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                html = null;
+                updateReport();
+            }
+        }));
+        onDateSP.setEditor(new JSpinner.DateEditor(onDateSP, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(onDateSP);
     }
 
     @Override
     protected JEditorPane createEditorPanel() {
         if (html == null) {
             prevZoomerValue = zoomer.getValue();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date dt = (Date) onDateSP.getValue();
             html = new StringBuffer("<html>"
                     + "<table border=\"0\">"
                     + "<tr><table>"
                     + "<tr>"
-                    + "<td rowspan=\"3\" style=\"font-size: " + (int)(prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Assignments Report</th>"
+                    + "<td rowspan=\"3\" style=\"font-size: " + (int) (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
+                    + "<th style=\"font-size: " + (int) (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Assignments Report</th>"
                     + "</tr>"
-                    + "<tr><th style=\"font-size: " + (int)(prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Operators and machines working on sites</th>"
+                    + "<tr><th style=\"font-size: " + (int) (prevZoomerValue * 1.1) 
+                    + "%; font-family: sans-serif\">Operators and machines working on sites at "+dateFormat.format(dt) +"</th>"
                     //                    + "<tr><tr></tr>"
                     //                    + "</tr><tr> "
                     + "</tr>"
@@ -42,7 +69,8 @@ public class AssignmentsReport extends GeneralReportPanel {
                     + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Clock No</th>"
                     + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">First Name</th>"
                     + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Surname</th>"
-                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">Date assigned</th>"
+                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">From</th>"
+                    + "<th align=\"left\" width=\"10%\" style=\"font-size: " + prevZoomerValue + "%; font-family: sans-serif\">To</th>"
                     + getAssignmentsInfoHTML()
                     + "</tr>"
                     + "</table>"
@@ -63,7 +91,15 @@ public class AssignmentsReport extends GeneralReportPanel {
         String prevClient = "---";
         String curClient = "";
         try {
-            Vector[] info = exchanger.getTableBody(Selects.SELECT_ASSIGNMENTSREPORT);
+            StringBuilder select = new StringBuilder(Selects.SELECT_ASSIGNMENTSREPORT);
+            if (onDateSP.getValue() != null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String sd = dateFormat.format((Date) onDateSP.getValue());
+                String whereCond = "where '" + sd + "' between a.date_start and ifnull(a.date_end, now())";
+                int p = select.indexOf(OLD_WHERE);
+                select.replace(p, p + OLD_WHERE.length(), whereCond);
+            }
+            Vector[] info = exchanger.getTableBody(select.toString());
             Vector tabBody = info[1];
             for (int i = 0; i < tabBody.size(); i++) {
                 Vector ceils = (Vector) tabBody.get(i);

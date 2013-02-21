@@ -99,8 +99,8 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         printButton.addActionListener(getPrintAction());
 
         searchButton = new JToggleButton(new ImageIcon(Util.loadImage("search.png")));
-        searchButton.setToolTipText("Search on fragment");
-        searchButton.addActionListener(getSearchAction());
+        getSearchButton().setToolTipText("Search on fragment");
+        getSearchButton().addActionListener(getSearchAction());
 
 //        filterButton = new JToggleButton(new ImageIcon(Util.loadImage("filter.png")));
 //        filterButton.setToolTipText("Filter on fragment");
@@ -124,7 +124,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         });
 
         toolBar = new JToolBar();
-        toolBar.add(searchButton);
+        toolBar.add(getSearchButton());
         toolBar.add(srcLabel = new JLabel("  Filter:"));
         toolBar.add(srcField = new JTextField(20));
         srcLabel.setVisible(false);
@@ -153,7 +153,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         mainPanel.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                searchButton.setSelected(false);
+                getSearchButton().setSelected(false);
                 srcField.setText(null);
                 srcField.setVisible(false);
                 srcLabel.setVisible(false);
@@ -204,7 +204,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean pressed = searchButton.isSelected();
+                boolean pressed = getSearchButton().isSelected();
                 srcLabel.setVisible(pressed);
                 srcField.setVisible(pressed);
                 if (pressed) {
@@ -431,5 +431,12 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
                 notImplementedYet();
             }
         };
+    }
+
+    /**
+     * @return the searchButton
+     */
+    protected JToggleButton getSearchButton() {
+        return searchButton;
     }
 }

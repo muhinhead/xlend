@@ -56,8 +56,8 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
             "Date of Issue:",
             "Driver:",
             "Diesel Cart:",
-            "Ammount in Liters:",
             "From Supplier:",
+            "Ammount in Liters:",
             "Balance in Cart:",
             "Balance available at supplier:"
         };
@@ -81,11 +81,11 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
             }),
             getBorderPanel(new JComponent[]{comboPanelWithLookupBtn(dieselCartCB = new JComboBox(dieselCartCbModel),
                 diesCartLookup = new DieselCartLookupAction(dieselCartCB))}),
-            getBorderPanel(new JComponent[]{litresIssuedSP = new SelectedNumberSpinner(.0, .0, .0, .1)}),
             getBorderPanel(new JComponent[]{
                 comboPanelWithLookupBtn(supplierCB = new JComboBox(supplierCbModel),
                 suppLookup = new SupplierLookupAction(supplierCB))
             }),
+            getBorderPanel(new JComponent[]{litresIssuedSP = new SelectedNumberSpinner(.0, .0, .0, .1)}),
             getBorderPanel(new JComponent[]{balanceInCartLBL = new JLabel("0", SwingConstants.RIGHT)}),
             getBorderPanel(new JComponent[]{balanceSupplierLBL = new JLabel("0", SwingConstants.RIGHT)})
         };
@@ -153,6 +153,7 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
             recalcDieselCartBalance();
             recalcSupplierBalance();
         }
+        supplierCB.setSelectedIndex(0);
     }
 
     @Override

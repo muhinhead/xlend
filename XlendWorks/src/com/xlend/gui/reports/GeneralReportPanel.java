@@ -77,10 +77,6 @@ public abstract class GeneralReportPanel extends JPanel {
 
     protected void adjustCache() {
         if (prevZoomerValue != zoomer.getValue()) {
-//            adjustFontSize(html, (int) (prevZoomerValue * 1.4), (int) (zoomer.getValue() * 1.4));
-//            adjustFontSize(html, (int) (prevZoomerValue * 1.2), (int) (zoomer.getValue() * 1.2));
-//            adjustFontSize(html, (int) (prevZoomerValue * 1.1), (int) (zoomer.getValue() * 1.1));
-//            adjustFontSize(html, prevZoomerValue - 10, zoomer.getValue() - 10);
             adjustFontSize(html, prevZoomerValue, zoomer.getValue());
             prevZoomerValue = zoomer.getValue();
         }

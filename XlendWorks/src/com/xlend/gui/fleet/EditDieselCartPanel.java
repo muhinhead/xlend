@@ -5,6 +5,7 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.site.IssueToDieselCartGrid;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.site.DieselToPlantGrid;
 import com.xlend.orm.Xdieselcart;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -114,7 +115,7 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
         if (xc != null) {
             try {
                 pane.add("Input", new IssueToDieselCartGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
-                pane.add("Output", new JPanel());
+                pane.add("Output", new DieselToPlantGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
             } catch (RemoteException ex) {
                 XlendWorks.logAndShowMessage(ex);
             }

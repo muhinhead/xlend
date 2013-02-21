@@ -29,6 +29,10 @@ public class DieselToPlantGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_DIESEL2PLANT, maxWidths, false);
     }
 
+    public DieselToPlantGrid(IMessageSender exchanger, int xdieselcart_id) throws RemoteException {
+        super(exchanger, Selects.SELECT_DIESEL2PLANT.replace("#", "" + xdieselcart_id), maxWidths, true);
+    }
+    
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Record") {

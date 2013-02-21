@@ -1,11 +1,13 @@
 package com.xlend.gui;
 
 import com.xlend.gui.reports.EmployeeReportPanel;
+import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.gui.reports.IncidentsReport;
 import com.xlend.gui.reports.LoansReport;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.gui.reports.SuppliersCreditorsReportPanel;
 import com.xlend.remote.IMessageSender;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
@@ -19,7 +21,7 @@ import javax.swing.event.ChangeListener;
  */
 public class ReportsFrame extends GeneralFrame {
 
-    private JComponent selectedTab;
+//    private JComponent selectedTab;
     private static String[] sheetList = new String[]{
         "Creditor Age Analysis", "Employee Summary",
         "Loans Report", "Incidents Report",
@@ -34,6 +36,7 @@ public class ReportsFrame extends GeneralFrame {
 
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
+        getSearchButton().setVisible(false);
     }
 
     @Override
@@ -61,18 +64,11 @@ public class ReportsFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[3])) {
             reportsTab.addTab(getIncidentsPanel(), sheets()[3]);
-//            GeneralFrame.errMessageBox("Sorry!", "Incidents Report is under construction");
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[4])) {
             reportsTab.addTab(getAssignmentsPanel(), sheets()[4]);
-//            GeneralFrame.errMessageBox("Sorry!", "Assignments Report is under construction");
         }
-        reportsTab.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                selectedTab = (JComponent) reportsTab.getSelectedComponent();
-            }
-        });
+
         return reportsTab;
     }
 
@@ -116,17 +112,13 @@ public class ReportsFrame extends GeneralFrame {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (selectedTab instanceof SuppliersCreditorsReportPanel) {
+                Component selectedTab = reportsTab.getSelectedComponent();
+                if (selectedTab != null && selectedTab instanceof GeneralReportPanel) {
                     try {
-                        suppliersCreditorsPanel.getEditorPanel().print();
+                        GeneralReportPanel repPanel = (GeneralReportPanel) selectedTab;
+                        repPanel.getEditorPanel().print();
                     } catch (PrinterException ex) {
-                        XlendWorks.log(ex);
-                    }
-                } else if (selectedTab instanceof EmployeeReportPanel) {
-                    try {
-                        employeePanel.getEditorPanel().print();
-                    } catch (PrinterException ex) {
-                        XlendWorks.log(ex);
+                        XlendWorks.logAndShowMessage(ex);
                     }
                 }
             }

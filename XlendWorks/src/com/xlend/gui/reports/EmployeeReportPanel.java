@@ -6,6 +6,7 @@ import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.SelectedDateSpinner;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
@@ -39,6 +40,12 @@ public class EmployeeReportPanel extends GeneralReportPanel {
         }
         upperPane.add(new JLabel("  Wage Category:"));
         upperPane.add(categoryCB = new JComboBox(cats));
+        upperPane.add(new JLabel("  Started between:"));
+        upperPane.add(new SelectedDateSpinner());
+        upperPane.add(new JLabel(" and "));
+        upperPane.add(new SelectedDateSpinner());
+        
+        
         categoryCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

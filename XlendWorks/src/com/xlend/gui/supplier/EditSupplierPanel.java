@@ -148,12 +148,13 @@ class EditSupplierPanel extends RecordEditPanel {
                 sp1.setPreferredSize(new Dimension(400, 300));
                 paymentPanel.add(sp1, BorderLayout.NORTH);
 
-                JScrollPane sp2 = new JScrollPane(
-                        new FuelGrid(DashBoard.getExchanger(),
-                        Selects.SELECT_SUPPLIERS_FUELS.replace("#",
-                        sup.getXsupplierId().toString())));
-                sp2.setPreferredSize(new Dimension(400, 300));
-                fuelPanel.add(sp2, BorderLayout.NORTH);
+                //TODO: new diesel purchase info add here
+                //JScrollPane sp2 = new JScrollPane(
+                //        new FuelGrid(DashBoard.getExchanger(),
+                //        Selects.SELECT_SUPPLIERS_FUELS.replace("#",
+                //        sup.getXsupplierId().toString())));
+                //sp2.setPreferredSize(new Dimension(400, 300));
+                //fuelPanel.add(sp2, BorderLayout.NORTH);
 
                 JScrollPane sp3 = new JScrollPane(
                         new ConsumablesGrid(DashBoard.getExchanger(),
@@ -166,8 +167,8 @@ class EditSupplierPanel extends RecordEditPanel {
                 XlendWorks.log(ex);
             }
         }
-        detailPanel.add("Paymetns", paymentPanel);
-        detailPanel.add("Fuel", fuelPanel);
+        detailPanel.add("Payments", paymentPanel);
+        //detailPanel.add("Fuel", fuelPanel);
         detailPanel.add("Consumables not paid", consPanel);
         return detailPanel;
     }

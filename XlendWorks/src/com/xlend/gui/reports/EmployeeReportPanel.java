@@ -7,10 +7,14 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import javax.swing.*;
 
@@ -31,6 +35,9 @@ public class EmployeeReportPanel extends GeneralReportPanel {
         durationMap.put(6, "6 months");
         durationMap.put(12, "1 year");
     }
+    private final JButton filterBtn;
+    private final SelectedDateSpinner startDateSP;
+    private final SelectedDateSpinner endDateSP;
 
     public EmployeeReportPanel(IMessageSender exchanger) {
         super(exchanger);
@@ -41,18 +48,43 @@ public class EmployeeReportPanel extends GeneralReportPanel {
         upperPane.add(new JLabel("  Wage Category:"));
         upperPane.add(categoryCB = new JComboBox(cats));
         upperPane.add(new JLabel("  Started between:"));
-        upperPane.add(new SelectedDateSpinner());
+        upperPane.add(startDateSP = new SelectedDateSpinner());
         upperPane.add(new JLabel(" and "));
-        upperPane.add(new SelectedDateSpinner());
-        
-        
-        categoryCB.addActionListener(new ActionListener() {
+        upperPane.add(endDateSP = new SelectedDateSpinner());
+        upperPane.add(filterBtn = new JButton(new AbstractAction("show") {//null, new ImageIcon(Util.loadImage("filter-icon.png"))) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 html = null;
                 updateReport();
             }
+        }));
+
+        categoryCB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                html = null;
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        updateReport();
+                    }
+                });
+            }
         });
+
+        startDateSP.setEditor(new JSpinner.DateEditor(startDateSP, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(startDateSP);
+        endDateSP.setEditor(new JSpinner.DateEditor(endDateSP, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(endDateSP);
+//        setEnabledDateFilter(false);
+
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.set(Calendar.YEAR, 1990);
+        calendar.set(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Date firstDayOfMonth = calendar.getTime();
+        startDateSP.setValue(firstDayOfMonth);
     }
 
     @Override
@@ -64,9 +96,9 @@ public class EmployeeReportPanel extends GeneralReportPanel {
                     + "<tr><table>"
                     + "<tr>"
                     + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
+                    + "<th style=\"font-size: " + (int) (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Employee Report</th>"
                     + "</tr>"
-                    + "<tr><th style=\"font-size: " + (int)(prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</th>"
+                    + "<tr><th style=\"font-size: " + (int) (prevZoomerValue * 1.1) + "%; font-family: sans-serif\">Wage Category: " + categoryCB.getSelectedItem().toString() + "</th>"
                     + "</tr><tr> </tr>"
                     + "</table></tr>"
                     + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"
@@ -96,10 +128,16 @@ public class EmployeeReportPanel extends GeneralReportPanel {
         StringBuffer body = new StringBuffer("");
         try {
             ComboItem itm = (ComboItem) categoryCB.getSelectedItem();
-            DbObject[] recs = exchanger.getDbObjects(Xemployee.class, "wage_category=" + itm.getId(), "sur_name");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String sd1 = dateFormat.format((Date) startDateSP.getValue());
+            String sd2 = dateFormat.format((Date) endDateSP.getValue());
+            DbObject[] recs = exchanger.getDbObjects(Xemployee.class, "wage_category=" + itm.getId()
+                    + " and contract_start between '" + sd1 + "' and '" + sd2 + "'", "sur_name");
+            dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             for (DbObject rec : recs) {
                 Xemployee emp = (Xemployee) rec;
                 Xposition pos = (Xposition) exchanger.loadDbObjectOnID(Xposition.class, emp.getXpositionId());
+                sd1 = dateFormat.format(emp.getContractStart());
                 String line = "<tr><td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getFirstName()) + "</td>"
                         + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getSurName()) + "</td>"
                         + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + ifNull(emp.getClockNum()) + "</td><"
@@ -108,7 +146,8 @@ public class EmployeeReportPanel extends GeneralReportPanel {
                         + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (pos == null ? "" : ifNull(pos.getPos())) + "</td>"
                         + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + String.format("%.02f", emp.getRate()) + "</td>"
                         + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (emp.getContractLen() == null ? "" : durationMap.get(emp.getContractLen())) + "</td>"
-                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (emp.getContractStart() == null ? "" : emp.getContractStart().toString()) + "</td>"
+                        + "<td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + (emp.getContractStart() == null ? "" : sd1)//emp.getContractStart().toString()) 
+                        + "</td>"
                         + "</tr>";
                 body.append(line);
             }

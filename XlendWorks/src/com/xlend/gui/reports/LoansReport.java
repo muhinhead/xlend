@@ -3,10 +3,19 @@ package com.xlend.gui.reports;
 import com.xlend.constants.Selects;
 import com.xlend.gui.XlendWorks;
 import com.xlend.remote.IMessageSender;
+import com.xlend.util.SelectedDateSpinner;
+import com.xlend.util.Util;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
 
 /**
  *
@@ -14,8 +23,34 @@ import javax.swing.JEditorPane;
  */
 public class LoansReport extends GeneralReportPanel {
 
+    private final SelectedDateSpinner endDateSP;
+    private final SelectedDateSpinner startDateSP;
+
     public LoansReport(IMessageSender exchanger) {
         super(exchanger);
+        upperPane.add(new JLabel("  Dates between:"));
+        upperPane.add(startDateSP = new SelectedDateSpinner());
+        upperPane.add(new JLabel(" and "));
+        upperPane.add(endDateSP = new SelectedDateSpinner());
+        upperPane.add(new JButton(new AbstractAction("show") {//null, new ImageIcon(Util.loadImage("filter-icon.png"))) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                html = null;
+                updateReport();
+            }
+        }));
+        startDateSP.setEditor(new JSpinner.DateEditor(startDateSP, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(startDateSP);
+        endDateSP.setEditor(new JSpinner.DateEditor(endDateSP, "dd/MM/yyyy"));
+        Util.addFocusSelectAllAction(endDateSP);
+        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);
+        calendar.set(Calendar.YEAR, 1990);
+        calendar.set(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Date firstDayOfMonth = calendar.getTime();
+        startDateSP.setValue(firstDayOfMonth);
     }
 
     @Override
@@ -28,7 +63,7 @@ public class LoansReport extends GeneralReportPanel {
                     + "<tr><table>"
                     + "<tr>"
                     + "<td rowspan=\"3\" style=\"font-size: " + (prevZoomerValue - 10) + "%; font-family: sans-serif\" ><img margin=20 src='file:./images/XlendCost.jpg'/><br>" + Calendar.getInstance().getTime().toString() + "</td>"
-                    + "<th style=\"font-size: " + (int)(prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
+                    + "<th style=\"font-size: " + (int) (prevZoomerValue * 1.2) + "%; font-family: sans-serif\" allign=\"left\">Loans Report</th>"
                     + "</tr>"
                     + "</tr>"
                     + "</table></tr>"
@@ -64,7 +99,12 @@ public class LoansReport extends GeneralReportPanel {
         String prevClockNum = "---";
         String curClockNum = "";
         try {
-            Vector[] info = exchanger.getTableBody(Selects.SELECT_LOANLIST);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String sd1 = dateFormat.format((Date) startDateSP.getValue());
+            String sd2 = dateFormat.format((Date) endDateSP.getValue());
+            String select = Selects.SELECT_LOANLIST;
+            select = select.replaceFirst(" where ", " where issueddate between '"+sd1+"' and '"+sd2+"' and ");
+            Vector[] info = exchanger.getTableBody(select);
             Vector tabBody = info[1];
             for (int i = 0; i < tabBody.size(); i++) {
                 Vector ceils = (Vector) tabBody.get(i);

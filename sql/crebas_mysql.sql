@@ -1561,7 +1561,7 @@ create table xdiesel2plantitem
 );
 #----------------- auxiliary tables -------------------
 
-create view v_userprofile as
+create or replace view v_userprofile as
 select p.profile_id,
        p.first_name,
        p.last_name,

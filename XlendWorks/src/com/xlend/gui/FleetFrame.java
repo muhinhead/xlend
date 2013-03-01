@@ -3,9 +3,13 @@ package com.xlend.gui;
 import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -27,10 +31,12 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel companyVehiclesPanel;
     private GeneralGridPanel dieselCartsPanel;
     private GeneralGridPanel machineServicesPanel;
+    private GeneralGridPanel batteriesPurchasePanel;
+    private GeneralGridPanel batteriesIssuePanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles",
         "Company Vehicles", "Machine Rental Rates", "Diesel Carts",
-        "Service"
+        "Service", "Batteries"
     };
 
     public FleetFrame(IMessageSender exch) {
@@ -71,6 +77,9 @@ public class FleetFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[7])) {
             fleetTab.addTab(getMachineServices(), sheets()[7]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
+            fleetTab.addTab(getBatteries(), sheets()[8]);
         }
         return fleetTab;
     }
@@ -170,4 +179,25 @@ public class FleetFrame extends GeneralFrame {
         }
         return dieselCartsPanel;
     }
+
+    private JComponent getBatteries() {
+        //TODO: batteries panel
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        sp.setDividerLocation(250);
+        try {
+            sp.add(batteriesPurchasePanel = new BatteryPurchaseGrid(getExchanger()));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+            errMessageBox("Error:", ex.getMessage());
+            sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
+        }
+
+        try {
+            sp.add(batteriesIssuePanel = new BatteryIssuesGrid(getExchanger()));
+        } catch (RemoteException ex) {
+            XlendWorks.log(ex);
+            errMessageBox("Error:", ex.getMessage());
+            sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
+        }
+        return sp;    }
 }

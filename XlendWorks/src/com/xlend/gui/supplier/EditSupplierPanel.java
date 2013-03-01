@@ -49,6 +49,7 @@ class EditSupplierPanel extends RecordEditPanel {
     private JTextArea addressField;
     private JTextArea bankingField;
     private JSpinner outStandAmtSP;
+    private JSpinner creditLimitSP;
     private JLabel outStandAmtLB;
 
     public EditSupplierPanel(DbObject dbObject) {
@@ -62,10 +63,11 @@ class EditSupplierPanel extends RecordEditPanel {
             "ID:", "Company Name:", "Contact Person:",
             "Tel Nr:", "Fax Nr:", "Cell Nr:", "Email:",
             "Vat Nr:", "Company Reg.Nr:",
+            "Credit Limit:",
             "Product Description:", "Address:", "Banking details:"
         };
         JComponent[] edits = new JComponent[]{
-            getGridPanel(idField = new JTextField(), 5),
+            getGridPanel(idField = new JTextField(), 6),
             getGridPanel(new JComponent[]{companyNameField = new JTextField(40), getGridPanel(
                 new JComponent[]{new JLabel("   Outstanding Amount:", SwingConstants.CENTER),
                     outStandAmtLB = new JLabel(),
@@ -79,6 +81,7 @@ class EditSupplierPanel extends RecordEditPanel {
             getGridPanel(emailField = new JTextField(), 3),
             getGridPanel(vatNrField = new JTextField(), 4),
             getGridPanel(companyRegNrField = new JTextField(), 3),
+            getGridPanel(creditLimitSP = new SelectedNumberSpinner(0, 0, 250000, 10), 6),
             productDescrField = new JTextArea(7, 20),
             addressField = new JTextArea(7, 20),
             bankingField = new JTextArea(7, 20)
@@ -196,6 +199,9 @@ class EditSupplierPanel extends RecordEditPanel {
                 outStandAmtLB.setForeground(Color.red);
             }
             outStandAmtLB.setText(((JSpinner.DefaultEditor) outStandAmtSP.getEditor()).getTextField().getText());
+            if (sup.getCreditLimit() != null) {
+                creditLimitSP.setValue(sup.getCreditLimit());
+            }
         }
     }
 
@@ -219,6 +225,9 @@ class EditSupplierPanel extends RecordEditPanel {
         sup.setProductdesc(productDescrField.getText());
         sup.setAddress(addressField.getText());
         sup.setBanking(bankingField.getText());
+        if (creditLimitSP.getValue() != null) {
+            sup.setCreditLimit((Integer) creditLimitSP.getValue());
+        }
         try {
             sup.setNew(isNew);
             DbObject saved = DashBoard.getExchanger().saveDbObject(sup);

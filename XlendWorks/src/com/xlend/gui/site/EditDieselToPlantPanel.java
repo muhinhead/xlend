@@ -396,7 +396,12 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                 recalcDieselCartBalance();
             }
         });
-        dieselCartCB.setSelectedIndex(0);
+
+        try {
+            dieselCartCB.setSelectedIndex(0);
+        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+        }
 
         JPanel downShellPanel = new JPanel(new BorderLayout());
         JScrollPane scrollPane;

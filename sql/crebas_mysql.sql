@@ -1509,6 +1509,7 @@ create table xdieselpurchase
     purchase_date      date not null,
     litres             decimal(6,2) not null, 
     rand_factor        decimal(5,2) not null,
+    paid               decimal(8,2) not null,
     stamp              timestamp,
     constraint xdieselpurchase_pk primary key (xdieselpurchase_id),
     constraint xdieselpurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)

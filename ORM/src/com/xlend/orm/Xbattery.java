@@ -8,38 +8,44 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xposition extends DbObject  {
+public class Xbattery extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xpositionId = null;
-    private String pos = null;
+    private Integer xbatteryId = null;
+    private String batteryCode = null;
+    private Double vatExclUnit = null;
+    private String batteryId = null;
 
-    public Xposition(Connection connection) {
-        super(connection, "xposition", "xposition_id");
-        setColumnNames(new String[]{"xposition_id", "pos"});
+    public Xbattery(Connection connection) {
+        super(connection, "xbattery", "xbattery_id");
+        setColumnNames(new String[]{"xbattery_id", "battery_code", "vat_excl_unit", "battery_id"});
     }
 
-    public Xposition(Connection connection, Integer xpositionId, String pos) {
-        super(connection, "xposition", "xposition_id");
-        setNew(xpositionId.intValue() <= 0);
-//        if (xpositionId.intValue() != 0) {
-            this.xpositionId = xpositionId;
+    public Xbattery(Connection connection, Integer xbatteryId, String batteryCode, Double vatExclUnit, String batteryId) {
+        super(connection, "xbattery", "xbattery_id");
+        setNew(xbatteryId.intValue() <= 0);
+//        if (xbatteryId.intValue() != 0) {
+            this.xbatteryId = xbatteryId;
 //        }
-        this.pos = pos;
+        this.batteryCode = batteryCode;
+        this.vatExclUnit = vatExclUnit;
+        this.batteryId = batteryId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xposition xposition = null;
+        Xbattery xbattery = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id,pos FROM xposition WHERE xposition_id=" + id;
+        String stmt = "SELECT xbattery_id,battery_code,vat_excl_unit,battery_id FROM xbattery WHERE xbattery_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xposition = new Xposition(getConnection());
-                xposition.setXpositionId(new Integer(rs.getInt(1)));
-                xposition.setPos(rs.getString(2));
-                xposition.setNew(false);
+                xbattery = new Xbattery(getConnection());
+                xbattery.setXbatteryId(new Integer(rs.getInt(1)));
+                xbattery.setBatteryCode(rs.getString(2));
+                xbattery.setVatExclUnit(rs.getDouble(3));
+                xbattery.setBatteryId(rs.getString(4));
+                xbattery.setNew(false);
             }
         } finally {
             try {
@@ -48,7 +54,7 @@ public class Xposition extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xposition;
+        return xbattery;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -57,26 +63,28 @@ public class Xposition extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xposition ("+(getXpositionId().intValue()!=0?"xposition_id,":"")+"pos) values("+(getXpositionId().intValue()!=0?"?,":"")+"?)";
+                "INSERT INTO xbattery ("+(getXbatteryId().intValue()!=0?"xbattery_id,":"")+"battery_code,vat_excl_unit,battery_id) values("+(getXbatteryId().intValue()!=0?"?,":"")+"?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXpositionId().intValue()!=0) {
-                 ps.setObject(++n, getXpositionId());
+             if (getXbatteryId().intValue()!=0) {
+                 ps.setObject(++n, getXbatteryId());
              }
-             ps.setObject(++n, getPos());
+             ps.setObject(++n, getBatteryCode());
+             ps.setObject(++n, getVatExclUnit());
+             ps.setObject(++n, getBatteryId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXpositionId().intValue()==0) {
-             stmt = "SELECT max(xposition_id) FROM xposition";
+         if (getXbatteryId().intValue()==0) {
+             stmt = "SELECT max(xbattery_id) FROM xbattery";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXpositionId(new Integer(rs.getInt(1)));
+                     setXbatteryId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -102,12 +110,14 @@ public class Xposition extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xposition " +
-                    "SET pos = ?" + 
-                    " WHERE xposition_id = " + getXpositionId();
+                    "UPDATE xbattery " +
+                    "SET battery_code = ?, vat_excl_unit = ?, battery_id = ?" + 
+                    " WHERE xbattery_id = " + getXbatteryId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getPos());
+                ps.setObject(1, getBatteryCode());
+                ps.setObject(2, getVatExclUnit());
+                ps.setObject(3, getBatteryId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -120,37 +130,31 @@ public class Xposition extends DbObject  {
     }
 
     public void delete() throws SQLException, ForeignKeyViolationException {
-        if (Xemployee.exists(getConnection(),"xposition_id = " + getXpositionId())) {
-            throw new ForeignKeyViolationException("Can't delete, foreign key violation: xemployee_xposition_fk");
-        }
-        if (getTriggers() != null) {
-            getTriggers().beforeDelete(this);
-        }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xposition " +
-                "WHERE xposition_id = " + getXpositionId();
+                "DELETE FROM xbattery " +
+                "WHERE xbattery_id = " + getXbatteryId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXpositionId(new Integer(-getXpositionId().intValue()));
+        setXbatteryId(new Integer(-getXbatteryId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXpositionId().intValue() < 0);
+        return (getXbatteryId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id,pos FROM xposition " +
+        String stmt = "SELECT xbattery_id,battery_code,vat_excl_unit,battery_id FROM xbattery " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -160,7 +164,7 @@ public class Xposition extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xposition(con,new Integer(rs.getInt(1)),rs.getString(2)));
+                lst.add(dbObj=new Xbattery(con,new Integer(rs.getInt(1)),rs.getString(2),rs.getDouble(3),rs.getString(4)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -170,10 +174,10 @@ public class Xposition extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xposition[] objects = new Xposition[lst.size()];
+        Xbattery[] objects = new Xbattery[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xposition xposition = (Xposition) lst.get(i);
-            objects[i] = xposition;
+            Xbattery xbattery = (Xbattery) lst.get(i);
+            objects[i] = xbattery;
         }
         return objects;
     }
@@ -185,7 +189,7 @@ public class Xposition extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xposition_id FROM xposition " +
+        String stmt = "SELECT xbattery_id FROM xbattery " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -203,41 +207,61 @@ public class Xposition extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXpositionId() + getDelimiter();
+    //    return getXbatteryId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xpositionId;
+        return xbatteryId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXpositionId(id);
+        setXbatteryId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXpositionId() {
-        return xpositionId;
+    public Integer getXbatteryId() {
+        return xbatteryId;
     }
 
-    public void setXpositionId(Integer xpositionId) throws ForeignKeyViolationException {
-        setWasChanged(this.xpositionId != null && this.xpositionId != xpositionId);
-        this.xpositionId = xpositionId;
-        setNew(xpositionId.intValue() == 0);
+    public void setXbatteryId(Integer xbatteryId) throws ForeignKeyViolationException {
+        setWasChanged(this.xbatteryId != null && this.xbatteryId != xbatteryId);
+        this.xbatteryId = xbatteryId;
+        setNew(xbatteryId.intValue() == 0);
     }
 
-    public String getPos() {
-        return pos;
+    public String getBatteryCode() {
+        return batteryCode;
     }
 
-    public void setPos(String pos) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.pos != null && !this.pos.equals(pos));
-        this.pos = pos;
+    public void setBatteryCode(String batteryCode) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.batteryCode != null && !this.batteryCode.equals(batteryCode));
+        this.batteryCode = batteryCode;
+    }
+
+    public Double getVatExclUnit() {
+        return vatExclUnit;
+    }
+
+    public void setVatExclUnit(Double vatExclUnit) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.vatExclUnit != null && !this.vatExclUnit.equals(vatExclUnit));
+        this.vatExclUnit = vatExclUnit;
+    }
+
+    public String getBatteryId() {
+        return batteryId;
+    }
+
+    public void setBatteryId(String batteryId) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.batteryId != null && !this.batteryId.equals(batteryId));
+        this.batteryId = batteryId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[2];
-        columnValues[0] = getXpositionId();
-        columnValues[1] = getPos();
+        Object[] columnValues = new Object[4];
+        columnValues[0] = getXbatteryId();
+        columnValues[1] = getBatteryCode();
+        columnValues[2] = getVatExclUnit();
+        columnValues[3] = getBatteryId();
         return columnValues;
     }
 
@@ -254,10 +278,16 @@ public class Xposition extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXpositionId(Integer.parseInt(flds[0]));
+            setXbatteryId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXpositionId(null);
+            setXbatteryId(null);
         }
-        setPos(flds[1]);
+        setBatteryCode(flds[1]);
+        try {
+            setVatExclUnit(Double.parseDouble(flds[2]));
+        } catch(NumberFormatException ne) {
+            setVatExclUnit(null);
+        }
+        setBatteryId(flds[3]);
     }
 }

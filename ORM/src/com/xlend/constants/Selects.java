@@ -110,7 +110,9 @@ public class Selects {
             //            + "and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing where xemployee_id=xemployee.xemployee_id"
             //            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
-            + "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
+            + "where "
+//            + "clock_num!='000' and "
+            + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
             + "order by extractnum(clock_num),clock_num";
     public static final String SELECT_FROM_EMPLOYEE =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
@@ -239,11 +241,11 @@ public class Selects {
     public static final String SELECT_FROM_SUPPLIERS =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
             + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\", "
-            + "phone \"Tel Nr\", fax \"Fax Nr\", cell \"Cell Nr\", email \"Email\" "
+            + "phone \"Tel Nr\", fax \"Fax Nr\", cell \"Cell Nr\", email \"Email\", credit_limit \"Credit Limit\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_SUPPLIERS4LOOKUP =
             "Select xsupplier_id \"Id\",companyname \"Company Name\", vatnr \"Vat Nr\", "
-            + "company_regnr \"Reg.Nr\", contactperson \"Contact Person\" "
+            + "company_regnr \"Reg.Nr\", credit_limit \"Cred.Limit\", contactperson \"Contact Person\" "
             + "from xsupplier order by companyname";
     public static final String SELECT_DIESELCARTS4LOOKUP =
             "select xdieselcart_id\"Id\",fleet_nr \"Fleet Nr\", reg_nr \"Reg Nr\", "
@@ -533,8 +535,8 @@ public class Selects {
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopmachassing.xmachine_id) \"Machine\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
             + "from xopmachassing where xsite_id=# and date_end is null order by xopmachassing_id desc";
-    public static final String activeEmployeeCondition = "clock_num!='000' and "
-            + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
+    public static final String activeEmployeeCondition = //"clock_num!='000' and " +
+            " coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
     public static final String SELECT_FROM_XPARTS =
             "select xparts_id \"Id\", partnumber \"Part No\", description \"Part Description\", storename \"Store\","
             + "machinemodel \"Machine Model\", quantity \"Quantity\","
@@ -632,9 +634,25 @@ public class Selects {
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Assisted By\" "
             + "from xmachservice order by servicedate desc";
 
+    public static final String SELECT_FROM_BATTPURCHASES = 
+            "Select xbatterypurchase_id \"Id\", to_char(purchase_date,'DD/MM/YYYY') \"Date of Purchase\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbatterypurchase.purchased_by) \"Purchased By\","
+            + "(select companyname from xsupplier where xsupplier_id=xbatterypurchase.xsupplier_id) \"Supplier\", "
+            + "invoice_vat_incl \"Invoice Vat.Incl.R\", invoice_vat_excl \"Invoice Vat.Excl.R\" "
+            + "from xbatterypurchase order by purchase_date desc";
+
+    public static final String SELECT_FROM_BATTISSUES = 
+            "select xbateryissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\", "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbateryissue.issued_by) \"Issued By\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbateryissue.issued_to) \"Issued To\","
+            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xbateryissue.xmachine_id) \"For Machine\" "
+            + "from xbateryissue order by issue_date desc";
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
-                "where clock_num!='000' and coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
+                "where "+
+//                + "clock_num!='000' and " +
+                "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
     }
 //    public static final String[] getStringArray(String select) {
 //        try {

@@ -8,53 +8,53 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xaddstocks extends DbObject  {
+public class Xbatterypurchase extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xaddstocksId = null;
-    private Integer xpartsId = null;
+    private Integer xbatterypurchaseId = null;
     private Date purchaseDate = null;
-    private Integer enteredbyId = null;
+    private Date entryDate = null;
+    private Integer purchasedBy = null;
     private Integer xsupplierId = null;
-    private Double priceperunit = null;
-    private Double quantity = null;
+    private Double invoiceVatIncl = null;
+    private Double invoiceVatExcl = null;
 
-    public Xaddstocks(Connection connection) {
-        super(connection, "xaddstocks", "xaddstocks_id");
-        setColumnNames(new String[]{"xaddstocks_id", "xparts_id", "purchase_date", "enteredby_id", "xsupplier_id", "priceperunit", "quantity"});
+    public Xbatterypurchase(Connection connection) {
+        super(connection, "xbatterypurchase", "xbatterypurchase_id");
+        setColumnNames(new String[]{"xbatterypurchase_id", "purchase_date", "entry_date", "purchased_by", "xsupplier_id", "invoice_vat_incl", "invoice_vat_excl"});
     }
 
-    public Xaddstocks(Connection connection, Integer xaddstocksId, Integer xpartsId, Date purchaseDate, Integer enteredbyId, Integer xsupplierId, Double priceperunit, Double quantity) {
-        super(connection, "xaddstocks", "xaddstocks_id");
-        setNew(xaddstocksId.intValue() <= 0);
-//        if (xaddstocksId.intValue() != 0) {
-            this.xaddstocksId = xaddstocksId;
+    public Xbatterypurchase(Connection connection, Integer xbatterypurchaseId, Date purchaseDate, Date entryDate, Integer purchasedBy, Integer xsupplierId, Double invoiceVatIncl, Double invoiceVatExcl) {
+        super(connection, "xbatterypurchase", "xbatterypurchase_id");
+        setNew(xbatterypurchaseId.intValue() <= 0);
+//        if (xbatterypurchaseId.intValue() != 0) {
+            this.xbatterypurchaseId = xbatterypurchaseId;
 //        }
-        this.xpartsId = xpartsId;
         this.purchaseDate = purchaseDate;
-        this.enteredbyId = enteredbyId;
+        this.entryDate = entryDate;
+        this.purchasedBy = purchasedBy;
         this.xsupplierId = xsupplierId;
-        this.priceperunit = priceperunit;
-        this.quantity = quantity;
+        this.invoiceVatIncl = invoiceVatIncl;
+        this.invoiceVatExcl = invoiceVatExcl;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xaddstocks xaddstocks = null;
+        Xbatterypurchase xbatterypurchase = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xaddstocks_id,xparts_id,purchase_date,enteredby_id,xsupplier_id,priceperunit,quantity FROM xaddstocks WHERE xaddstocks_id=" + id;
+        String stmt = "SELECT xbatterypurchase_id,purchase_date,entry_date,purchased_by,xsupplier_id,invoice_vat_incl,invoice_vat_excl FROM xbatterypurchase WHERE xbatterypurchase_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xaddstocks = new Xaddstocks(getConnection());
-                xaddstocks.setXaddstocksId(new Integer(rs.getInt(1)));
-                xaddstocks.setXpartsId(new Integer(rs.getInt(2)));
-                xaddstocks.setPurchaseDate(rs.getDate(3));
-                xaddstocks.setEnteredbyId(new Integer(rs.getInt(4)));
-                xaddstocks.setXsupplierId(new Integer(rs.getInt(5)));
-                xaddstocks.setPriceperunit(rs.getDouble(6));
-                xaddstocks.setQuantity(rs.getDouble(7));
-                xaddstocks.setNew(false);
+                xbatterypurchase = new Xbatterypurchase(getConnection());
+                xbatterypurchase.setXbatterypurchaseId(new Integer(rs.getInt(1)));
+                xbatterypurchase.setPurchaseDate(rs.getDate(2));
+                xbatterypurchase.setEntryDate(rs.getDate(3));
+                xbatterypurchase.setPurchasedBy(new Integer(rs.getInt(4)));
+                xbatterypurchase.setXsupplierId(new Integer(rs.getInt(5)));
+                xbatterypurchase.setInvoiceVatIncl(rs.getDouble(6));
+                xbatterypurchase.setInvoiceVatExcl(rs.getDouble(7));
+                xbatterypurchase.setNew(false);
             }
         } finally {
             try {
@@ -63,7 +63,7 @@ public class Xaddstocks extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xaddstocks;
+        return xbatterypurchase;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -72,31 +72,31 @@ public class Xaddstocks extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xaddstocks ("+(getXaddstocksId().intValue()!=0?"xaddstocks_id,":"")+"xparts_id,purchase_date,enteredby_id,xsupplier_id,priceperunit,quantity) values("+(getXaddstocksId().intValue()!=0?"?,":"")+"?,?,?,?,?,?)";
+                "INSERT INTO xbatterypurchase ("+(getXbatterypurchaseId().intValue()!=0?"xbatterypurchase_id,":"")+"purchase_date,entry_date,purchased_by,xsupplier_id,invoice_vat_incl,invoice_vat_excl) values("+(getXbatterypurchaseId().intValue()!=0?"?,":"")+"?,?,?,?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXaddstocksId().intValue()!=0) {
-                 ps.setObject(++n, getXaddstocksId());
+             if (getXbatterypurchaseId().intValue()!=0) {
+                 ps.setObject(++n, getXbatterypurchaseId());
              }
-             ps.setObject(++n, getXpartsId());
              ps.setObject(++n, getPurchaseDate());
-             ps.setObject(++n, getEnteredbyId());
+             ps.setObject(++n, getEntryDate());
+             ps.setObject(++n, getPurchasedBy());
              ps.setObject(++n, getXsupplierId());
-             ps.setObject(++n, getPriceperunit());
-             ps.setObject(++n, getQuantity());
+             ps.setObject(++n, getInvoiceVatIncl());
+             ps.setObject(++n, getInvoiceVatExcl());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXaddstocksId().intValue()==0) {
-             stmt = "SELECT max(xaddstocks_id) FROM xaddstocks";
+         if (getXbatterypurchaseId().intValue()==0) {
+             stmt = "SELECT max(xbatterypurchase_id) FROM xbatterypurchase";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXaddstocksId(new Integer(rs.getInt(1)));
+                     setXbatterypurchaseId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -122,17 +122,17 @@ public class Xaddstocks extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xaddstocks " +
-                    "SET xparts_id = ?, purchase_date = ?, enteredby_id = ?, xsupplier_id = ?, priceperunit = ?, quantity = ?" + 
-                    " WHERE xaddstocks_id = " + getXaddstocksId();
+                    "UPDATE xbatterypurchase " +
+                    "SET purchase_date = ?, entry_date = ?, purchased_by = ?, xsupplier_id = ?, invoice_vat_incl = ?, invoice_vat_excl = ?" + 
+                    " WHERE xbatterypurchase_id = " + getXbatterypurchaseId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXpartsId());
-                ps.setObject(2, getPurchaseDate());
-                ps.setObject(3, getEnteredbyId());
+                ps.setObject(1, getPurchaseDate());
+                ps.setObject(2, getEntryDate());
+                ps.setObject(3, getPurchasedBy());
                 ps.setObject(4, getXsupplierId());
-                ps.setObject(5, getPriceperunit());
-                ps.setObject(6, getQuantity());
+                ps.setObject(5, getInvoiceVatIncl());
+                ps.setObject(6, getInvoiceVatExcl());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -150,29 +150,29 @@ public class Xaddstocks extends DbObject  {
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xaddstocks " +
-                "WHERE xaddstocks_id = " + getXaddstocksId();
+                "DELETE FROM xbatterypurchase " +
+                "WHERE xbatterypurchase_id = " + getXbatterypurchaseId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXaddstocksId(new Integer(-getXaddstocksId().intValue()));
+        setXbatterypurchaseId(new Integer(-getXbatterypurchaseId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXaddstocksId().intValue() < 0);
+        return (getXbatterypurchaseId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xaddstocks_id,xparts_id,purchase_date,enteredby_id,xsupplier_id,priceperunit,quantity FROM xaddstocks " +
+        String stmt = "SELECT xbatterypurchase_id,purchase_date,entry_date,purchased_by,xsupplier_id,invoice_vat_incl,invoice_vat_excl FROM xbatterypurchase " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -182,7 +182,7 @@ public class Xaddstocks extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xaddstocks(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),rs.getDate(3),new Integer(rs.getInt(4)),new Integer(rs.getInt(5)),rs.getDouble(6),rs.getDouble(7)));
+                lst.add(dbObj=new Xbatterypurchase(con,new Integer(rs.getInt(1)),rs.getDate(2),rs.getDate(3),new Integer(rs.getInt(4)),new Integer(rs.getInt(5)),rs.getDouble(6),rs.getDouble(7)));
                 dbObj.setNew(false);
             }
         } finally {
@@ -192,10 +192,10 @@ public class Xaddstocks extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xaddstocks[] objects = new Xaddstocks[lst.size()];
+        Xbatterypurchase[] objects = new Xbatterypurchase[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xaddstocks xaddstocks = (Xaddstocks) lst.get(i);
-            objects[i] = xaddstocks;
+            Xbatterypurchase xbatterypurchase = (Xbatterypurchase) lst.get(i);
+            objects[i] = xbatterypurchase;
         }
         return objects;
     }
@@ -207,7 +207,7 @@ public class Xaddstocks extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xaddstocks_id FROM xaddstocks " +
+        String stmt = "SELECT xbatterypurchase_id FROM xbatterypurchase " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -225,39 +225,27 @@ public class Xaddstocks extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXaddstocksId() + getDelimiter();
+    //    return getXbatterypurchaseId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xaddstocksId;
+        return xbatterypurchaseId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXaddstocksId(id);
+        setXbatterypurchaseId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXaddstocksId() {
-        return xaddstocksId;
+    public Integer getXbatterypurchaseId() {
+        return xbatterypurchaseId;
     }
 
-    public void setXaddstocksId(Integer xaddstocksId) throws ForeignKeyViolationException {
-        setWasChanged(this.xaddstocksId != null && this.xaddstocksId != xaddstocksId);
-        this.xaddstocksId = xaddstocksId;
-        setNew(xaddstocksId.intValue() == 0);
-    }
-
-    public Integer getXpartsId() {
-        return xpartsId;
-    }
-
-    public void setXpartsId(Integer xpartsId) throws SQLException, ForeignKeyViolationException {
-        if (xpartsId!=null && !Xparts.exists(getConnection(),"xparts_id = " + xpartsId)) {
-            throw new ForeignKeyViolationException("Can't set xparts_id, foreign key violation: xaddstocks_xparts_fk");
-        }
-        setWasChanged(this.xpartsId != null && !this.xpartsId.equals(xpartsId));
-        this.xpartsId = xpartsId;
+    public void setXbatterypurchaseId(Integer xbatterypurchaseId) throws ForeignKeyViolationException {
+        setWasChanged(this.xbatterypurchaseId != null && this.xbatterypurchaseId != xbatterypurchaseId);
+        this.xbatterypurchaseId = xbatterypurchaseId;
+        setNew(xbatterypurchaseId.intValue() == 0);
     }
 
     public Date getPurchaseDate() {
@@ -269,16 +257,22 @@ public class Xaddstocks extends DbObject  {
         this.purchaseDate = purchaseDate;
     }
 
-    public Integer getEnteredbyId() {
-        return enteredbyId;
+    public Date getEntryDate() {
+        return entryDate;
     }
 
-    public void setEnteredbyId(Integer enteredbyId) throws SQLException, ForeignKeyViolationException {
-        if (enteredbyId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + enteredbyId)) {
-            throw new ForeignKeyViolationException("Can't set enteredby_id, foreign key violation: xaddstocks_xemployee_fk");
-        }
-        setWasChanged(this.enteredbyId != null && !this.enteredbyId.equals(enteredbyId));
-        this.enteredbyId = enteredbyId;
+    public void setEntryDate(Date entryDate) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.entryDate != null && !this.entryDate.equals(entryDate));
+        this.entryDate = entryDate;
+    }
+
+    public Integer getPurchasedBy() {
+        return purchasedBy;
+    }
+
+    public void setPurchasedBy(Integer purchasedBy) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.purchasedBy != null && !this.purchasedBy.equals(purchasedBy));
+        this.purchasedBy = purchasedBy;
     }
 
     public Integer getXsupplierId() {
@@ -287,38 +281,38 @@ public class Xaddstocks extends DbObject  {
 
     public void setXsupplierId(Integer xsupplierId) throws SQLException, ForeignKeyViolationException {
         if (xsupplierId!=null && !Xsupplier.exists(getConnection(),"xsupplier_id = " + xsupplierId)) {
-            throw new ForeignKeyViolationException("Can't set xsupplier_id, foreign key violation: xaddstocks_xsupplier_fk");
+            throw new ForeignKeyViolationException("Can't set xsupplier_id, foreign key violation: xbatterypurchase_xsupplier_fk");
         }
         setWasChanged(this.xsupplierId != null && !this.xsupplierId.equals(xsupplierId));
         this.xsupplierId = xsupplierId;
     }
 
-    public Double getPriceperunit() {
-        return priceperunit;
+    public Double getInvoiceVatIncl() {
+        return invoiceVatIncl;
     }
 
-    public void setPriceperunit(Double priceperunit) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.priceperunit != null && !this.priceperunit.equals(priceperunit));
-        this.priceperunit = priceperunit;
+    public void setInvoiceVatIncl(Double invoiceVatIncl) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.invoiceVatIncl != null && !this.invoiceVatIncl.equals(invoiceVatIncl));
+        this.invoiceVatIncl = invoiceVatIncl;
     }
 
-    public Double getQuantity() {
-        return quantity;
+    public Double getInvoiceVatExcl() {
+        return invoiceVatExcl;
     }
 
-    public void setQuantity(Double quantity) throws SQLException, ForeignKeyViolationException {
-        setWasChanged(this.quantity != null && !this.quantity.equals(quantity));
-        this.quantity = quantity;
+    public void setInvoiceVatExcl(Double invoiceVatExcl) throws SQLException, ForeignKeyViolationException {
+        setWasChanged(this.invoiceVatExcl != null && !this.invoiceVatExcl.equals(invoiceVatExcl));
+        this.invoiceVatExcl = invoiceVatExcl;
     }
     public Object[] getAsRow() {
         Object[] columnValues = new Object[7];
-        columnValues[0] = getXaddstocksId();
-        columnValues[1] = getXpartsId();
-        columnValues[2] = getPurchaseDate();
-        columnValues[3] = getEnteredbyId();
+        columnValues[0] = getXbatterypurchaseId();
+        columnValues[1] = getPurchaseDate();
+        columnValues[2] = getEntryDate();
+        columnValues[3] = getPurchasedBy();
         columnValues[4] = getXsupplierId();
-        columnValues[5] = getPriceperunit();
-        columnValues[6] = getQuantity();
+        columnValues[5] = getInvoiceVatIncl();
+        columnValues[6] = getInvoiceVatExcl();
         return columnValues;
     }
 
@@ -335,20 +329,16 @@ public class Xaddstocks extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXaddstocksId(Integer.parseInt(flds[0]));
+            setXbatterypurchaseId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXaddstocksId(null);
+            setXbatterypurchaseId(null);
         }
+        setPurchaseDate(toDate(flds[1]));
+        setEntryDate(toDate(flds[2]));
         try {
-            setXpartsId(Integer.parseInt(flds[1]));
+            setPurchasedBy(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
-            setXpartsId(null);
-        }
-        setPurchaseDate(toDate(flds[2]));
-        try {
-            setEnteredbyId(Integer.parseInt(flds[3]));
-        } catch(NumberFormatException ne) {
-            setEnteredbyId(null);
+            setPurchasedBy(null);
         }
         try {
             setXsupplierId(Integer.parseInt(flds[4]));
@@ -356,14 +346,14 @@ public class Xaddstocks extends DbObject  {
             setXsupplierId(null);
         }
         try {
-            setPriceperunit(Double.parseDouble(flds[5]));
+            setInvoiceVatIncl(Double.parseDouble(flds[5]));
         } catch(NumberFormatException ne) {
-            setPriceperunit(null);
+            setInvoiceVatIncl(null);
         }
         try {
-            setQuantity(Double.parseDouble(flds[6]));
+            setInvoiceVatExcl(Double.parseDouble(flds[6]));
         } catch(NumberFormatException ne) {
-            setQuantity(null);
+            setInvoiceVatExcl(null);
         }
     }
 }

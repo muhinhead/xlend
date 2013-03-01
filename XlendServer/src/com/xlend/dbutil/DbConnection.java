@@ -563,7 +563,7 @@ public class DbConnection {
         + "    purchased_by        int not null,"
         + "    xsupplier_id        int not null,"
         + "    invoice_vat_incl    decimal (9,2) not null,"
-        + "    invoice_var_excl    decimal (9,2) not null,"
+        + "    invoice_vat_excl    decimal (9,2) not null,"
         + "    stamp               timestamp,"
         + "    constraint xbatterypurchase_pk primary key (xbatterypurchase_id),"
         + "    constraint xbatterypurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
@@ -583,7 +583,8 @@ public class DbConnection {
         + "    constraint xbateryissue_xemployee_fk2 foreign key (issued_to) references xemployee (xemployee_id),"
         + "    constraint xbateryissue_xmachine_fk foreign key( xmachine_id) references xmachine (xmachine_id)"
         + ")",
-        "alter table xsupplier add credit_limit int"
+        "alter table xsupplier add credit_limit int",
+        "alter table xdieselpurchase add paid decimal(8,2)"
     };
 
     public synchronized static Connection getLogDBconnection() {

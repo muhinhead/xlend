@@ -254,7 +254,7 @@ public class Selects {
             "select xdieselpurchase_id \"Id\", "
             + "(select companyname from xsupplier where xsupplier_id=xdieselpurchase.xsupplier_id) \"Supplier\", "
             + "to_char(purchase_date,'DD/MM/YYYY') \"Date of Purchase\", litres \"Litres\", "
-            + "ROUND(rand_factor,2) \"Rand Factor\", ROUND(litres*rand_factor) \"Total R\" "
+            + "ROUND(rand_factor,2) \"Rand Factor\", ROUND(litres*rand_factor,2) \"Total R\" "
             + " from xdieselpurchase order by purchase_date desc";
 //    public static final String SELECT_FROM_DIESELPCHS =
 //            "Select xdieselpchs_id \"Id\", companyname \"Supplier\", purchased \"Date\", "

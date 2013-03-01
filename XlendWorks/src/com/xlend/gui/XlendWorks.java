@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.68";
+    public static final String version = "0.67.6";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1198,17 +1198,55 @@ public class XlendWorks {
         return "0";
     }
 
-    public static String calcDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
+    public static Double calcDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
         if (xsupplierId != null && xsupplierId.intValue() > 0) {
-            String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
-            ComboItem[] itms = loadOnSelect(exchanger, "select " + xsupplierId + ","
-                    + "(select ifnull(sum(litres),0) from xdieselpurchase where xsupplier_id=" + xsupplierId + " and purchase_date<='" + sDate + "') - "
-                    + "(select ifnull(sum(liters),0) from xdieselcartissue where xsupplier_id=" + xsupplierId + " and issue_date<='" + sDate + "')");
-            if (itms.length > 0) {
-                return itms[0].getValue();
+            try {
+                Double litres = 0.0;
+                DbObject[] obs = exchanger.getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
+                for (DbObject rec : obs) {
+                    Xdieselpurchase xp = (Xdieselpurchase) rec;
+                    if (xp.getPurchaseDate().getTime() <= dt.getTime()) {
+                        litres += xp.getLitres();
+                    } else {
+                        break;
+                    }
+                }
+                obs = exchanger.getDbObjects(Xdieselcartissue.class, "xsupplier_id=" + xsupplierId, "issue_date");
+                for (DbObject rec : obs) {
+                    Xdieselcartissue xi = (Xdieselcartissue) rec;
+                    if (xi.getIssueDate().getTime() <= dt.getTime()) {
+                        litres -= xi.getLiters();
+                    } else {
+                        break;
+                    }
+                }
+                return litres;
+            } catch (RemoteException ex) {
+                logAndShowMessage(ex);
             }
         }
-        return "0";
+        return 0.0;
+    }
+
+    public static Double calcMoneyForDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
+        if (xsupplierId != null && xsupplierId.intValue() > 0) {
+            try {
+                Double balance = 0.0;
+                DbObject[] obs = exchanger.getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
+                for (DbObject rec : obs) {
+                    Xdieselpurchase xp = (Xdieselpurchase) rec;
+                    if (dt == null || xp.getPurchaseDate().getTime() <= dt.getTime()) {
+                        balance += (xp.getPaid() - xp.getLitres() * xp.getRandFactor());
+                    } else {
+                        break;
+                    }
+                }
+                return balance;
+            } catch (RemoteException ex) {
+                logAndShowMessage(ex);
+            }
+        }
+        return 0.0;
     }
 
     public static String getPrevHourMeter(IMessageSender exchanger, Integer xdiesel2plantitemID, Integer machineID) {

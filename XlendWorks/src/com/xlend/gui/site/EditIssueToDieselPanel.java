@@ -123,11 +123,11 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
         Integer supplierID = getSelectedCbItem(supplierCB);
         if (supplierID != null) {
             java.util.Date dt = (java.util.Date) issueDateSP.getValue();
-            String sBalance = XlendWorks.calcDieselBalanceAtSupplier(
-                    DashBoard.getExchanger(), supplierID, dt);
+            Double balance = XlendWorks.calcDieselBalanceAtSupplier(
+                           DashBoard.getExchanger(), supplierID, dt);
             SpinnerNumberModel spModel = (SpinnerNumberModel) litresIssuedSP.getModel();
-            spModel.setMaximum(Double.parseDouble(sBalance) + 0.01);
-            balanceSupplierLBL.setText(sBalance);
+            spModel.setMaximum(balance.doubleValue() + 0.01);
+            balanceSupplierLBL.setText(balance.toString());
         }
     }
 

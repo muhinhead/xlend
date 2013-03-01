@@ -1,15 +1,18 @@
 package com.xlend.gui.banking;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xdieselpurchase;
+import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -39,8 +42,10 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
     private SelectedNumberSpinner litresPurchasedSP;
     private SelectedNumberSpinner randFactorSP;
     private JLabel totalRandLBL;
-    private JLabel balanceAvailableLBL;
+    private JLabel balanceLitresAvailableLBL;
     private ChangeListener recalcListener;
+    private SelectedNumberSpinner paidSP;
+    private JLabel balanceRandsAvailableLBL;
 
     public EditDieselPurchasePanel(DbObject dbObject) {
         super(dbObject);
@@ -55,17 +60,19 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
             "Litres Purchased:",
             "Rand Factor:",
             "Total,R:",
-            "Balance Available:"
+            "Paid,R",
+            "Balance Available (litres):",
+            "Balance (R):"
         };
         recalcListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                Double liters = (Double) litresPurchasedSP.getValue();
+                Double litres = (Double) litresPurchasedSP.getValue();
                 Double price = (Double) randFactorSP.getValue();
-                liters = liters == null ? 0.0 : liters;
+                litres = litres == null ? 0.0 : litres;
                 price = price == null ? 0.0 : price;
                 totalRandLBL.setText(String.format("%.2f",
-                        new Double(liters.doubleValue() * price.doubleValue())));
+                        new Double(litres.doubleValue() * price.doubleValue())));
             }
         };
 
@@ -80,14 +87,16 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
             }),
             getGridPanel(purchaseDateSP = new SelectedDateSpinner(), 3),
             getGridPanel(litresPurchasedSP = new SelectedNumberSpinner(.0, .0, 999999.99, .1), 3),
-            getGridPanel(randFactorSP = new SelectedNumberSpinner(.0, .0, 999.99, .1), 3),
+            getGridPanel(randFactorSP = new SelectedNumberSpinner(.0, .0, 999999.99, .1), 3),
             getGridPanel(totalRandLBL = new JLabel("", SwingConstants.RIGHT), 3),
-            getGridPanel(balanceAvailableLBL = new JLabel("", SwingConstants.RIGHT), 3)
-        };
+            getGridPanel(paidSP = new SelectedNumberSpinner(.0, .0, 999999.99, .1), 3),
+            getGridPanel(balanceLitresAvailableLBL = new JLabel("", SwingConstants.RIGHT), 3),
+            getGridPanel(balanceRandsAvailableLBL = new JLabel("", SwingConstants.RIGHT), 3),};
         litresPurchasedSP.addChangeListener(recalcListener);
         randFactorSP.addChangeListener(recalcListener);
         totalRandLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        balanceAvailableLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        balanceLitresAvailableLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        balanceRandsAvailableLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         purchaseDateSP.setEditor(new JSpinner.DateEditor(purchaseDateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(purchaseDateSP);
         idField.setEnabled(false);
@@ -106,9 +115,17 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         Integer supplierID = getSelectedCbItem(supplierCB);
         if (supplierID != null) {
             java.util.Date dt = (java.util.Date) purchaseDateSP.getValue();
-            String sBalance = XlendWorks.calcDieselBalanceAtSupplier(
+            Double lBalance = XlendWorks.calcDieselBalanceAtSupplier(
                     DashBoard.getExchanger(), supplierID, dt);
-            balanceAvailableLBL.setText(sBalance);
+            balanceLitresAvailableLBL.setText(lBalance.toString());
+            Double rBalance = XlendWorks.calcMoneyForDieselBalanceAtSupplier(
+                    DashBoard.getExchanger(), supplierID, dt);
+            if (rBalance < 0.0) {
+                balanceRandsAvailableLBL.setForeground(Color.red);
+            } else {
+                balanceRandsAvailableLBL.setForeground(Color.blue);
+            }
+            balanceRandsAvailableLBL.setText(rBalance.toString());
         }
     }
 
@@ -121,8 +138,11 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
             purchaseDateSP.setValue(new java.util.Date(xdp.getPurchaseDate().getTime()));
             litresPurchasedSP.setValue(xdp.getLitres());
             randFactorSP.setValue(xdp.getRandFactor());
-            recalcSupplierBalance();
+            paidSP.setValue(xdp.getPaid());
+
         }
+        supplierCB.setSelectedIndex(0);
+        recalcSupplierBalance();
     }
 
     @Override
@@ -140,7 +160,22 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         }
         xdp.setRandFactor((Double) randFactorSP.getValue());
         xdp.setLitres((Double) litresPurchasedSP.getValue());
-        xdp.setXsupplierId(getSelectedCbItem(supplierCB));
+        Integer supplierID = getSelectedCbItem(supplierCB);
+        xdp.setXsupplierId(supplierID);
+        xdp.setPaid((Double) paidSP.getValue());
+
+        Double rBalance = XlendWorks.calcMoneyForDieselBalanceAtSupplier(
+                DashBoard.getExchanger(), supplierID, isNew ? null : dt);
+
+        Double litres = (Double) litresPurchasedSP.getValue();
+        Double price = (Double) randFactorSP.getValue();
+
+        Xsupplier supp = (Xsupplier) DashBoard.getExchanger().loadDbObjectOnID(Xsupplier.class, supplierID);
+        if ((-rBalance) + (litres * price - (Double) paidSP.getValue()) > supp.getCreditLimit()) {
+            GeneralFrame.errMessageBox("Attention!", "Available credit limit R" + supp.getCreditLimit() + " exceeded!");
+            return false;
+        }
+
         return saveDbRecord(xdp, isNew);
     }
 }

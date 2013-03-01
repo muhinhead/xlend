@@ -95,9 +95,24 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                 if (machineID != null && siteID != null && operatorID != null) {
                     try {
                         DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
-                                "xsite_id=" + siteID + " and xmachine_id=" + machineID + " and xemployee_id=" + operatorID + " and date_end is null", null);
+                                "xsite_id=" + siteID + " and xmachine_id=" + machineID
+                                + " and xemployee_id=" + operatorID + " and date_end is null", null);
                         if (recs.length == 0) {
                             GeneralFrame.infoMessageBox("Attention!", "This operator was not assigned to this site and machne");
+                        } else {
+                            recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+                                    "xsite_id=" + siteID + " and xmachine_id=" + machineID
+                                    + " and xemployee_id is null and date_end is null", null);
+                            if (recs.length == 0) {
+                                GeneralFrame.infoMessageBox("Attention!", "This machine was not assigned to this site");
+                            } else {
+                                recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+                                        "xsite_id=" + siteID + " and xmachine_id is null "
+                                        + " and xemployee_id=" + operatorID + " and date_end is null", null);
+                                if (recs.length == 0) {
+                                    GeneralFrame.infoMessageBox("Attention!", "This operator was not assigned to this site");
+                                }
+                            }
                         }
                     } catch (RemoteException ex) {
                         GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -125,7 +140,9 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                 machineCbModel.addElement(ci);
             }
             for (ComboItem ci : XlendWorks.loadSites(DashBoard.getExchanger(), null)) {
-                siteCbModel.addElement(ci);
+                if (!ci.getValue().startsWith("--")) {
+                    siteCbModel.addElement(ci);
+                }
             }
             add(markCB = new JCheckBox(), BorderLayout.WEST);
             double limit = Double.parseDouble(balanceInCartLBL.getText().replace(",", ".")) + .01;

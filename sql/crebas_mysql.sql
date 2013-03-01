@@ -447,6 +447,7 @@ create table xsupplier
     company_regnr    varchar(32),
     address          varchar(255),
     banking          varchar(255),
+    credit_limit     int,
     stamp timestamp,
     constraint xsupplier_pk primary key (xsupplier_id)
 );
@@ -1559,6 +1560,47 @@ create table xdiesel2plantitem
     constraint xdiesel2plantitem_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
     constraint xdiesel2plantitem_xemployee_fk2 foreign key (issuedby_id) references xemployee (xemployee_id)
 );
+
+create table xbattery
+(
+    xbattery_id   int not null auto_increment,
+    battery_code  varchar(32) not null,
+    vat_excl_unit decimal (6,2),
+    battery_id    varchar(32),
+    stamp         timestamp,
+    constraint xbattery_pk primary key (xbattery_id)
+);
+
+create table xbatterypurchase
+(
+    xbatterypurchase_id int not null auto_increment,
+    purchase_date       date not null,
+    entry_date          date not null,
+    purchased_by        int not null,
+    xsupplier_id        int not null,
+    invoice_vat_incl    decimal (9,2) not null,
+    invoice_vat_excl    decimal (9,2) not null,
+    stamp               timestamp,
+    constraint xbatterypurchase_pk primary key (xbatterypurchase_id),
+    constraint xbatterypurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)
+);
+
+create table xbateryissue
+(
+    xbateryissue_id     int not null auto_increment,
+    xbattery_id         int not null,
+    issue_date          date not null,
+    entry_date          date not null,
+    issued_by           int not null,
+    issued_to           int not null,
+    xmachine_id         int not null,
+    stamp               timestamp,
+    constraint xbateryissue_pk primary key (xbateryissue_id),
+    constraint xbateryissue_xemployee_fk foreign key (issued_by) references xemployee (xemployee_id),
+    constraint xbateryissue_xemployee_fk2 foreign key (issued_to) references xemployee (xemployee_id),
+    constraint xbateryissue_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)
+);
+
 #----------------- auxiliary tables -------------------
 
 create or replace view v_userprofile as

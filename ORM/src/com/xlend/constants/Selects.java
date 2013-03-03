@@ -557,6 +557,13 @@ public class Selects {
             "select distinct storename from xparts order by storename";
     public static final String SELECT_DISTINCT_MACHINEMODELS =
             "select distinct machinemodel from xparts order by machinemodel";
+    public static final String SELECT_DISTINCT_BATTCODES = 
+            "select distinct battery_code from xbattery order by battery_code";
+    public static final String SELECT_DISTINCT_AVAILABLE_BATTERIES = 
+            "select distinct battery_code from xbattery where xbateryissue_id is null order by battery_code";
+    public static final String SELECT_OLDEST_AVAILABLE_BATTERIES =
+            "select min(xbattery_id), concat(battery_code,' (',count(*),' items)') "
+            + "from xbattery where xbateryissue_id is null group by battery_code";
     public static final String SELECT_FROM_ADDSTOCKS =
             "Select xaddstocks_id \"Id\", to_char(purchase_date,'DD/MM/YYYY') \"Purchase Date\", "
             + "quantity \"Quantity\", priceperunit \"Price per Unit\", "
@@ -608,7 +615,7 @@ public class Selects {
             + "order by s.name";
     public static final String SELECT_FROM_PPEBUYS =
             "Select xppebuy_id \"Id\", to_char(buydate,'DD/MM/YYYY') \"Purchase Date\",  "
-            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.boughtby_id) \"Bought By\",  "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.boughtby_id) \"Bought By\", "
             + "(Select companyname from xsupplier where xsupplier_id=xppebuy.xsupplier_id) \"Supplier\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xppebuy.authorizedby_id) \"Authorized By\" "
             + "from xppebuy order by buydate desc";

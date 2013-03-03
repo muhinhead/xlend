@@ -1562,16 +1562,6 @@ create table xdiesel2plantitem
     constraint xdiesel2plantitem_xemployee_fk2 foreign key (issuedby_id) references xemployee (xemployee_id)
 );
 
-create table xbattery
-(
-    xbattery_id   int not null auto_increment,
-    battery_code  varchar(32) not null,
-    vat_excl_unit decimal (6,2),
-    battery_id    varchar(32),
-    stamp         timestamp,
-    constraint xbattery_pk primary key (xbattery_id)
-);
-
 create table xbatterypurchase
 (
     xbatterypurchase_id int not null auto_increment,
@@ -1589,7 +1579,6 @@ create table xbatterypurchase
 create table xbateryissue
 (
     xbateryissue_id     int not null auto_increment,
-    xbattery_id         int not null,
     issue_date          date not null,
     entry_date          date not null,
     issued_by           int not null,
@@ -1600,6 +1589,20 @@ create table xbateryissue
     constraint xbateryissue_xemployee_fk foreign key (issued_by) references xemployee (xemployee_id),
     constraint xbateryissue_xemployee_fk2 foreign key (issued_to) references xemployee (xemployee_id),
     constraint xbateryissue_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)
+);
+
+create table xbattery
+(
+    xbattery_id         int not null auto_increment,
+    battery_code        varchar(32) not null,
+    vat_excl_unit       decimal (6,2),
+    battery_id          varchar(32),
+    xbatterypurchase_id int not null,
+    xbateryissue_id     int null,
+    stamp               timestamp,
+    constraint xbattery_pk primary key (xbattery_id),
+    constraint xbattery_xbatterypurchase_fk foreign key (xbatterypurchase_id) references xbatterypurchase (xbatterypurchase_id),
+    constraint xbattery_xbateryissue_fk foreign key (xbateryissue_id) references xbateryissue (xbateryissue_id)
 );
 
 #----------------- auxiliary tables -------------------

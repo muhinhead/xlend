@@ -17,14 +17,7 @@ import javax.swing.text.MaskFormatter;
  */
 public abstract class RecordEditPanel extends JPanel {
 
-    protected static JLabel[] createLabelsArray(String[] titles) {
-        JLabel[] lblArray = new JLabel[titles.length];
-        int n = 0;
-        for (String t : titles) {
-            lblArray[n++] = new JLabel(t, SwingConstants.RIGHT);
-        }
-        return lblArray;
-    }
+    protected static final String SELECT_HERE = "--select here--";
     private DbObject dbObject;
     protected JPanel lblPanel;
     protected JPanel editPanel;
@@ -34,6 +27,15 @@ public abstract class RecordEditPanel extends JPanel {
     protected JLabel[] labels;
     protected final DbObject[] params;
     private EditRecordDialog ownerDialog;
+
+    protected static JLabel[] createLabelsArray(String[] titles) {
+        JLabel[] lblArray = new JLabel[titles.length];
+        int n = 0;
+        for (String t : titles) {
+            lblArray[n++] = new JLabel(t, SwingConstants.RIGHT);
+        }
+        return lblArray;
+    }
 
     protected void organizePanels(int labelLength, int editsLen) {
         setLayout(new BorderLayout());
@@ -237,6 +239,11 @@ public abstract class RecordEditPanel extends JPanel {
         return ci == null || ci.getId() == 0 ? null : ci.getId();
     }
 
+    protected String getSelectedCbValue(JComboBox cb) {
+        ComboItem ci = (ComboItem) cb.getSelectedItem();
+        return ci == null || ci.getId() == 0 ? "" : ci.getValue();
+    }
+    
     protected boolean saveDbRecord(DbObject dbOb, boolean isNew) {
         try {
             dbOb.setNew(isNew);

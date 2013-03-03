@@ -161,14 +161,11 @@ class EditBreakdownPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(repairDateSP);
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
-//        add(new JButton("!!!!"));
-//        add(getPurchasesPanel());
         machineCB.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ComboItem mitm = (ComboItem) machineCB.getSelectedItem();
                 BreakdownConsumesGrid.setXmachineID(mitm.getId());
-//                EditBreakConsumeDialog.setXmachineID(mitm.getId());
             }
         });
     }

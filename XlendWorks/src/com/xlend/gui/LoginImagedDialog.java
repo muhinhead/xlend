@@ -65,6 +65,10 @@ public class LoginImagedDialog extends PopupDialog {
                 HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
             } else if (theme.indexOf("Noire") > 0) {
                 NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+            } else if (theme.indexOf("Bernstein") > 0) {
+                BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+            } else if(theme.indexOf("Aero")>0) {
+                AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
             }
             UIManager.setLookAndFeel(theme);
             SwingUtilities.updateComponentTreeUI(this);

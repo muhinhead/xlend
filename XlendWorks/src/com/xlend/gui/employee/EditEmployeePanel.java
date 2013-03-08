@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
@@ -87,6 +88,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JLabel siteAssignLbl;
     private JLabel machineAssignLbl;
     private JLabel managementTeamLbl;
+    private JEditorPane imagePanel2;
+    private JEditorPane imagePanel3;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -615,6 +618,18 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     viewDocumentImage(currentPicture2);
                 }
             });
+            picturePopMenu2.add(new AbstractAction("Print image") {
+                public void actionPerformed(ActionEvent e) {
+//                    if (imagePanel2 != null) {
+//                        try {
+//                            imagePanel2.print();
+//                        } catch (PrinterException ex) {
+//                            XlendWorks.logAndShowMessage(ex);
+//                        }
+//                    }
+                    new PrintUtilities(imagePanel2).print();
+                }
+            });
             picturePopMenu2.add(new AbstractAction("Replace image") {
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile2();
@@ -640,6 +655,18 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             picturePopMenu3.add(new AbstractAction("Open in window") {
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture3);
+                }
+            });
+            picturePopMenu3.add(new AbstractAction("Print image") {
+                public void actionPerformed(ActionEvent e) {
+//                    if (imagePanel3 != null) {
+//                        try {
+//                            imagePanel3.print();
+//                        } catch (PrinterException ex) {
+//                            XlendWorks.logAndShowMessage(ex);
+//                        }
+//                    }
+                    new PrintUtilities(imagePanel3).print();
                 }
             });
             picturePopMenu3.add(new AbstractAction("Replace image") {
@@ -780,18 +807,18 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         StringBuffer html = new StringBuffer("<html>");
         html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width="
                 + width / scale + " height=" + height / scale + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel2.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+        imagePanel2 = new JEditorPane("text/html", html.toString());
+        imagePanel2.setEditable(false);
+        picPanel2.add(sp = new JScrollPane(imagePanel2), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
-        ed.addMouseListener(new MouseAdapter() {
+        imagePanel2.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture2);
                 }
             }
         });
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu2()));
+        imagePanel2.addMouseListener(new PopupListener(getPhotoPopupMenu2()));
         new File(tmpImgFile).deleteOnExit();
         picPanel2.setVisible(true);
     }
@@ -819,18 +846,18 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         StringBuffer html = new StringBuffer("<html>");
         html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width="
                 + width / scale + " height=" + height / scale + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel3.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+        imagePanel3 = new JEditorPane("text/html", html.toString());
+        imagePanel3.setEditable(false);
+        picPanel3.add(sp = new JScrollPane(imagePanel3), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
-        ed.addMouseListener(new MouseAdapter() {
+        imagePanel3.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture3);
                 }
             }
         });
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu3()));
+        imagePanel3.addMouseListener(new PopupListener(getPhotoPopupMenu3()));
         new File(tmpImgFile).deleteOnExit();
         picPanel3.setVisible(true);
     }

@@ -1,5 +1,9 @@
 package com.xlend.gui;
 
+import com.jtattoo.plaf.aero.AeroLookAndFeel;
+import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
+import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
+import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
@@ -31,6 +35,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class LoginImagedDialog extends PopupDialog {
 
     private static final String BACKGROUNDIMAGE = "Login.png";
+    private final String NMSOFTWARE = "Nick Mukhin (c)2013";
 
     /**
      * @return the okPressed
@@ -56,6 +61,11 @@ public class LoginImagedDialog extends PopupDialog {
         try {
             String theme = DashBoard.readProperty("LookAndFeel",
                     "com.nilo.plaf.nimrod.NimRODLookAndFeel");
+            if (theme.indexOf("HiFi") > 0) {
+                HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+            } else if (theme.indexOf("Noire") > 0) {
+                NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+            }
             UIManager.setLookAndFeel(theme);
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
@@ -190,6 +200,47 @@ public class LoginImagedDialog extends PopupDialog {
                 }
             }
         });
+        it = m.add(new JMenuItem("HiFi"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Noire"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Bernstein"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Aero"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
+                } catch (Exception e1) {
+                }
+            }
+        });
+
         it = m.add(new JMenuItem("System"));
         it.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

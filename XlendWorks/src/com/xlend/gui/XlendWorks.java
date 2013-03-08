@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.68";
+    public static final String version = "0.68.a";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1068,10 +1068,20 @@ public class XlendWorks {
         return null;
     }
 
+    private static String removeTail(String s) {
+        int p = s.lastIndexOf(".");
+        if (p > 0 && s.length() > p + 1) {
+            if ("0123456789".indexOf(s.substring(p + 1, p + 2)) < 0) {
+                return s.substring(0, p);
+            }
+        }
+        return s;
+    }
+
     private static boolean matchVersions(IMessageSender exchanger) {
         try {
             String servVersion = exchanger.getServerVersion();
-            boolean match = servVersion.equals(version);
+            boolean match = removeTail(servVersion).equals(removeTail(version));
             if (!match) {
                 GeneralFrame.errMessageBox("Error:", "Client's software version (" + version + ") doesn't match server (" + servVersion + ")");
             }
@@ -1163,14 +1173,14 @@ public class XlendWorks {
     public static String[] loadDistinctBatteryCodes(IMessageSender exchanger) {
         return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_BATTCODES);
     }
-    
+
     public static ComboItem[] loadOldestAvailableBateries(IMessageSender exchanger) {
         return loadOnSelect(exchanger, Selects.SELECT_OLDEST_AVAILABLE_BATTERIES);
     }
 //    public static String[] loadAvailableBatteryCodes(IMessageSender exchanger) {
 //        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_AVAILABLE_BATTERIES);
 //    }
-    
+
     public static String getStockLevels(IMessageSender exchanger, Integer xppetypeID) {
         if (xppetypeID != null && xppetypeID.intValue() > 0) {
             ComboItem[] itms = loadOnSelect(exchanger, "select " + xppetypeID

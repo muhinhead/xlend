@@ -7,6 +7,7 @@ package com.xlend.gui;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.FileFilterOnExtension;
 import com.xlend.util.PopupListener;
+import com.xlend.util.PrintUtilities;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,7 +16,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -40,9 +44,21 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
     protected JPanel picPanel;
     protected JPopupMenu picturePopMenu;
     protected byte[] imageData;
+    private JEditorPane imagePanel;
 
     public EditPanelWithPhoto(DbObject dbObject) {
         super(dbObject);
+    }
+
+    private static void saveImage(String fname, byte[] imageData, boolean overwrite) {
+        File fout = new File(fname);
+        if (fout.exists()) {
+            if (!overwrite && GeneralFrame.yesNo("Attention", "File " + fname
+                    + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        Util.writeFile(fout, imageData);
     }
 
     protected static void exportDocImage(byte[] imageData) {
@@ -53,14 +69,7 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         int retVal = chooser.showOpenDialog(null);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             String name = chooser.getSelectedFile().getAbsolutePath();
-            File fout = new File(name);
-            if (fout.exists()) {
-                if (GeneralFrame.yesNo("Attention", "File " + name
-                        + " already exists, rewrite?") != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-            Util.writeFile(fout, imageData);
+            saveImage(name, imageData, false);
         }
     }
 
@@ -70,6 +79,13 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
             picturePopMenu.add(new AbstractAction("Open in window") {
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture);
+                }
+            });
+            picturePopMenu.add(new AbstractAction("Print image") {
+                public void actionPerformed(ActionEvent e) {
+                    if (imagePanel != null) {
+                        new PrintUtilities(imagePanel).print();
+                    }
                 }
             });
             picturePopMenu.add(new AbstractAction("Replace image") {
@@ -176,18 +192,18 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         StringBuffer html = new StringBuffer("<html>");
         html.append("<img margin=20 src='file:" + tmpImgFile + "' " + "width="
                 + width / scale + " height=" + height / scale + "></img>");
-        JEditorPane ed = new JEditorPane("text/html", html.toString());
-        ed.setEditable(false);
-        picPanel.add(sp = new JScrollPane(ed), BorderLayout.CENTER);
+        imagePanel = new JEditorPane("text/html", html.toString());
+        imagePanel.setEditable(false);
+        picPanel.add(sp = new JScrollPane(imagePanel), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
-        ed.addMouseListener(new MouseAdapter() {
+        imagePanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture);
                 }
             }
         });
-        ed.addMouseListener(new PopupListener(getPhotoPopupMenu()));
+        imagePanel.addMouseListener(new PopupListener(getPhotoPopupMenu()));
         new File(tmpImgFile).deleteOnExit();
         picPanel.setVisible(true);
     }
@@ -196,7 +212,15 @@ public abstract class EditPanelWithPhoto extends RecordEditPanel {
         JDialog dlg = new JDialog();
         dlg.setModal(true);
         JPanel pane = new JPanel(new BorderLayout());
-        pane.add(new JScrollPane(new JLabel(curPic)), BorderLayout.CENTER);
+        final JLabel picLbl;
+        pane.add(new JScrollPane(picLbl = new JLabel(curPic)), BorderLayout.CENTER);
+        picLbl.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    new PrintUtilities(picLbl).print();
+                }
+            }
+        });
         dlg.setContentPane(pane);
         dlg.pack();
         dlg.setVisible(true);

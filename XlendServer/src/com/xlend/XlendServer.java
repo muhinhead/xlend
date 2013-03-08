@@ -11,7 +11,6 @@ import com.xlend.dbutil.SyncPushTimer;
 import com.xlend.orm.Dbversion;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
-//import it.sauronsoftware.ftp4j.FTPClient;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -46,7 +45,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.68";
+    private static final String version = "0.68.a";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

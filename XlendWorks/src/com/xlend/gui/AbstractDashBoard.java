@@ -4,7 +4,6 @@
  */
 package com.xlend.gui;
 
-import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
 import com.xlend.util.TexturedPanel;
 import java.awt.*;

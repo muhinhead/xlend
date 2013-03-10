@@ -112,8 +112,8 @@ public class Selects {
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where "
 //            + "clock_num!='000' and "
-            + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 "
-            + "order by extractnum(clock_num),clock_num";
+            + "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0 "
+            + "order by clock_numonly,clock_num";
     public static final String SELECT_FROM_EMPLOYEE =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
@@ -127,12 +127,12 @@ public class Selects {
             //            + " and xmachine_id=m.xmachine_id and date_end is null)) \"Now on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where xemployee_id>0 "
-            + "order by extractnum(clock_num),clock_num";
+            + "order by clock_numonly,clock_num";
     public static final String SELECT_FROM_SALEMPLOYEE_EXCLUDING =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
             + "sur_name \"Surname\", phone0_num \"Phone Nr\" from xemployee "
-            + "where coalesce(wage_category,1)=1 and xemployee_id not in(#) order by clock_num";
+            + "where ifnull(wage_category,1)=1 and xemployee_id not in(#) order by clock_num";
     public static final String SELECT_FROM_TIMESHEET =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
@@ -536,7 +536,7 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopmachassing.xemployee_id) \"Operator\" "
             + "from xopmachassing where xsite_id=# and date_end is null order by xopmachassing_id desc";
     public static final String activeEmployeeCondition = //"clock_num!='000' and " +
-            " coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0";
+            " ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0";
     public static final String SELECT_FROM_XPARTS =
             "select xparts_id \"Id\", partnumber \"Part No\", description \"Part Description\", storename \"Store\","
             + "machinemodel \"Machine Model\", quantity \"Quantity\","
@@ -659,7 +659,7 @@ public class Selects {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where "+
 //                + "clock_num!='000' and " +
-                "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0 and ");
+                "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0 and ");
     }
 //    public static final String[] getStringArray(String select) {
 //        try {

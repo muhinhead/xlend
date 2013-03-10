@@ -268,6 +268,7 @@ create table xemployee
     branch_code_name3 varchar(32),
     employment_start date,
     management      bit default 0,
+    clock_numonly   smallint,
     stamp timestamp,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition (xposition_id)
@@ -1703,6 +1704,22 @@ begin
         end if;
    end loop LP;
    return sub ;
+end;
+|
+delimiter |
+create trigger tr_xemployee_beforeinsert
+before insert on xemployee
+for each row
+begin
+   set new.clock_numonly = extractnum(new.clock_num);
+end;
+|
+delimiter |
+create trigger tr_xemployee_beforeupdate
+before update on xemployee
+for each row
+begin
+   set new.clock_numonly = extractnum(new.clock_num);
 end;
 |
 delimiter ;

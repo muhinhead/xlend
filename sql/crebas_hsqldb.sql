@@ -261,6 +261,7 @@ create cached table xemployee
     branch_code_name3 varchar(32),
     employment_start date,
     management      bit default 0,
+    clock_numonly   smallint,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition
 );

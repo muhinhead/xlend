@@ -126,8 +126,10 @@ class EditWagesPanel extends RecordEditPanel {
                     "wage_category in (2,3) and "
 //                    + "clock_num!='000' and "
                     + "upper(clock_num) not like 'S%' and "
-                    + "coalesce(deceased,0)+coalesce(dismissed,0)+coalesce(absconded,0)+coalesce(resigned,0)=0",
-                    "extractchars(clock_num),extractnum(clock_num)");
+                    + "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0",
+                    "clock_numonly,clock_num"
+                    //"extractchars(clock_num),extractnum(clock_num)"
+                    );
             JPanel uppanel = new JPanel(new GridLayout(emplRecs.length + 1, 6));
             for (String hdr : hdrs) {
                 uppanel.add(new JLabel(hdr));

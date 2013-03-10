@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.68.a";
+    public static final String version = "0.69";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -218,82 +218,77 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllEmployees(IMessageSender exchanger, String whereCond) {
-        try {
-            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, whereCond, "extractnum(clock_num)");
-            ComboItem[] itms = new ComboItem[employees.length];
-            int i = 0;
-            for (DbObject o : employees) {
-                Xemployee emp = (Xemployee) o;
-                itms[i++] = new ComboItem(emp.getXemployeeId(), emp.getClockNum()
-                        + " " + emp.getFirstName());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+        return loadOnSelect(exchanger, "select xemployee_id,concat(clock_num,' ',first_name) from xemployee order by clock_numonly");
     }
 
     public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
-        try {
-            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");
-            ComboItem[] itms = new ComboItem[rfqs.length + 1];
-            itms[0] = new ComboItem(0, "--No requests for quotation yet--");
-            int i = 1;
-            for (DbObject o : rfqs) {
-                Xquotation xquotation = (Xquotation) o;
-                itms[i++] = new ComboItem(xquotation.getXquotationId(), xquotation.getRfcnumber());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");
+//            ComboItem[] itms = new ComboItem[rfqs.length + 1];
+//            itms[0] = new ComboItem(0, "--No requests for quotation yet--");
+//            int i = 1;
+//            for (DbObject o : rfqs) {
+//                Xquotation xquotation = (Xquotation) o;
+//                itms[i++] = new ComboItem(xquotation.getXquotationId(), xquotation.getRfcnumber());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select xquotation_id,rfcnumber from xquotation where xclient_id="+client_id+" order by rfcnumber");
     }
 
     public static ComboItem[] loadAllOrderSites(IMessageSender exchanger, int order_id) {
-        try {
-            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class,
-                    "xorder_id=" + order_id, "name");
-            ComboItem[] itms = new ComboItem[rfqs.length + 1];
-            itms[0] = new ComboItem(0, "--No requests for clients yet--");
-            int i = 1;
-            for (DbObject o : rfqs) {
-                Xsite xsite = (Xsite) o;
-                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class,
+//                    "xorder_id=" + order_id, "name");
+//            ComboItem[] itms = new ComboItem[rfqs.length + 1];
+//            itms[0] = new ComboItem(0, "--No requests for clients yet--");
+//            int i = 1;
+//            for (DbObject o : rfqs) {
+//                Xsite xsite = (Xsite) o;
+//                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select xsite_id,name from xsite where xorder_id="+order_id+" order by name");
     }
 
     public static ComboItem[] loadSites(IMessageSender exchanger, String whereCond) {
-        try {
-            DbObject[] orders = exchanger.getDbObjects(Xsite.class, whereCond, "name");
-            ComboItem[] itms = new ComboItem[orders.length + 1];
-            itms[0] = new ComboItem(0, "--Add new site --");
-            int i = 1;
-            for (DbObject o : orders) {
-                Xsite xsite = (Xsite) o;
-                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] orders = exchanger.getDbObjects(Xsite.class, whereCond, "name");
+//            ComboItem[] itms = new ComboItem[orders.length + 1];
+//            itms[0] = new ComboItem(0, "--Add new site --");
+//            int i = 1;
+//            for (DbObject o : orders) {
+//                Xsite xsite = (Xsite) o;
+//                itms[i++] = new ComboItem(xsite.getXsiteId(), xsite.getName());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select xsite_id,name from xsite where "+whereCond+" order by name");        
     }
 
     public static ComboItem loadSite(IMessageSender exchanger, Integer siteID) {
-        if (siteID != null && siteID.intValue() > 0) {
-            try {
-                Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, siteID);
-                return new ComboItem(xsite.getXsiteId(), xsite.getName());
-            } catch (RemoteException ex) {
-                log(ex);
-            }
+        //        if (siteID != null && siteID.intValue() > 0) {
+        //            try {
+        //                Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, siteID);
+        //                return new ComboItem(xsite.getXsiteId(), xsite.getName());
+        //            } catch (RemoteException ex) {
+        //                log(ex);
+        //            }
+        //        }
+        //        return null;
+        ComboItem citms[] = loadOnSelect(exchanger, "select xsite_id,name from xsite where xsite_id="+siteID);
+        if (citms!=null && citms.length>0) {
+            return citms[0];
         }
         return null;
     }
@@ -303,37 +298,44 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllOrders(IMessageSender exchanger) {
-        try {
-            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
-            ComboItem[] itms = new ComboItem[orders.length + 2];
-            itms[0] = new ComboItem(-1, "--ORDER NOT RECEIVED--");
-            itms[1] = new ComboItem(0, "--Add new order--");
-            int i = 2;
-            for (DbObject o : orders) {
-                Xorder xorder = (Xorder) o;
-                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
+//            ComboItem[] itms = new ComboItem[orders.length + 2];
+//            itms[0] = new ComboItem(-1, "--ORDER NOT RECEIVED--");
+//            itms[1] = new ComboItem(0, "--Add new order--");
+//            int i = 2;
+//            for (DbObject o : orders) {
+//                Xorder xorder = (Xorder) o;
+//                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select -1 as xorder_id,'--ORDER NOT RECEIVED--' as ordernumber "
+                + "union select 0,'--Add new order--' "
+                + "union select xorder_id,concat('Order Nr:',ordernumber) from xorder order by ordernumber");
     }
 
     public static ComboItem[] loadRootMachTypes(IMessageSender exchanger, String classify) {
-        try {
-            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
-            ComboItem[] itms = new ComboItem[clients.length];
-            int i = 0;
-            for (DbObject o : clients) {
-                Xmachtype tp = (Xmachtype) o;
-                itms[i++] = new ComboItem(tp.getXmachtypeId(), tp.getMachtype());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
+//            ComboItem[] itms = new ComboItem[clients.length];
+//            int i = 0;
+//            for (DbObject o : clients) {
+//                Xmachtype tp = (Xmachtype) o;
+//                itms[i++] = new ComboItem(tp.getXmachtypeId(), tp.getMachtype());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select xmachtype_id,machtype "
+                + "from xmachtype "
+                + "where parenttype_id is null "
+                + "and classify in ('" + classify + "') order by xmachtype_id");
     }
 
     public static ComboItem[] loadAllPositions(IMessageSender exchanger) {
@@ -354,38 +356,40 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadAllUsers(IMessageSender exchanger) {
-        try {
-            DbObject[] users = exchanger.getDbObjects(Profile.class, "profile_id in (select profile_id from userprofile)", "last_name");
-            ComboItem[] itms = new ComboItem[users.length + 1];
-            //itms[0] = new ComboItem(0, "--Add new client--");
-            int i = 0;
-            for (DbObject o : users) {
-                Profile user = (Profile) o;
-                itms[i++] = new ComboItem(user.getProfileId(),
-                        user.getFirstName().substring(0, 1) + "." + user.getLastName());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] users = exchanger.getDbObjects(Profile.class, "profile_id in (select profile_id from userprofile)", "last_name");
+//            ComboItem[] itms = new ComboItem[users.length + 1];
+//            //itms[0] = new ComboItem(0, "--Add new client--");
+//            int i = 0;
+//            for (DbObject o : users) {
+//                Profile user = (Profile) o;
+//                itms[i++] = new ComboItem(user.getProfileId(),
+//                        user.getFirstName().substring(0, 1) + "." + user.getLastName());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select profile_id, concat(substr(first_name,1,1),'.',last_name) from profile order by last_name");
     }
 
     public static ComboItem[] loadAllClients(IMessageSender exchanger) {
-        try {
-            DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
-            ComboItem[] itms = new ComboItem[clients.length + 1];
-            itms[0] = new ComboItem(0, "--Add new client--");
-            int i = 1;
-            for (DbObject o : clients) {
-                Xclient xclient = (Xclient) o;
-                itms[i++] = new ComboItem(xclient.getXclientId(), xclient.getCompanyname());
-            }
-            return itms;
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return null;
+//        try {
+//            DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
+//            ComboItem[] itms = new ComboItem[clients.length + 1];
+//            itms[0] = new ComboItem(0, "--Add new client--");
+//            int i = 1;
+//            for (DbObject o : clients) {
+//                Xclient xclient = (Xclient) o;
+//                itms[i++] = new ComboItem(xclient.getXclientId(), xclient.getCompanyname());
+//            }
+//            return itms;
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return null;
+        return loadOnSelect(exchanger, "select xclient_id,companyname from xclient order by companyname");
     }
 
     public static List loadAllLogins(IMessageSender exchanger) {

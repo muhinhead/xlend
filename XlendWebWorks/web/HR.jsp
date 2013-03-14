@@ -6,14 +6,14 @@
 
 <%@page import="java.io.File"%>
 <%@page import="com.xlend.orm.dbobject.DbObject"%>
-<%@page import="com.xlend.orm.Xemployee"%>
+<%@page import="com.xlend.orm.Employeeshort"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="com.xlend.web.DbConnection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <% Connection connection = DbConnection.getConnection();%>
-    <% DbObject[] employees = Xemployee.load(connection, "clock_num<>'000'", "clock_num");%>
+    <% DbObject[] employees = Employeeshort.load(connection, "clock_num<>'000'", "clock_num");%>
     <head>
         <style type="text/css">
             <!--
@@ -37,7 +37,7 @@
                     <th></th>
                 </tr>
                 <% for (DbObject row : employees) {%>
-                <% Xemployee emp = (Xemployee) row;%>
+                <% Employeeshort emp = (Employeeshort) row;%>
                 <tr class="<%=(request.getParameter("select")!=null && request.getParameter("select").equals(emp.getXemployeeId().toString())?"selected":"")%>" >
                     <td><%=emp.getXemployeeId()%><a name="xempl<%=emp.getXemployeeId()%>"></a></td>
                     <td><%=emp.getClockNum()%></td>

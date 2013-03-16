@@ -60,9 +60,9 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
                 boolean wasNew = dbob.isNew();
                 dbob.setConnection(connection);
                 dbob.save();
-                Connection logConnection = DbConnection.getLogDBconnection();
-                Object[] asRow = dbob.getAsRow();
-                logDbOperation(logConnection, dbob.getClass().getCanonicalName(), (Integer) asRow[0], wasNew ? 1 : 0);
+//                Connection logConnection = DbConnection.getLogDBconnection();
+//                Object[] asRow = dbob.getAsRow();
+//                logDbOperation(logConnection, dbob.getClass().getCanonicalName(), (Integer) asRow[0], wasNew ? 1 : 0);
             } catch (Exception ex) {
                 XlendServer.log(ex);
                 throw new java.rmi.RemoteException("Can't save DB object:", ex);
@@ -269,10 +269,10 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
             try {
                 dbob.setConnection(connection);
                 dbob.delete();
-                Connection logConnection = DbConnection.getLogDBconnection();
-                Object[] asRow = dbob.getAsRow();
-                int id = ((Integer) asRow[0]).intValue();
-                logDbOperation(logConnection, dbob.getClass().getCanonicalName(), id < 0 ? -id : id, -1);
+//                Connection logConnection = DbConnection.getLogDBconnection();
+//                Object[] asRow = dbob.getAsRow();
+//                int id = ((Integer) asRow[0]).intValue();
+//                logDbOperation(logConnection, dbob.getClass().getCanonicalName(), id < 0 ? -id : id, -1);
             } catch (Exception ex) {
                 XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
@@ -368,25 +368,25 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         return count;
     }
 
-    private void logDbOperation(Connection logConnection, String className, Integer id, int mode) throws RemoteException {
-        PreparedStatement ps = null;
-        try {
-            ps = logConnection.prepareStatement(
-                    "insert into updatelog(classname,operation,id) "
-                    + "values('" + className + "'," + mode + "," + id.toString() + ")");
-            ps.execute();
-        } catch (SQLException ex) {
-            XlendServer.log(ex);
-            throw new java.rmi.RemoteException(ex.getMessage());
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException se2) {
-            }
-        }
-    }
+//    private void logDbOperation(Connection logConnection, String className, Integer id, int mode) throws RemoteException {
+//        PreparedStatement ps = null;
+//        try {
+//            ps = logConnection.prepareStatement(
+//                    "insert into updatelog(classname,operation,id) "
+//                    + "values('" + className + "'," + mode + "," + id.toString() + ")");
+//            ps.execute();
+//        } catch (SQLException ex) {
+//            XlendServer.log(ex);
+//            throw new java.rmi.RemoteException(ex.getMessage());
+//        } finally {
+//            try {
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//            } catch (SQLException se2) {
+//            }
+//        }
+//    }
 
     public String getServerVersion() throws RemoteException {
         return XlendServer.getVersion();

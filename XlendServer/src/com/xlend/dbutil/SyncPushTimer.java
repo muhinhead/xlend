@@ -64,77 +64,77 @@ public class SyncPushTimer extends TimerTask {
     }
 
     private void sync() {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        String stmt = "SELECT updatelog_id, classname, operation, id "
-                + "FROM updatelog WHERE synchronized is null ORDER BY updatelog_id";
-        try {
-            ps = DbConnection.getLogDBconnection().prepareStatement(stmt);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4)))==null) {
-//                    XlendServer.log("==== SyncPushTimer found update of "+rs.getString(2)+" ID="+rs.getInt(4)+" ====");
-                }
-            }
-        } catch (Exception ex) {
-            XlendServer.log(ex);
-        } finally {
-            try {
-                if (rs != null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException ex) {
-                    }
-                }
-            } finally {
-                if (ps != null) {
-                    try {
-                        ps.close();
-                    } catch (SQLException ex) {
-                    }
-                }
-            }
-        }
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        String stmt = "SELECT updatelog_id, classname, operation, id "
+//                + "FROM updatelog WHERE synchronized is null ORDER BY updatelog_id";
+//        try {
+//            ps = DbConnection.getLogDBconnection().prepareStatement(stmt);
+//            rs = ps.executeQuery();
+//            while (rs.next()) {
+//                if (getUpdated().put(rs.getInt(1), new UpdateLog(rs.getString(2), rs.getInt(3), rs.getInt(4)))==null) {
+////                    XlendServer.log("==== SyncPushTimer found update of "+rs.getString(2)+" ID="+rs.getInt(4)+" ====");
+//                }
+//            }
+//        } catch (Exception ex) {
+//            XlendServer.log(ex);
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    try {
+//                        rs.close();
+//                    } catch (SQLException ex) {
+//                    }
+//                }
+//            } finally {
+//                if (ps != null) {
+//                    try {
+//                        ps.close();
+//                    } catch (SQLException ex) {
+//                    }
+//                }
+//            }
+//        }
     }
 
     private static void clearOldLogs() {
-        PreparedStatement ps = null;
-        try {
-            XlendServer.log("Clean sync log...");
-            ps = DbConnection.getLogDBconnection().prepareStatement(
-                    "delete from updatelog where not synchronized is null or (select max(updatelog_id) from updatelog)-updatelog_id>1000");
-            int rows = ps.executeUpdate();
-            XlendServer.log(""+rows+" log rows removed");
-        } catch (SQLException ex) {
-            XlendServer.log(ex);
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException se2) {
-            }
-        }
+//        PreparedStatement ps = null;
+//        try {
+//            XlendServer.log("Clean sync log...");
+//            ps = DbConnection.getLogDBconnection().prepareStatement(
+//                    "delete from updatelog where not synchronized is null or (select max(updatelog_id) from updatelog)-updatelog_id>1000");
+//            int rows = ps.executeUpdate();
+//            XlendServer.log(""+rows+" log rows removed");
+//        } catch (SQLException ex) {
+//            XlendServer.log(ex);
+//        } finally {
+//            try {
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//            } catch (SQLException se2) {
+//            }
+//        }
     }
 
 
     private static void setSyncMark(Integer ulID) {
-        PreparedStatement ps = null;
-        try {
-            ps = DbConnection.getLogDBconnection().prepareStatement(
-                    "update updatelog set synchronized = now() where updatelog_id=" + ulID);
-            ps.execute();
-            getUpdated().remove(ulID);
-        } catch (SQLException ex) {
-            XlendServer.log(ex);
-        } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-            } catch (SQLException se2) {
-            }
-        }
+//        PreparedStatement ps = null;
+//        try {
+//            ps = DbConnection.getLogDBconnection().prepareStatement(
+//                    "update updatelog set synchronized = now() where updatelog_id=" + ulID);
+//            ps.execute();
+//            getUpdated().remove(ulID);
+//        } catch (SQLException ex) {
+//            XlendServer.log(ex);
+//        } finally {
+//            try {
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//            } catch (SQLException se2) {
+//            }
+//        }
     }
 
     public static void syncRemoteDB() {

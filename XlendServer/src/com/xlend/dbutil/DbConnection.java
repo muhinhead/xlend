@@ -25,9 +25,9 @@ import java.util.Properties;
  */
 public class DbConnection {
 
-    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 39;
-    public static final String DB_VERSION = "0.39";
+//    private static Connection logDBconnection = null;
+    private static final int DB_VERSION_ID = 40;
+    public static final String DB_VERSION = "0.40";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -597,31 +597,31 @@ public class DbConnection {
         + " for each row"
         + " begin"
         + "   set new.clock_numonly = extractnum(new.clock_num);"
-        + " end",
+        + " end;",
         "create trigger tr_xemployee_beforeupdate"
         + " before update on xemployee"
         + " for each row"
         + " begin"
         + "   set new.clock_numonly = extractnum(new.clock_num);"
-        + " end"
+        + " end;",
+        "alter table xbreakdown modify timeleft time",
+        "alter table xbreakdown modify timeback time"
     };
 
-    public synchronized static Connection getLogDBconnection() {
-//        XlendServer.log("!! start DbConnection.getLogDBconnection()");
-        if (logDBconnection == null) {
-            try {
-                Locale.setDefault(Locale.ENGLISH);
-                DriverManager.registerDriver((java.sql.Driver) Class.forName("org.hsqldb.jdbcDriver").newInstance());
-                logDBconnection = DriverManager.getConnection("jdbc:hsqldb:file://" + getCurDir() + "/LogDB/XlendServer", "sa", "");
-                logDBconnection.setAutoCommit(true);
-                sqlBatch(createLogDBsqls, logDBconnection, true);
-            } catch (Exception ex) {
-                XlendServer.log(ex);
-            }
-        }
-//        XlendServer.log("!! DbConnection.getLogDBconnection() return "+logDBconnection!=null?"valid logDBconnection":"NULL!!");
-        return logDBconnection;
-    }
+//    public synchronized static Connection getLogDBconnection() {
+//        if (logDBconnection == null) {
+//            try {
+//                Locale.setDefault(Locale.ENGLISH);
+//                DriverManager.registerDriver((java.sql.Driver) Class.forName("org.hsqldb.jdbcDriver").newInstance());
+//                logDBconnection = DriverManager.getConnection("jdbc:hsqldb:file://" + getCurDir() + "/LogDB/XlendServer", "sa", "");
+//                logDBconnection.setAutoCommit(true);
+//                sqlBatch(createLogDBsqls, logDBconnection, true);
+//            } catch (Exception ex) {
+//                XlendServer.log(ex);
+//            }
+//        }
+//        return logDBconnection;
+//    }
 
     public static String getLogin() {
         return props.getProperty("dbUser", "sa");

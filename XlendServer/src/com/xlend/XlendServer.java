@@ -122,6 +122,17 @@ public class XlendServer {
         return version;
     }
 
+    private static void deleteLocalDumps(String ext, String exceptFile) {
+        File folder = new File("./");
+        for (final File fileEntry : folder.listFiles()) {
+            if (fileEntry.getName().endsWith(ext) && !fileEntry.getName().equals(exceptFile)) {
+                if (fileEntry.exists()) {
+                    fileEntry.delete();
+                }
+            }
+        }
+    }
+
     private static class CtrlCtrapper extends Thread {
 
         private Timer oTimer;
@@ -202,7 +213,7 @@ public class XlendServer {
                     if (!isTraySupported) {
                         Runtime.getRuntime().addShutdownHook(new CtrlCtrapper(queueRunner));
                     }
-                    runSyncService();
+//                    runSyncService();
                 } catch (Exception ex) {
                     log("RMI server trouble: " + ex.getMessage());
                     System.exit(1);
@@ -215,29 +226,28 @@ public class XlendServer {
         log("Backup completed!");
     }
 
-    private static void runSyncService() throws RemoteException {
-
-        if (compareDbVersions()) {
-            syncThread = new Thread() {
-                @Override
-                public void run() {
-                    while (isCycle) {
-                        SyncPushTimer.syncRemoteDB();
-                        try {
-                            sleep(TIMESTEP);
-                        } catch (InterruptedException ex) {
-                        }
-                    }
-                }
-            };
-            syncThread.start();
-            (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
-        } else {
-            XlendServer.log("ATTENTION! Local and remote database versions "
-                    + "does not match, replication doesn't start!");
-        }
-    }
-
+//    private static void runSyncService() throws RemoteException {
+//
+//        if (compareDbVersions()) {
+//            syncThread = new Thread() {
+//                @Override
+//                public void run() {
+//                    while (isCycle) {
+//                        SyncPushTimer.syncRemoteDB();
+//                        try {
+//                            sleep(TIMESTEP);
+//                        } catch (InterruptedException ex) {
+//                        }
+//                    }
+//                }
+//            };
+//            syncThread.start();
+//            (syncTimer = new Timer()).schedule(new SyncPushTimer(), Calendar.getInstance().getTime(), TIMESTEP);
+//        } else {
+//            XlendServer.log("ATTENTION! Local and remote database versions "
+//                    + "does not match, replication doesn't start!");
+//        }
+//    }
     private static void makeBackup() {
         Process p;
         String mysqlDumpPath = findPath(DbConnection.getBackupCommand());
@@ -246,11 +256,11 @@ public class XlendServer {
         };
         Calendar cal = Calendar.getInstance();
         File dump = new File("xlend-" + cal.get(Calendar.YEAR) + "-"
-                + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
                 + ".dmp");
         cal.add(Calendar.DATE, -5);
         String fileToRemove = "xlend-" + cal.get(Calendar.YEAR) + "-"
-                + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
                 + ".dmp";
 
         DataInputStream std = null;
@@ -276,10 +286,12 @@ public class XlendServer {
                         "Backup error:", JOptionPane.ERROR_MESSAGE);
             } else {
                 upload2FTP(dump.getAbsolutePath(), dump.getName(), fileToRemove);
-                File oldDump = new File(fileToRemove);
-                if (oldDump.exists()) {
-                    oldDump.delete();
-                }
+                deleteLocalDumps(".dmp", dump.getName());
+//                File oldDump = new File(fileToRemove);
+//                if (oldDump.exists()) {
+//                    oldDump.delete();
+//                }
+
             }
         } catch (Exception ex) {
             XlendServer.log(ex);

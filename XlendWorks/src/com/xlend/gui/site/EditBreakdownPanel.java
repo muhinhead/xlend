@@ -10,7 +10,6 @@ import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.gui.hr.EmployeeLookupAction;
-import com.xlend.orm.Xbreakconsume;
 import com.xlend.orm.Xbreakdown;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -20,9 +19,9 @@ import com.xlend.util.Util;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.TimeZone;
 import javax.swing.*;
 
 /**
@@ -144,9 +143,9 @@ class EditBreakdownPanel extends RecordEditPanel {
                 hrsOnJobSP = new SelectedNumberSpinner(0, 0, 24, 1)
             }),
             getGridPanel(new JComponent[]{
-                timeLeftSP = new SelectedNumberSpinner(0, 0, 12, 1),
+                timeLeftSP = new SelectedDateSpinner(),//new SelectedNumberSpinner(0, 0, 12, 1),
                 new JLabel("Time back:", SwingConstants.RIGHT),
-                timeBackSP = new SelectedNumberSpinner(0, 0, 12, 1)
+                timeBackSP = new SelectedDateSpinner()//new SelectedNumberSpinner(0, 0, 12, 1)
             }),
             getGridPanel(stayedOverCb = new JCheckBox(), 3),
             //            getGridPanel(accomPriceSP = new SelectedNumberSpinner(0, 0, 100000, 1), 3),
@@ -159,6 +158,12 @@ class EditBreakdownPanel extends RecordEditPanel {
         Util.addFocusSelectAllAction(breakdownDateSP);
         repairDateSP.setEditor(new JSpinner.DateEditor(repairDateSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(repairDateSP);
+
+        timeLeftSP.setEditor(new JSpinner.DateEditor(timeLeftSP, "HH:mm"));
+        Util.addFocusSelectAllAction(timeLeftSP);
+        timeBackSP.setEditor(new JSpinner.DateEditor(timeBackSP, "HH:mm"));
+        Util.addFocusSelectAllAction(timeBackSP);
+
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
         machineCB.addActionListener(new AbstractAction() {
@@ -198,6 +203,7 @@ class EditBreakdownPanel extends RecordEditPanel {
         Xbreakdown xbr = (Xbreakdown) getDbObject();
         int xbreakdownID = 0;
         if (xbr != null) {
+            Timestamp dt;
             xbreakdownID = xbr.getXbreakdownId();
             idField.setText(xbr.getXbreakdownId().toString());
             if (xbr.getBreakdowndate() != null) {
@@ -235,8 +241,18 @@ class EditBreakdownPanel extends RecordEditPanel {
 //                selectComboItem(purchasesCB, xbr.getXconsumeId());
 //            }
             km2siteSP.setValue(xbr.getKm2site1way() == null ? 0 : xbr.getKm2site1way());
-            timeLeftSP.setValue(xbr.getTimeleft() == null ? 0 : xbr.getTimeleft());
-            timeBackSP.setValue(xbr.getTimeback() == null ? 0 : xbr.getTimeback());
+
+            //timeLeftSP.setValue(xbr.getTimeleft() == null ? 0 : xbr.getTimeleft());
+            //timeBackSP.setValue(xbr.getTimeback() == null ? 0 : xbr.getTimeback());
+            if (xbr.getTimeleft() != null) {
+                dt = xbr.getTimeleft();
+                timeLeftSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
+            }
+            if(xbr.getTimeback()!=null) {
+                dt = xbr.getTimeback();
+                timeBackSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
+            }
+
             stayedOverCb.setSelected(xbr.getStayedover() != null && xbr.getStayedover() == 1);
             hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
@@ -276,8 +292,15 @@ class EditBreakdownPanel extends RecordEditPanel {
         xbr.setOperatorId(getSelectedCbItem(operatorCB));
         xbr.setKm2site1way((Integer) km2siteSP.getValue());
         xbr.setHoursonjob((Integer) hrsOnJobSP.getValue());
-        xbr.setTimeback((Integer) timeBackSP.getValue());
-        xbr.setTimeleft((Integer) timeLeftSP.getValue());
+
+        //xbr.setTimeback((Integer) timeBackSP.getValue());
+        dt = (Date) timeBackSP.getValue();
+        xbr.setTimeback(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
+
+        //xbr.setTimeleft((Integer) timeLeftSP.getValue());
+        dt = (Date) timeLeftSP.getValue();
+        xbr.setTimeleft(new java.sql.Timestamp(dt.getTime() + TimeZone.getDefault().getOffset(dt.getTime())));
+
         xbr.setStayedover(stayedOverCb.isSelected() ? 1 : 0);
         xbr.setAccomprice((Integer) accomPriceSP.getValue());
         xbr.setAmount((Double) amountSP.getValue());

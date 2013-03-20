@@ -200,9 +200,9 @@ public class EditOrderPanel extends RecordEditPanel {
                 xorder.setXclientId(itm.getId());
                 xorder.setNew(isNew);
                 itm = (ComboItem) contractRefBox.getSelectedItem();
-                xorder.setXcontractId(itm.getId() > 0 ? itm.getId() : null);
+                xorder.setXcontractId(itm!=null && itm.getId() > 0 ? itm.getId() : null);
                 itm = (ComboItem) rfcRefBox.getSelectedItem();
-                xorder.setXquotationId(itm.getId() > 0 ? itm.getId() : null);
+                xorder.setXquotationId(itm!=null && itm.getId() > 0 ? itm.getId() : null);
 //                xorder.setVatnumber(vatNumber.getText());
 //                xorder.setRegnumber(regNumber.getText());
                 xorder.setOrdernumber(ordNumber.getText());

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.gui.site;
 
 import com.xlend.constants.Selects;
@@ -26,7 +22,7 @@ import javax.swing.*;
 
 /**
  *
- * @author nick
+ * @author Nick Mukhin
  */
 class EditBreakdownPanel extends RecordEditPanel {
 
@@ -138,9 +134,9 @@ class EditBreakdownPanel extends RecordEditPanel {
             comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
             //            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
             getGridPanel(new JComponent[]{
-                km2siteSP = new SelectedNumberSpinner(0, 0, 10000, 1),
+                km2siteSP = new SelectedNumberSpinner(.0, .0, 10000.0, .1),
                 new JLabel("Hours on job:", SwingConstants.RIGHT),
-                hrsOnJobSP = new SelectedNumberSpinner(0, 0, 24, 1)
+                hrsOnJobSP = new SelectedNumberSpinner(.0, .0, 10000.0, .1)
             }),
             getGridPanel(new JComponent[]{
                 timeLeftSP = new SelectedDateSpinner(),//new SelectedNumberSpinner(0, 0, 12, 1),
@@ -240,7 +236,7 @@ class EditBreakdownPanel extends RecordEditPanel {
 //            if (xbr.getXconsumeId() != null) {
 //                selectComboItem(purchasesCB, xbr.getXconsumeId());
 //            }
-            km2siteSP.setValue(xbr.getKm2site1way() == null ? 0 : xbr.getKm2site1way());
+            km2siteSP.setValue(xbr.getKm2site1way() == null ? 0.0 : xbr.getKm2site1way());
 
             //timeLeftSP.setValue(xbr.getTimeleft() == null ? 0 : xbr.getTimeleft());
             //timeBackSP.setValue(xbr.getTimeback() == null ? 0 : xbr.getTimeback());
@@ -254,7 +250,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             }
 
             stayedOverCb.setSelected(xbr.getStayedover() != null && xbr.getStayedover() == 1);
-            hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0 : xbr.getHoursonjob());
+            hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0.0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
 //            invoiceNumberField.setText(xbr.getInvoicenumber());
             amountSP.setValue(xbr.getAmount() == null ? 0 : xbr.getAmount());
@@ -290,8 +286,8 @@ class EditBreakdownPanel extends RecordEditPanel {
         xbr.setRepaired(problemRepairedCb.isSelected() ? 1 : 0);
         xbr.setOperatorfault(operatorFaultCb.isSelected() ? 1 : 0);
         xbr.setOperatorId(getSelectedCbItem(operatorCB));
-        xbr.setKm2site1way((Integer) km2siteSP.getValue());
-        xbr.setHoursonjob((Integer) hrsOnJobSP.getValue());
+        xbr.setKm2site1way((Double) km2siteSP.getValue());
+        xbr.setHoursonjob((Double) hrsOnJobSP.getValue());
 
         //xbr.setTimeback((Integer) timeBackSP.getValue());
         dt = (Date) timeBackSP.getValue();

@@ -81,8 +81,8 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
             machineCbModel.addElement(ci);
         }
         for (int i = 0; i < 7; i++) {
-            kmStartSP[i] = new SelectedNumberSpinner(0, 0, 999999999, 1);
-            kmStopSP[i] = new SelectedNumberSpinner(0, 0, 999999999, 1);
+            kmStartSP[i] = new SelectedNumberSpinner(.0, .0, 99999999.99, .1);
+            kmStopSP[i] = new SelectedNumberSpinner(.0, .0, 99999999.99, .1);
             workFromSP[i] = new SelectedDateSpinner();
             workToSP[i] = new SelectedDateSpinner();
             standFromSP[i] = new SelectedDateSpinner();
@@ -213,12 +213,12 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
     public void loadData() {
         Xopclocksheet xs = (Xopclocksheet) getDbObject();
         if (xs != null) {
-            Integer kmStart[] = new Integer[]{
+            Double kmStart[] = new Double[]{
                 xs.getKmStart1(), xs.getKmStart2(), xs.getKmStart3(),
                 xs.getKmStart4(), xs.getKmStart5(), xs.getKmStart6(),
                 xs.getKmStart7()
             };
-            Integer kmStop[] = new Integer[]{
+            Double kmStop[] = new Double[]{
                 xs.getKmStop1(), xs.getKmStop2(), xs.getKmStop3(),
                 xs.getKmStop4(), xs.getKmStop5(), xs.getKmStop6(),
                 xs.getKmStop7()
@@ -307,21 +307,21 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         if (dt != null) {
             xs.setSheetDate(new java.sql.Date(dt.getTime()));
         }
-        xs.setKmStart1((Integer) kmStartSP[0].getValue());
-        xs.setKmStart2((Integer) kmStartSP[1].getValue());
-        xs.setKmStart3((Integer) kmStartSP[2].getValue());
-        xs.setKmStart4((Integer) kmStartSP[3].getValue());
-        xs.setKmStart5((Integer) kmStartSP[4].getValue());
-        xs.setKmStart6((Integer) kmStartSP[5].getValue());
-        xs.setKmStart7((Integer) kmStartSP[6].getValue());
+        xs.setKmStart1((Double) kmStartSP[0].getValue());
+        xs.setKmStart2((Double) kmStartSP[1].getValue());
+        xs.setKmStart3((Double) kmStartSP[2].getValue());
+        xs.setKmStart4((Double) kmStartSP[3].getValue());
+        xs.setKmStart5((Double) kmStartSP[4].getValue());
+        xs.setKmStart6((Double) kmStartSP[5].getValue());
+        xs.setKmStart7((Double) kmStartSP[6].getValue());
 
-        xs.setKmStop1((Integer) kmStopSP[0].getValue());
-        xs.setKmStop2((Integer) kmStopSP[1].getValue());
-        xs.setKmStop3((Integer) kmStopSP[2].getValue());
-        xs.setKmStop4((Integer) kmStopSP[3].getValue());
-        xs.setKmStop5((Integer) kmStopSP[4].getValue());
-        xs.setKmStop6((Integer) kmStopSP[5].getValue());
-        xs.setKmStop7((Integer) kmStopSP[6].getValue());
+        xs.setKmStop1((Double) kmStopSP[0].getValue());
+        xs.setKmStop2((Double) kmStopSP[1].getValue());
+        xs.setKmStop3((Double) kmStopSP[2].getValue());
+        xs.setKmStop4((Double) kmStopSP[3].getValue());
+        xs.setKmStop5((Double) kmStopSP[4].getValue());
+        xs.setKmStop6((Double) kmStopSP[5].getValue());
+        xs.setKmStop7((Double) kmStopSP[6].getValue());
 
         dt = (Date) workFromSP[0].getValue();
         if (dt != null) {

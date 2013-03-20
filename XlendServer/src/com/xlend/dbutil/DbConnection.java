@@ -605,7 +605,23 @@ public class DbConnection {
         + "   set new.clock_numonly = extractnum(new.clock_num);"
         + " end;",
         "alter table xbreakdown modify timeleft time",
-        "alter table xbreakdown modify timeback time"
+        "alter table xbreakdown modify timeback time",
+        "alter table xbreakdown modify km2site1way decimal(6,2)",
+        "alter table xbreakdown modify hoursonjob decimal(6,2)",
+        "alter table xopclocksheet modify km_start1 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop1 decimal(10,2)",
+        "alter table xopclocksheet modify km_start2 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop2 decimal(10,2)",
+        "alter table xopclocksheet modify km_start3 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop3 decimal(10,2)",
+        "alter table xopclocksheet modify km_start4 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop4 decimal(10,2)",
+        "alter table xopclocksheet modify km_start5 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop5 decimal(10,2)",
+        "alter table xopclocksheet modify km_start6 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop6 decimal(10,2)",
+        "alter table xopclocksheet modify km_start7 decimal(10,2)",
+        "alter table xopclocksheet modify km_stop7 decimal(10,2)"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

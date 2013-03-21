@@ -604,6 +604,7 @@ public class DbConnection {
         + " begin"
         + "   set new.clock_numonly = extractnum(new.clock_num);"
         + " end;",
+        //39->40
         "alter table xbreakdown modify timeleft time",
         "alter table xbreakdown modify timeback time",
         "alter table xbreakdown modify km2site1way decimal(6,2)",

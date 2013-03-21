@@ -40,6 +40,8 @@ public class DbTableGridPanel extends JPanel {
     private JComboBox pageSelector;
     private JProgressBar progressBar;
     private JLabel pageLbl;
+    protected JPopupMenu popMenu;
+    protected JLabel countLabel;
 
     public void showPageSelector(boolean toshow) {
         pageSelector.setVisible(toshow);
@@ -118,19 +120,21 @@ public class DbTableGridPanel extends JPanel {
     protected JPanel getRightPanel(JPanel btnPanel) {
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.add(btnPanel, BorderLayout.NORTH);
+        rightPanel.add(countLabel = new JLabel("",SwingConstants.CENTER), BorderLayout.SOUTH);
+        countLabel.setBorder(BorderFactory.createEtchedBorder());
         return rightPanel;
     }
 
-    public void activatePopup(AbstractAction addAction,
+    protected void activatePopup(AbstractAction addAction,
             final AbstractAction editAction,
             AbstractAction delAction) {
-        JPopupMenu pop = new JPopupMenu();
+        popMenu = new JPopupMenu();
 
-        pop.add(addAction);
-        pop.add(editAction);
-        pop.add(delAction);
-        tableView.addMouseListener(new PopupListener(pop));
-        sp.addMouseListener(new PopupListener(pop));
+        popMenu.add(addAction);
+        popMenu.add(editAction);
+        popMenu.add(delAction);
+        tableView.addMouseListener(new PopupListener(popMenu));
+        sp.addMouseListener(new PopupListener(popMenu));
     }
 
     public void selectRowOnId(int id) {

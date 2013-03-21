@@ -3,6 +3,7 @@ package com.xlend.gui;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public abstract class GeneralGridPanel extends DbTableGridPanel {
 
-    public static final int PAGESIZE = 500;
+    public static final int PAGESIZE = 5000;
     private String select;
     protected IMessageSender exchanger;
     public boolean isExternalView = false;
@@ -27,11 +28,13 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         this.select = select;
         this.exchanger = exchanger;
         isExternalView = (tabView != null);
+
         init(new AbstractAction[]{readOnly ? null : addAction(),
                     readOnly ? null : editAction(),
                     readOnly ? null : delAction()},
                 select, exchanger.getTableBody(select, 0, GeneralGridPanel.PAGESIZE), maxWidths, tabView);
         setIsMultilineSelection(false);
+        refreshTotalRows();
     }
 
     public GeneralGridPanel(IMessageSender exchanger, String select,
@@ -98,6 +101,11 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         getPageSelector().setModel(model);
         //getPageSelector().setEnabled(pagesCount>1);
         showPageSelector(pagesCount > 1);
+        refreshTotalRows();
+    }
+
+    protected void refreshTotalRows() {
+        countLabel.setText("Total: " + getTableView().getRowCount() + " rows");
     }
 
     protected void refresh() {
@@ -106,6 +114,7 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
             try {
                 GeneralFrame.updateGrid(exchanger, getTableView(),
                         getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+                refreshTotalRows();
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }

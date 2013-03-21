@@ -22,6 +22,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -376,6 +377,19 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 ts.setXmachineId(getSelectedCbItem(machineBox));
                 ts.setClocksheet(clockSheetChB.isSelected() ? 1 : 0);
                 ts.setWeekend(new java.sql.Date(((Date) weekendSp.getValue()).getTime()));
+                if (isNew) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String sd = dateFormat.format(weekend);
+                    int qty = DashBoard.getExchanger().getCount("select xtimesheet_id from xtimesheet "
+                            + "where xmachine_id=" + ts.getXmachineId() + " and weekend='" + sd + "'");
+                    if (qty > 0) {
+                        if (GeneralFrame.yesNo("Attention!",
+                                "Timesheet for this machine and date already exists! "
+                                + "\nDo you really want to save duplicate?") != JOptionPane.YES_OPTION) {
+                            return false;
+                        }
+                    }
+                }
                 ts.setImage(imageData);
                 setDbObject(ts = (Xtimesheet) DashBoard.getExchanger().saveDbObject(ts));
                 for (int d = 0; d < 7; d++) {

@@ -1,18 +1,26 @@
 package com.xlend.gui.hr;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.employee.EditTimeSheetDialog;
+import com.xlend.gui.work.ClientsGrid;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xtimesheet;
 import com.xlend.remote.IMessageSender;
+import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -24,6 +32,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
     private Xemployee xemployee = null;
     private static final String whereId = "xemployee_id = #";
     private boolean inEmloyee = false;
+    private static boolean isInner = false;
 
     static {
         maxWidths.put(0, 40);
@@ -45,6 +54,52 @@ public class TimeSheetsGrid extends GeneralGridPanel {
         }
     }
 
+    private AbstractAction getShowDuplicatesAction() {
+        return new AbstractAction("Show duplicates") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    isInner = true;
+                    LookupDialog ld = new LookupDialog("Duplicated timesheets", null,
+                            new TimeSheetsGrid(DashBoard.getExchanger(), Selects.SELECT_TIMESHEETSDUPLICATED, false),
+                            null);
+                } catch (RemoteException ex) {
+                    isInner = false;
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+                getParent().setCursor(Cursor.getDefaultCursor());
+            }
+        };
+    }
+
+    @Override
+    protected JPanel getRightPanel(JPanel btnPanel) {
+        if (!isInner) {
+            btnPanel.setLayout(new GridLayout(4, 1, 5, 5));
+            btnPanel.add(new JButton(getShowDuplicatesAction()));
+        }
+        return super.getRightPanel(btnPanel);
+    }
+
+//    @Override
+//    protected void activatePopup(AbstractAction addAction,
+//            final AbstractAction editAction,
+//            AbstractAction delAction) {
+//        super.activatePopup(addAction, editAction, delAction);
+//        popMenu.add(new AbstractAction("Show duplicates") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    LookupDialog ld = new LookupDialog("Duplicated timesheets", null,
+//                            new TimeSheetsGrid(DashBoard.getExchanger(), Selects.SELECT_TIMESHEETSDUPLICATED, false),
+//                            null);
+//                } catch (RemoteException ex) {
+//                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+//                }
+//            }
+//        });
+//    }
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("New Timesheet") {

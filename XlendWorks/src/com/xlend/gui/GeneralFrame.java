@@ -11,6 +11,7 @@ import com.xlend.util.ToolBarButton;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -320,21 +321,26 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
             ITableView view, DbTableDocument doc, String select, Integer id, int page)
             throws RemoteException {
         int row = view.getSelectedRow();
-        if (select != null) {
-            if (page >= 0) {
-                doc.setBody(exchanger.getTableBody(select, page, GeneralGridPanel.PAGESIZE));
-            } else {
-                doc.setBody(exchanger.getTableBody(select));
-            }
-            view.getController().updateExcept(null);
-            if (id != null) {
-                DbTableGridPanel.selectRowOnId(view, id);
-            } else {
-                row = row < view.getRowCount() ? row : row - 1;
-                if (row >= 0 && row < view.getRowCount()) {
-                    view.setRowSelectionInterval(row, row);
+        try {
+            if (select != null) {
+                ((JComponent) view).setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));;
+                if (page >= 0) {
+                    doc.setBody(exchanger.getTableBody(select, page, GeneralGridPanel.PAGESIZE));
+                } else {
+                    doc.setBody(exchanger.getTableBody(select));
+                }
+                view.getController().updateExcept(null);
+                if (id != null) {
+                    DbTableGridPanel.selectRowOnId(view, id);
+                } else {
+                    row = row < view.getRowCount() ? row : row - 1;
+                    if (row >= 0 && row < view.getRowCount()) {
+                        view.setRowSelectionInterval(row, row);
+                    }
                 }
             }
+        } finally {
+            ((JComponent) view).setCursor(Cursor.getDefaultCursor());
         }
     }
 

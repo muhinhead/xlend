@@ -113,6 +113,7 @@ class PartsGrid extends GeneralGridPanel {
             td.setBody(exchanger.getTableBody(newSelect, 0, PAGESIZE));
             updatePageCounter(newSelect);
             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+            refreshTotalRows();
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
             XlendWorks.log(ex);

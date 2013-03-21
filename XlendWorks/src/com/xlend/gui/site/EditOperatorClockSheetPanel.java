@@ -1,6 +1,7 @@
 package com.xlend.gui.site;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.fleet.MachineLookupAction;
@@ -306,7 +307,21 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         Date dt = (Date) weekendSP.getValue();
         if (dt != null) {
             xs.setSheetDate(new java.sql.Date(dt.getTime()));
+            if (isNew) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String sd = dateFormat.format(dt);
+                int qty = DashBoard.getExchanger().getCount("select xopclocksheet_id from xopclocksheet "
+                        + "where xemployee_id=" + xs.getXemployeeId() + " and sheet_date='" + sd + "'");
+                if (qty > 0) {
+                    if (GeneralFrame.yesNo("Attention!", 
+                            "Operator clock sheet for this employee and date already exists! "
+                            + "\nDo you really want to save duplicate?")!=JOptionPane.YES_OPTION) {
+                        return false;
+                    }
+                }
+            }
         }
+
         xs.setKmStart1((Double) kmStartSP[0].getValue());
         xs.setKmStart2((Double) kmStartSP[1].getValue());
         xs.setKmStart3((Double) kmStartSP[2].getValue());

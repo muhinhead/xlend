@@ -38,7 +38,7 @@ public class LookupDialog extends PopupDialog {
         Object[] params = (Object[]) getObject();
         comboBox = (JComboBox) params[0];
         grid = (GeneralGridPanel) params[1];
-        if (comboBox.getSelectedItem() != null) {
+        if (comboBox != null && comboBox.getSelectedItem() != null) {
             choosedID = ((ComboItem) comboBox.getSelectedItem()).getId();
             grid.selectRowOnId(choosedID);
         }
@@ -48,48 +48,52 @@ public class LookupDialog extends PopupDialog {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-
-        JPanel upCenterPanel = new JPanel(new FlowLayout());
-        upCenterPanel.add(new JLabel("Filter:"));
-        upCenterPanel.add(filterField = new JTextField(40));
-        centerPanel.add(upCenterPanel, BorderLayout.NORTH);
+        if (filteredColumns != null) {
+            JPanel upCenterPanel = new JPanel(new FlowLayout());
+            upCenterPanel.add(new JLabel("Filter:"));
+            upCenterPanel.add(filterField = new JTextField(40));
+            centerPanel.add(upCenterPanel, BorderLayout.NORTH);
+        }
         centerPanel.add(new JScrollPane(grid), BorderLayout.CENTER);
         getContentPane().add(centerPanel, BorderLayout.CENTER);
 
-        filterField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                String select = originalSelect;
-                int w = findNotInParents(select.toLowerCase(), " where");//select.toLowerCase().lastIndexOf(" where");
-                int o = findNotInParents(select.toLowerCase(), " order by");
-                o = o < w ? -1 : o;
-                StringBuilder addWhereCond = new StringBuilder();
-                for (String col : filteredColumns) {
-                    addWhereCond.append(addWhereCond.length() > 0 ? " or " : "(").append("upper(").append(col).append(") like '%").append(filterField.getText().toUpperCase()).append("%'");
-                }
-                if (addWhereCond.length() > 0) {
-                    addWhereCond.append(")");
-                }
+        if (filteredColumns != null) {
+            filterField.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    String select = originalSelect;
+                    int w = findNotInParents(select.toLowerCase(), " where");//select.toLowerCase().lastIndexOf(" where");
+                    int o = findNotInParents(select.toLowerCase(), " order by");
+                    o = o < w ? -1 : o;
+                    StringBuilder addWhereCond = new StringBuilder();
+                    for (String col : filteredColumns) {
+                        addWhereCond.append(addWhereCond.length() > 0 ? " or " : "(").append("upper(").append(col).append(") like '%").append(filterField.getText().toUpperCase()).append("%'");
+                    }
+                    if (addWhereCond.length() > 0) {
+                        addWhereCond.append(")");
+                    }
 
-                if (w < 0 && o < 0) {
-                    select += (" where " + addWhereCond.toString());
-                } else if (w < 0 && o > 0) {
-                    select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
-                } else {
-                    select = select.substring(0, w + 7) + addWhereCond.toString() + " aNd " + select.substring(w + 7);//select.substring(o);
+                    if (w < 0 && o < 0) {
+                        select += (" where " + addWhereCond.toString());
+                    } else if (w < 0 && o > 0) {
+                        select = select.substring(0, o) + " where " + addWhereCond.toString() + select.substring(o);
+                    } else {
+                        select = select.substring(0, w + 7) + addWhereCond.toString() + " aNd " + select.substring(w + 7);//select.substring(o);
+                    }
+                    grid.setSelect(select);
+                    try {
+                        GeneralFrame.updateGrid(DashBoard.getExchanger(),
+                                grid.getTableView(), grid.getTableDoc(), grid.getSelect(), null, -1);
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                    }
                 }
-                grid.setSelect(select);
-                try {
-                    GeneralFrame.updateGrid(DashBoard.getExchanger(),
-                            grid.getTableView(), grid.getTableDoc(), grid.getSelect(), null, -1);
-                } catch (RemoteException ex) {
-                    XlendWorks.log(ex);
-                }
-            }
-        });
+            });
+            okBtn = new JButton(okAction = selectionAction("Pick up"));
+            getRootPane().setDefaultButton(okBtn);
+            buttonPanel.add(okBtn);
+        }
 
-        okBtn = new JButton(okAction = selectionAction("Pick up"));
-        getRootPane().setDefaultButton(okBtn);
         cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +101,6 @@ public class LookupDialog extends PopupDialog {
                 dispose();
             }
         });
-        buttonPanel.add(okBtn);
         buttonPanel.add(cancelBtn);
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
@@ -136,7 +139,7 @@ public class LookupDialog extends PopupDialog {
             public void actionPerformed(ActionEvent e) {
                 boolean found = false;
                 choosedID = grid.getSelectedID();
-                for (int i = 0; i < comboBox.getItemCount(); i++) {
+                for (int i = 0; comboBox != null && i < comboBox.getItemCount(); i++) {
                     ComboItem citm = (ComboItem) comboBox.getItemAt(i);
                     if (citm.getId() == choosedID) {
                         comboBox.setSelectedIndex(i);
@@ -144,7 +147,7 @@ public class LookupDialog extends PopupDialog {
                         break;
                     }
                 }
-                if (!found) {
+                if (!found && comboBox != null) {
                     ComboItem newItem;
                     DefaultComboBoxModel cbModel = (DefaultComboBoxModel) comboBox.getModel();
                     cbModel.addElement(newItem = new ComboItem(choosedID, grid.getSelectedRowCeil(1)));

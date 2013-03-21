@@ -1,16 +1,23 @@
 package com.xlend.gui.site;
 
 import com.xlend.constants.Selects;
+import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
+import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xopclocksheet;
 import com.xlend.remote.IMessageSender;
+import java.awt.Cursor;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -19,6 +26,7 @@ import javax.swing.JOptionPane;
 public class OperatorClockSheetGrid extends GeneralGridPanel {
 
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
+    private static boolean isInner = false;
 
     static {
         maxWidths.put(0, 40);
@@ -26,6 +34,38 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
 
     public OperatorClockSheetGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_OPCLOCKSHEET, maxWidths, false);
+    }
+
+    public OperatorClockSheetGrid(IMessageSender exchanger, String slct, boolean readOnly) throws RemoteException {
+        super(exchanger, slct, maxWidths, readOnly);
+    }
+
+    private AbstractAction getShowDuplicatesAction() {
+        return new AbstractAction("Show duplicates") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getParent().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                try {
+                    isInner = true;
+                    LookupDialog ld = new LookupDialog("Duplicated Operator Clock Sheets", null,
+                            new OperatorClockSheetGrid(DashBoard.getExchanger(), Selects.SELECT_DUPLICATEDOPCLOCKSHEET, false),
+                            null);
+                } catch (RemoteException ex) {
+                    isInner = false;
+                    GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                }
+                getParent().setCursor(Cursor.getDefaultCursor());
+            }
+        };
+    }
+
+    @Override
+    protected JPanel getRightPanel(JPanel btnPanel) {
+        if (!isInner) {
+            btnPanel.setLayout(new GridLayout(4, 1, 5, 5));
+            btnPanel.add(new JButton(getShowDuplicatesAction()));
+        }
+        return super.getRightPanel(btnPanel);
     }
 
     @Override

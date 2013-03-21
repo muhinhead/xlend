@@ -111,7 +111,7 @@ public class Selects {
             //            + " and xmachine_id=m.xmachine_id and date_end is null)) \"on machine\" "
             + "from xemployee left join cbitems on cbitems.name='wage_category' and cbitems.id=xemployee.wage_category "
             + "where "
-//            + "clock_num!='000' and "
+            //            + "clock_num!='000' and "
             + "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0 "
             + "order by clock_numonly,clock_num";
     public static final String SELECT_FROM_EMPLOYEE =
@@ -135,6 +135,7 @@ public class Selects {
             + "where ifnull(wage_category,1)=1 and xemployee_id not in(#) order by clock_num";
     public static final String SELECT_FROM_TIMESHEET =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
+            + "(select concat(classify,tmvnr) from xmachine where xmachine_id=t.xmachine_id) \"Machine\", "
             + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
             + "e.sur_name \"Surname\", s.name \"Site\", o.ordernumber \"Order Nr\" "
             + "from xtimesheet t,xemployee e, xsite s, xorder o "
@@ -142,9 +143,9 @@ public class Selects {
             + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id order by xtimesheet_id desc";
     public static final String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
-            + "s.name \"Site\", "
+            + "(select concat(m.classify,m.tmvnr) from xmachine where xmachine_id=t.xmachine_id) \"Machine\", "
             + "(select max(ordernumber) from xorder where xorder_id=t.xorder_id) \"Order Nr\" "
-            + "from xtimesheet t, xsite s "
+            + "from xtimesheet t, xsite s, "
             + "where t.xsite_id=s.xsite_id and t.xemployee_id = #";
     public static final String SELECT_WAGE4TIMESHEET =
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
@@ -288,7 +289,7 @@ public class Selects {
             + "(select fleet_nr from xdieselcart where xdieselcart_id=xdiesel2plant.xdieselcart_id) \"Fleet Nr of Diesel Cart\","
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\" "
             + "from xdiesel2plant order by last_date desc";
-    public static final String SELECT_DIESEL2PLANT = 
+    public static final String SELECT_DIESEL2PLANT =
             "select i.xdiesel2plantitem_id \"Id\", to_char(i.add_date,'DD/MM/YYYY') \"Date\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=driver_id) \"Driver\", "
             + "(select name from xsite where xsite_id=i.xsite_id) \"Site\","
@@ -470,6 +471,14 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xopclocksheet.xsite_id) \"Site\", "
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopclocksheet.xmachine_id) \"Machine/Truck\" "
             + "from xopclocksheet";
+    public static final String SELECT_DUPLICATEDOPCLOCKSHEET =
+            "Select xopclocksheet_id \"Id\", to_char(sheet_date,'MM/YYYY') \"Month\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopclocksheet.xemployee_id) \"Operator\", "
+            + "(Select name from xsite where xsite_id=xopclocksheet.xsite_id) \"Site\", "
+            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopclocksheet.xmachine_id) \"Machine/Truck\" "
+            + "from xopclocksheet "
+            + "where (sheet_date,xemployee_id) in (select sheet_date,xemployee_id from xopclocksheet group by xemployee_id,sheet_date having count(*)>1) "
+            + "order by sheet_date,xemployee_id";
     public static final String SELECT_FROM_JOBCARDS =
             "Select xjobcard_id \"Id\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xjobcard.xemployee_id) \"Name\", "
@@ -557,9 +566,9 @@ public class Selects {
             "select distinct storename from xparts order by storename";
     public static final String SELECT_DISTINCT_MACHINEMODELS =
             "select distinct machinemodel from xparts order by machinemodel";
-    public static final String SELECT_DISTINCT_BATTCODES = 
+    public static final String SELECT_DISTINCT_BATTCODES =
             "select distinct battery_code from xbattery order by battery_code";
-    public static final String SELECT_DISTINCT_AVAILABLE_BATTERIES = 
+    public static final String SELECT_DISTINCT_AVAILABLE_BATTERIES =
             "select distinct battery_code from xbattery where xbateryissue_id is null order by battery_code";
     public static final String SELECT_OLDEST_AVAILABLE_BATTERIES =
             "select min(xbattery_id), concat(battery_code,' (',count(*),' items)') "
@@ -640,25 +649,33 @@ public class Selects {
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Serviced By\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachservice.servicedby_id) \"Assisted By\" "
             + "from xmachservice order by servicedate desc";
-
-    public static final String SELECT_FROM_BATTPURCHASES = 
+    public static final String SELECT_FROM_BATTPURCHASES =
             "Select xbatterypurchase_id \"Id\", to_char(purchase_date,'DD/MM/YYYY') \"Date of Purchase\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbatterypurchase.purchased_by) \"Purchased By\","
             + "(select companyname from xsupplier where xsupplier_id=xbatterypurchase.xsupplier_id) \"Supplier\", "
             + "invoice_vat_incl \"Invoice Vat.Incl.R\", invoice_vat_excl \"Invoice Vat.Excl.R\" "
             + "from xbatterypurchase order by purchase_date desc";
-
-    public static final String SELECT_FROM_BATTISSUES = 
+    public static final String SELECT_FROM_BATTISSUES =
             "select xbateryissue_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbateryissue.issued_by) \"Issued By\","
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xbateryissue.issued_to) \"Issued To\","
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xbateryissue.xmachine_id) \"For Machine\" "
             + "from xbateryissue order by issue_date desc";
-    
+    public static String SELECT_TIMESHEETSDUPLICATED =
+            "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
+            + "concat(m.classify,m.tmvnr) \"Machine\","
+            + "e.clock_num \"Clock Nr\", e.first_name \"First Name\", "
+            + "e.sur_name \"Surname\", s.name \"Site\", o.ordernumber \"Order Nr\" "
+            + "from xtimesheet t,xemployee e, xsite s, xorder o, xmachine m "
+            + "where t.xemployee_id=e.xemployee_id and m.xmachine_id=t.xmachine_id "
+            + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id "
+            + "and (t.xmachine_id,t.weekend) in (select xmachine_id,weekend from xtimesheet group by xmachine_id,weekend having count(*)>1) "
+            + "order by t.xmachine_id,t.weekend";
+
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
-                "where "+
-//                + "clock_num!='000' and " +
+                "where "
+                + //                + "clock_num!='000' and " +
                 "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0 and ");
     }
 //    public static final String[] getStringArray(String select) {

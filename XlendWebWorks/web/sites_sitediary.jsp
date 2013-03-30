@@ -44,15 +44,13 @@
             <div id="my-div" style="position:absolute; left: 580px; top: 8px;">
                 <a href="sites_operclock.jsp" class="fill-div"></a>
             </div>
-<!--            <div id="my-div" style="position:absolute; left: 465px; top: 8px;">
+            <div id="my-div" style="position:absolute; left: 695px; top: 8px;">
                 <a href="sites_ppe.jsp" class="fill-div"></a>
             </div>
-            <div id="my-div" style="position:absolute; left: 465px; top: 8px;">
-                <a href="sites_issue2diesel.jsp" class="fill-div"></a>
+            <div id="my-div" style="position:absolute; left: 810px; top: 8px;">
+                <a href="sites_issuetodc.jsp" class="fill-div"></a>
             </div>
-            <div id="my-div" style="position:absolute; left: 465px; top: 8px;">
-                <a href="sites_diesel2plant.jsp" class="fill-div"></a>
-            </div>-->
+
             <img src="images/tab_site_diary.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
         </div>
         <a href="./index.jsp?sessionGUUID=<%=session.getAttribute("sessionGUUID")%>">Return to dashboard</a>

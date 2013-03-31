@@ -50,6 +50,9 @@
             <!--            <div id="my-div" style="position:absolute; left: 810px; top: 8px;">
                             <a href="sites_issuetodc.jsp" class="fill-div"></a>
                         </div>-->
+            <div id="my-div" style="position:absolute; left: 925px; top: 8px;">
+                <a href="sites_diesel2plant.jsp" class="fill-div"></a>
+            </div>
 
             <img src="images/tab_site_issuetodc.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
         </div>

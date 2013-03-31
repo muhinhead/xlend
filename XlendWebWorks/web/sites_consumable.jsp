@@ -47,6 +47,9 @@
             <div id="my-div" style="position:absolute; left: 810px; top: 8px;">
                 <a href="sites_issuetodc.jsp" class="fill-div"></a>
             </div>
+            <div id="my-div" style="position:absolute; left: 925px; top: 8px;">
+                <a href="sites_diesel2plant.jsp" class="fill-div"></a>
+            </div>
 
             <img src="images/tab_consumables.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
         </div>
@@ -54,7 +57,21 @@
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>
         <form>
-            <%=Util.showTable(Selects.SELECT_FROM_SITES_WEB, connection, null)%>
+            <% Util.TableCeil[] addCeils = new Util.TableCeil[]{
+                    new Util.TableCeil("Last updated") {
+                        @Override
+                        public String getCeil(int id) {
+                            return DbConnection.getStampOnID(id, "xconsume", connection);
+                        }
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xsite.jsp?id=" + id + "'\"/>";
+                        }
+                    }
+                };%>
+            <%=Util.showTable(Selects.SELECT_FROM_CONSUMABLES, connection, addCeils)%>
         </form>
     </body>
 </html>

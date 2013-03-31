@@ -1,6 +1,6 @@
 <%-- 
-    Document   : sites_breakdowns
-    Created on : 30.03.2013, 9:22:43
+    Document   : sites_diesel2plant
+    Created on : 31.03.2013, 8:28:14
     Author     : Admin
 --%>
 
@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
     <% final Connection connection = DbConnection.getConnection();%>
-    <% ImagePanel maxImg = new ImagePanel(Util.loadImage("tab_breakdowns.png", getServletContext()));%>
+    <% ImagePanel maxImg = new ImagePanel(Util.loadImage("tab_consumables.png", getServletContext()));%>
     <head>
         <style type="text/css">
             <!--
@@ -22,7 +22,7 @@
             -->
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Breakdowns</title>
+        <title>Consumables</title>
     </head>
     <body background="images/metallic-gears-background-.jpg">
         <div class="image">
@@ -32,17 +32,14 @@
            <div  id="my-div" style="position:absolute; left: 118px; top: 8px;">
                 <a href="sites_consumable.jsp" class="fill-div"></a>
             </div>
-<!--             <div id="my-div" style="position:absolute; left: 235px; top: 8px;">
+             <div id="my-div" style="position:absolute; left: 235px; top: 8px;">
                 <a href="sites_breakdowns.jsp" class="fill-div"></a>
-            </div>-->
+            </div>
             <div id="my-div" style="position:absolute; left: 350px; top: 8px;">
                 <a href="sites_sitediary.jsp" class="fill-div"></a>
             </div>
             <div id="my-div" style="position:absolute; left: 465px; top: 8px;">
                 <a href="sites_incidents.jsp" class="fill-div"></a>
-            </div>
-            <div id="my-div" style="position:absolute; left: 580px; top: 8px;">
-                <a href="sites_operclock.jsp" class="fill-div"></a>
             </div>
             <div id="my-div" style="position:absolute; left: 695px; top: 8px;">
                 <a href="sites_ppe.jsp" class="fill-div"></a>
@@ -50,17 +47,18 @@
             <div id="my-div" style="position:absolute; left: 810px; top: 8px;">
                 <a href="sites_issuetodc.jsp" class="fill-div"></a>
             </div>
-            <div id="my-div" style="position:absolute; left: 925px; top: 8px;">
+<!--            <div id="my-div" style="position:absolute; left: 925px; top: 8px;">
                 <a href="sites_diesel2plant.jsp" class="fill-div"></a>
-            </div>
+            </div>-->
 
-            <img src="images/tab_breakdowns.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
+            <img src="images/tab_site_diesel2plant.png" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
         </div>
         <a href="./index.jsp?sessionGUUID=<%=session.getAttribute("sessionGUUID")%>">Return to dashboard</a>
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>
         <form>
-            <%=Util.showTable(Selects.SELECT_FROM_BREAKDOWNS, connection, null)%>
+            <%=Util.showTable(Selects.SELECT_FROM_DIESEL2PLANT, connection, null)%>
         </form>
     </body>
 </html>
+

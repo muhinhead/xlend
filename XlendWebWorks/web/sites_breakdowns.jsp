@@ -60,7 +60,21 @@
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>
         <form>
-            <%=Util.showTable(Selects.SELECT_FROM_BREAKDOWNS, connection, null)%>
+            <% Util.TableCeil[] addCeils = new Util.TableCeil[]{
+                    new Util.TableCeil("Last updated") {
+                        @Override
+                        public String getCeil(int id) {
+                            return DbConnection.getStampOnID(id, "xbreakdown", connection);
+                        }
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xbreakdow.jsp?id=" + id + "'\"/>";
+                        }
+                    }
+                };%>
+            <%=Util.showTable(Selects.SELECT_FROM_BREAKDOWNS, connection, addCeils)%>
         </form>
     </body>
 </html>

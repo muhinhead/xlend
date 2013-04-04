@@ -67,7 +67,7 @@
                     new Util.TableCeil("") {
                         @Override
                         public String getCeil(int id) {
-                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xsite.jsp?id=" + id + "'\"/>";
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xconsume.jsp?id=" + id + "'\"/>";
                         }
                     }
                 };%>

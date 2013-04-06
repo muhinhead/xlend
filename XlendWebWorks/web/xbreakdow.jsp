@@ -22,7 +22,7 @@
         <title>Breakdown Card</title>
     </head>
     <body background="images/metallic-gears-background-.jpg">
-        <a href="sites_consumable.jsp?select=<%=request.getParameter("id")%>#xbreakdown<%=request.getParameter("id")%>">Return to list</a>
+        <a href="sites_breakdowns.jsp?select=<%=request.getParameter("id")%>#xbreakdown<%=request.getParameter("id")%>">Return to list</a>
         <h3>Breakdown card</h3>
         <% Connection connection = DbConnection.getConnection();%>
         <% int id = Integer.parseInt(request.getParameter("id"));%>

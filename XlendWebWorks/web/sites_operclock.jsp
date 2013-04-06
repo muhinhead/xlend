@@ -1,7 +1,7 @@
 <%-- 
     Document   : sites_operclock
     Created on : 30.03.2013, 17:43:20
-    Author     : Admin
+    Author     : Nick Mukhin
 --%>
 
 <%@page import="com.xlend.util.ImagePanel"%>
@@ -22,7 +22,7 @@
             -->
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Consumables</title>
+        <title>Operator closk sheets</title>
     </head>
     <body background="images/metallic-gears-background-.jpg">
         <div class="image">
@@ -57,7 +57,21 @@
         <script type="text/javascript" language="JavaScript" src="find2.js">
         </script>
         <form>
-            <%=Util.showTable(Selects.SELECT_FROM_OPCLOCKSHEET, connection, null)%>
+            <% Util.TableCeil[] addCeils = new Util.TableCeil[]{
+                    new Util.TableCeil("Last updated") {
+                        @Override
+                        public String getCeil(int id) {
+                            return DbConnection.getStampOnID(id, "xconsume", connection);
+                        }
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xoperclock.jsp?id=" + id + "'\"/>";
+                        }
+                    }
+                };%>
+            <%=Util.showTable(Selects.SELECT_FROM_OPCLOCKSHEET, connection, addCeils)%>
         </form>
     </body>
 </html>

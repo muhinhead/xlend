@@ -143,9 +143,9 @@ public class Selects {
             + "and t.xsite_id=s.xsite_id and t.xorder_id=o.xorder_id order by xtimesheet_id desc";
     public static final String SELECT_TIMESHEETS4EMPLOYEE =
             "Select t.xtimesheet_id \"Id\", to_char(t.weekend,'DD/MM/YYYY') \"Week Ending\", "
-            + "(select concat(m.classify,m.tmvnr) from xmachine where xmachine_id=t.xmachine_id) \"Machine\", "
+            + "(select concat(classify,tmvnr) from xmachine where xmachine_id=t.xmachine_id) \"Machine\", "
             + "(select max(ordernumber) from xorder where xorder_id=t.xorder_id) \"Order Nr\" "
-            + "from xtimesheet t, xsite s, "
+            + "from xtimesheet t, xsite s "
             + "where t.xsite_id=s.xsite_id and t.xemployee_id = #";
     public static final String SELECT_WAGE4TIMESHEET =
             "Select xwage_id \"Id\", day \"Day\", normaltime \"Normal Time\", "
@@ -304,6 +304,7 @@ public class Selects {
             "Select xconsume_id \"Id\", sup.companyname \"Supplier\", "
             + "concat(mac.classify,mac.tmvnr) \"Machine\", concat(substr(req.first_name,1,1),"
             + "'.',req.sur_name,' (',req.clock_num,')') \"Requested by\", "
+            + "(select name from xsite where xsite_id=con.xsite_id) \"Site\", "
             + "con.invoicedate \"Inv.Date\", "
             + "con.amount_rands \"Vat Incl Amt (R)\", "
             + "con.description \"Description\" "
@@ -672,6 +673,16 @@ public class Selects {
             + "and (t.xmachine_id,t.weekend) in (select xmachine_id,weekend from xtimesheet group by xmachine_id,weekend having count(*)>1) "
             + "order by t.xmachine_id,t.weekend";
 
+    public static String SELECT_INCIDENT_MACHINES = 
+            "select xmachineincident_id \"Id\", concat(m.classify,' ',m.tmvnr) \"Machine\""
+            + " from xmachineincident mi, xmachine m where m.xmachine_id=mi.xmachine_id and mi.xincidents_id=#";
+
+    public static String SELECT_INCIDENT_PERSONS = 
+            "select xemployeeincident_id \"Id\", e.clock_num \"Clock Nr\", "
+            + "e.first_name \"First Name\", e.sur_name \"Surname\" "
+            + " from xemployeeincident pi, xemployee e "
+            + " where e.xemployee_id=pi.xemployee_id and pi.xincidents_id=#";
+    
     public static String selectActiveEmployees() {
         return Selects.SELECT_FROM_EMPLOYEE.replace("where",
                 "where "

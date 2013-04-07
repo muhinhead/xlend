@@ -71,7 +71,7 @@ class EditBreakdownPanel extends RecordEditPanel {
             "Site",
             "Reported To:",
             "Reported By:",
-            "Attended to by:",
+            "Attended By:",
             "With Vehicle:",
             "Repair Date:",
             "Problem Repaired?:",

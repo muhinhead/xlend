@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.70";
+    public static final String version = "0.70.a";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -188,15 +188,23 @@ public class XlendWorks {
     }
 
     public static List<ComboItem> loadEmployeeList(IMessageSender exchanger, String field) {
+        //        ArrayList<ComboItem> list = new ArrayList<ComboItem>();
+        //        try {
+        //            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, Selects.activeEmployeeCondition, "clock_num");
+        //            for (DbObject e : employees) {
+        //                Xemployee emp = (Xemployee) e;
+        //                list.add(new ComboItem(emp.getXemployeeId(), field.equals("name") ? emp.getFirstName() : emp.getClockNum()));
+        //            }
+        //        } catch (RemoteException ex) {
+        //            log(ex);
+        //        }
+        //        return list;
+        ComboItem[] arr = loadOnSelect(exchanger, "select xemployee_id,"
+                + (field.equals("name") ? "first_name" : "clock_num")
+                + " from xemployee where " + Selects.activeEmployeeCondition);
         ArrayList<ComboItem> list = new ArrayList<ComboItem>();
-        try {
-            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, Selects.activeEmployeeCondition, "clock_num");
-            for (DbObject e : employees) {
-                Xemployee emp = (Xemployee) e;
-                list.add(new ComboItem(emp.getXemployeeId(), field.equals("name") ? emp.getFirstName() : emp.getClockNum()));
-            }
-        } catch (RemoteException ex) {
-            log(ex);
+        for (ComboItem ci : arr) {
+            list.add(ci);
         }
         return list;
     }
@@ -236,7 +244,7 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xquotation_id,rfcnumber from xquotation where xclient_id="+client_id+" order by rfcnumber");
+        return loadOnSelect(exchanger, "select xquotation_id,rfcnumber from xquotation where xclient_id=" + client_id + " order by rfcnumber");
     }
 
     public static ComboItem[] loadAllOrderSites(IMessageSender exchanger, int order_id) {
@@ -255,7 +263,7 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xsite_id,name from xsite where xorder_id="+order_id+" order by name");
+        return loadOnSelect(exchanger, "select xsite_id,name from xsite where xorder_id=" + order_id + " order by name");
     }
 
     public static ComboItem[] loadSites(IMessageSender exchanger, String whereCond) {
@@ -273,7 +281,7 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xsite_id,name from xsite where "+whereCond+" order by name");        
+        return loadOnSelect(exchanger, "select xsite_id,name from xsite where " + whereCond + " order by name");
     }
 
     public static ComboItem loadSite(IMessageSender exchanger, Integer siteID) {
@@ -286,8 +294,8 @@ public class XlendWorks {
         //            }
         //        }
         //        return null;
-        ComboItem citms[] = loadOnSelect(exchanger, "select xsite_id,name from xsite where xsite_id="+siteID);
-        if (citms!=null && citms.length>0) {
+        ComboItem citms[] = loadOnSelect(exchanger, "select xsite_id,name from xsite where xsite_id=" + siteID);
+        if (citms != null && citms.length > 0) {
             return citms[0];
         }
         return null;
@@ -1110,7 +1118,7 @@ public class XlendWorks {
 
     public static Integer getEmployeeOnClockNum(IMessageSender exchanger, String clock_num) {
         try {
-            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num=" + clock_num, null);
+            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num='" + clock_num +"'", null);
             if (obs.length > 0) {
                 Xemployee emp = (Xemployee) obs[0];
                 return emp.getXemployeeId();

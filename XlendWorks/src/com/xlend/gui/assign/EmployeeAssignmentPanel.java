@@ -82,6 +82,8 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
     @Override
     public boolean save() throws Exception {
         try {
+            Integer prevMachineID = null;
+            Integer prevSiteID = null;
             java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
             DbObject[] oldAssigns = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
                     "xemployee_id=" + xemployee.getXemployeeId() + " and date_end is null", null);
@@ -90,6 +92,8 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
                 oldAssign.setDateEnd(now);
                 oldAssign.setXmachineId(oldAssign.getXmachineId() == 0 ? null : oldAssign.getXmachineId());
                 DashBoard.getExchanger().saveDbObject(oldAssign);
+                prevMachineID = oldAssign.getXmachineId();
+                prevSiteID = oldAssign.getXsiteId();
             }
             Xopmachassing assign = new Xopmachassing(null);
             assign.setXopmachassingId(0);
@@ -102,6 +106,16 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             }
             assign.setDateStart(now);
             assign.setNew(true);
+            if (prevMachineID != null && (assign.getXmachineId() == null || prevMachineID.intValue() != assign.getXmachineId().intValue())) {
+                GeneralFrame.infoMessageBox("FYI", "The previous machine assigned will stay on site without operator");
+                Xopmachassing assignPrevMachine = new Xopmachassing(null);
+                assignPrevMachine.setXopmachassingId(0);
+                assignPrevMachine.setXemployeeId(null);
+                assignPrevMachine.setXmachineId(prevMachineID);
+                assignPrevMachine.setDateStart(now);
+                assignPrevMachine.setXsiteId(prevSiteID);
+                DashBoard.getExchanger().saveDbObject(assignPrevMachine);
+            }
             DashBoard.getExchanger().saveDbObject(assign);
             return true;
         } catch (Exception ex) {

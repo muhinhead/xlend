@@ -2,6 +2,7 @@ package com.xlend.gui.admin;
 
 import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.constants.Selects;
+import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.MyJideTabbedPane;
@@ -10,7 +11,11 @@ import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -23,6 +28,7 @@ public class AdminFrame extends GeneralFrame {
     private MachineTypeGrid machineTypesPanel;
     private MachineTypeGrid machineSubTypesPanel;
     private JideTabbedPane dictionaryPanel;
+    private JPanel dataControlPanel;
     private PaidMethodsGrid paidMathodsPanel;
     private PayFromGrid payFromPanel;
     private WageCategoryGrid wageCategoryPanel;
@@ -38,6 +44,7 @@ public class AdminFrame extends GeneralFrame {
         MyJideTabbedPane admTab = new MyJideTabbedPane();
         admTab.addTab(getUsersPanel(), getSheetList()[0]);
         admTab.addTab(getDictionariesPanel(), getSheetList()[1]);
+        admTab.addTab(getDataControl(), getSheetList()[2]);
         return admTab;
     }
 
@@ -55,7 +62,7 @@ public class AdminFrame extends GeneralFrame {
 
     @Override
     protected String[] getSheetList() {
-        return new String[]{"Users", "Dictionaries"};
+        return new String[]{"Users", "Dictionaries", "Data control"};
     }
 
     private JComponent getDictionariesPanel() {
@@ -111,5 +118,27 @@ public class AdminFrame extends GeneralFrame {
         topPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Types"));
         bottomPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Machine Subtypes"));
         return machitypeSplitPanel;
+    }
+
+    private JPanel getDataControl() {
+        if (dataControlPanel == null) {
+            dataControlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            dataControlPanel.add(new JButton(new AbstractAction("Clear Assignments List") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (GeneralFrame.yesNo("ATTENTION!!!", "The Operator/Machine assignments list will be completely cleared!\n"
+                            + "It is an irreversible operation!\nAre you sure?") == JOptionPane.YES_OPTION) {
+                        try {
+                            int count = DashBoard.getExchanger().getCount("select * from xopmachassing");
+                            DashBoard.getExchanger().truncateTable("xopmachassing");
+                            GeneralFrame.infoMessageBox("Ok", "" + count + " rows deleted");
+                        } catch (RemoteException ex) {
+                            XlendWorks.logAndShowMessage(ex);
+                        }
+                    }
+                }
+            }));
+        }
+        return dataControlPanel;
     }
 }

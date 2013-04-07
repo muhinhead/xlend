@@ -622,7 +622,9 @@ public class DbConnection {
         "alter table xopclocksheet modify km_start6 decimal(10,2)",
         "alter table xopclocksheet modify km_stop6 decimal(10,2)",
         "alter table xopclocksheet modify km_start7 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop7 decimal(10,2)"
+        "alter table xopclocksheet modify km_stop7 decimal(10,2)",
+        
+        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

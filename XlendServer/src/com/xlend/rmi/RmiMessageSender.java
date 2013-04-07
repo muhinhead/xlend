@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -387,8 +389,26 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
 //            }
 //        }
 //    }
-
     public String getServerVersion() throws RemoteException {
         return XlendServer.getVersion();
+    }
+
+    @Override
+    public boolean truncateTable(String tableName) throws RemoteException {
+        boolean ok = false;
+        PreparedStatement ps = null;
+        Connection connection = DbConnection.getConnection();
+        try {
+            ps = connection.prepareStatement("delete from " + tableName);
+            ok = ps.execute();
+        } catch (SQLException ex) {
+            XlendServer.log(ex);
+            throw new java.rmi.RemoteException(ex.getMessage());
+        } finally {
+            try {
+                ps.close();
+            } catch(Exception e){}
+        }
+        return ok;
     }
 }

@@ -49,7 +49,7 @@ public class XlendServer {
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
-    private static FileHandler fh;
+    private static FileHandler fh; 
     private static Thread rmiServer;
     private static TrayIcon ti;
     private static Properties props;

@@ -64,12 +64,12 @@
                             return DbConnection.getStampOnID(id, "xsalarylist", connection);
                         }
                     },
-//                    new Util.TableCeil("") {
-//                        @Override
-//                        public String getCeil(int id) {
-//                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-//                        }
-//                    }
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xsalarylist.jsp?id=" + id + "'\"/>";
+                        }
+                    }
                 };%>
                 <%=Util.showTable(Selects.SELECT_FROM_SALARYLISTS, connection, addCeils)%>
         </form>

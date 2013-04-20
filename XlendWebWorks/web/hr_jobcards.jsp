@@ -47,9 +47,9 @@
             <div  id="my-div" style="position:absolute; left: 715px; top: 8px;">
                 <a href="hr_loans.jsp" class="fill-div"></a>
             </div>
-<!--            <div  id="my-div" style="position:absolute; left: 830px; top: 8px;">
-                <a href="hr_jobcards.jsp" class="fill-div"></a>
-            </div>-->
+            <!--            <div  id="my-div" style="position:absolute; left: 830px; top: 8px;">
+                            <a href="hr_jobcards.jsp" class="fill-div"></a>
+                        </div>-->
 
             <img src="images/<%=imgFile%>" alt="Tabs" width="<%=maxImg.getWidth()%>" height="<%=maxImg.getHeight()%>"/>
         </div>
@@ -63,13 +63,15 @@
                         public String getCeil(int id) {
                             return DbConnection.getStampOnID(id, "xjobcard", connection);
                         }
-                    }, //                    new Util.TableCeil("") {
-                //                        @Override
-                //                        public String getCeil(int id) {
-                //                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-                //                        }
-                //                    }
-                };%>
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xjobcard.jsp?id=" + id + "'\"/>";
+                        }
+                    }
+                };
+            %>
             <%=Util.showTable(Selects.SELECT_FROM_JOBCARDS, connection, addCeils)%>
         </form>
 

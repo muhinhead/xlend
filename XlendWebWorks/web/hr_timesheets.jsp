@@ -67,12 +67,12 @@
                             return DbConnection.getStampOnID(id, "xtimesheet", connection);
                         }
                     },
-//                    new Util.TableCeil("") {
-//                        @Override
-//                        public String getCeil(int id) {
-//                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-//                        }
-//                    }
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xtimesheet.jsp?id=" + id + "'\"/>";
+                        }
+                    }
                 };%>
             <%=Util.showTable(Selects.SELECT_FROM_TIMESHEET, connection, addCeils)%>
         </form>

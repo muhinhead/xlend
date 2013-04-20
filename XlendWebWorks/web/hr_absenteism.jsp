@@ -64,12 +64,12 @@
                             return DbConnection.getStampOnID(id, "xabsenteeism", connection);
                         }
                     },
-//                    new Util.TableCeil("") {
-//                        @Override
-//                        public String getCeil(int id) {
-//                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-//                        }
-//                    }
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xabsenteeism.jsp?id=" + id + "'\"/>";
+                        }
+                    }
                 };%>
             <%=Util.showTable(Selects.SELECT_FROM_ABSENTEISM, connection, addCeils)%>
         </form>

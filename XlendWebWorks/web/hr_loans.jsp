@@ -44,9 +44,9 @@
             <div  id="my-div" style="position:absolute; left: 600px; top: 8px;">
                 <a href="hr_app4leave.jsp" class="fill-div"></a>
             </div>
-<!--            <div  id="my-div" style="position:absolute; left: 715px; top: 8px;">
-                <a href="hr_loans.jsp" class="fill-div"></a>
-            </div>-->
+            <!--            <div  id="my-div" style="position:absolute; left: 715px; top: 8px;">
+                            <a href="hr_loans.jsp" class="fill-div"></a>
+                        </div>-->
             <div  id="my-div" style="position:absolute; left: 830px; top: 8px;">
                 <a href="hr_jobcards.jsp" class="fill-div"></a>
             </div>
@@ -63,12 +63,13 @@
                         public String getCeil(int id) {
                             return DbConnection.getStampOnID(id, "xloans", connection);
                         }
-                    }, //                    new Util.TableCeil("") {
-                //                        @Override
-                //                        public String getCeil(int id) {
-                //                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-                //                        }
-                //                    }
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xloan.jsp?id=" + id + "'\"/>";
+                        }
+                    }
                 };%>
             <%=Util.showTable(Selects.SELECT_FROM_LOANS, connection, addCeils)%>
         </form>

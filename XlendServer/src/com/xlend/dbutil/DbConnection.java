@@ -26,8 +26,8 @@ import java.util.Properties;
 public class DbConnection {
 
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 40;
-    public static final String DB_VERSION = "0.40";
+    private static final int DB_VERSION_ID = 41;
+    public static final String DB_VERSION = "0.41";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -623,8 +623,10 @@ public class DbConnection {
         "alter table xopclocksheet modify km_stop6 decimal(10,2)",
         "alter table xopclocksheet modify km_start7 decimal(10,2)",
         "alter table xopclocksheet modify km_stop7 decimal(10,2)",
-        
-        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee"
+        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee",
+        //40->41
+        "alter table xmachine add consumption int",
+        "alter table xbreakdown add standing_hours decimal(4,2)"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

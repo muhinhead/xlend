@@ -5,7 +5,6 @@ import com.xlend.mvc.dbtable.DbTableDocument;
 import com.xlend.mvc.dbtable.DbTableGridPanel;
 import com.xlend.mvc.dbtable.DbTableView.MyTableModel;
 import com.xlend.mvc.dbtable.ITableView;
-import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ToolBarButton;
 import com.xlend.util.Util;
@@ -18,10 +17,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -46,6 +44,7 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
 //    private JToggleButton filterButton;
     private HashMap<DbTableGridPanel, String> grids = new HashMap<DbTableGridPanel, String>();
     private HashMap<GeneralReportPanel, String> reports = new HashMap<GeneralReportPanel, String>();
+//    private HashMap<HTMLpanel, String> browsers = new HashMap<HTMLpanel, String>();
     private JLabel srcLabel;
     private JTextField srcField;
 //    private JLabel fltrLabel;
@@ -232,12 +231,19 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
                 updateGrid(getExchanger(), grid.getTableView(), grid.getTableDoc(), grids.get(grid), null,
                         grid.getPageSelector().getSelectedIndex());
             } catch (RemoteException ex) {
-                XlendWorks.log(ex);
+                XlendWorks.logAndShowMessage(ex);
             }
         }
         for (GeneralReportPanel report : reports.keySet()) {
             report.updateReport();
         }
+//        for (HTMLpanel html : browsers.keySet()) {
+//            try {
+//                html.refresh();
+//            } catch (IOException ex) {
+//                XlendWorks.logAndShowMessage(ex);
+//            }
+//        }
     }
 
     public static void errMessageBox(String title, String msg) {
@@ -423,6 +429,10 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         reports.put(repPanel, repPanel.toString());
     }
 
+//    protected void registerGrid(HTMLpanel browserPanel) {
+//        browsers.put(browserPanel, browserPanel.getUrlString());
+//    }
+    
     /**
      * @return the exchanger
      */

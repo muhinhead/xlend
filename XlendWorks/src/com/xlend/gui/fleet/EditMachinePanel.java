@@ -46,6 +46,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     private JSpinner monthlyPaySP;
     private SelectedDateSpinner payStartDateSP;
     private SelectedDateSpinner payEndDateSP;
+    private JSpinner consumptionSP;
 //    private JTabbedPane tabbedPane;
 //    private boolean licensed;
     private JLabel siteAssignLbl;
@@ -71,7 +72,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             "ID:",
             "Fleet Number:(" + getFleetNumberChar() + ")",
             "Reg.Nr:",
-            "Type:", "Type2:",
+            "Type:", "Type2:",//"Consumption (km/litre):",
             "Licensed:", "Lic.Exp.Date:", "Lic.Status:",
             "Vehicle Nr:", "Engine Nr:", "Chassis Nr:",
             "Insurance Nr:", "Insurance Type:", "Insurance Amt:",
@@ -89,6 +90,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             tmvnrTextSP = new SelectedNumberSpinner(0, 0, 1000, 1),
             machineTypeCB = new JComboBox(machineTypeCbModel),
             machType2CB = new JComboBox(machineType2CbModel),
+            consumptionSP = new SelectedNumberSpinner(0, 0, 1000, 1),
             regNrField = new JTextField(),
             //            licenseDateSP = new SelectedDateSpinner(), 
             licensedChB = new JCheckBox("", true),
@@ -107,7 +109,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             payStartDateSP = new SelectedDateSpinner(),
             payEndDateSP = new SelectedDateSpinner(),
             lastServiceDateLBL = new JLabel(""),
-            lastServicedByLBL = new JLabel(""),};
+            lastServicedByLBL = new JLabel("")
+        };
 
         lastServiceDateLBL.setBorder(BorderFactory.createEtchedBorder());
         lastServicedByLBL.setBorder(BorderFactory.createEtchedBorder());
@@ -135,7 +138,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         regNrPanel.add(regNrField, BorderLayout.WEST);
 
         componentRows.add(new JComponent[]{labels[idx++], idPanel, labels[idx++], tmvnrPanel, labels[idx++], regNrPanel});
-        componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, new JPanel(), new JPanel()
+        componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, getConsumptionLabel(),
+                    getBorderPanel(new JComponent[]{consumptionSP})
 //            new JButton(getAssignmentsAction("Assignments..."))
                 });
         componentRows.add(new JComponent[]{labels[idx++], licensedChB, labels[idx++], expDateSP, labels[idx++], licenseStatusLBL});
@@ -156,6 +160,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         regNrField.setPreferredSize(tmvnrTextSP.getPreferredSize());
         organizePanels(componentRows);
 
+        consumptionSP.setMaximumSize(regNrField.getPreferredSize());
         add(getTabbedPanel(), BorderLayout.CENTER);
     }
 
@@ -224,6 +229,9 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
                 selectComboItem(machType2CB, machine.getXmachtype2Id());
             }
             licensedChB.setSelected(licensed = (machine.getExpdate() != null));
+            if (machine.getConsumption() != null) {
+                consumptionSP.setValue(machine.getConsumption());
+            }
             adjustLicenseFierlds();
             repaintLicFields();
             fillAssignmentInfo();
@@ -287,6 +295,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         ci = (ComboItem) machType2CB.getSelectedItem();
         machine.setXmachtype2Id(ci == null ? null : ci.getId());
         machine.setPhoto(imageData);
+        machine.setConsumption((Integer) consumptionSP.getValue());
         try {
             machine.setNew(isNew);
             DbObject saved = DashBoard.getExchanger().saveDbObject(machine);
@@ -377,5 +386,9 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             lastServiceDateLBL.setText("");
             lastServicedByLBL.setText("");
         }
+    }
+
+    protected JComponent getConsumptionLabel() {
+        return new JLabel("Consumption (litre/hour):", SwingConstants.RIGHT);
     }
 }

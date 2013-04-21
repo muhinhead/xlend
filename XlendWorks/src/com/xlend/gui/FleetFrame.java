@@ -2,13 +2,24 @@ package com.xlend.gui;
 
 import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
+//import com.xlend.gui.HTMLpanel;
+import java.awt.BorderLayout;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
-import javax.swing.JButton;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 /**
@@ -33,10 +44,11 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel machineServicesPanel;
     private GeneralGridPanel batteriesPurchasePanel;
     private GeneralGridPanel batteriesIssuePanel;
+    private JPanel dieselPricesHTMLpanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles",
         "Company Vehicles", "Machine Rental Rates", "Diesel Carts",
-        "Service", "Batteries"
+        "Service", "Batteries", "Diesel Price"
     };
 
     public FleetFrame(IMessageSender exch) {
@@ -80,6 +92,9 @@ public class FleetFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[8])) {
             fleetTab.addTab(getBatteries(), sheets()[8]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
+            fleetTab.addTab(getDieselPrices(), sheets()[9]);
         }
         return fleetTab;
     }
@@ -199,5 +214,66 @@ public class FleetFrame extends GeneralFrame {
             errMessageBox("Error:", ex.getMessage());
             sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
         }
-        return sp;    }
+        return sp;
+    }
+
+    private JComponent getDieselPrices() {
+        if (dieselPricesHTMLpanel == null) {
+            dieselPricesHTMLpanel = new JPanel(new BorderLayout());
+            String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+//            System.out.println(html);
+            JEditorPane htmlPanel = new JEditorPane("text/html", html);
+            dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
+        }
+        return dieselPricesHTMLpanel;
+    }
+
+    private String loadHtmlFromURL(String urlString) {
+        StringBuffer buf = new StringBuffer("<html>");
+        LineNumberReader r = null;
+        try {
+            boolean include = false;
+            URL url = new URL(urlString);
+            r = new LineNumberReader(new InputStreamReader(url.openStream()));
+            String s;
+            while ((s = r.readLine()) != null) {
+                if (include) {
+                    buf.append("\n" + clearClassRef(s));
+                    if (s.indexOf("</TABLE>") > -1) {
+                        include = false;
+                    }
+                } else if (s.trim().startsWith("<a name=\"petrol\">") || s.trim().startsWith("<a name=\"diesel\">")) {
+                    include = true;
+                }
+            }
+        } catch (Exception ex) {
+            buf.append(ex.getStackTrace().toString());
+        } finally {
+            if (r != null) {
+                try {
+                    r.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+        buf.append("\n</html>");
+        return buf.toString();
+    }
+
+    private String clearClassRef(String s) {
+        int p = s.indexOf("class=");
+        if (p > 0) {
+            if (s.indexOf("colAlternating1") > 0 || s.indexOf("colAlternating2") > 0 || s.indexOf("graphSubHeader") > 0) {
+                s = s.replaceAll("TD", "TH").replaceAll("td", "th");
+            }
+            int pp = s.indexOf(">", p);
+            int sp = s.indexOf(" ", p);
+            pp = sp < pp && sp >= 0 ? sp : pp;
+            if (pp > 0) {
+                s = s.substring(0, p) + s.substring(pp);
+            }
+        }
+        return s.replace("border=0", "border=1")
+                .replace("<TBODY>", "").replace("</TBODY>", "");
+    }
 }

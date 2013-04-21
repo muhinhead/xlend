@@ -54,6 +54,7 @@ class EditBreakdownPanel extends RecordEditPanel {
     private JSpinner timeBackSP;
     private JCheckBox stayedOverCb;
     private JSpinner accomPriceSP;
+    private JSpinner standingHoursSP;
 //    private JTextField invoiceNumberField;
     private JSpinner amountSP;
     private static final String UNKNOWN = "--Unknown--";
@@ -67,13 +68,10 @@ class EditBreakdownPanel extends RecordEditPanel {
     protected void fillContent() {
         String titles[] = new String[]{
             "ID:", //   "Breakdown Date:",
-            "Machine/Truck/Other:",
-            "Site",
-            "Reported To:",
-            "Reported By:",
-            "Attended By:",
-            "With Vehicle:",
-            "Repair Date:",
+            "Machine/Truck/Other:",//            "Site",
+            "Reported To:",//            "Reported By:",
+            "Attended By:",//            "With Vehicle:",
+            "Repair Date:", //"Machine/Truck standing (hours):",
             "Problem Repaired?:",
             //            "Description of breakdown:",
             //            "Operator at fault?:",
@@ -115,23 +113,47 @@ class EditBreakdownPanel extends RecordEditPanel {
         purchasesCbModel = new DefaultComboBoxModel(); // populated dinamicly depending on machineCB
 
         JComponent edits[] = new JComponent[]{
+            
             getGridPanel(new JComponent[]{
                 idField = new JTextField(),
-                new JLabel("Breakdown Date:", SwingConstants.RIGHT),
-                breakdownDateSP = new SelectedDateSpinner()
+                new JPanel(),
+                getBorderPanel(new JComponent[]{
+                    new JPanel(),
+                    new JLabel("Breakdown Date:", SwingConstants.RIGHT),
+                    breakdownDateSP = new SelectedDateSpinner()
+                })
             }),
-            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
-            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
-            comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new EmployeeLookupAction(reportedToCB)),
-            comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), new EmployeeLookupAction(reportedByCB)),
-            comboPanelWithLookupBtn(attendedByCB = new JComboBox(attendedByCbModel), new EmployeeLookupAction(attendedByCB)),
-            comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
-            getGridPanel(repairDateSP = new SelectedDateSpinner(), 3),
+            getGridPanel(new JComponent[]{
+                comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
+                new JLabel("Site:",SwingConstants.RIGHT),
+                comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB))
+            }),
+//            comboPanelWithLookupBtn(machineCB = new JComboBox(machineCbModel), new MachineLookupAction(machineCB, null)),
+//            comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB)),
+            getGridPanel(new JComponent[]{
+                comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new EmployeeLookupAction(reportedToCB)),
+                new JLabel("Reported by:",SwingConstants.RIGHT),
+                comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), new EmployeeLookupAction(reportedByCB))
+            }),
+//            comboPanelWithLookupBtn(reportedToCB = new JComboBox(reportedToCbModel), new EmployeeLookupAction(reportedToCB)),
+//            comboPanelWithLookupBtn(reportedByCB = new JComboBox(reportedByCbModel), new EmployeeLookupAction(reportedByCB)),
+            getGridPanel(new JComponent[]{
+                comboPanelWithLookupBtn(attendedByCB = new JComboBox(attendedByCbModel), new EmployeeLookupAction(attendedByCB)),
+                new JLabel("With vehicle:",SwingConstants.RIGHT),
+                comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null))
+            }),
+//            comboPanelWithLookupBtn(attendedByCB = new JComboBox(attendedByCbModel), new EmployeeLookupAction(attendedByCB)),
+//            comboPanelWithLookupBtn(vehicleByCB = new JComboBox(vehicleByCbModel), new MachineLookupAction(vehicleByCB, null)),
+            getGridPanel(new JComponent[]{
+                repairDateSP = new SelectedDateSpinner(),
+                new JLabel("Machine/Truck standing (hours):",SwingConstants.RIGHT),
+                standingHoursSP = new SelectedNumberSpinner(.0, .0, 99.99, .1)
+            }),
             getGridPanel(new JComponent[]{problemRepairedCb = new JCheckBox(),
                 new JLabel("Operator at fault?:", SwingConstants.RIGHT), operatorFaultCb = new JCheckBox()}),
             //            descrOfBreakdownField = new JTextField(40),
             //            getGridPanel(operatorFaultCb = new JCheckBox(), 3),
-            comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
+            getGridPanel(comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),3),
             //            comboPanelWithLookupBtn(purchasesCB = new JComboBox(purchasesCbModel), new PurchaseLookupAction(purchasesCB, null)),
             getGridPanel(new JComponent[]{
                 km2siteSP = new SelectedNumberSpinner(.0, .0, 10000.0, .1),
@@ -248,7 +270,9 @@ class EditBreakdownPanel extends RecordEditPanel {
                 dt = xbr.getTimeback();
                 timeBackSP.setValue(new java.util.Date(dt.getTime() - TimeZone.getDefault().getOffset(dt.getTime())));
             }
-
+            if (xbr.getStandingHours()!=null) {
+                standingHoursSP.setValue(xbr.getStandingHours());
+            }
             stayedOverCb.setSelected(xbr.getStayedover() != null && xbr.getStayedover() == 1);
             hrsOnJobSP.setValue(xbr.getHoursonjob() == null ? 0.0 : xbr.getHoursonjob());
             accomPriceSP.setValue(xbr.getAccomprice() == null ? 0 : xbr.getAccomprice());
@@ -300,6 +324,7 @@ class EditBreakdownPanel extends RecordEditPanel {
         xbr.setStayedover(stayedOverCb.isSelected() ? 1 : 0);
         xbr.setAccomprice((Integer) accomPriceSP.getValue());
         xbr.setAmount((Double) amountSP.getValue());
+        xbr.setStandingHours((Double)standingHoursSP.getValue());
         boolean ok = saveDbRecord(xbr, isNew);
 //        if (ok && BreakdownConsumesGrid.getNewPurchases() != null) {
 //            xbr = (Xbreakdown) getDbObject();

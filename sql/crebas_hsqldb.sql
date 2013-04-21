@@ -410,6 +410,7 @@ create cached table xmachine
     paystart        date,
     payend          date,
     photo           other,
+    consumption     int,
     constraint xmachine_pk primary key (xmachine_id),
 --    constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype
 );
@@ -616,6 +617,7 @@ create cached table xbreakdown
     accomprice        int,
     invoicenumber     varchar(16),
     amount            decimal(10,2),
+    standing_hours    decimal(4,2),
     constraint xbreakdown_pk primary key (xbreakdown_id),
     constraint xbreakdown_xmachine_fk foreign key (xmachine_id) references xmachine,
     constraint xbreakdown_xsite_fk foreign key (xsite_id) references xsite,

@@ -308,6 +308,7 @@ create table xmachine
     paystart        date,
     payend          date,
     photo           mediumblob,
+    consumption     int,
     stamp timestamp,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
@@ -551,6 +552,7 @@ create table xbreakdown
     accomprice        int,
     invoicenumber     varchar(16),
     amount            decimal(10,2),
+    standing_hours    decimal(4,2),
     stamp             timestamp,
     constraint xbreakdown_pk primary key (xbreakdown_id),
     constraint xbreakdown_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),

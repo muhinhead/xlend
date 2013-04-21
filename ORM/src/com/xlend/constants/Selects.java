@@ -332,7 +332,8 @@ public class Selects {
     public static final String SELECT_CONSUMABLES4LOOKUP =
             "Select xconsume_id, invoicenumber from xconsume where xsupplier_id = #";
     public static final String SELECT_FROM_BREAKDOWNS =
-            "Select xbreakdown_id \"Id\", concat(mac.classify,mac.tmvnr) \"Machine\", s.name \"Site\", bd.repairdate \"Repair Date\" "
+            "Select xbreakdown_id \"Id\", concat(mac.classify,mac.tmvnr) \"Machine\", s.name \"Site\", bd.repairdate \"Repair Date\","
+            + "(select concat(substr(first_name,1,1),'.',sur_name,' (',clock_num,')') from xemployee where xemployee_id=operator_id) \"Operator\" "
             + "from xbreakdown bd, xmachine mac, xsite s where bd.xmachine_id=mac.xmachine_id and s.xsite_id=bd.xsite_id";
     public static final String SELECT_FROM_WAGES =
             "Select xwagesum.xwagesum_id \"List Id\",to_char(weekend,'DD/MM/YYYY') \"Week ending\", "
@@ -347,7 +348,7 @@ public class Selects {
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static final String SELECT_FROM_PAYMENTS =
             "Select xpayment_id \"Id\", companyname \"Supplier\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id) \"Paid By\" "
+            + "select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id and clock_num<>'000') \"Paid By\" "
             + "from xpayment, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
             + "order by paydate desc";

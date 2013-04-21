@@ -22,7 +22,7 @@
     </head>
     <body background="images/metallic-gears-background-.jpg">
         <a href="hr_absenteism.jsp?select=<%=request.getParameter("id")%>#xabsenteism<%=request.getParameter("id")%>">Return to list</a>
-        <h3>Wage List</h3>
+        <h3>Absenteism</h3>
         <% Connection connection = DbConnection.getConnection();%>
         <% int id = Integer.parseInt(request.getParameter("id"));%>
         <% Xabsenteeism absenteeism = (Xabsenteeism) new Xabsenteeism(connection).loadOnId(id);%>

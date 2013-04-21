@@ -7,11 +7,8 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -19,7 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 /**
@@ -257,7 +253,7 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         buf.append("\n</html>");
-        return buf.toString();
+        return convertPrice2Rands(buf.toString());
     }
 
     private String clearClassRef(String s) {
@@ -275,5 +271,22 @@ public class FleetFrame extends GeneralFrame {
         }
         return s.replace("border=0", "border=1")
                 .replace("<TBODY>", "").replace("</TBODY>", "");
+    }
+
+    private String convertPrice2Rands(String s) {
+        StringBuffer sb = new StringBuffer(s);
+        char prev = ' ';
+        for (int i = 0; i < sb.length() - 4; i++) {
+            if ("0123456789".indexOf(sb.charAt(i)) > -1 && "0123456789".indexOf(prev) < 0 
+                    && "0123456789".indexOf(sb.charAt(i + 1)) > -1
+                    && "0123456789".indexOf(sb.charAt(i + 2)) > -1
+                    && "0123456789".indexOf(sb.charAt(i + 3)) > -1) 
+            {
+                sb.replace(i, i + 4, "R" + new Double(sb.substring(i, i + 4)) / 100.0);
+                i++;
+            }
+            prev = sb.charAt(i);
+        }
+        return sb.toString();
     }
 }

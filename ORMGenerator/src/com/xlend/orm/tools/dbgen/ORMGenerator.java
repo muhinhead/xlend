@@ -548,7 +548,7 @@ public class ORMGenerator {
                 output.println("            set" + capitalize(col.getJavaName()) + "(null);");
                 output.println("        }");
             } else if (col.getType().getJavaType().equals("Timestamp")) {
-                output.println("        //Timestamp flds["+n+"] skipped");
+                output.println("        //Timestamp flds[" + n + "] skipped");
             } else {
                 output.println("        set" + capitalize(col.getJavaName()) + "(flds[" + n + "]);");
             }

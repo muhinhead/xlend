@@ -32,7 +32,7 @@ public class AdminFrame extends GeneralFrame {
     private PaidMethodsGrid paidMathodsPanel;
     private PayFromGrid payFromPanel;
     private WageCategoryGrid wageCategoryPanel;
-    private RatedMachinesGrid ratedMachinesPanel;
+//    private RatedMachinesGrid ratedMachinesPanel;
     private SiteTypeGrid siteTypePanel;
     private PPEtypeGrid ppeTypePanel;
 
@@ -75,7 +75,7 @@ public class AdminFrame extends GeneralFrame {
                 registerGrid(paidMathodsPanel = new PaidMethodsGrid(getExchanger()));
                 registerGrid(payFromPanel = new PayFromGrid(getExchanger()));
                 registerGrid(wageCategoryPanel = new WageCategoryGrid(getExchanger()));
-                registerGrid(ratedMachinesPanel = new RatedMachinesGrid(getExchanger()));
+//                registerGrid(ratedMachinesPanel = new RatedMachinesGrid(getExchanger()));
                 registerGrid(siteTypePanel = new SiteTypeGrid(getExchanger()));
                 registerGrid(ppeTypePanel = new PPEtypeGrid(getExchanger()));
             } catch (RemoteException ex) {
@@ -92,7 +92,7 @@ public class AdminFrame extends GeneralFrame {
             dictionaryPanel.addTab("Pay Methods", paidMathodsPanel);
             dictionaryPanel.addTab("Pay From", payFromPanel);
             dictionaryPanel.addTab("Wage Category", wageCategoryPanel);
-            dictionaryPanel.addTab("Rated Machines", ratedMachinesPanel);
+//            dictionaryPanel.addTab("Rated Machines", ratedMachinesPanel);
             dictionaryPanel.addTab("Site Types", siteTypePanel);
             dictionaryPanel.addTab("PPE Types", ppeTypePanel);
 

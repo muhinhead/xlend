@@ -1,7 +1,6 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xmachrentalrate;
@@ -16,8 +15,6 @@ import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -177,7 +174,7 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
             for (int i = 0; i < cbitemIDs.length; i++) {
                 try {
                     DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
-                            "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and cbitem_id=" + cbitemIDs[i], null);
+                            "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and xmachtype_id=" + cbitemIDs[i], null);
                     if (obs.length > 0) {
                         Xmachrentalrateitm itm = (Xmachrentalrateitm) obs[0];
                         litersHoursSPs[i].setValue(itm.getLitresHour());
@@ -220,12 +217,12 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
                 itemIds.append(cbitemIDs[i]);
                 Xmachrentalrateitm itm;
                 obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
-                        "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and cbitem_id=" + cbitemIDs[i], null);
+                        "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and xmachtype_id=" + cbitemIDs[i], null);
                 if (obs.length == 0) {
                     isNew = true;
                     itm = new Xmachrentalrateitm(null);
                     itm.setXmachrentalrateitmId(0);
-                    itm.setCbitemId(cbitemIDs[i]);
+                    itm.setXmachtypeId(cbitemIDs[i]);
                     itm.setXmachrentalrateId(xmr.getXmachrentalrateId());
                 } else {
                     isNew = false;
@@ -240,7 +237,7 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
             }
             //to remove obsolete items (if any)
             obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
-                    "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and not cbitem_id in(" + itemIds.toString() + ")", null);
+                    "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and not xmachtype_id in(" + itemIds.toString() + ")", null);
             for (DbObject ob : obs) {
                 DashBoard.getExchanger().deleteObject(ob);
             }

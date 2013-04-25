@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.72";
+    public static final String version = "0.74";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -728,8 +728,9 @@ public class XlendWorks {
     }
 
     public static ComboItem[] loadRatedMachines(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "Select cbitem_id, val "
-                + "from cbitems where name='rated_machines' order by id");
+        return loadOnSelect(exchanger, "select xmachtype_id,machtype from xmachtype where is_rated=1 order by machtype");
+//                "Select cbitem_id, val "
+//                + "from cbitems where name='rated_machines' order by id");
     }
 
     public static boolean existsSiteOfType(IMessageSender exchanger, String siteType) {

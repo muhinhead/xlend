@@ -9,7 +9,9 @@ import com.xlend.orm.dbobject.DbObject;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -22,6 +24,7 @@ class EditMachineTypePanel extends RecordEditPanel {
     private JTextField nameField;
     private JTextField classField;
     static Integer parentID;
+    private JCheckBox isRatedCB;
 
     public EditMachineTypePanel(DbObject dbObject) {
         super(dbObject);
@@ -35,7 +38,7 @@ class EditMachineTypePanel extends RecordEditPanel {
         JComponent edits[] = new JComponent[]{
             getGridPanel(idField = new JTextField(), 5),
             nameField = new JTextField(32),
-            getBorderPanel(new JComponent[]{classField = new JTextField(1)})
+            getBorderPanel(new JComponent[]{classField = new JTextField(1), new JPanel(), isRatedCB = new JCheckBox("Is Rated")})
         };
         if (MachineTypeGrid.papaType != null) {
             classField.setText(MachineTypeGrid.papaType.getClassify());
@@ -62,6 +65,8 @@ class EditMachineTypePanel extends RecordEditPanel {
             idField.setText(mt.getXmachtypeId().toString());
             nameField.setText(mt.getMachtype());
             classField.setText(mt.getClassify());
+            isRatedCB.setSelected(mt.getIsRated() != null && mt.getIsRated() == 1);
+            isRatedCB.setVisible(mt.getParenttypeId() == null);
         }
     }
 
@@ -80,6 +85,7 @@ class EditMachineTypePanel extends RecordEditPanel {
         if (parentID != null && mt.getXmachtypeId().intValue() != parentID.intValue()) {
             mt.setParenttypeId(parentID);
         }
+        mt.setIsRated(isRatedCB.isSelected() ? 1 : 0);
         ok = saveDbRecord(mt, isNew);
         if (ok) {
             parentID = null;

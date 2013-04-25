@@ -53,6 +53,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     private JLabel operatorAssignLbl;
     private JLabel lastServiceDateLBL;
     private JLabel lastServicedByLBL;
+    private JRadioButton dieselRB;
+    private JRadioButton petrolRB;
 
     public EditMachinePanel(DbObject dbObject) {
         super(dbObject);
@@ -150,8 +152,11 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         componentRows.add(new JComponent[]{labels[idx++], siteAssignLbl = new JLabel("site"),
                     new JLabel("operator:", SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
                     new JButton(getAssignmentsAction("Assignments..."))});
-        componentRows.add(new JComponent[]{labels[idx++], lastServiceDateLBL, new JPanel(), new JPanel(), new JPanel(), new JPanel()});
-        componentRows.add(new JComponent[]{labels[idx++], lastServicedByLBL, new JPanel(), new JPanel(), new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], lastServiceDateLBL, new JLabel("Fuel used:", SwingConstants.RIGHT), dieselRB = new JRadioButton("Diesel"), new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], lastServicedByLBL, new JPanel(), petrolRB = new JRadioButton("Petrol"), new JPanel(), new JPanel()});
+        ButtonGroup group = new ButtonGroup();
+        group.add(dieselRB);
+        group.add(petrolRB);
 
         siteAssignLbl.setBorder(BorderFactory.createEtchedBorder());
         operatorAssignLbl.setBorder(BorderFactory.createEtchedBorder());
@@ -232,6 +237,11 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             if (machine.getConsumption() != null) {
                 consumptionSP.setValue(machine.getConsumption());
             }
+            if (machine.getFueltype() == 1) {
+                dieselRB.setSelected(true);
+            } else {
+                petrolRB.setSelected(true);
+            }
             adjustLicenseFierlds();
             repaintLicFields();
             fillAssignmentInfo();
@@ -296,6 +306,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         machine.setXmachtype2Id(ci == null ? null : ci.getId());
         machine.setPhoto(imageData);
         machine.setConsumption((Integer) consumptionSP.getValue());
+        machine.setFueltype(dieselRB.isSelected() ? 1 : 2);
+
         try {
             machine.setNew(isNew);
             DbObject saved = DashBoard.getExchanger().saveDbObject(machine);

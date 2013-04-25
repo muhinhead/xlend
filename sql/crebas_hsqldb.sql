@@ -412,6 +412,7 @@ create cached table xmachine
     payend          date,
     photo           other,
     consumption     int,
+    fueltype        int,
     constraint xmachine_pk primary key (xmachine_id),
 --    constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype
 );

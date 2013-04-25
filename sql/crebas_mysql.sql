@@ -310,6 +310,7 @@ create table xmachine
     payend          date,
     photo           mediumblob,
     consumption     int,
+    fueltype        int,
     stamp timestamp,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)

@@ -635,7 +635,8 @@ public class DbConnection {
         "alter table xmachrentalrateitm add xmachtype_id int",
         "alter table xmachrentalrateitm add "
             + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
-            + "references xmachtype(xmachtype_id) on delete cascade"  
+            + "references xmachtype(xmachtype_id) on delete cascade",
+        "alter table xmachine add fueltype int default 1"    
     };
 
 //    public synchronized static Connection getLogDBconnection() {

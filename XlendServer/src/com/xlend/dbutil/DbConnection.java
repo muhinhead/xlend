@@ -26,8 +26,8 @@ import java.util.Properties;
 public class DbConnection {
 
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 41;
-    public static final String DB_VERSION = "0.41";
+    private static final int DB_VERSION_ID = 42;
+    public static final String DB_VERSION = "0.42";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -626,7 +626,16 @@ public class DbConnection {
         "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee",
         //40->41
         "alter table xmachine add consumption int",
-        "alter table xbreakdown add standing_hours decimal(4,2)"
+        "alter table xbreakdown add standing_hours decimal(4,2)",
+        //41->42
+        "alter table xmachtype add is_rated bit",
+        "update xmachtype set is_rated=(parenttype_id is null)",
+        "alter table xmachrentalrateitm drop foreign key xmachrentalrateitm_cbitem_fk",
+        "alter table xmachrentalrateitm drop cbitem_id",
+        "alter table xmachrentalrateitm add xmachtype_id int",
+        "alter table xmachrentalrateitm add "
+            + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
+            + "references xmachtype(xmachtype_id) on delete cascade"  
     };
 
 //    public synchronized static Connection getLogDBconnection() {

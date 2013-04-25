@@ -280,6 +280,7 @@ create table xmachtype
     machtype         varchar(32) not null,
     parenttype_id    int,
     classify         char(1),
+    is_rated         bit,
     stamp timestamp,
     constraint xmachtype_pk primary key (xmachtype_id)
     #--,constraint xmachtype_xmachtype_fk foreign key (parenttype_id) references xmachtype
@@ -1258,7 +1259,7 @@ create table xmachrentalrateitm
 (
     xmachrentalrateitm_id  int not null auto_increment,
     xmachrentalrate_id     int not null,
-    cbitem_id              int not null,
+    xmachtype_id           int not null,
     litres_hour            decimal(8,2) not null,
     dry                    decimal(8,2) not null,
     real_wet               decimal(8,2) not null,
@@ -1266,7 +1267,7 @@ create table xmachrentalrateitm
     stamp timestamp,
     constraint xmachrentalrateitm_pk primary key (xmachrentalrateitm_id),
     constraint xmachrentalrateitm_xmachrentalrate_fk foreign key (xmachrentalrate_id) references xmachrentalrate (xmachrentalrate_id) on delete cascade,
-    constraint xmachrentalrateitm_cbitem_fk foreign key (cbitem_id) references cbitems (cbitem_id)
+    constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id) on delete cascade
 );
 
 create table xtransscheduleitm

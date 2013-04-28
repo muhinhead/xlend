@@ -216,10 +216,14 @@ public class FleetFrame extends GeneralFrame {
     private JComponent getDieselPrices() {
         if (dieselPricesHTMLpanel == null) {
             dieselPricesHTMLpanel = new JPanel(new BorderLayout());
-            String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-//            System.out.println(html);
-            JEditorPane htmlPanel = new JEditorPane("text/html", html);
-            dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
+//            String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+//            JEditorPane htmlPanel = new JEditorPane("text/html", html);
+//            dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
+            HTMLapplet.setUrl("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+            HTMLapplet browser = new HTMLapplet();
+            browser.init();
+            dieselPricesHTMLpanel.add(browser.getContentPane());
+            browser.start();
         }
         return dieselPricesHTMLpanel;
     }
@@ -277,11 +281,10 @@ public class FleetFrame extends GeneralFrame {
         StringBuffer sb = new StringBuffer(s);
         char prev = ' ';
         for (int i = 0; i < sb.length() - 4; i++) {
-            if ("0123456789".indexOf(sb.charAt(i)) > -1 && "0123456789".indexOf(prev) < 0 
+            if ("0123456789".indexOf(sb.charAt(i)) > -1 && "0123456789".indexOf(prev) < 0
                     && "0123456789".indexOf(sb.charAt(i + 1)) > -1
                     && "0123456789".indexOf(sb.charAt(i + 2)) > -1
-                    && "0123456789".indexOf(sb.charAt(i + 3)) > -1) 
-            {
+                    && "0123456789".indexOf(sb.charAt(i + 3)) > -1) {
                 sb.replace(i, i + 4, "R" + new Double(sb.substring(i, i + 4)) / 100.0);
                 i++;
             }

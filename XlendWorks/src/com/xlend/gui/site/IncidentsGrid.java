@@ -26,13 +26,17 @@ public class IncidentsGrid extends GeneralGridPanel {
 //        maxWidths.put(0, 100);
 //        maxWidths.put(0, 100);
     }
+    private boolean noAddAction = false;
 
     public IncidentsGrid(IMessageSender exchanger) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#", ""), maxWidths, false);
     }
 
     public IncidentsGrid(IMessageSender exchanger, int employee_id) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#", "where xemployee_id="+employee_id), maxWidths, false);
+        super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#",
+                "where xincidents_id in (select xincidents_id from xemployeeincident where xemployee_id=" + employee_id + ")"), maxWidths, false);
+        getAddAction().setEnabled(false);
+        getDelAction().setEnabled(false);
     }
 
     @Override

@@ -348,7 +348,7 @@ public class Selects {
             "Select distinct weekend from xtimesheet where weekend not in (select weekend from xwagesum)";
     public static final String SELECT_FROM_PAYMENTS =
             "Select xpayment_id \"Id\", companyname \"Supplier\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
-            + "select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id and clock_num<>'000') \"Paid By\" "
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id and clock_num<>'000') \"Paid By\" "
             + "from xpayment, xsupplier, cbitems "
             + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
             + "order by paydate desc";
@@ -462,7 +462,7 @@ public class Selects {
             "Select xincidents_id \"Id\", to_char(reportdate,'DD/MM/YYYY') \"Date\", incidentdate \"Date of incident\", "
             + "(Select name from xsite where xsite_id=xincidents.xsite_id) \"Site\", "
             + "estimated_cost \"Estimated cost\", lost_income \"Lost income\" "
-            + "from xincidents where requestedby_id=# order by incidentdate";
+            + "from xincidents where requestedby_id=# order by incidentdate desc";
     public static final String SELECT_FROM_SALARYLISTS =
             "Select xsalarylist_id \"Id\", to_char(payday,'DD/MM/YYYY') \"Date\", "
             + "(Select sum(amount) from xsalary where xsalarylist_id=xsalarylist.xsalarylist_id) \"Total amount\" "
@@ -497,7 +497,7 @@ public class Selects {
             + " from xbreakconsume,xconsume,xsupplier where xconsume.xconsume_id=xbreakconsume.xconsume_id "
             + " and xsupplier.xsupplier_id=xconsume.xsupplier_id and xbreakconsume.xbreakdown_id = #";
     public static final String SELECT_MACHTYPES =
-            "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\""
+            "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\", CASEWHEN(is_rated,'Yes','No') \"Rated\" "
             + " from xmachtype where parenttype_id is null ";
     public static final String SELECT_MACHSUBTYPES =
             "Select xmachtype_id \"Id\", machtype \"Type Name\", classify \"Classify\""

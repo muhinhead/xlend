@@ -31,6 +31,10 @@ public class IncidentsGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#", ""), maxWidths, false);
     }
 
+    public IncidentsGrid(IMessageSender exchanger, int employee_id) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#", "where xemployee_id="+employee_id), maxWidths, false);
+    }
+
     @Override
     protected AbstractAction addAction() {
         return new AbstractAction("Add Incident") {

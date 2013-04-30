@@ -219,8 +219,9 @@ public class FleetFrame extends GeneralFrame {
 //            String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
 //            JEditorPane htmlPanel = new JEditorPane("text/html", html);
 //            dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
-            HTMLapplet.setUrl("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-            HTMLapplet browser = new HTMLapplet();
+//            HTMLapplet.setUrl(//"http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
+//                "http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+            HTMLapplet browser = new HTMLapplet("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
             browser.init();
             dieselPricesHTMLpanel.add(browser.getContentPane());
             browser.start();

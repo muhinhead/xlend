@@ -12,6 +12,7 @@ import com.xlend.gui.assign.EmployeeAssignmentPanel;
 import com.xlend.gui.hr.PPEissueItemsGrid;
 import com.xlend.gui.hr.PPEissues2employeeGrid;
 import com.xlend.gui.hr.TimeSheetsGrid;
+import com.xlend.gui.site.IncidentsGrid;
 import com.xlend.mvc.Controller;
 import com.xlend.orm.Xemployee;
 import com.xlend.orm.Xposition;
@@ -360,6 +361,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             ppesPanel.add(itemShell, BorderLayout.CENTER);
 
             tp.add(ppesPanel, "PPE Issued");
+            IncidentsGrid incSheet = new IncidentsGrid(DashBoard.getExchanger(), employee_id);
+            tp.add(incSheet, "Incidents");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

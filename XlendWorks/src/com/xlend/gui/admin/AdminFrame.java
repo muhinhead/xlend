@@ -7,6 +7,7 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.MyJideTabbedPane;
 import com.xlend.gui.XlendWorks;
+import com.xlend.gui.HTMLapplet;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
@@ -14,8 +15,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -32,6 +31,7 @@ public class AdminFrame extends GeneralFrame {
     private PaidMethodsGrid paidMathodsPanel;
     private PayFromGrid payFromPanel;
     private WageCategoryGrid wageCategoryPanel;
+    private JPanel webViewHTMLpanel;
 //    private RatedMachinesGrid ratedMachinesPanel;
     private SiteTypeGrid siteTypePanel;
     private PPEtypeGrid ppeTypePanel;
@@ -45,6 +45,7 @@ public class AdminFrame extends GeneralFrame {
         admTab.addTab(getUsersPanel(), getSheetList()[0]);
         admTab.addTab(getDictionariesPanel(), getSheetList()[1]);
         admTab.addTab(getDataControl(), getSheetList()[2]);
+        admTab.addTab(getWebView(), getSheetList()[3]);
         return admTab;
     }
 
@@ -62,7 +63,7 @@ public class AdminFrame extends GeneralFrame {
 
     @Override
     protected String[] getSheetList() {
-        return new String[]{"Users", "Dictionaries", "Data control"};
+        return new String[]{"Users", "Dictionaries", "Data control", "Web View"};
     }
 
     private JComponent getDictionariesPanel() {
@@ -140,5 +141,16 @@ public class AdminFrame extends GeneralFrame {
             }));
         }
         return dataControlPanel;
+    }
+
+    private JComponent getWebView() {
+        if (webViewHTMLpanel==null) {
+            webViewHTMLpanel = new JPanel(new BorderLayout());
+            HTMLapplet browser = new HTMLapplet("http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
+            browser.init();
+            webViewHTMLpanel.add(browser.getContentPane());
+            browser.start();
+        }
+        return webViewHTMLpanel;
     }
 }

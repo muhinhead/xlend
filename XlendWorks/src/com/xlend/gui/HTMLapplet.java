@@ -1,4 +1,4 @@
-package com.xlend.gui.fleet;
+package com.xlend.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -29,24 +29,29 @@ import javafx.scene.web.WebView;
  */
 public class HTMLapplet extends JApplet {
     
-    private static String url = "http://www.oracle.com/us/index.html";
+    private String url = "http://www.oracle.com/us/index.html";
     private static JFXPanel fxContainer;
     private static final int JFXPANEL_WIDTH_INT = 700;
     private static final int JFXPANEL_HEIGHT_INT = 550;
     private static final int PANEL_WIDTH_INT = 675;
     private static final int PANEL_HEIGHT_INT = 400;    
 
+    public HTMLapplet(String aUrl) {
+        super();
+        setUrl(aUrl);
+    }
+    
     /**
      * @return the url
      */
-    public static String getUrl() {
+    public String getUrl() {
         return url;
     }
 
     /**
      * @param aUrl the url to set
      */
-    public static void setUrl(String aUrl) {
+    public void setUrl(String aUrl) {
         url = aUrl;
     }
     

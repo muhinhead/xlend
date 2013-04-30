@@ -45,7 +45,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.74";
+    private static final String version = "0.74.a";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -250,7 +250,7 @@ public class XlendServer {
 //    }
     private static void makeBackup() {
         Process p;
-        String mysqlDumpPath = findPath(DbConnection.getBackupCommand());
+        String mysqlDumpPath = props.getProperty("dbDump", "E:\\Program Files\\MySQL\\MySQL Server 5.1\\bin\\mysqldump.exe");//findPath(DbConnection.getBackupCommand());
         String[] runCmd = new String[]{mysqlDumpPath, "-u",
             DbConnection.getLogin(), "-p" + DbConnection.getPassword(), "xlend"
         };

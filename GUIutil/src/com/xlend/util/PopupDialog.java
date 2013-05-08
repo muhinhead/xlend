@@ -27,20 +27,27 @@ public abstract class PopupDialog extends JDialog {
         setVisible(true);
     }
 
+    protected Color getHederBackground() {
+        return new Color(226, 148, 37);
+    }
+
     protected void fillContent() {
-        getContentPane().setLayout(new BorderLayout(10,10));
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(226, 148, 37));
-        JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
-        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
-        headerPanel.add(lbl);
-        getContentPane().add(headerPanel, BorderLayout.NORTH);
+        getContentPane().setLayout(new BorderLayout(10, 10));
+        Color bg = getHederBackground();
+        if (bg != null) {
+            JPanel headerPanel = new JPanel();
+            headerPanel.setBackground(bg);
+            JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
+            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
+            headerPanel.add(lbl);
+            getContentPane().add(headerPanel, BorderLayout.NORTH);
+        }
     }
 
     protected void initSize() {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         pack();
-        setLocation(d.width/2 - getWidth()/2, d.height/2 - getHeight()/2);
+        setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
         this.setModal(true);
     }
 
@@ -96,7 +103,6 @@ public abstract class PopupDialog extends JDialog {
 
     public static void updateList(final JTable tableView) {
         SwingUtilities.invokeLater(new Runnable() {
-
             public void run() {
                 try {
                     Thread.currentThread().sleep(1000);

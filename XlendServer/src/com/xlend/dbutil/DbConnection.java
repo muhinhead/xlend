@@ -25,12 +25,27 @@ import java.util.Properties;
  */
 public class DbConnection {
 
+    private static class ConnectionWithFlag {
+
+        boolean isBusy = false;
+        Connection connection = null;
+
+        ConnectionWithFlag(Connection c) {
+            connection = c;
+            isBusy = true;
+        }
+
+        private void freeConnection() {
+            isBusy = false;
+        }
+    }
 //    private static Connection logDBconnection = null;
     private static final int DB_VERSION_ID = 42;
     public static final String DB_VERSION = "0.42";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
+    private static ArrayList<ConnectionWithFlag> connections = new ArrayList<ConnectionWithFlag>();
     private static String[] createLogDBsqls = new String[]{
         "create cached table updatelog "
         + "("
@@ -634,9 +649,9 @@ public class DbConnection {
         "alter table xmachrentalrateitm drop cbitem_id",
         "alter table xmachrentalrateitm add xmachtype_id int",
         "alter table xmachrentalrateitm add "
-            + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
-            + "references xmachtype(xmachtype_id) on delete cascade",
-        "alter table xmachine add fueltype int default 1"    
+        + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
+        + "references xmachtype(xmachtype_id) on delete cascade",
+        "alter table xmachine add fueltype int default 1"
     };
 
 //    public synchronized static Connection getLogDBconnection() {
@@ -653,7 +668,6 @@ public class DbConnection {
 //        }
 //        return logDBconnection;
 //    }
-
     public static String getLogin() {
         return props.getProperty("dbUser", "sa");
     }
@@ -683,6 +697,13 @@ public class DbConnection {
     }
 
     public static Connection getConnection() throws RemoteException {
+        for (ConnectionWithFlag con : connections) {
+            if (!con.isBusy) {
+                con.isBusy = true;
+//                System.out.println("!! connection FOUND");
+                return con.connection;
+            }
+        }
         Connection connection = null;
         try {
             Locale.setDefault(Locale.ENGLISH);
@@ -706,7 +727,13 @@ public class DbConnection {
 //            }
             isFirstTime = false;
         }
-        return checkVersion(connection);
+        if (connection != null) {
+            connections.add(new ConnectionWithFlag(connection));
+//            System.out.println("!! connection CREATED");
+            return checkVersion(connection);
+        } else {
+            return null;
+        }
     }
 
     public static void initLocalDB(Connection connection) {
@@ -751,9 +778,24 @@ public class DbConnection {
     }
 
     public static void closeConnection(Connection connection) throws SQLException {
-//        connection.commit();
-        connection.close();
+        for (ConnectionWithFlag cf : connections) {
+            if (cf.connection == connection) {
+                cf.isBusy = false;
+//                System.out.println("!! connection FREED");
+                return;
+            }
+        }
+//        connection.close();
         connection = null;
+    }
+
+    public static void closeAllConnections() throws SQLException {
+        for (ConnectionWithFlag cf : connections) {
+            cf.connection.close();
+//            System.out.println("!! connection CLOSED");
+            cf.connection = null;
+        }
+        connections.clear();
     }
 
     public static String getCurDir() {

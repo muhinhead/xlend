@@ -63,12 +63,13 @@
                         public String getCeil(int id) {
                             return DbConnection.getStampOnID(id, "xappforleave", connection);
                         }
-                    }, //                    new Util.TableCeil("") {
-                //                        @Override
-                //                        public String getCeil(int id) {
-                //                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xincident.jsp?id=" + id + "'\"/>";
-                //                        }
-                //                    }
+                    },
+                    new Util.TableCeil("") {
+                        @Override
+                        public String getCeil(int id) {
+                            return "<input type=\"button\" value=\"Details...\" onclick=\"document.location.href='xapp4leave.jsp?id=" + id + "'\"/>";
+                        }
+                    }
                 };%>
             <%=Util.showTable(Selects.SELECT_FROM_APP4LEAVE, connection, addCeils)%>
         </form>

@@ -86,7 +86,7 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
         DbObject dbob = null;
         try {
             Constructor constructor = dbobClass.getConstructor(Connection.class);
-            dbob = (DbObject) constructor.newInstance(DbConnection.getConnection());
+            dbob = (DbObject) constructor.newInstance(connection);
             return dbob.loadOnId(id);
         } catch (Exception ex) {
             XlendServer.log(ex);

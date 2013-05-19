@@ -34,7 +34,7 @@ public class DbConnection {
                 DriverManager.registerDriver((java.sql.Driver) Class.forName(
                         props.getProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
                 connection = DriverManager.getConnection(props.getProperty("dbConnection",
-                        "jdbc:mysql://localhost/xlend?autoReconnect=true"),
+                        "jdbc:mysql://ec2-54-226-3-180.compute-1.amazonaws.com/xlend?autoReconnect=true"),
                         props.getProperty("dbUser", "jaco"),
                         props.getProperty("dbPassword", "jaco84oliver"));
             } catch (Exception ex) {

@@ -27,18 +27,23 @@ public abstract class PopupDialog extends JDialog {
         setVisible(true);
     }
 
-    protected Color getHederBackground() {
+    protected Color getHeaderBackground() {
         return new Color(226, 148, 37);
     }
-
+    
+    protected Color getHeaderForeground() {
+        return new Color(255, 255, 255);
+    }
+    
     protected void fillContent() {
         getContentPane().setLayout(new BorderLayout(10, 10));
-        Color bg = getHederBackground();
+        Color bg = getHeaderBackground();
         if (bg != null) {
             JPanel headerPanel = new JPanel();
             headerPanel.setBackground(bg);
             JLabel lbl = new JLabel(getTitle(), SwingConstants.CENTER);
             lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 18));
+            lbl.setForeground(getHeaderForeground());
             headerPanel.add(lbl);
             getContentPane().add(headerPanel, BorderLayout.NORTH);
         }

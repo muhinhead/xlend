@@ -429,6 +429,15 @@ public class Selects {
     public static final String SELECT_FROM_ACCOUNTS =
             "Select xaccount_id \"Id\", accname \"Name\", accnumber \"Number\", bank \"Bank\", branch \"Branch\" "
             + "from xaccounts";
+    public static final String SELECT_FROM_PETTY =
+            "Select xpetty_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\","
+            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xpetty.xmachine_id) \"Machine\","
+            + "(Select name from xsite where xsite_id=xpetty.xsite_id) \"Site\","
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Issued by\","
+            + "amount \"Amount\","
+            + "to_char(receipt_date,'DD/MM/YYYY') \"Receipt Date\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Receiptor\" "
+            + "from xpetty order by issue_date desc";
     public static final String SELECT_FROM_BANKBALANCE =
             "Select xbankbalance_id \"Id\", to_char(balancedate,'DD/MM/YYYY HH24:MI') \"Date/time\", totalvalue "
             + "from xbankbalance order by balancedate";

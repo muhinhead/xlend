@@ -107,7 +107,6 @@ public class DbTableView extends JTable implements ITableView {
         super();
         ListSelectionModel rowSM = getSelectionModel();
         rowSM.addListSelectionListener(new ListSelectionListener() {
-
             public void valueChanged(ListSelectionEvent e) {
                 if (e.getValueIsAdjusting()) {
                     return;
@@ -189,13 +188,15 @@ public class DbTableView extends JTable implements ITableView {
                 setRowSelectionInterval(selectedRow, selectedRow);
             }
         }
+        Rectangle rect = getCellRect(selectedRow, 0, true);
+        scrollRectToVisible(rect);
     }
 
     public void gotoRow(int row) {
         if (row >= 0 && row < getRowCount()) {
             setSelectedRow(row);
-            Rectangle rect = getCellRect(row, 0, true);
-            scrollRectToVisible(rect);
+//            Rectangle rect = getCellRect(row, 0, true);
+//            scrollRectToVisible(rect);
         }
     }
 

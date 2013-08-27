@@ -48,7 +48,7 @@ public class DbTableGridPanel extends JPanel {
         progressBar.setVisible(toshow);
         pageLbl.setVisible(toshow);
     }
-    
+
     public DbTableGridPanel(
             AbstractAction addAction,
             AbstractAction editAction,
@@ -101,13 +101,12 @@ public class DbTableGridPanel extends JPanel {
         pageChoosePanel.add(progressBar = new JProgressBar());
         progressBar.setIndeterminate(false);
         pageChoosePanel.add(progressBar);
-        pageChoosePanel.add(pageLbl = new JLabel("Page:",SwingConstants.RIGHT));
+        pageChoosePanel.add(pageLbl = new JLabel("Page:", SwingConstants.RIGHT));
         pageChoosePanel.add(pageSelector = new JComboBox());
         add(sp = new JScrollPane((JComponent) getTableView()), BorderLayout.CENTER);
         add(getRightPanel(btnPanel), BorderLayout.EAST);
         add(pageChoosePanel, BorderLayout.SOUTH);
         tableView.addMouseListener(doubleClickAdapter = new MouseAdapter() {
-
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2 && getEditAction() != null) {
                     getEditAction().actionPerformed(null);
@@ -120,7 +119,7 @@ public class DbTableGridPanel extends JPanel {
     protected JPanel getRightPanel(JPanel btnPanel) {
         JPanel rightPanel = new JPanel(new BorderLayout());
         rightPanel.add(btnPanel, BorderLayout.NORTH);
-        rightPanel.add(countLabel = new JLabel("",SwingConstants.CENTER), BorderLayout.SOUTH);
+        rightPanel.add(countLabel = new JLabel("", SwingConstants.CENTER), BorderLayout.SOUTH);
         countLabel.setBorder(BorderFactory.createEtchedBorder());
         return rightPanel;
     }
@@ -296,5 +295,4 @@ public class DbTableGridPanel extends JPanel {
     public JProgressBar getProgressBar() {
         return progressBar;
     }
-    
 }

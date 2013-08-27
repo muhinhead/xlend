@@ -1,4 +1,4 @@
-       
+
 CREAte table dbversion
 (
     dbversion_id    int not null auto_increment,
@@ -1197,7 +1197,7 @@ create table xjobcard
 #--    constraint xjobcard_xmachine_fk027 foreign key (vehicle_id2_day7) references xmachine (xmachine_id),
 #--    constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id),
 #--    constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id),
-#--    constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)    
+#--    constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)
 );
 
 create table xhourcompare
@@ -1316,7 +1316,7 @@ insert into cbitems (name, id, val)
   select 'parts_groups',1,'machines'
     from junk
    where not exists(select * from cbitems where name='parts_groups' and id=1);
-   
+
 insert into cbitems (name, id, val)
   select 'parts_groups',2,'trucks'
     from junk
@@ -1514,7 +1514,7 @@ create table xdieselpurchase
     xdieselpurchase_id int not null auto_increment,
     xsupplier_id       int not null,
     purchase_date      date not null,
-    litres             decimal(6,2) not null, 
+    litres             decimal(6,2) not null,
     rand_factor        decimal(5,2) not null,
     paid               decimal(8,2) not null,
     stamp              timestamp,
@@ -1610,6 +1610,58 @@ create table xbattery
     constraint xbattery_pk primary key (xbattery_id),
     constraint xbattery_xbatterypurchase_fk foreign key (xbatterypurchase_id) references xbatterypurchase (xbatterypurchase_id),
     constraint xbattery_xbateryissue_fk foreign key (xbateryissue_id) references xbateryissue (xbateryissue_id)
+);
+
+
+create table xpettycategory
+(
+    xpettycategory_id   int not null auto_increment,
+    category_name       varchar(64) not null,
+    stamp               timestamp,
+    constraint xpettycategory_pk primary key (xpettycategory_id)
+);
+
+create table xpettybalance
+(
+    xpettybalance_id    int not null auto_increment,
+    curdate             date,
+    in_amount           decimal(10,2),
+    out_amount          decimal(10,2),
+    constraint xpettybalance_pk primary key (xpettybalance_id)
+);
+
+create table xpetty
+(
+    xpetty_id           int not null auto_increment,
+    issue_date          date not null,
+    xemployee_in_id     int not null,
+    xmachine_id         int not null,
+    xsite_id            int not null,
+    amount              decimal(6,2) not null,
+    is_loan             bit default 0,
+    is_petty            bit default 0,
+    is_allowance        bit default 0,
+    notes               text,
+    receipt_date        date,
+    xemployee_out_id    int,
+    stamp               timestamp,
+    constraint xpetty_pk primary key (xpetty_id),
+    constraint xpetty_xemployee_fk foreign key (xemployee_in_id) references xemployee (xemployee_id),
+    constraint xpetty_xemployee_fk2 foreign key (xemployee_out_id) references xemployee (xemployee_id),
+    constraint xpetty_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
+    constraint xpetty_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
+);
+
+create table xpettyitem
+(
+    xpettyitem_id       int not null auto_increment,
+    xpetty_id           int not null,
+    xpettycategory_id   int not null,
+    amount              decimal(6,2) not null,
+    stamp               timestamp,
+    constraint xpettyitem_pk primary key (xpettyitem_id),
+    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id),
+    constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)
 );
 
 #----------------- auxiliary tables -------------------

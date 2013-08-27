@@ -1,8 +1,10 @@
 package com.xlend.gui;
 
+import static com.xlend.gui.GeneralFrame.errMessageBox;
 import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
 import com.xlend.gui.banking.DieselPurchaseGrid;
+import com.xlend.gui.banking.PettyInOutGrid;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
 import javax.swing.JPanel;
@@ -16,11 +18,12 @@ public class BankingFrame extends GeneralFrame {
 
     private AccountsGrid bankAccountsPanel;
     private static String[] sheetList = new String[]{
-        "Accounts", "Bank Balance", "Diesel Purchase"
+        "Accounts", "Bank Balance", "Diesel Purchase","Petty In/Out"
     };
     private GeneralGridPanel accountsPanel;
     private GeneralGridPanel balancePanel;
     private GeneralGridPanel dieselPurchasePanel;
+    private GeneralGridPanel pettyInOutPanel;
 
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
@@ -46,6 +49,9 @@ public class BankingFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
             bankTab.addTab(getDieselPurchasePanel(), sheets()[2]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
+            bankTab.addTab(getPettyInOutPanel(), sheets()[3]);
         }
         return bankTab;
     }
@@ -84,5 +90,17 @@ public class BankingFrame extends GeneralFrame {
             }
         }
         return dieselPurchasePanel;
+    }
+    
+    private JPanel getPettyInOutPanel() {
+        if (pettyInOutPanel == null) {
+            try {
+                registerGrid(pettyInOutPanel = new PettyInOutGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return pettyInOutPanel;
     }
 }

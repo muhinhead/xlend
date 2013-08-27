@@ -342,6 +342,9 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
                     row = row < view.getRowCount() ? row : row - 1;
                     if (row >= 0 && row < view.getRowCount()) {
                         view.setRowSelectionInterval(row, row);
+                        if (view instanceof JTable) {
+                            ((JTable)view).scrollRectToVisible(((JTable)view).getCellRect(row, 0, true));  
+                        }
                     }
                 }
             }

@@ -11,6 +11,7 @@ import com.xlend.dbutil.SyncPushTimer;
 import com.xlend.orm.Dbversion;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.RmiMessageSender;
+import com.xlend.util.FileFilterOnExtension;
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -36,6 +37,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import migration.MigrationDialog;
 
@@ -49,7 +51,7 @@ public class XlendServer {
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
-    private static FileHandler fh; 
+    private static FileHandler fh;
     private static Thread rmiServer;
     private static TrayIcon ti;
     private static Properties props;
@@ -133,6 +135,18 @@ public class XlendServer {
         }
     }
 
+    private static String pickPath2MySQLdump() {
+        JFileChooser chooser = new JFileChooser("./");
+        chooser.setFileFilter(new FileFilterOnExtension("exe"));
+        chooser.setDialogTitle("Specify the path to the program mysqldump.exe");
+        chooser.setApproveButtonText("Choose");
+        int retVal = chooser.showOpenDialog(null);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile().getAbsolutePath();
+        }
+        return null;
+    }
+
     private static class CtrlCtrapper extends Thread {
 
         private Timer oTimer;
@@ -175,6 +189,17 @@ public class XlendServer {
         String appToLog = "\n" + (msg == null ? th.getMessage() : msg);
         LogViewDialog.logBuffer.append(appToLog);
         logger.log(Level.SEVERE, msg, th);
+    }
+
+    public static void saveProperties() {
+        try {
+            if (props != null) {
+                props.store(new FileOutputStream(PROPERTYFILENAME),
+                        "-----------------------");
+            }
+        } catch (IOException e) {
+            log(e);
+        }
     }
 
     /**
@@ -222,8 +247,11 @@ public class XlendServer {
         };
         rmiServer.start();
         log("Start backup...");
-        makeBackup();
-        log("Backup completed!");
+        if (makeBackup()) {
+            log("Backup completed!");
+        } else {
+            log("Backup skipped or failed!");
+        }
     }
 
 //    private static void runSyncService() throws RemoteException {
@@ -248,12 +276,27 @@ public class XlendServer {
 //                    + "does not match, replication doesn't start!");
 //        }
 //    }
-    private static void makeBackup() {
+    private static boolean makeBackup() {
         Process p;
-        String mysqlDumpPath = props.getProperty("dbDump", "E:\\Program Files\\MySQL\\MySQL Server 5.1\\bin\\mysqldump.exe");//findPath(DbConnection.getBackupCommand());
+        String mysqlDumpPath = props.getProperty("dbDump", "unknown");
+//                "E:\\Program Files\\MySQL\\MySQL Server 5.1\\bi\\mysqldump.exe");//findPath(DbConnection.getBackupCommand());
+        if (mysqlDumpPath.equals("unknown")) {
+            mysqlDumpPath = pickPath2MySQLdump();
+            if (mysqlDumpPath == null) {
+                JOptionPane.showMessageDialog(null, "Data backup skipped\nServer will work as usually",
+                        "Attention!", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                props.setProperty("dbDump", mysqlDumpPath);
+                saveProperties();
+            }
+        }
         String[] runCmd = new String[]{mysqlDumpPath, "-u",
             DbConnection.getLogin(), "-p" + DbConnection.getPassword(), "xlend"
         };
+        for (String w : runCmd) {
+            System.out.println(w);
+        }
         Calendar cal = Calendar.getInstance();
         File dump = new File("xlend-" + cal.get(Calendar.YEAR) + "-"
                 + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
@@ -293,10 +336,12 @@ public class XlendServer {
 //                }
 
             }
+            return true;
         } catch (Exception ex) {
             XlendServer.log(ex);
             JOptionPane.showMessageDialog(null, ex.getMessage() + "\nServer will work as usually",
                     "Backup failed", JOptionPane.WARNING_MESSAGE);
+            return false;
         } finally {
             try {
                 if (dumpStream != null) {

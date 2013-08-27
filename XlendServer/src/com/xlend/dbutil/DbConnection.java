@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 42;
-    public static final String DB_VERSION = "0.42";
+    private static final int DB_VERSION_ID = 43;
+    public static final String DB_VERSION = "0.43";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -601,47 +601,47 @@ public class DbConnection {
         //        + "    constraint xbattery_xbatterypurchase_fk foreign key (xbatterypurchase_id) references xbatterypurchase (xbatterypurchase_id),"
         //        + "    constraint xbattery_xbateryissue_fk foreign key (xbateryissue_id) references xbateryissue (xbateryissue_id)"
         //        + ")",
-        "alter table xsupplier add credit_limit int",
-        "alter table xdieselpurchase add paid decimal(8,2)",
-        //38->39
-        "alter table xemployee add clock_numonly smallint",
-        "update xemployee set clock_numonly = extractnum(clock_num)",
-        "create index employee_clocknumonly on xemployee (clock_numonly,clock_num)",
-        "create trigger tr_xemployee_beforeinsert"
-        + " before insert on xemployee"
-        + " for each row"
-        + " begin"
-        + "   set new.clock_numonly = extractnum(new.clock_num);"
-        + " end;",
-        "create trigger tr_xemployee_beforeupdate"
-        + " before update on xemployee"
-        + " for each row"
-        + " begin"
-        + "   set new.clock_numonly = extractnum(new.clock_num);"
-        + " end;",
-        //39->40
-        "alter table xbreakdown modify timeleft time",
-        "alter table xbreakdown modify timeback time",
-        "alter table xbreakdown modify km2site1way decimal(6,2)",
-        "alter table xbreakdown modify hoursonjob decimal(6,2)",
-        "alter table xopclocksheet modify km_start1 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop1 decimal(10,2)",
-        "alter table xopclocksheet modify km_start2 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop2 decimal(10,2)",
-        "alter table xopclocksheet modify km_start3 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop3 decimal(10,2)",
-        "alter table xopclocksheet modify km_start4 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop4 decimal(10,2)",
-        "alter table xopclocksheet modify km_start5 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop5 decimal(10,2)",
-        "alter table xopclocksheet modify km_start6 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop6 decimal(10,2)",
-        "alter table xopclocksheet modify km_start7 decimal(10,2)",
-        "alter table xopclocksheet modify km_stop7 decimal(10,2)",
-        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee",
-        //40->41
-        "alter table xmachine add consumption int",
-        "alter table xbreakdown add standing_hours decimal(4,2)",
+        //        "alter table xsupplier add credit_limit int",
+        //        "alter table xdieselpurchase add paid decimal(8,2)",
+        //        //38->39
+        //        "alter table xemployee add clock_numonly smallint",
+        //        "update xemployee set clock_numonly = extractnum(clock_num)",
+        //        "create index employee_clocknumonly on xemployee (clock_numonly,clock_num)",
+        //        "create trigger tr_xemployee_beforeinsert"
+        //        + " before insert on xemployee"
+        //        + " for each row"
+        //        + " begin"
+        //        + "   set new.clock_numonly = extractnum(new.clock_num);"
+        //        + " end;",
+        //        "create trigger tr_xemployee_beforeupdate"
+        //        + " before update on xemployee"
+        //        + " for each row"
+        //        + " begin"
+        //        + "   set new.clock_numonly = extractnum(new.clock_num);"
+        //        + " end;",
+        //        //39->40
+        //        "alter table xbreakdown modify timeleft time",
+        //        "alter table xbreakdown modify timeback time",
+        //        "alter table xbreakdown modify km2site1way decimal(6,2)",
+        //        "alter table xbreakdown modify hoursonjob decimal(6,2)",
+        //        "alter table xopclocksheet modify km_start1 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop1 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start2 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop2 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start3 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop3 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start4 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop4 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start5 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop5 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start6 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop6 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_start7 decimal(10,2)",
+        //        "alter table xopclocksheet modify km_stop7 decimal(10,2)",
+        //        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee",
+        //        //40->41
+        //        "alter table xmachine add consumption int",
+        //        "alter table xbreakdown add standing_hours decimal(4,2)",
         //41->42
         "alter table xmachtype add is_rated bit",
         "update xmachtype set is_rated=(parenttype_id is null)",
@@ -651,7 +651,47 @@ public class DbConnection {
         "alter table xmachrentalrateitm add "
         + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
         + "references xmachtype(xmachtype_id) on delete cascade",
-        "alter table xmachine add fueltype int default 1"
+        "alter table xmachine add fueltype int default 1",
+        //42->43
+        "create table xpettycategory"
+        + "("
+        + "    xpettycategory_id   int not null auto_increment,"
+        + "    category_name       varchar(64) not null,"
+        + "    stamp               timestamp,"
+        + "    constraint xpettycategory_pk primary key (xpettycategory_id)"
+        + ")",
+        "create table xpetty"
+        + "("
+        + "    xpetty_id           int not null auto_increment,"
+        + "    issue_date          date not null,"
+        + "    xemployee_in_id     int not null,"
+        + "    xmachine_id         int not null,"
+        + "    xsite_id            int not null,"
+        + "    amount              decimal(6,2) not null,"
+        + "    is_loan             bit default 0,"
+        + "    is_petty            bit default 0,"
+        + "    is_allowance        bit default 0,"
+        + "    notes               text,"
+        + "    receipt_date        date,"
+        + "    xemployee_out_id    int,"
+        + "    stamp               timestamp,"
+        + "    constraint xpetty_pk primary key (xpetty_id),"
+        + "    constraint xpetty_xemployee_fk foreign key (xemployee_in_id) references xemployee (xemployee_id),"
+        + "    constraint xpetty_xemployee_fk2 foreign key (xemployee_out_id) references xemployee (xemployee_id),"
+        + "    constraint xpetty_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+        + "    constraint xpetty_xsite_fk foreign key (xsite_id) references xsite (xsite_id)"
+        + ")",
+        "create table xpettyitem"
+        + "("
+        + "    xpettyitem_id       int not null auto_increment,"
+        + "    xpetty_id           int not null,"
+        + "    xpettycategory_id   int not null,"
+        + "    amount              decimal(6,2) not null,"
+        + "    stamp               timestamp,"
+        + "    constraint xpettyitem_pk primary key (xpettyitem_id),"
+        + "    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id),"
+        + "    constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)"
+        + ")"
     };
 
 //    public synchronized static Connection getLogDBconnection() {
@@ -669,11 +709,11 @@ public class DbConnection {
 //        return logDBconnection;
 //    }
     public static String getLogin() {
-        return props.getProperty("dbUser", "sa");
+        return props.getProperty("dbUser", "root");
     }
 
     public static String getPassword() {
-        return props.getProperty("dbPassword", "");
+        return props.getProperty("dbPassword", "root");
     }
 
     public static String getBackupCommand() {
@@ -710,10 +750,11 @@ public class DbConnection {
             DriverManager.registerDriver(
                     (java.sql.Driver) Class.forName(
                     props.getProperty("dbDriverName",
-                    "org.hsqldb.jdbcDriver")).newInstance());
+                    "com.mysql.jdbc.Driver")).newInstance());
             connection = DriverManager.getConnection(
                     props.getProperty("dbConnection",
-                    "jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
+                    "jdbc:mysql://localhost/xlend?characterEncoding=UTF8"),
+                    //"jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
                     getLogin(), getPassword());
             connection.setAutoCommit(true);
             RmiMessageSender.isMySQL = (connection.getClass().getCanonicalName().indexOf("mysql") > -1);

@@ -229,6 +229,10 @@ public class XlendWorks {
         return loadOnSelect(exchanger, "select xemployee_id,concat(clock_num,' ',first_name) from xemployee order by clock_numonly");
     }
 
+    public static ComboItem[] loadAllXpettyCategories(IMessageSender exchanger) {
+        return loadOnSelect(exchanger, "select xpettycategory_id,concat(lpad(xpettycategory_id,2,'0'),' ',category_name) from xpettycategory");
+    }
+    
     public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
 //        try {
 //            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");

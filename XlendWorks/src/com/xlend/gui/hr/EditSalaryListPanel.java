@@ -41,7 +41,7 @@ class EditSalaryListPanel extends RecordEditPanel {
         private JComboBox employeeCB;
         private SelectedNumberSpinner amountSP;
         private JCheckBox markCB;
-        private JPanel hdrPanel;
+//        private JPanel hdrPanel;
 
         public SalaryPanel(Xsalary xsalary) {
             super(new GridLayout(1, 2, 5, 5));

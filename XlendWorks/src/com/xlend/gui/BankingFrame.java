@@ -16,6 +16,7 @@ import javax.swing.JTabbedPane;
  */
 public class BankingFrame extends GeneralFrame {
 
+    public static BankingFrame instance;
     private AccountsGrid bankAccountsPanel;
     private static String[] sheetList = new String[]{
         "Accounts", "Bank Balance", "Diesel Purchase","Petty In/Out"
@@ -27,6 +28,7 @@ public class BankingFrame extends GeneralFrame {
 
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
+        instance = this;
     }
 
     @Override

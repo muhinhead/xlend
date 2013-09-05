@@ -709,11 +709,11 @@ public class DbConnection {
 //        return logDBconnection;
 //    }
     public static String getLogin() {
-        return props.getProperty("dbUser", "root");
+        return props.getProperty("dbUser", "jaco");
     }
 
     public static String getPassword() {
-        return props.getProperty("dbPassword", "root");
+        return props.getProperty("dbPassword", "jaco84oliver");
     }
 
     public static String getBackupCommand() {

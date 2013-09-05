@@ -527,6 +527,8 @@ public class Selects {
             "select to_char(date_required,'DD/MM/YYYY') \"Date\", count(*) \"Qty\" from xtransscheduleitm group by date_required";
     public static final String SELECT_FROM_XPPETYPE =
             "select xppetype_id \"Id\", xppetype \"PPE type\" from xppetype";
+    public static final String SELECT_FROM_XPETTYCATEGORY =
+            "select xpettycategory_id \"Id\", category_name \"Petty Category\" from xpettycategory";
     public static final String GET_TRANSSCHEDULE_BY_DATE =
             "select to_char(date_required,'DD/MM/YYYY'), count(*) from xtransscheduleitm group by date_required";
     public static final String SELECT_TRANSSCHEDULE_BY_DATE_AND_MACHINE =

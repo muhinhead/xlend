@@ -150,6 +150,12 @@ public class XlendWorks {
         return false;
     }
 
+    public static boolean checkAdminPassword(IMessageSender exchanger, String pwd) throws RemoteException {
+        DbObject[] users = exchanger.getDbObjects(Userprofile.class,
+                "login='admin' and pwdmd5='" + pwd + "'", null);
+        return users.length > 0;
+    }
+
     public static String serverSetup(String title) {
         String address = DashBoard.readProperty("ServerAddress", "localhost");
         String[] vals = address.split(":");
@@ -232,7 +238,7 @@ public class XlendWorks {
     public static ComboItem[] loadAllXpettyCategories(IMessageSender exchanger) {
         return loadOnSelect(exchanger, "select xpettycategory_id,concat(lpad(xpettycategory_id,2,'0'),' ',category_name) from xpettycategory");
     }
-    
+
     public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
 //        try {
 //            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");
@@ -749,6 +755,17 @@ public class XlendWorks {
         return true;
     }
 
+    public static boolean isXpettyCategoryUsed(IMessageSender exchanger, Integer xpettyCategoryID) {
+        try {
+            Vector[] tab = exchanger.getTableBody("select xpettyitem_id from xpettyitem where xpettycategory_id=" + xpettyCategoryID);
+            Vector rows = tab[1];
+            return rows.size() > 0;
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return true;
+    }
+
     public static boolean isXPPEtypeUsed(IMessageSender exchanger, Integer xppetypeID) {
         try {
             Vector[] tab = exchanger.getTableBody("select xppebuyitem_id from xppebuyitem where xppetype_id="
@@ -1123,7 +1140,7 @@ public class XlendWorks {
 
     public static Integer getEmployeeOnClockNum(IMessageSender exchanger, String clock_num) {
         try {
-            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num='" + clock_num +"'", null);
+            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num='" + clock_num + "'", null);
             if (obs.length > 0) {
                 Xemployee emp = (Xemployee) obs[0];
                 return emp.getXemployeeId();

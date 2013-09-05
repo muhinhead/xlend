@@ -18,18 +18,24 @@ import com.xlend.orm.Xpettyitem;
 import com.xlend.orm.Xsalarylist;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.util.PopupDialog;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -41,11 +47,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -90,6 +98,54 @@ class EditPettyPanel extends RecordEditPanel {
     private JButton addItmBtn;
     private JButton delItmBtn;
     private JTextArea notesArea;
+    private EmployeeLookupAction empOutLookupAction;
+    private JToggleButton editToggleBtn;
+
+    private class GetAdminPasswordDialog extends PopupDialog {
+
+        private JButton okBtn;
+        private JButton cancelBtn;
+        private AbstractAction okAction;
+        private AbstractAction cancelAction;
+
+        public GetAdminPasswordDialog(JPasswordField pwdFld) {
+            super(null, "Enter admin's password", pwdFld);
+        }
+
+        @Override
+        protected void fillContent() {
+            super.fillContent();
+//            add(getBorderPanel(new JComponent[]{new JPanel(),JComponent) getObject(),new JPanel()});
+            add(getBorderPanel(new JComponent[]{
+                new JPanel(), (JComponent) getObject(), new JPanel()
+            }));
+            JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            btnPanel.add(okBtn = new JButton(okAction = new AbstractAction("OK") {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    dispose();
+                }
+            }));
+            btnPanel.add(cancelBtn = new JButton(cancelAction = new AbstractAction("Cancel") {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    JPasswordField pwdFld = (JPasswordField) getObject();
+                    pwdFld.setText("");
+                    dispose();
+                }
+            }));
+            add(btnPanel, BorderLayout.SOUTH);
+            getRootPane().setDefaultButton(okBtn);
+        }
+
+        @Override
+        public void freeResources() {
+            okBtn.setAction(null);
+            cancelBtn.setAction(null);
+            okAction = null;
+            cancelAction = null;
+        }
+    }
 
     private class PettyItemPanel extends JPanel {
 
@@ -98,16 +154,28 @@ class EditPettyPanel extends RecordEditPanel {
         private JComboBox pttyCategoryCB;
         private SelectedNumberSpinner amtSP;
         private JCheckBox markCB;
+        private final PettyCatergoryLookupAction catLookupAction;
 
         public PettyItemPanel(Xpettyitem xpettyItem) {
-            super(new GridLayout(1, 2, 5, 5));
+            super(new BorderLayout(5, 5));
             this.xpettyItem = xpettyItem;
             pttyCategoryCbModel = new DefaultComboBoxModel(XlendWorks.loadAllXpettyCategories(DashBoard.getExchanger()));
             pttyCategoryCB = new JComboBox(pttyCategoryCbModel);
             markCB = new JCheckBox();
-            add(getBorderPanel(new JComponent[]{markCB, pttyCategoryCB}));
-            add(getBorderPanel(new JComponent[]{new JPanel(), amtSP = new SelectedNumberSpinner(0.0, 0.0, 9999999.0, 0.01)}));
+
+            add(markCB, BorderLayout.WEST);
+            add(comboPanelWithLookupBtn(pttyCategoryCB = new JComboBox(pttyCategoryCbModel),
+                    catLookupAction = new PettyCatergoryLookupAction(pttyCategoryCB)), BorderLayout.CENTER);
+            add(amtSP = new SelectedNumberSpinner(0.0, 0.0, 9999999.0, 0.01), BorderLayout.EAST);
+
             load();
+        }
+
+        public void setEnabled(boolean enable) {
+            markCB.setEnabled(enable);
+            pttyCategoryCB.setEnabled(enable);
+            catLookupAction.setEnabled(enable);
+            amtSP.setEnabled(enable);
         }
 
         public void mark(boolean m) {
@@ -134,12 +202,12 @@ class EditPettyPanel extends RecordEditPanel {
             if (getXpettyItem() == null || getXpettyItem().getXpettyitemId() == null) {
                 isNew = true;
                 xpettyItem = new Xpettyitem(null);
-                getXpettyItem().setXpettyitemId(0);
+                xpettyItem.setXpettyitemId(0);
                 Xpetty xpetty = (Xpetty) getDbObject();
-                getXpettyItem().setXpettyId(xpetty.getXpettyId());
+                xpettyItem.setXpettyId(xpetty.getXpettyId());
             }
-            getXpettyItem().setAmount((Double) amtSP.getValue());
-            getXpettyItem().setXpettycategoryId(getSelectedCbItem(pttyCategoryCB));
+            xpettyItem.setAmount((Double) amtSP.getValue());
+            xpettyItem.setXpettycategoryId(getSelectedCbItem(pttyCategoryCB));
             return saveDbRecord(getXpettyItem(), isNew);
         }
 
@@ -217,7 +285,11 @@ class EditPettyPanel extends RecordEditPanel {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 XlendWorks.log(ex);
             }
+            syncOperatorNumField();
+            syncReceipterNumFld();
         }
+        enableRightPanel(false);
+        editToggleBtn.setEnabled(xp != null);
         BankingFrame.instance.setCursor(Cursor.getDefaultCursor());
     }
 
@@ -246,6 +318,7 @@ class EditPettyPanel extends RecordEditPanel {
         xp.setIsPetty(pettyCB.isSelected() ? 1 : 0);
         xp.setIsAllowance(allowCB.isSelected() ? 1 : 0);
         xp.setNotes(notesArea.getText());
+        xp.setAmount((Double) amountSP.getValue());
         boolean ok = saveDbRecord(xp, isNew);
         if (ok) {
             for (PettyItemPanel p : childRows) {
@@ -332,13 +405,7 @@ class EditPettyPanel extends RecordEditPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (enableNumber1Update) {
-                    enableCombo1Update = false;
-                    ComboItem ci = (ComboItem) employeeInCB.getSelectedItem();
-                    if (ci != null) {
-                        int p = ci.getValue().indexOf(" ");
-                        operatorNumberField.setText(ci.getValue().substring(0, p));
-                    }
-                    enableCombo1Update = true;
+                    syncOperatorNumField();
                 }
             }
         });
@@ -381,13 +448,17 @@ class EditPettyPanel extends RecordEditPanel {
         lblPanel.add(new JLabel("Balance:", SwingConstants.RIGHT));
         lblPanel.add(new JLabel("   Outstanding Issue Balance:", SwingConstants.RIGHT));
 
-        edPanel.add(getBorderPanel(new JComponent[]{receiptDateSP = new SelectedDateSpinner()}));
+        edPanel.add(getBorderPanel(new JComponent[]{
+            receiptDateSP = new SelectedDateSpinner(),
+            new JPanel(),
+            editToggleBtn = new JToggleButton("edit")//getEditToggleAction())
+        }));
         edPanel.add(getBorderPanel(new JComponent[]{
             receipterNumberField,
             getBorderPanel(new JComponent[]{
                 new JLabel("   Name:", SwingConstants.RIGHT),
                 comboPanelWithLookupBtn(employeeOutCB = new JComboBox(employeeOutCbModel),
-                new EmployeeLookupAction(employeeOutCB))
+                empOutLookupAction = new EmployeeLookupAction(employeeOutCB))
             })
         }));
         edPanel.add(getBorderPanel(new JComponent[]{balanceSP = new SelectedNumberSpinner(.0, .0, 99999999.0, .1)}));
@@ -407,13 +478,7 @@ class EditPettyPanel extends RecordEditPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (enableNumber2Update) {
-                    enableCombo2Update = false;
-                    ComboItem ci = (ComboItem) employeeOutCB.getSelectedItem();
-                    if (ci != null) {
-                        int p = ci.getValue().indexOf(" ");
-                        receipterNumberField.setText(ci.getValue().substring(0, p));
-                    }
-                    enableCombo2Update = true;
+                    syncReceipterNumFld();
                 }
             }
         });
@@ -444,7 +509,7 @@ class EditPettyPanel extends RecordEditPanel {
         downGridPanel.setLayout(new BoxLayout(downGridPanel, BoxLayout.Y_AXIS));
         hdrPanel = new JPanel(new GridLayout(1, 2));
         hdrPanel.add(getBorderPanel(new JComponent[]{selectAllCB = new JCheckBox(), new JLabel(hdrs[0], SwingConstants.CENTER)}));
-        hdrPanel.add(new JLabel(hdrs[1], SwingConstants.CENTER));
+        hdrPanel.add(new JLabel(hdrs[1], SwingConstants.RIGHT));
         selectAllCB.setAction(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -459,7 +524,52 @@ class EditPettyPanel extends RecordEditPanel {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         scrollPane.setPreferredSize(new Dimension(d.width / 3, 400));
 
+        editToggleBtn.addActionListener(getEditToggleAction());
+
         return rightPanel;
+    }
+
+    private void enableRightPanel(boolean enable) {
+        for (JComponent c : new JComponent[]{
+            receipterNumberField, employeeOutCB, addItmBtn, delItmBtn, receiptDateSP, selectAllCB
+        }) {
+            c.setEnabled(enable);
+        }
+        empOutLookupAction.setEnabled(enable);
+        for (PettyItemPanel p : childRows) {
+            p.setEnabled(enable);
+        }
+    }
+
+    private AbstractAction getEditToggleAction() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JToggleButton tBtn = (JToggleButton) ae.getSource();
+                if (tBtn.isSelected() && !XlendWorks.isCurrentAdmin()) {
+                    JPasswordField pwdFld = new JPasswordField();
+                    new GetAdminPasswordDialog(pwdFld);
+                    String pwd = new String(pwdFld.getPassword());
+                    if (pwd.length() > 0) {
+                        try {
+                            if (XlendWorks.checkAdminPassword(DashBoard.getExchanger(), pwd)) {
+                                enableRightPanel(true);
+                            } else {
+                                GeneralFrame.errMessageBox("Attempt failed", "Access denied");
+                                tBtn.setSelected(false);
+                            }
+                        } catch (RemoteException ex) {
+                            XlendWorks.logAndShowMessage(ex);
+                            tBtn.setSelected(false);
+                        }
+                    } else {
+                        tBtn.setSelected(false);
+                    }
+                } else {
+                    enableRightPanel(tBtn.isSelected());
+                }
+            }
+        };
     }
 
     private void redrawRows() {
@@ -504,5 +614,26 @@ class EditPettyPanel extends RecordEditPanel {
                 }
             }
         };
+    }
+
+    
+    private void syncOperatorNumField() {
+        enableCombo1Update = false;
+        ComboItem ci = (ComboItem) employeeInCB.getSelectedItem();
+        if (ci != null) {
+            int p = ci.getValue().indexOf(" ");
+            operatorNumberField.setText(ci.getValue().substring(0, p));
+        }
+        enableCombo1Update = true;
+    }
+
+    private void syncReceipterNumFld() {
+        enableCombo2Update = false;
+        ComboItem ci = (ComboItem) employeeOutCB.getSelectedItem();
+        if (ci != null) {
+            int p = ci.getValue().indexOf(" ");
+            receipterNumberField.setText(ci.getValue().substring(0, p));
+        }
+        enableCombo2Update = true;
     }
 }

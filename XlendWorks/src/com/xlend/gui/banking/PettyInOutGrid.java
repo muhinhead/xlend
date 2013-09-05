@@ -14,6 +14,7 @@ import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -41,17 +42,54 @@ public class PettyInOutGrid extends GeneralGridPanel {
                     XlendWorks.log(ex);
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
-            }  
+            }
         };
     }
 
     @Override
     protected AbstractAction editAction() {
-        return null;
+        return new AbstractAction("Edit Petty Cash") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
+                        new EditPettyDialog("Edit Petty Cash", xt);
+                        if (EditPettyDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(),
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
     }
 
     @Override
     protected AbstractAction delAction() {
-        return null;
+        return new AbstractAction("Delete Petty Cash") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
+                        if (xt != null && GeneralFrame.yesNo("Attention!",
+                                "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
+                            exchanger.deleteObject(xt);
+                            GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
+                                    getPageSelector().getSelectedIndex());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
     }
 }

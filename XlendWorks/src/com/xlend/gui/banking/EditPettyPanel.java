@@ -57,6 +57,8 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -169,6 +171,7 @@ class EditPettyPanel extends RecordEditPanel {
             add(amtSP = new SelectedNumberSpinner(0.0, 0.0, 9999999.0, 0.01), BorderLayout.EAST);
 
             load();
+            amtSP.addChangeListener(recalcItemsAmountListener());
         }
 
         public void setEnabled(boolean enable) {
@@ -251,6 +254,7 @@ class EditPettyPanel extends RecordEditPanel {
         idField.setEnabled(false);
         balanceSP.setEnabled(false);
         balanceIssueSP.setEnabled(false);
+        amountSP.addChangeListener(recalcItemsAmountListener());
     }
 
     @Override
@@ -288,6 +292,7 @@ class EditPettyPanel extends RecordEditPanel {
             syncOperatorNumField();
             syncReceipterNumFld();
         }
+        balanceIssueSP.setValue(XlendWorks.getOutstandingPettyBalance(DashBoard.getExchanger()));
         enableRightPanel(false);
         editToggleBtn.setEnabled(xp != null);
         BankingFrame.instance.setCursor(Cursor.getDefaultCursor());
@@ -427,6 +432,12 @@ class EditPettyPanel extends RecordEditPanel {
                     }
                     enableNumber1Update = true;
                 }
+            }
+        });
+        ((JSpinner.DefaultEditor)amountSP.getEditor()).getTextField().addCaretListener(new CaretListener() {
+            @Override
+            public void caretUpdate(CaretEvent ce) {
+                recalc();
             }
         });
         return leftPanel;
@@ -581,6 +592,7 @@ class EditPettyPanel extends RecordEditPanel {
         }
         downGridPanel.repaint();
         downGridPanel.setVisible(true);
+        recalc();
     }
 
     private AbstractAction getAddLineAction() {
@@ -616,7 +628,6 @@ class EditPettyPanel extends RecordEditPanel {
         };
     }
 
-    
     private void syncOperatorNumField() {
         enableCombo1Update = false;
         ComboItem ci = (ComboItem) employeeInCB.getSelectedItem();
@@ -635,5 +646,26 @@ class EditPettyPanel extends RecordEditPanel {
             receipterNumberField.setText(ci.getValue().substring(0, p));
         }
         enableCombo2Update = true;
+    }
+
+    private ChangeListener recalcItemsAmountListener() {
+
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                recalc();
+            }
+        };
+    }
+
+    private void recalc() {
+        Double sum = 0.0;
+        for (PettyItemPanel rp : childRows) {
+            if (rp.amtSP.getValue() != null) {
+                sum += (Double) rp.amtSP.getValue();
+            }
+        }
+        Double amtValue = (Double) amountSP.getValue();
+        balanceSP.setValue((amtValue == null ? 0 : amtValue.doubleValue()) - sum);
     }
 }

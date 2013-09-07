@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.75";
+    public static final String version = "0.75.a";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -542,6 +542,15 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.SELECT_FROM_XPPETYPE);
     }
 
+    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
+        ComboItem[] ciArr = loadOnSelect(exchanger,
+                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
+        if (ciArr!=null && ciArr.length>0) {
+            return new Double(ciArr[0].getValue());
+        }
+        return 0.0;
+    }
+    
 //    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
 //        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
 //    }

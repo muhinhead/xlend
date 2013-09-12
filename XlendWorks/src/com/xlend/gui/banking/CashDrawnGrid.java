@@ -8,8 +8,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Xaccounts;
-import com.xlend.orm.Xpetty;
+import com.xlend.orm.Xcashdrawn;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -21,30 +20,28 @@ import javax.swing.JOptionPane;
  *
  * @author Nick Mukhin
  */
-public class PettyInOutGrid extends GeneralGridPanel {
-
+public class CashDrawnGrid extends GeneralGridPanel {
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
         maxWidths.put(0, 40);
-//        maxWidths.put(1, 40);
     }
 
-    public PettyInOutGrid(IMessageSender exchanger) throws RemoteException {
-        super(exchanger, Selects.SELECT_FROM_PETTY, maxWidths, false);
+    public CashDrawnGrid(IMessageSender exchanger) throws RemoteException {
+        super(exchanger, Selects.SELECT_FROM_CASHDRAWN, maxWidths, false);
     }
 
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("New Petty Cash") {
+        return new AbstractAction("New Cash Drawn") {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    EditPettyDialog ed = new EditPettyDialog("New Petty Cash", null);
-                    if (EditPettyDialog.okPressed) {
-                        Xpetty xp = (Xpetty) ed.getEditPanel().getDbObject();
+                    EditCashDrawnDialog ed = new EditCashDrawnDialog("New Cash Drawn", null);
+                    if (EditCashDrawnDialog.okPressed) {
+                        Xcashdrawn xd = (Xcashdrawn) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
-                                getSelect(), xp.getXpettyId(), getPageSelector().getSelectedIndex());
+                                getSelect(), xd.getXcashdrawnId(), getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -56,15 +53,15 @@ public class PettyInOutGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Petty Cash") {
+         return new AbstractAction("Edit Cash Drawn") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
-                        Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
-                        new EditPettyDialog("Edit Petty Cash", xt);
-                        if (EditPettyDialog.okPressed) {
+                        Xcashdrawn xd = (Xcashdrawn) exchanger.loadDbObjectOnID(Xcashdrawn.class, id);
+                        new EditCashDrawnDialog("Edit Cash Drawn", xd);
+                        if (EditCashDrawnDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
@@ -85,10 +82,10 @@ public class PettyInOutGrid extends GeneralGridPanel {
                 int id = getSelectedID();
                 if (id > 0 && EditPettyPanel.haveAdminRights()) {
                     try {
-                        Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
-                        if (xt != null && GeneralFrame.yesNo("Attention!",
+                        Xcashdrawn xd = (Xcashdrawn) exchanger.loadDbObjectOnID(Xcashdrawn.class, id);
+                        if (xd != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
-                            exchanger.deleteObject(xt);
+                            exchanger.deleteObject(xd);
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
                                     getPageSelector().getSelectedIndex());
                         }

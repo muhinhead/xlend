@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.75.a";
+    public static final String version = "0.76";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -542,15 +542,43 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.SELECT_FROM_XPPETYPE);
     }
 
-    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
-        ComboItem[] ciArr = loadOnSelect(exchanger,
-                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
-        if (ciArr!=null && ciArr.length>0) {
-            return new Double(ciArr[0].getValue());
+    public static double getPettyInOutBalance(IMessageSender exchanger, int xpetty_id) {
+        try {
+            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
+                    "cur_date=(select max(cur_date) from xcashdrawn where cur_date<="
+                    + "(select issue_date from xpetty where xpetty_id=" + xpetty_id + "))", "xcashdrawn_id desc");
+            if (recs.length > 0) {
+                Xcashdrawn cd = (Xcashdrawn) recs[0];
+                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
+            }
+        } catch (RemoteException ex) {
+            log(ex);
         }
         return 0.0;
     }
-    
+
+    public static double getPettyInOutBalance(IMessageSender exchanger) {
+        try {
+            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
+                    "cur_date=(select max(cur_date) from xcashdrawn)", "xcashdrawn_id desc");
+            if (recs.length > 0) {
+                Xcashdrawn cd = (Xcashdrawn) recs[0];
+                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
+            }
+        } catch (RemoteException ex) {
+            log(ex);
+        }
+        return 0.0;
+    }
+
+//    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
+//        ComboItem[] ciArr = loadOnSelect(exchanger,
+//                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
+//        if (ciArr!=null && ciArr.length>0) {
+//            return new Double(ciArr[0].getValue());
+//        }
+//        return 0.0;
+//    }
 //    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
 //        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
 //    }

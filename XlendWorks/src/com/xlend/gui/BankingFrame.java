@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.banking.CashDrawnGrid;
 import static com.xlend.gui.GeneralFrame.errMessageBox;
 import com.xlend.gui.banking.AccountsGrid;
 import com.xlend.gui.banking.BankBalanceGrid;
@@ -19,12 +20,13 @@ public class BankingFrame extends GeneralFrame {
     public static BankingFrame instance;
     private AccountsGrid bankAccountsPanel;
     private static String[] sheetList = new String[]{
-        "Accounts", "Bank Balance", "Diesel Purchase","Petty In/Out"
+        "Accounts", "Bank Balance", "Diesel Purchase","Petty In/Out","Cash Drawn"
     };
     private GeneralGridPanel accountsPanel;
     private GeneralGridPanel balancePanel;
     private GeneralGridPanel dieselPurchasePanel;
     private GeneralGridPanel pettyInOutPanel;
+    private GeneralGridPanel cashDrawnPanel;
 
     public BankingFrame(IMessageSender exch) {
         super("Banking", exch);
@@ -54,6 +56,9 @@ public class BankingFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
             bankTab.addTab(getPettyInOutPanel(), sheets()[3]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
+            bankTab.addTab(getCashDrawnPanel(), sheets()[4]);
         }
         return bankTab;
     }
@@ -104,5 +109,17 @@ public class BankingFrame extends GeneralFrame {
             }
         }
         return pettyInOutPanel;
+    }
+
+    private JPanel getCashDrawnPanel() {
+        if (cashDrawnPanel == null) {
+            try {
+                registerGrid(cashDrawnPanel = new CashDrawnGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return cashDrawnPanel;
     }
 }

@@ -188,7 +188,7 @@ public abstract class RecordEditPanel extends JPanel {
         return formatter;
     }
 
-    protected JComponent getBorderPanel(JComponent[] comps) {
+    public static JComponent getBorderPanel(JComponent[] comps) {
         JPanel ans = new JPanel(new BorderLayout());
         if (comps != null && comps.length > 0) {
             if (comps[0] != null) {
@@ -204,7 +204,7 @@ public abstract class RecordEditPanel extends JPanel {
         return ans;
     }
 
-    protected JComponent getGridPanel(JComponent comp, int ceils) {
+    public static JComponent getGridPanel(JComponent comp, int ceils) {
         JPanel ans = new JPanel(new GridLayout(1, ceils));
         ans.add(comp);
         for (int i = 1; i < ceils; i++) {
@@ -213,7 +213,7 @@ public abstract class RecordEditPanel extends JPanel {
         return ans;
     }
 
-    protected JComponent getGridPanel(JComponent[] comps) {
+    public static JComponent getGridPanel(JComponent[] comps) {
         JPanel ans = new JPanel(new GridLayout(1, comps.length, 5, 1));
         for (int i = 0; i < comps.length; i++) {
             ans.add(comps[i]);
@@ -221,7 +221,7 @@ public abstract class RecordEditPanel extends JPanel {
         return ans;
     }
 
-    protected JComponent getGridPanel(JComponent[] comps, int ceils) {
+    public static JComponent getGridPanel(JComponent[] comps, int ceils) {
         ceils = (comps.length > ceils ? comps.length : ceils);
         JPanel ans = new JPanel(new GridLayout(1, ceils));
         for (int i = 0; i < ceils; i++) {

@@ -47,7 +47,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.76";
+    private static final String version = "0.76.a";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -111,8 +111,8 @@ public class XlendServer {
             ok = true;
         } catch (Exception ex) {
             XlendServer.log(ex);
-            JOptionPane.showMessageDialog(null, ex.getMessage() + "\nServer will work as usually",
-                    "FTP upload failed", JOptionPane.WARNING_MESSAGE);
+//            JOptionPane.showMessageDialog(null, ex.getMessage() + "\nServer will work as usually",
+//                    "FTP upload failed", JOptionPane.WARNING_MESSAGE);
         }
         return ok;
     }

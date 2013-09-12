@@ -1578,7 +1578,6 @@ create table xpetty
     xsite_id            int not null,
     amount              decimal(6,2) not null,
     change_amt          decimal(6,2) not null,
-    balance             decimal(6,2) not null,
     is_loan             bit default 0,
     is_petty            bit default 0,
     is_allowance        bit default 0,
@@ -1600,7 +1599,7 @@ create table xpettyitem
     amount              decimal(6,2) not null,
     stamp               timestamp,
     constraint xpettyitem_pk primary key (xpettyitem_id),
-    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id),
+    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade,
     constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)
 );
 

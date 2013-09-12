@@ -438,6 +438,9 @@ public class Selects {
             + "to_char(receipt_date,'DD/MM/YYYY') \"Receipt Date\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Receiptor\" "
             + "from xpetty order by issue_date desc";
+    public static final String SELECT_FROM_CASHDRAWN = 
+            "Select xcashdrawn_id \"Id\", to_char(cur_date,'DD/MM/YYYY') \"Date\",cash_drawn \"Cash Drawn\","
+            + "add_monies \"Additional Monies\", cash_drawn + add_monies \"Balance\" from xcashdrawn order by cur_date desc";
     public static final String SELECT_FROM_BANKBALANCE =
             "Select xbankbalance_id \"Id\", to_char(balancedate,'DD/MM/YYYY HH24:MI') \"Date/time\", totalvalue "
             + "from xbankbalance order by balancedate";

@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 43;
-    public static final String DB_VERSION = "0.43";
+    private static final int DB_VERSION_ID = 44;
+    public static final String DB_VERSION = "0.44";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -294,354 +294,7 @@ public class DbConnection {
         //        + "   end loop LP; "
         //        + "   return sub; "
         //        + "end; ",
-        //        "alter table xjobcard add vehicle_id1_day1 int",
-        //        "alter table xjobcard add vehicle_id2_day1 int",
-        //        "alter table xjobcard add vehicle_id3_day1 int",
-        //        "alter table xjobcard add vehicle_id4_day1 int",
-        //        "alter table xjobcard add vehicle_id5_day1 int",
-        //        "alter table xjobcard add vehicle_id1_day2 int",
-        //        "alter table xjobcard add vehicle_id2_day2 int",
-        //        "alter table xjobcard add vehicle_id3_day2 int",
-        //        "alter table xjobcard add vehicle_id4_day2 int",
-        //        "alter table xjobcard add vehicle_id5_day2 int",
-        //        "alter table xjobcard add vehicle_id1_day3 int",
-        //        "alter table xjobcard add vehicle_id2_day3 int",
-        //        "alter table xjobcard add vehicle_id3_day3 int",
-        //        "alter table xjobcard add vehicle_id4_day3 int",
-        //        "alter table xjobcard add vehicle_id5_day3 int",
-        //        "alter table xjobcard add vehicle_id1_day4 int",
-        //        "alter table xjobcard add vehicle_id2_day4 int",
-        //        "alter table xjobcard add vehicle_id3_day4 int",
-        //        "alter table xjobcard add vehicle_id4_day4 int",
-        //        "alter table xjobcard add vehicle_id5_day4 int",
-        //        "alter table xjobcard add vehicle_id1_day5 int",
-        //        "alter table xjobcard add vehicle_id2_day5 int",
-        //        "alter table xjobcard add vehicle_id3_day5 int",
-        //        "alter table xjobcard add vehicle_id4_day5 int",
-        //        "alter table xjobcard add vehicle_id5_day5 int",
-        //        "alter table xjobcard add vehicle_id1_day6 int",
-        //        "alter table xjobcard add vehicle_id2_day6 int",
-        //        "alter table xjobcard add vehicle_id3_day6 int",
-        //        "alter table xjobcard add vehicle_id4_day6 int",
-        //        "alter table xjobcard add vehicle_id5_day6 int",
-        //        "alter table xjobcard add vehicle_id1_day7 int",
-        //        "alter table xjobcard add vehicle_id2_day7 int",
-        //        "alter table xjobcard add vehicle_id3_day7 int",
-        //        "alter table xjobcard add vehicle_id4_day7 int",
-        //        "alter table xjobcard add vehicle_id5_day7 int",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk011 foreign key (vehicle_id1_day1) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk021 foreign key (vehicle_id2_day1) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk031 foreign key (vehicle_id3_day1) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk041 foreign key (vehicle_id4_day1) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk051 foreign key (vehicle_id5_day1) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk012 foreign key (vehicle_id1_day2) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk022 foreign key (vehicle_id2_day2) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk032 foreign key (vehicle_id3_day2) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk042 foreign key (vehicle_id4_day2) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk052 foreign key (vehicle_id5_day2) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk013 foreign key (vehicle_id1_day3) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk023 foreign key (vehicle_id2_day3) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk033 foreign key (vehicle_id3_day3) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk043 foreign key (vehicle_id4_day3) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk053 foreign key (vehicle_id5_day3) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk014 foreign key (vehicle_id1_day4) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk024 foreign key (vehicle_id2_day4) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk034 foreign key (vehicle_id3_day4) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk044 foreign key (vehicle_id4_day4) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk054 foreign key (vehicle_id5_day4) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk015 foreign key (vehicle_id1_day5) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk025 foreign key (vehicle_id2_day5) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk035 foreign key (vehicle_id3_day5) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk045 foreign key (vehicle_id4_day5) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk055 foreign key (vehicle_id5_day5) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk016 foreign key (vehicle_id1_day6) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk026 foreign key (vehicle_id2_day6) references xmachine (xmachine_id)"
 
-        //        ,"alter table xjobcard add constraint xjobcard_xmachine_fk036 foreign key (vehicle_id3_day6) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk046 foreign key (vehicle_id4_day6) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk056 foreign key (vehicle_id5_day6) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk017 foreign key (vehicle_id1_day7) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk027 foreign key (vehicle_id2_day7) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk037 foreign key (vehicle_id3_day7) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk047 foreign key (vehicle_id4_day7) references xmachine (xmachine_id)",
-        //        "alter table xjobcard add constraint xjobcard_xmachine_fk057 foreign key (vehicle_id5_day7) references xmachine (xmachine_id)"
-        //            "alter table xparts modify quantity decimal(10,2)"
-        //            ,"alter table xbookouts modify quantity decimal(10,2)"
-        //            ,"alter table xaddstocks modify quantity decimal(10,2)"
-        //            ,"alter table xtripsheetpart add loaded1 varchar(64)"
-        //            ,"alter table xtripsheetpart add loaded2 varchar(64)"
-        //33->34
-        //        "alter table xmachine modify insurance_amt decimal(10,2)",
-        //        "alter table xmachine modify deposit_amt decimal(10,2)",
-        //        "alter table xemployee add management bit default 0",
-        //        "insert into sheet (sheetname,parent_id) "
-        //        + "select 'Loans Report', sheet_id "
-        //        + "from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Loans Report')",
-        //        "insert into reportgroup (sheetgroup_id,sheet_id) "
-        //        + "select g.sheet_id,i.sheet_id "
-        //        + " from sheet g, sheet i where g.sheetname='HR' and i.sheetname='Loans Report'"
-        //        + " and not exists(select * from reportgroup "
-        //        + " where sheetgroup_id="
-        //        + "(select sheet_id from sheet"
-        //        + " where sheetname='HR') and sheet_id=(select sheet_id from sheet where sheetname='Loans Report'))",
-        //        "insert into sheet (sheetname,parent_id) "
-        //        + "select 'Incidents Report', sheet_id "
-        //        + "from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Incidents Report')",
-        //        "insert into reportgroup (sheetgroup_id,sheet_id) "
-        //        + "select g.sheet_id,i.sheet_id "
-        //        + " from sheet g, sheet i where g.sheetname='SITES' and g.parent_id IS NULL and i.sheetname='Incidents Report'"
-        //        + " and not exists(select * from reportgroup "
-        //        + " where sheetgroup_id="
-        //        + "(select sheet_id from sheet"
-        //        + " where sheetname='SITES' and parent_id IS NULL) and sheet_id=(select sheet_id from sheet where sheetname='Incidents Report'))",
-        //        //34->35    
-        //        "alter table xorderitem add description varchar(255)",
-        //        "alter table xwage add tsnum int",
-        //        "create table xppetype ("
-        //        + "    xppetype_id    int not null auto_increment,"
-        //        + "    xppetype       varchar(64) not null,"
-        //        + "    stocklevel     int not null default 0,"
-        //        + "    stamp          timestamp,"
-        //        + "    constraint xppetype_pk primary key (xppetype_id)"
-        //        + ")",
-        //        "create table xppebuy ("
-        //        + "    xppebuy_id      int not null auto_increment,"
-        //        + "    buydate         date not null,"
-        //        + "    boughtby_id     int not null,"
-        //        + "    xsupplier_id    int not null,"
-        //        + "    authorizedby_id int not null,"
-        //        + "    stamp          timestamp,"
-        //        + "    constraint xppebuy_pk primary key (xppebuy_id),"
-        //        + "    constraint xppebuy_xemployee_fk foreign key (boughtby_id) references xemployee (xemployee_id),"
-        //        + "    constraint xppebuy_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),"
-        //        + "    constraint xppebuy_xemployee_fk2 foreign key (authorizedby_id) references xemployee (xemployee_id)"
-        //        + ")",
-        //        "create table xppebuyitem ("
-        //        + "    xppebuyitem_id  int not null auto_increment,"
-        //        + "    xppebuy_id      int not null,"
-        //        + "    xppetype_id     int not null,"
-        //        + "    quantity        int not null,"
-        //        + "    priceperunit    decimal (8,2),"
-        //        + "    stamp           timestamp,"
-        //        + "    constraint xppebuyitem_pk primary key (xppebuyitem_id),"
-        //        + "    constraint xppebuyitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
-        //        + "    constraint xppebuyitem_xppeby_fk foreign key (xppebuy_id) references xppebuy (xppebuy_id)"
-        //        + ")",
-        //        "create table xppeissue ("
-        //        + "    xppeissue_id    int not null auto_increment,"
-        //        + "    issuedate       date not null,"
-        //        + "    issuedby_id     int not null,"
-        //        + "    issuedto_id     int not null,"
-        //        + "    authorizedby_id int not null,"
-        //        + "    stamp          timestamp,"
-        //        + "    constraint xppeissue_pk primary key (xppeissue_id),"
-        //        + "    constraint xppeissue_xemployee_fk foreign key (issuedby_id) references xemployee (xemployee_id),"
-        //        + "    constraint xppeissue_xemployee_fk2 foreign key (issuedto_id) references xemployee (xemployee_id),"
-        //        + "    constraint xppeissue_xemployee_fk3 foreign key (authorizedby_id) references xemployee (xemployee_id)"
-        //        + ")",
-        //        "create table xppeissueitem ("
-        //        + "    xppeissueitem_id int not null auto_increment,"
-        //        + "    xppeissue_id     int not null,"
-        //        + "    xppetype_id     int not null,"
-        //        + "    quantity        int not null,"
-        //        + "    stamp           timestamp,"
-        //        + "    constraint xppeissueitem_pk primary key (xppeissueitem_id),"
-        //        + "    constraint xppeissueitem_xppetype_fk foreign key (xppetype_id) references xppetype (xppetype_id),"
-        //        + "    constraint xppeissueitem_xppeissue_fk foreign key (xppeissue_id) references xppeissue (xppeissue_id)"
-        //        + ")",
-        //        "alter table xppebuyitem add priceperunit decimal (8,2)",
-        //        //35->36
-        //        "create table xmachservice"
-        //        + "("
-        //        + "    xmachservice_id  int not null auto_increment,"
-        //        + "    servicedate      date not null,"
-        //        + "    entrydate        date not null,"
-        //        + "    servicedby_id    int not null,"
-        //        + "    assistedby_id    int not null,"
-        //        + "    xmachine_id      int not null,"
-        //        + "    engine_oil       varchar(128),"
-        //        + "    hydraulic_oil    varchar(128),"
-        //        + "    brake_fluid      varchar(128),"
-        //        + "    transmission_oil varchar(128),"
-        //        + "    gearbox_oil      varchar(128),"
-        //        + "    anti_freeze      varchar(128),"
-        //        + "    diff_checked1    varchar(128),"
-        //        + "    diff_checked2    varchar(128),"
-        //        + "    diff_checked3    varchar(128),"
-        //        + "    stamp            timestamp,"
-        //        + "    constraint xmachservice_pk primary key (xmachservice_id),"
-        //        + "    constraint xmachservice_xemployee_fk foreign key (servicedby_id) references xemployee (xemployee_id),"
-        //        + "    constraint xmachservice_xemployee_fk2 foreign key (assistedby_id) references xemployee (xemployee_id),"
-        //        + "    constraint xmachservice_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id)"
-        //        + ")",
-        //        //36->37
-        //        "drop table xdieselpchs",
-        //        "drop table xdieselcard",
-        //        "drop table xissuing",
-        //        "create table xdieselcart"
-        //        + "("
-        //        + "    xdieselcart_id   int not null auto_increment,"
-        //        + "    fleet_nr         int not null,"
-        //        + "    reg_nr           varchar(32),"
-        //        + "    expdate          date,"
-        //        + "    litres           int not null,"
-        //        + "    chassis_nr       varchar(32),"
-        //        + "    assigned_id      int,"
-        //        + "    stamp            timestamp,"
-        //        + "    photo            mediumblob,"
-        //        + "    constraint xdieselcart_pk primary key (xdieselcart_id),"
-        //        + "    constraint xdieselcart_xmachine_fk foreign key (assigned_id) references xmachine (xmachine_id)"
-        //        + ")",
-        //        "create table xdieselpurchase"
-        //        + "("
-        //        + "    xdieselpurchase_id int not null auto_increment,"
-        //        + "    xsupplier_id       int not null,"
-        //        + "    purchase_date      date not null,"
-        //        + "    litres             decimal(8,2) not null,"
-        //        + "    rand_factor        decimal(5,2) not null,"
-        //        + "    stamp              timestamp,"
-        //        + "    constraint xdieselpurchase_pk primary key (xdieselpurchase_id),"
-        //        + "    constraint xdieselpurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
-        //        + ")",
-        //        "create table xdieselcartissue"
-        //        + "("
-        //        + "    xdieselcartissue_id int not null auto_increment,"
-        //        + "    issue_date          date not null,"
-        //        + "    driver_id           int not null,"
-        //        + "    xdieselcart_id      int not null,"
-        //        + "    liters              decimal(6,2) not null,"
-        //        + "    xsupplier_id        int not null,"
-        //        + "    stamp               timestamp,"
-        //        + "    constraint xdieselcartissue_pk primary key (xdieselcartissue_id),"
-        //        + "    constraint xdieselcartissue_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),"
-        //        + "    constraint xdieselcartissue_xdieselcart_fk foreign key (xdieselcart_id) references xdieselcart (xdieselcart_id),"
-        //        + "    constraint xdieselcartissue_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
-        //        + ")",
-        //        "create table xdiesel2plant"
-        //        + "("
-        //        + "    xdiesel2plant_id  int not null auto_increment,"
-        //        + "    xdieselcart_id    int not null,"
-        //        + "    last_date         date,"
-        //        + "    driver_id         int not null,"
-        //        + "    stamp             timestamp,"
-        //        + "    constraint xdiesel2plant_pk primary key (xdiesel2plant_id),"
-        //        + "    constraint xdiesel2plant_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),"
-        //        + "    constraint xdiesel2plant_xdieselcart_fk foreign key (xdieselcart_id) references xdieselcart (xdieselcart_id)"
-        //        + ")",
-        //        "create table xdiesel2plantitem"
-        //        + "("
-        //        + "    xdiesel2plantitem_id int not null auto_increment,"
-        //        + "    xdiesel2plant_id     int not null,"
-        //        + "    add_date             date not null,"
-        //        + "    xmachine_id          int not null,"
-        //        + "    xsite_id             int not null,"
-        //        + "    operator_id          int not null,"
-        //        + "    hour_meter           decimal(9,1),"
-        //        + "    issuedby_id          int not null,"
-        //        + "    liters               decimal(6,2) not null,"
-        //        + "    stamp                timestamp,"
-        //        + "    constraint xdiesel2plantitem_pk primary key (xdiesel2plantitem_id),"
-        //        + "    constraint xdiesel2plantitem_xdiesel2plant_fk foreign key (xdiesel2plant_id) references xdiesel2plant (xdiesel2plant_id),"
-        //        + "    constraint xdiesel2plantitem_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
-        //        + "    constraint xdiesel2plantitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
-        //        + "    constraint xdiesel2plantitem_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),"
-        //        + "    constraint xdiesel2plantitem_xemployee_fk2 foreign key (issuedby_id) references xemployee (xemployee_id)"
-        //        + ")",
-        //        "alter table xdieselpurchase modify litres decimal(8,2)",
-        //        "insert into sheet (sheetname,parent_id) "
-        //        + "select 'Assignments Report', sheet_id "
-        //        + "  from sheet where sheetname='REPORTS' and not exists(select * from sheet where sheetname='Assignments Report')",
-        //        "insert into reportgroup (sheetgroup_id,sheet_id) "
-        //        + "select g.sheet_id,i.sheet_id "
-        //        + "  from sheet g, sheet i where g.sheetname='HR' and i.sheetname='Assignments Report' "
-        //        + "   and not exists(select * "
-        //        + "                    from reportgroup"
-        //        + "                    where sheetgroup_id = (select sheet_id"
-        //        + "                                             from sheet"
-        //        + "                                            where sheetname='HR')"
-        //        + "               and sheet_id=(select sheet_id from sheet where sheetname='Assignments Report'))",
-        //37->38
-        //        "create table xbatterypurchase"
-        //        + "("
-        //        + "    xbatterypurchase_id int not null auto_increment,"
-        //        + "    purchase_date       date not null,"
-        //        + "    entry_date          date not null,"
-        //        + "    purchased_by        int not null,"
-        //        + "    xsupplier_id        int not null,"
-        //        + "    invoice_vat_incl    decimal (9,2) not null,"
-        //        + "    invoice_vat_excl    decimal (9,2) not null,"
-        //        + "    stamp               timestamp,"
-        //        + "    constraint xbatterypurchase_pk primary key (xbatterypurchase_id),"
-        //        + "    constraint xbatterypurchase_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id)"
-        //        + ")",
-        //        "create table xbateryissue"
-        //        + "("
-        //        + "    xbateryissue_id     int not null auto_increment,"
-        //        + "    issue_date          date not null,"
-        //        + "    entry_date          date not null,"
-        //        + "    issued_by           int not null,"
-        //        + "    issued_to           int not null,"
-        //        + "    xmachine_id         int not null,"
-        //        + "    stamp               timestamp,"
-        //        + "    constraint xbateryissue_pk primary key (xbateryissue_id),"
-        //        + "    constraint xbateryissue_xemployee_fk foreign key (issued_by) references xemployee (xemployee_id),"
-        //        + "    constraint xbateryissue_xemployee_fk2 foreign key (issued_to) references xemployee (xemployee_id),"
-        //        + "    constraint xbateryissue_xmachine_fk foreign key( xmachine_id) references xmachine (xmachine_id)"
-        //        + ")",
-        //        "create table xbattery"
-        //        + "("
-        //        + "    xbattery_id         int not null auto_increment,"
-        //        + "    battery_code        varchar(32) not null,"
-        //        + "    vat_excl_unit       decimal (6,2),"
-        //        + "    battery_id          varchar(32),"
-        //        + "    xbatterypurchase_id int not null,"
-        //        + "    xbateryissue_id     int null,"
-        //        + "    stamp               timestamp,"
-        //        + "    constraint xbattery_pk primary key (xbattery_id),"
-        //        + "    constraint xbattery_xbatterypurchase_fk foreign key (xbatterypurchase_id) references xbatterypurchase (xbatterypurchase_id),"
-        //        + "    constraint xbattery_xbateryissue_fk foreign key (xbateryissue_id) references xbateryissue (xbateryissue_id)"
-        //        + ")",
-        //        "alter table xsupplier add credit_limit int",
-        //        "alter table xdieselpurchase add paid decimal(8,2)",
-        //        //38->39
-        //        "alter table xemployee add clock_numonly smallint",
-        //        "update xemployee set clock_numonly = extractnum(clock_num)",
-        //        "create index employee_clocknumonly on xemployee (clock_numonly,clock_num)",
-        //        "create trigger tr_xemployee_beforeinsert"
-        //        + " before insert on xemployee"
-        //        + " for each row"
-        //        + " begin"
-        //        + "   set new.clock_numonly = extractnum(new.clock_num);"
-        //        + " end;",
-        //        "create trigger tr_xemployee_beforeupdate"
-        //        + " before update on xemployee"
-        //        + " for each row"
-        //        + " begin"
-        //        + "   set new.clock_numonly = extractnum(new.clock_num);"
-        //        + " end;",
-        //        //39->40
-        //        "alter table xbreakdown modify timeleft time",
-        //        "alter table xbreakdown modify timeback time",
-        //        "alter table xbreakdown modify km2site1way decimal(6,2)",
-        //        "alter table xbreakdown modify hoursonjob decimal(6,2)",
-        //        "alter table xopclocksheet modify km_start1 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop1 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start2 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop2 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start3 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop3 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start4 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop4 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start5 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop5 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start6 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop6 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_start7 decimal(10,2)",
-        //        "alter table xopclocksheet modify km_stop7 decimal(10,2)",
-        //        "create view employeeshort as SELECT xemployee_id,clock_num,first_name,sur_name,nick_name,xposition_id FROM xemployee",
-        //        //40->41
-        //        "alter table xmachine add consumption int",
-        //        "alter table xbreakdown add standing_hours decimal(4,2)",
         //41->42
         "alter table xmachtype add is_rated bit",
         "update xmachtype set is_rated=(parenttype_id is null)",
@@ -668,6 +321,8 @@ public class DbConnection {
         + "    xmachine_id         int not null,"
         + "    xsite_id            int not null,"
         + "    amount              decimal(6,2) not null,"
+        + "    change_amt          decimal(6,2) not null,"
+        + "    balance             decimal(6,2) not null,"
         + "    is_loan             bit default 0,"
         + "    is_petty            bit default 0,"
         + "    is_allowance        bit default 0,"
@@ -691,7 +346,20 @@ public class DbConnection {
         + "    constraint xpettyitem_pk primary key (xpettyitem_id),"
         + "    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id),"
         + "    constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)"
-        + ")"
+        + ")",
+        // 43-> 44
+        "alter table xpetty modify xmachine_id int null",
+        "alter table xpetty add change_amt decimal(6,2) not null default 0",
+        "alter table xpetty add balance decimal(6,2) not null default 0",
+        "create table xcashdrawn"
+        +"("
+        +"     xcashdrawn_id       int not null generated by default as identity (start with 1),"
+        +"     cur_date            date not null,"
+        +"     cash_drawn          decimal(6,2) not null,"
+        +"     add_monies          decimal(6,2) not null default 0.0,"
+        +"     notes               text,"
+        +"     constraint xcashdrawn_pk primary key (xcashdrawn_id)"
+        + ")",
     };
 
 //    public synchronized static Connection getLogDBconnection() {
@@ -782,7 +450,7 @@ public class DbConnection {
     }
 
     public static void fixLocalDB(Connection connection) {
-        sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "false").equalsIgnoreCase("true"));
+        sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "true").equalsIgnoreCase("true"));
         fixWrongAssignments(connection);
     }
 

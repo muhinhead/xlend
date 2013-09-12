@@ -47,7 +47,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.75.a";
+    private static final String version = "0.76";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -294,9 +294,9 @@ public class XlendServer {
         String[] runCmd = new String[]{mysqlDumpPath, "-u",
             DbConnection.getLogin(), "-p" + DbConnection.getPassword(), "xlend"
         };
-        for (String w : runCmd) {
-            System.out.println(w);
-        }
+//        for (String w : runCmd) {
+//            System.out.println(w);
+//        }
         Calendar cal = Calendar.getInstance();
         File dump = new File("xlend-" + cal.get(Calendar.YEAR) + "-"
                 + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)

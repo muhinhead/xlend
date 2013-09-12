@@ -46,7 +46,7 @@ public class PersonalPettyBalance extends PopupDialog {
             XlendWorks.log(ex);
         }
         StringBuffer html = new StringBuffer("<html>"
-                + "<table border=\"0\" style=\"font-size: 110%; font-family: sans-serif\">"
+                + "<table border=\"0\" style=\"font-size: 100%; font-family: sans-serif\">"
                 + "<tr>"
                 + "<td align=\"left\">Date:</td>"
                 + "<th align=\"right\">"+dateFormat.format((Date)params[2])+"</th>"

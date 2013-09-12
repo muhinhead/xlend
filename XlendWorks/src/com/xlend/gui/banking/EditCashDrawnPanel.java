@@ -81,7 +81,8 @@ public class EditCashDrawnPanel extends RecordEditPanel {
             }
             cashDrawnSP.setValue(cd.getCashDrawn());
             addMoneySP.setValue(cd.getAddMonies());
-            totalLbl.setText(String.format("%.2f", cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
+            totalLbl.setText(String.format("%.2f", 
+                    cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
             notesTA.setText(cd.getNotes());
         }
     }

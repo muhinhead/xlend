@@ -10,6 +10,8 @@ import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xaccounts;
 import com.xlend.orm.Xpetty;
+import com.xlend.orm.Xpettyitem;
+import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -88,6 +90,10 @@ public class PettyInOutGrid extends GeneralGridPanel {
                         Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
                         if (xt != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
+                            DbObject[] itms = exchanger.getDbObjects(Xpettyitem.class, "xpetty_id="+id, null);
+                            for (DbObject itm : itms) {
+                                exchanger.deleteObject(itm);
+                            }
                             exchanger.deleteObject(xt);
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
                                     getPageSelector().getSelectedIndex());

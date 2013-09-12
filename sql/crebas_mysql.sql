@@ -1635,9 +1635,11 @@ create table xpetty
     xpetty_id           int not null auto_increment,
     issue_date          date not null,
     xemployee_in_id     int not null,
-    xmachine_id         int not null,
+    xmachine_id         int null,
     xsite_id            int not null,
     amount              decimal(6,2) not null,
+    change_amt          decimal(6,2) not null,
+    balance             decimal(6,2) not null,
     is_loan             bit default 0,
     is_petty            bit default 0,
     is_allowance        bit default 0,
@@ -1662,6 +1664,17 @@ create table xpettyitem
     constraint xpettyitem_pk primary key (xpettyitem_id),
     constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id),
     constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)
+);
+
+create table xcashdrawn
+(
+    xcashdrawn_id       int not null auto_increment,
+    cur_date            date not null,
+    cash_drawn          decimal(6,2) not null,
+    add_monies          decimal(6,2) not null default 0.0,
+    notes               text,
+    stamp               timestamp,
+    constraint xcashdrawn_pk primary key (xcashdrawn_id)
 );
 
 #----------------- auxiliary tables -------------------

@@ -1637,7 +1637,7 @@ create table xpetty
     xemployee_in_id     int not null,
     xmachine_id         int null,
     xsite_id            int not null,
-    amount              decimal(6,2) not null,
+    amount              decimal(9,2) not null,
     change_amt          decimal(6,2) not null,
     is_loan             bit default 0,
     is_petty            bit default 0,
@@ -1669,8 +1669,8 @@ create table xcashdrawn
 (
     xcashdrawn_id       int not null auto_increment,
     cur_date            date not null,
-    cash_drawn          decimal(6,2) not null,
-    add_monies          decimal(6,2) not null default 0.0,
+    cash_drawn          decimal(9,2) not null,
+    add_monies          decimal(9,2) not null default 0.0,
     notes               text,
     stamp               timestamp,
     constraint xcashdrawn_pk primary key (xcashdrawn_id)

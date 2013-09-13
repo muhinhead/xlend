@@ -229,9 +229,12 @@ class EditPettyPanel extends RecordEditPanel {
         BankingFrame.instance.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         Xpetty xp = (Xpetty) getDbObject();
         if (xp != null) {
+            java.util.Date dt;
             idField.setText(xp.getXpettyId().toString());
             if (xp.getIssueDate() != null) {
-                issueDateSP.setValue(new java.util.Date(xp.getIssueDate().getTime()));
+                issueDateSP.setValue(dt = new java.util.Date(xp.getIssueDate().getTime()));
+            } else {
+                dt = new java.util.Date();
             }
             selectComboItem(employeeInCB, xp.getXemployeeInId());
             selectComboItem(machineCB, xp.getXmachineId());
@@ -246,7 +249,8 @@ class EditPettyPanel extends RecordEditPanel {
                 receiptDateSP.setValue(new java.util.Date(xp.getReceiptDate().getTime()));
             }
             selectComboItem(employeeOutCB, xp.getXemployeeOutId());
-            balanceSP.setValue(XlendWorks.getPettyInOutBalance(DashBoard.getExchanger(), xp.getXpettyId()));
+//            balanceSP.setValue(XlendWorks.getPettyInOutBalance(DashBoard.getExchanger(), xp.getXpettyId()));
+            balanceSP.setValue(XlendWorks.getBalance4newXpetty(DashBoard.getExchanger(), dt));
             changeSP.setValue(xp.getChangeAmt());
             try {
                 DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xpettyitem.class, "xpetty_id=" + xp.getXpettyId(), "xpettyitem_id");
@@ -258,12 +262,12 @@ class EditPettyPanel extends RecordEditPanel {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 XlendWorks.log(ex);
             }
+
             syncOperatorNumField();
             syncReceipterNumFld();
         } else {
-            balanceSP.setValue(XlendWorks.getPettyInOutBalance(DashBoard.getExchanger()));
+            balanceSP.setValue(XlendWorks.getBalance4newXpetty(DashBoard.getExchanger()));
         }
-//        balanceIssueSP.setValue(XlendWorks.getOutstandingPettyBalance(DashBoard.getExchanger()));
         enableEdit(XlendWorks.isCurrentAdmin());
 
         editToggleBtn.setEnabled(xp != null);
@@ -313,7 +317,7 @@ class EditPettyPanel extends RecordEditPanel {
         if (ok && (Double) balanceIssueSP.getValue() > 0.005) {
             //GeneralFrame.errMessageBox("Attention!", "Balance is " + balanceIssueSP.getValue().toString());
             ShowPersonalBalance(
-                    ((Double)balanceIssueSP.getValue()).doubleValue(),
+                    ((Double) balanceIssueSP.getValue()).doubleValue(),
                     xp.getXemployeeOutId(), null);
         }
         return ok;

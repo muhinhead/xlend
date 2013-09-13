@@ -1,13 +1,16 @@
 package com.xlend.gui.banking;
 
+import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import static com.xlend.gui.RecordEditPanel.getBorderPanel;
 import static com.xlend.gui.RecordEditPanel.getGridPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xcashdrawn;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -32,6 +35,7 @@ public class EditCashDrawnPanel extends RecordEditPanel {
     private SelectedNumberSpinner addMoneySP;
     private JTextArea notesTA;
     private JLabel totalLbl;
+    private double initialBalance;
 
     public EditCashDrawnPanel(DbObject dbObject) {
         super(dbObject);
@@ -75,20 +79,28 @@ public class EditCashDrawnPanel extends RecordEditPanel {
     public void loadData() {
         Xcashdrawn cd = (Xcashdrawn) getDbObject();
         if (cd != null) {
+            Date dt;
             idField.setText(cd.getXcashdrawnId().toString());
             if (cd.getCurDate() != null) {
-                dateSP.setValue(new java.util.Date(cd.getCurDate().getTime()));
+                dateSP.setValue(dt = new java.util.Date(cd.getCurDate().getTime()));
+            } else {
+                dt = new Date();
             }
+            initialBalance = XlendWorks.getBalance4newXpetty(DashBoard.getExchanger(), dt);
             cashDrawnSP.setValue(cd.getCashDrawn());
             addMoneySP.setValue(cd.getAddMonies());
-            totalLbl.setText(String.format("%.2f", 
-                    cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
+            totalLbl.setText(String.format("%.2f", initialBalance
+                    + cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
             notesTA.setText(cd.getNotes());
+        } else {
+            initialBalance = XlendWorks.getBalance4newXpetty(DashBoard.getExchanger());
+            totalLbl.setText("" + initialBalance);
         }
     }
 
     private void calcSum() {
-        totalLbl.setText(String.format("%.2f", (Double) cashDrawnSP.getValue() + (Double) addMoneySP.getValue()));
+        totalLbl.setText(String.format("%.2f", initialBalance
+                + (Double) cashDrawnSP.getValue() + (Double) addMoneySP.getValue()));
     }
 
     @Override

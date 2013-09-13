@@ -48,7 +48,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.76.a";
+    public static final String version = "0.76.b";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -542,53 +542,71 @@ public class XlendWorks {
         return loadOnSelect(exchanger, Selects.SELECT_FROM_XPPETYPE);
     }
 
-    public static double getCasheBalance(IMessageSender exchanger, int xpetty_id) {
+    public static double getBalance4newXpetty(IMessageSender exchanger) {
         double drawn = 0.0;
         double amt = 0.0;
         ComboItem[] itms = loadOnSelect(exchanger,
-                "Select 0,sum(cash_drawn + add_monies) from xcashdrawn where cur_date<="
-                + "(select max(cur_date) from xcashdrawn "
-                + "where cur_date<=(select issue_date from xpetty where xpetty_id=" + xpetty_id + "))");
+                "Select 0,ifnull(sum(cash_drawn + add_monies),0) from xcashdrawn");
         if (itms.length > 0) {
             drawn = Double.parseDouble(itms[0].getValue());
         }
         itms = loadOnSelect(exchanger,
-                "Select 0,sum(amount) from xpetty where xpetty_id<" + xpetty_id);
+                "Select 0,ifnull(sum(amount),0) from xpetty");
         if (itms.length > 0) {
             amt = Double.parseDouble(itms[0].getValue());
         }
         return drawn - amt;
     }
 
-    public static double getPettyInOutBalance(IMessageSender exchanger, int xpetty_id) {
-        try {
-            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
-                    "cur_date=(select max(cur_date) from xcashdrawn where cur_date<="
-                    + "(select issue_date from xpetty where xpetty_id=" + xpetty_id + "))", "xcashdrawn_id desc");
-            if (recs.length > 0) {
-                Xcashdrawn cd = (Xcashdrawn) recs[0];
-                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
-            }
-        } catch (RemoteException ex) {
-            log(ex);
+    public static double getBalance4newXpetty(IMessageSender exchanger, java.util.Date dt) {
+        double drawn = 0.0;
+        double amt = 0.0;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String sdt = df.format(dt);
+        ComboItem[] itms = loadOnSelect(exchanger,
+                "Select 0,ifnull(sum(cash_drawn + add_monies),0) "
+                + "from xcashdrawn where cur_date<'"
+                + sdt + "'");
+        if (itms.length > 0) {
+            drawn = Double.parseDouble(itms[0].getValue());
         }
-        return 0.0;
+        itms = loadOnSelect(exchanger,
+                "Select 0,ifnull(sum(amount),0) from xpetty where issue_date<'" + sdt + "'");
+        if (itms.length > 0) {
+            amt = Double.parseDouble(itms[0].getValue());
+        }
+        return drawn - amt;
     }
 
-    public static double getPettyInOutBalance(IMessageSender exchanger) {
-        try {
-            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
-                    "cur_date=(select max(cur_date) from xcashdrawn)", "xcashdrawn_id desc");
-            if (recs.length > 0) {
-                Xcashdrawn cd = (Xcashdrawn) recs[0];
-                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
-            }
-        } catch (RemoteException ex) {
-            log(ex);
-        }
-        return 0.0;
-    }
-//    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
+//    public static double getPettyInOutBalance(IMessageSender exchanger, int xpetty_id) {
+//        try {
+//            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
+//                    "cur_date=(select max(cur_date) from xcashdrawn where cur_date<="
+//                    + "(select issue_date from xpetty where xpetty_id=" + xpetty_id + "))", "xcashdrawn_id desc");
+//            if (recs.length > 0) {
+//                Xcashdrawn cd = (Xcashdrawn) recs[0];
+//                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
+//            }
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return 0.0;
+//    }
+//
+//    public static double getPettyInOutBalance(IMessageSender exchanger) {
+//        try {
+//            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
+//                    "cur_date=(select max(cur_date) from xcashdrawn)", "xcashdrawn_id desc");
+//            if (recs.length > 0) {
+//                Xcashdrawn cd = (Xcashdrawn) recs[0];
+//                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
+//            }
+//        } catch (RemoteException ex) {
+//            log(ex);
+//        }
+//        return 0.0;
+//    }
+    //    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
 //        ComboItem[] ciArr = loadOnSelect(exchanger,
 //                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
 //        if (ciArr!=null && ciArr.length>0) {

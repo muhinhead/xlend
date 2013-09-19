@@ -431,8 +431,8 @@ public class Selects {
             + "from xaccounts";
     public static final String SELECT_FROM_PETTY =
             "Select xpetty_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\","
-            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xpetty.xmachine_id) \"Machine\","
-            + "(Select name from xsite where xsite_id=xpetty.xsite_id) \"Site\","
+//            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xpetty.xmachine_id) \"Machine\","
+//            + "(Select name from xsite where xsite_id=xpetty.xsite_id) \"Site\","
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Issued by\","
             + "amount \"Amount\","
             + "to_char(receipt_date,'DD/MM/YYYY') \"Receipt Date\", "

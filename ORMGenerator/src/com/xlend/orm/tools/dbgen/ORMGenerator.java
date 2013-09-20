@@ -11,7 +11,6 @@ import com.xlend.orm.tools.dbgen.dbstructure.Type;
 import com.xlend.orm.tools.dbgen.dbstructure.ForeignKey;
 import com.xlend.orm.tools.dbgen.dbstructure.Table;
 import java.io.*;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 

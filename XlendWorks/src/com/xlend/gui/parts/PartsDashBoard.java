@@ -160,9 +160,9 @@ public class PartsDashBoard extends AbstractDashBoard {
     private static PartsCategoriesFrame createCategoriesFrame(int group_id, String name) {
         PartsCategoriesFrame categoriesFrame = null;
         try {
-            DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xpartcategory.class, "group_id=" + group_id + " and parent_id is null", null);
+            DbObject[] obs = XlendWorks.getExchanger().getDbObjects(Xpartcategory.class, "group_id=" + group_id + " and parent_id is null", null);
             Xpartcategory xpc = (Xpartcategory) obs[0];
-            categoriesFrame = new PartsCategoriesFrame(xpc.getName(), DashBoard.getExchanger(), name);
+            categoriesFrame = new PartsCategoriesFrame(xpc.getName(), XlendWorks.getExchanger(), name);
         } catch (RemoteException ex) {
             XlendWorks.logAndShowMessage(ex);
         }

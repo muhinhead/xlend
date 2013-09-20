@@ -51,7 +51,7 @@ public class EditBalancePanel extends RecordEditPanel {
             super(new BorderLayout(5, 5));
             this.xpart = xpart;
             accountCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllAccounts(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllAccounts()) {
                 accountCbModel.addElement(ci);
             }
             add(markCB = new JCheckBox(), BorderLayout.WEST);
@@ -97,7 +97,7 @@ public class EditBalancePanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xpart = (Xbankbalancepart) DashBoard.getExchanger().saveDbObject(dbOb);
+                xpart = (Xbankbalancepart) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -183,7 +183,7 @@ public class EditBalancePanel extends RecordEditPanel {
             }
 
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xbankbalancepart.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xbankbalancepart.class,
                         "xbankbalance_id=" + xb.getXbankbalanceId(), "xbankbalancepart_id");
                 for (DbObject rec : recs) {
                     childRows.add(new RowPanel((Xbankbalancepart) rec));
@@ -275,7 +275,7 @@ public class EditBalancePanel extends RecordEditPanel {
             }
             for (RowPanel d : toDelete) {
                 if (d.getXpart() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getXpart());
+                    XlendWorks.getExchanger().deleteObject(d.getXpart());
                 }
             }
         }

@@ -49,7 +49,7 @@ class EditXbookOutPanel extends RecordEditPanel {
         Double upperLimit = 9999999.99;
         if (partID != 0) {
             try {
-                Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, partID);
+                Xparts part = (Xparts) XlendWorks.getExchanger().loadDbObjectOnID(Xparts.class, partID);
                 upperLimit = part.getQuantity();
             } catch (RemoteException ex) {
                 XlendWorks.logAndShowMessage(ex);
@@ -69,15 +69,15 @@ class EditXbookOutPanel extends RecordEditPanel {
         issuedByCbModel = new DefaultComboBoxModel();
         issuedToCbModel = new DefaultComboBoxModel();
 
-        for (ComboItem ci : XlendWorks.loadSites(DashBoard.getExchanger(), "is_active=1 and sitetype='D'")) {
+        for (ComboItem ci : XlendWorks.loadSites("is_active=1 and sitetype='D'")) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), Selects.activeEmployeeCondition)) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(Selects.activeEmployeeCondition)) {
             issuedByCbModel.addElement(ci);
             issuedToCbModel.addElement(ci);
         }

@@ -60,13 +60,13 @@ public class EditSitePanel extends RecordEditPanel {
         orderCBModel = new DefaultComboBoxModel();
         order2CBModel = new DefaultComboBoxModel();
         order3CBModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllOrders()) {
             orderCBModel.addElement(ci);
             order2CBModel.addElement(ci);
             order3CBModel.addElement(ci);
         }
         typeCBmodel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadSiteTypes(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadSiteTypes()) {
             typeCBmodel.addElement(ci.getValue());
         }
         JComponent[] edits = new JComponent[]{
@@ -157,7 +157,7 @@ public class EditSitePanel extends RecordEditPanel {
             Xsite xsite = (Xsite) getDbObject();
             if (xsite != null) {
                 AssignmentsGrid agreed;
-                historyPanel.add(agreed = new AssignmentsGrid(DashBoard.getExchanger(),
+                historyPanel.add(agreed = new AssignmentsGrid(XlendWorks.getExchanger(),
                         Selects.SELECT_SITE_ASSIGNMENTS.replace("#",
                         xsite.getXsiteId().toString())));
                 agreed.setPreferredSize(new Dimension(agreed.getPreferredSize().width, 300));
@@ -225,7 +225,7 @@ public class EditSitePanel extends RecordEditPanel {
         } else {
             try {
                 xsite.setNew(isNew);
-                DbObject saved = DashBoard.getExchanger().saveDbObject(xsite);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(xsite);
                 setDbObject(saved);
                 return true;
             } catch (Exception ex) {
@@ -257,7 +257,7 @@ public class EditSitePanel extends RecordEditPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Order Lookup", orderBox,
-                            new OrdersGrid(DashBoard.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
+                            new OrdersGrid(XlendWorks.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
                             new String[]{"companyname", //"vatnumber", "regnumber", 
                                 "ordernumber"});
                 } catch (RemoteException ex) {

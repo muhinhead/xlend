@@ -80,7 +80,7 @@ public class SiteTypeGrid extends GeneralGridPanel {
                     try {
                         Cbitems itm = (Cbitems) exchanger.loadDbObjectOnID(Cbitems.class, id);
                         if (itm != null) {
-                            if (XlendWorks.existsSiteOfType(exchanger, itm.getVal())) {
+                            if (XlendWorks.existsSiteOfType(itm.getVal())) {
                                 GeneralFrame.errMessageBox("Error:",
                                         "There are some sites of this type, it couldn't be removed!");
                             } else if (GeneralFrame.yesNo("Attention!",

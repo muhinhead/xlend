@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import com.xlend.gui.work.SuppliersGrid;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -31,7 +32,7 @@ public class DieselCartLookupAction extends AbstractAction {
     private void showSupplierLookup() {
         try {
             LookupDialog ld = new LookupDialog("Diesel Cart Lookup", dieselCartCB,
-                    new DieselCartsGrid(DashBoard.getExchanger(), Selects.SELECT_DIESELCARTS4LOOKUP, false),
+                    new DieselCartsGrid(XlendWorks.getExchanger(), Selects.SELECT_DIESELCARTS4LOOKUP, false),
                     new String[]{"fleet_nr", "reg_nr", "chassis_nr"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

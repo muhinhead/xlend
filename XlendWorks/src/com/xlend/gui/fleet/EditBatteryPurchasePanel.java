@@ -5,7 +5,6 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
-import com.xlend.gui.site.EditIssueToDieselDialog;
 import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xbateryissue;
 import com.xlend.orm.Xbattery;
@@ -16,7 +15,6 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -86,7 +84,7 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
             add(markCB = new JCheckBox(), BorderLayout.WEST);
             add(getGridPanel(new JComponent[]{
                         new JLabel(BATT_CODE, SwingConstants.RIGHT),
-                        batteryCodeCB = new JComboBox(XlendWorks.loadDistinctBatteryCodes(DashBoard.getExchanger())),
+                        batteryCodeCB = new JComboBox(XlendWorks.loadDistinctBatteryCodes()),
                         new JLabel(VAT_EXCL, SwingConstants.RIGHT),
                         vatExclUnitSP = new SelectedNumberSpinner(0.0, 0.0, 999999.99, .1),
                         new JLabel(BATT_ID, SwingConstants.RIGHT),
@@ -96,7 +94,7 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
                         public void actionPerformed(ActionEvent e) {
                             Integer issueID = getItem().getXbateryissueId();
                                 try {
-                                    Xbateryissue issue = (Xbateryissue) DashBoard.getExchanger().loadDbObjectOnID(Xbateryissue.class, issueID);
+                                    Xbateryissue issue = (Xbateryissue) XlendWorks.getExchanger().loadDbObjectOnID(Xbateryissue.class, issueID);
                                     new EditBatteryIssueDialog("Edit Battery Issue", issue);
                                 } catch (RemoteException ex) {
                                     Logger.getLogger(EditBatteryPurchasePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -152,7 +150,7 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                item = (Xbattery) DashBoard.getExchanger().saveDbObject(dbOb);
+                item = (Xbattery) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -201,10 +199,10 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
         supplierCbModel = new DefaultComboBoxModel();
         purchasedByCbModel.addElement(new ComboItem(0, SELECT_HERE));
         supplierCbModel.addElement(new ComboItem(0, SELECT_HERE));
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             purchasedByCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -266,7 +264,7 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
             selectComboItem(supplierCB, xbp.getXsupplierId());
             selectComboItem(purchasedByCB, xbp.getPurchasedBy());
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xbattery.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xbattery.class,
                         "xbatterypurchase_id=" + xbp.getXbatterypurchaseId(), "xbattery_id");
                 for (DbObject rec : recs) {
                     Xbattery battery = (Xbattery) rec;
@@ -324,7 +322,7 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
             }
             for (ItemPanel d : toDelete) {
                 if (d.getItem() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getItem());
+                    XlendWorks.getExchanger().deleteObject(d.getItem());
                 }
             }
         }

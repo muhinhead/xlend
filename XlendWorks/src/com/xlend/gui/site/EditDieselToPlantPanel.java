@@ -94,19 +94,19 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                 Integer operatorID = getSelectedCbItem(operatorCB);
                 if (machineID != null && siteID != null && operatorID != null) {
                     try {
-                        DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+                        DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xopmachassing.class,
                                 "xsite_id=" + siteID + " and xmachine_id=" + machineID
                                 + " and xemployee_id=" + operatorID + " and date_end is null", null);
                         if (recs.length == 0) {
                             GeneralFrame.infoMessageBox("Attention!", "This operator was not assigned to this site and machne");
                         } else {
-                            recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+                            recs = XlendWorks.getExchanger().getDbObjects(Xopmachassing.class,
                                     "xsite_id=" + siteID + " and xmachine_id=" + machineID
                                     + " and xemployee_id is null and date_end is null", null);
                             if (recs.length == 0) {
                                 GeneralFrame.infoMessageBox("Attention!", "This machine was not assigned to this site");
                             } else {
-                                recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+                                recs = XlendWorks.getExchanger().getDbObjects(Xopmachassing.class,
                                         "xsite_id=" + siteID + " and xmachine_id is null "
                                         + " and xemployee_id=" + operatorID + " and date_end is null", null);
                                 if (recs.length == 0) {
@@ -132,14 +132,14 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
             siteCbModel.addElement(new ComboItem(0, "--select--"));
             operatorCbModel.addElement(new ComboItem(0, "--select--"));
             issuedByCbModel.addElement(new ComboItem(0, "--select--"));
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees()) {
                 operatorCbModel.addElement(ci);
                 issuedByCbModel.addElement(ci);
             }
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
-            for (ComboItem ci : XlendWorks.loadSites(DashBoard.getExchanger(), null)) {
+            for (ComboItem ci : XlendWorks.loadSites(null)) {
                 if (!ci.getValue().startsWith("--")) {
                     siteCbModel.addElement(ci);
                 }
@@ -174,7 +174,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                     if (machineID != null) {
                         Xdiesel2plantitem rec = getItem();
                         Integer xdiesel2plantitemID = (rec == null ? null : rec.getXdiesel2plantitemId());
-                        String prevReading = XlendWorks.getPrevHourMeter(DashBoard.getExchanger(), xdiesel2plantitemID, machineID);
+                        String prevReading = XlendWorks.getPrevHourMeter(xdiesel2plantitemID, machineID);
                         if (prevReading.trim().length() > 0) {
                             getHourMeterSP().setToolTipText("previous hour meter was " + prevReading);
                             Double curValue = (Double) getHourMeterSP().getValue();
@@ -218,7 +218,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
                     if (machineID != null) {
                         Xdiesel2plantitem rec = getItem();
                         Integer xdiesel2plantitemID = (rec == null ? null : rec.getXdiesel2plantitemId());
-                        String prevReading = XlendWorks.getPrevHourMeter(DashBoard.getExchanger(), xdiesel2plantitemID, machineID);
+                        String prevReading = XlendWorks.getPrevHourMeter(xdiesel2plantitemID, machineID);
                         if (prevReading.trim().length() > 0) {
                             final double prevHM = Double.parseDouble(prevReading);
                             Double curHM = (Double) hourMeterSP.getValue();
@@ -300,7 +300,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                item = (Xdiesel2plantitem) DashBoard.getExchanger().saveDbObject(dbOb);
+                item = (Xdiesel2plantitem) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -363,10 +363,10 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
         };
         driverCbModel = new DefaultComboBoxModel();
         dieselCartCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             driverCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllDieselCarts(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllDieselCarts()) {
             dieselCartCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -441,7 +441,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
         Integer dieaselCartID = getSelectedCbItem(dieselCartCB);
         if (dieaselCartID != null) {
             java.util.Date dt = new Date();
-            Double balance = new Double(XlendWorks.calcDieselBalanceAtCart(DashBoard.getExchanger(), dieaselCartID, dt));
+            Double balance = new Double(XlendWorks.calcDieselBalanceAtCart(dieaselCartID, dt));
             double lastLiters = 0.0;
             for (ItemPanel itp : childRows) {
                 if (itp.getItem() == null && itp.getLitersSP().getValue() != null) {
@@ -467,7 +467,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
             selectComboItem(driverCB, xdp.getDriverId());
             selectComboItem(dieselCartCB, xdp.getXdieselcartId());
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xdiesel2plantitem.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xdiesel2plantitem.class,
                         "xdiesel2plant_id=" + xdp.getXdiesel2plantId(), "xdiesel2plantitem_id");
                 for (DbObject rec : recs) {
                     childRows.add(new ItemPanel((Xdiesel2plantitem) rec));
@@ -506,7 +506,7 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
             }
             for (ItemPanel d : toDelete) {
                 if (d.getItem() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getItem());
+                    XlendWorks.getExchanger().deleteObject(d.getItem());
                 }
             }
         }

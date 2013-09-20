@@ -91,25 +91,25 @@ public class EditConsumablePanel extends RecordEditPanel {
         };
         supplierCbModel = new DefaultComboBoxModel();
         supplierCbModel.addElement(new ComboItem(0, "--Add new supplier--"));
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadMachines()) {
             machineCbModel.addElement(ci);
         }
         authorizedCbModel = new DefaultComboBoxModel();
         requestedByCbModel = new DefaultComboBoxModel();
         collectedByCbModel = new DefaultComboBoxModel();
         paidByCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             authorizedCbModel.addElement(ci);
             requestedByCbModel.addElement(ci);
             collectedByCbModel.addElement(ci);
             paidByCbModel.addElement(ci);
         }
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -131,7 +131,7 @@ public class EditConsumablePanel extends RecordEditPanel {
             getGridPanel(new JComponent[]{amtRandsSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01),
                 new JLabel("Vat Excl.Amount:"), amtExclSP = new SelectedNumberSpinner(0.0, 0.0, 100000.0, .01)}),
             comboPanelWithLookupBtn(paidByCB = new JComboBox(paidByCbModel), new EmployeeLookupAction(paidByCB)),
-            getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods(DashBoard.getExchanger())), 2),
+            getGridPanel(paidMethodCB = new JComboBox(XlendWorks.loadPayMethods()), 2),
             getGridPanel(cheqNumberField = new JTextField(), 3)
         };
         paidMethodCB.addActionListener(getPaidMethodAction());

@@ -3,7 +3,6 @@ package com.xlend.gui.supplier;
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
 import com.xlend.gui.site.ConsumablesGrid;
-import com.xlend.gui.site.FuelGrid;
 import com.xlend.gui.work.PaymentsGrid;
 import com.xlend.orm.Xsupplier;
 import com.xlend.orm.dbobject.DbObject;
@@ -13,13 +12,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -145,7 +140,7 @@ class EditSupplierPanel extends RecordEditPanel {
         Xsupplier sup = (Xsupplier) getDbObject();
         if (sup != null) {
             try {
-                JScrollPane sp1 = new JScrollPane(new PaymentsGrid(DashBoard.getExchanger(),
+                JScrollPane sp1 = new JScrollPane(new PaymentsGrid(XlendWorks.getExchanger(),
                         Selects.SELECT_SUPPLIERS_PAYMENTS.replace("#",
                         sup.getXsupplierId().toString())));
                 sp1.setPreferredSize(new Dimension(400, 300));
@@ -160,7 +155,7 @@ class EditSupplierPanel extends RecordEditPanel {
                 //fuelPanel.add(sp2, BorderLayout.NORTH);
 
                 JScrollPane sp3 = new JScrollPane(
-                        new ConsumablesGrid(DashBoard.getExchanger(),
+                        new ConsumablesGrid(XlendWorks.getExchanger(),
                         Selects.SELECT_SUPPLIERS_CONSUMABLES.replace("#",
                         sup.getXsupplierId().toString()), true));
                 sp3.setPreferredSize(new Dimension(400, 300));
@@ -192,7 +187,7 @@ class EditSupplierPanel extends RecordEditPanel {
             productDescrField.setText(sup.getProductdesc());
             addressField.setText(sup.getAddress());
             bankingField.setText(sup.getBanking());
-            double outAmt = XlendWorks.calcOutstandingAmtSum(DashBoard.getExchanger(), sup.getXsupplierId());
+            double outAmt = XlendWorks.calcOutstandingAmtSum(sup.getXsupplierId());
             outStandAmtSP.setValue(outAmt);
             if (outAmt > 0) {
                 outStandAmtLB.setFont(outStandAmtLB.getFont().deriveFont(Font.BOLD, 16));
@@ -230,7 +225,7 @@ class EditSupplierPanel extends RecordEditPanel {
         }
         try {
             sup.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(sup);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(sup);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

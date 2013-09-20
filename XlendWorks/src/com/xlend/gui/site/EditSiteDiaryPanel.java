@@ -83,13 +83,13 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             machineTypeLBL.setBorder(BorderFactory.createEtchedBorder());
 
             machineCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
             markCB = new JCheckBox();
 
             operatorNameCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadEmployeeList(DashBoard.getExchanger(), "name")) {
+            for (ComboItem ci : XlendWorks.loadEmployeeList("name")) {
                 operatorNameCbModel.addElement(ci);
             }
             operatorNameCB = new WiderDropDownCombo(operatorNameCbModel);
@@ -99,7 +99,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
 //            for (ComboItem ci : XlendWorks.loadEmployeeList(DashBoard.getExchanger(), "clock_num")) {
 //                operatorNumberCbModel.addElement(ci);
 //            }
-            operatorNumberCB = new Java2sAutoComboBox(XlendWorks.loadEmployeeList(DashBoard.getExchanger(), "clock_num"));
+            operatorNumberCB = new Java2sAutoComboBox(XlendWorks.loadEmployeeList("clock_num"));
 
             machineCB = new JComboBox(machineCbModel);
 
@@ -121,7 +121,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Integer machineID = getSelectedCbItem(machineCB);
-                    machineTypeLBL.setText(XlendWorks.getMachineType1(DashBoard.getExchanger(), machineID));
+                    machineTypeLBL.setText(XlendWorks.getMachineType1(machineID));
                 }
             });
 
@@ -130,7 +130,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 public void actionPerformed(ActionEvent e) {
                     if (!isNumberChanged) {
                         isNameChanged = true;
-                        String clock_num = XlendWorks.getEmployeeClockNumOnID(DashBoard.getExchanger(), getSelectedCbItem(operatorNameCB));
+                        String clock_num = XlendWorks.getEmployeeClockNumOnID(getSelectedCbItem(operatorNameCB));
                         operatorNumberCB.setSelectedItem(clock_num);
                         isNameChanged = false;
                     }
@@ -141,7 +141,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 public void keyPressed(KeyEvent e) {
                     if (!isNameChanged) {
                         isNumberChanged = true;
-                        Integer id = XlendWorks.getEmployeeOnClockNum(DashBoard.getExchanger(), tc.getText());
+                        Integer id = XlendWorks.getEmployeeOnClockNum(tc.getText());
                         if (id != null) {
                             selectComboItem(operatorNameCB, id);
                         }
@@ -193,7 +193,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                item = (Xsitediaryitem) DashBoard.getExchanger().saveDbObject(dbOb);
+                item = (Xsitediaryitem) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -237,13 +237,13 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
         //""//"Foreman No:"
         };
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
         managerCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             managerCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -424,7 +424,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
                 selectComboItem(siteCB, xd.getXsiteId());
             }
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xsitediaryitem.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xsitediaryitem.class,
                         "xsitediary_id=" + xd.getXsitediaryId(), "xsitediaryitem_id");
                 for (DbObject rec : recs) {
                     childRows.add(new ItemPanel((Xsitediaryitem) rec));
@@ -467,7 +467,7 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
             }
             for (ItemPanel d : toDelete) {
                 if (d.getItem() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getItem());
+                    XlendWorks.getExchanger().deleteObject(d.getItem());
                 }
             }
         }

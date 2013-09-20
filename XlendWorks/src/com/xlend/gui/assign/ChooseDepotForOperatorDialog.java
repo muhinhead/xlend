@@ -34,7 +34,7 @@ public class ChooseDepotForOperatorDialog extends PopupDialog {
         super.fillContent();
         depot_id = 0;
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadSites(DashBoard.getExchanger(), "sitetype='D'")) {
+        for (ComboItem ci : XlendWorks.loadSites("sitetype='D'")) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
                 if (getDepot_id() == 0) {

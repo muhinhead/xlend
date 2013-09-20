@@ -4,7 +4,6 @@ import com.xlend.gui.admin.AdminFrame;
 import com.xlend.gui.parts.PartsDashBoard;
 import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.orm.Sheet;
-import com.xlend.orm.Usersheet;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.ImagePanel;
@@ -19,8 +18,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -156,7 +153,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (workFrame == null) {
-                    workFrame = new DocFrame(getExchanger());
+                    workFrame = new DocFrame(exchanger);
                 } else {
                     try {
                         workFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -192,7 +189,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (sitesFrame == null) {
-                    sitesFrame = new SitesFrame(getExchanger());
+                    sitesFrame = new SitesFrame(exchanger);
                 } else {
                     try {
                         sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -209,7 +206,7 @@ public class DashBoard extends AbstractDashBoard {
             public void actionPerformed(ActionEvent e) {
                 new ReportsMenuDialog();
                 if (ReportsMenuDialog.okPressed) {
-                    ReportsFrame reportsFrame = new ReportsFrame(getExchanger());
+                    ReportsFrame reportsFrame = new ReportsFrame(exchanger);
                 }
             }
         });
@@ -218,7 +215,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (hrFrame == null) {
-                    hrFrame = new HRFrame(getExchanger());
+                    hrFrame = new HRFrame(exchanger);
                 } else {
                     try {
                         hrFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -234,7 +231,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fleetFrame == null) {
-                    fleetFrame = new FleetFrame(getExchanger());
+                    fleetFrame = new FleetFrame(exchanger);
                 } else {
                     try {
                         fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -250,7 +247,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (logisticsFrame == null) {
-                    logisticsFrame = new LogisticsFrame(getExchanger());
+                    logisticsFrame = new LogisticsFrame(exchanger);
                 } else {
                     try {
                         logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -266,7 +263,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (bankingFrame == null) {
-                    bankingFrame = new BankingFrame(getExchanger());
+                    bankingFrame = new BankingFrame(exchanger);
                 } else {
                     try {
                         bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
@@ -283,7 +280,7 @@ public class DashBoard extends AbstractDashBoard {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 saveProps();
-                if (XlendWorks.login(getExchanger())) {
+                if (XlendWorks.login()) {
                     userLogin.setText(XlendWorks.getCurrentUserLogin());
                     adminButton.setVisible(XlendWorks.isCurrentAdmin());
                     setVisible(true);
@@ -320,7 +317,7 @@ public class DashBoard extends AbstractDashBoard {
         DbObject[] sheets;
         ArrayList<Sheet> obsoleteSheets = new ArrayList<Sheet>();
         try {
-            sheets = exchanger.getDbObjects(Sheet.class, "parent_id is not null", null);
+            sheets = exch.getDbObjects(Sheet.class, "parent_id is not null", null);
             for (DbObject rec : sheets) {
                 Sheet sheet = (Sheet) rec;
                 if (!allSheetNames.contains(sheet.getSheetname())) {
@@ -337,7 +334,7 @@ public class DashBoard extends AbstractDashBoard {
         for (Sheet s : obsoleteSheets) {
             XlendWorks.log("!! id=" + s.getSheetId() + " name=[" + s.getSheetname() + "] parent_id=" + s.getParentId());
             try {
-                exchanger.deleteObject(s);
+                exch.deleteObject(s);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -353,7 +350,7 @@ public class DashBoard extends AbstractDashBoard {
         updateSheetList("PARTS", PartsDashBoard.sheets());
     }
 
-    public static void updateSheetList(String parentName, String[] sheetNames) {
+    private static void updateSheetList(String parentName, String[] sheetNames) {
         DbObject rec;
         DbObject[] children;
         DbObject[] sheets;
@@ -481,10 +478,10 @@ public class DashBoard extends AbstractDashBoard {
         super.setVisible(show);
     }
 
-    public static IMessageSender getExchanger() {
-        return exchanger;
-    }
-
+//    public static IMessageSender getExchanger() {
+//        return exchanger;
+//    }
+//
     static void setExchanger(IMessageSender iMessageSender) {
         exchanger = iMessageSender;
     }

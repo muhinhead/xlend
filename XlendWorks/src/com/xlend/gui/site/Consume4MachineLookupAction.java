@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
@@ -29,7 +30,7 @@ class Consume4MachineLookupAction extends AbstractAction {
                     + (EditBreakConsumeDialog.getXmachineID() == null ? "" : (" and con.xmachine_id="
                     + EditBreakConsumeDialog.getXmachineID()));
             LookupDialog ld = new LookupDialog("Purchases Lookup", consumeCB,
-                    new ConsumablesGrid(DashBoard.getExchanger(), select, false),
+                    new ConsumablesGrid(XlendWorks.getExchanger(), select, false),
                     new String[]{"xconsume_id", "sup.companyname", "con.invoicenumber", "con.partnumber"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

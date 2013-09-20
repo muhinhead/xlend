@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.print.PrinterException;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Calendar;
@@ -123,10 +122,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         };
         positionCbModel = new DefaultComboBoxModel();
         wageCategoryDbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllPositions(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadAllPositions()) {
             positionCbModel.addElement(itm);
         }
-        for (ComboItem ci : XlendWorks.loadWageCategories(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadWageCategories()) {
             wageCategoryDbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -344,16 +343,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         try {
             Xemployee emp = (Xemployee) getDbObject();
             int employee_id = emp == null ? 0 : emp.getXemployeeId();
-            TimeSheetsGrid tsSheet = new TimeSheetsGrid(DashBoard.getExchanger(),
+            TimeSheetsGrid tsSheet = new TimeSheetsGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_TIMESHEETS4EMPLOYEE.replace("#", "" + employee_id), false);
             tp.add(tsSheet, "Time Sheeets");
             JPanel ppesPanel = new JPanel(new BorderLayout());
 
-            PPEissueItemsGrid itemsGrid = new PPEissueItemsGrid(DashBoard.getExchanger(), 0);
+            PPEissueItemsGrid itemsGrid = new PPEissueItemsGrid(XlendWorks.getExchanger(), 0);
             Controller detailController = itemsGrid.getController();
-            XlendMasterTableView masterView = new XlendMasterTableView(DashBoard.getExchanger(), detailController, "xppeissue_id", 0);
+            XlendMasterTableView masterView = new XlendMasterTableView(XlendWorks.getExchanger(), detailController, "xppeissue_id", 0);
 
-            PPEissues2employeeGrid issuesGrid = new PPEissues2employeeGrid(DashBoard.getExchanger(), employee_id, masterView);
+            PPEissues2employeeGrid issuesGrid = new PPEissues2employeeGrid(XlendWorks.getExchanger(), employee_id, masterView);
 
             ppesPanel.add(issuesGrid, BorderLayout.WEST);
             JPanel itemShell = new JPanel(new BorderLayout());
@@ -361,7 +360,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             ppesPanel.add(itemShell, BorderLayout.CENTER);
 
             tp.add(ppesPanel, "PPE Issued");
-            IncidentsGrid incSheet = new IncidentsGrid(DashBoard.getExchanger(), employee_id);
+            IncidentsGrid incSheet = new IncidentsGrid(XlendWorks.getExchanger(), employee_id);
             tp.add(incSheet, "Incidents");
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
@@ -572,7 +571,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhoto2(imageData2);
                 emp.setPhoto3(imageData3);
                 emp.setManagement(managementCb.isSelected() ? 1 : 0);
-                setDbObject(DashBoard.getExchanger().saveDbObject(emp));
+                setDbObject(XlendWorks.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -900,7 +899,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     }
 
     private void fillAssignmentInfo() {
-        String[] lbls = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), (Xemployee) getDbObject());
+        String[] lbls = XlendWorks.findCurrentAssignment((Xemployee) getDbObject());
         if (lbls != null && lbls.length > 1) {
             siteAssignLbl.setText(lbls[0]);
             machineAssignLbl.setText(lbls[1]);

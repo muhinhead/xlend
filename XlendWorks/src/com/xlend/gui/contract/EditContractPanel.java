@@ -55,7 +55,7 @@ public class EditContractPanel extends RecordEditPanel {
             "Contract Ref:", "Client:", "Description:"
         };
         cbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllClients(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllClients()) {
             cbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -114,7 +114,7 @@ public class EditContractPanel extends RecordEditPanel {
     private void showClientLookup() {
         try {
             LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                    new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
+                    new ClientsGrid(XlendWorks.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                     new String[]{"clientcode", "companyname", "contactname"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -158,7 +158,7 @@ public class EditContractPanel extends RecordEditPanel {
             try {
                 xcontract.setXclientId(itm.getId());
                 xcontract.setNew(isNew);
-                DbObject saved = DashBoard.getExchanger().saveDbObject(xcontract);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(xcontract);
                 setDbObject(saved);
                 pagesdPanel.saveNewPages(((Xcontract) saved).getXcontractId());
                 return true;
@@ -176,7 +176,7 @@ public class EditContractPanel extends RecordEditPanel {
         Xcontract xcontract = (Xcontract) getDbObject();
         int contract_id = xcontract == null ? 0 : xcontract.getXcontractId();
         try {
-            pagesdPanel = new ContractPagesPanel(DashBoard.getExchanger(), contract_id);
+            pagesdPanel = new ContractPagesPanel(XlendWorks.getExchanger(), contract_id);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }
@@ -184,7 +184,7 @@ public class EditContractPanel extends RecordEditPanel {
         tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
         tp.setPreferredSize(new Dimension(descrScroll.getPreferredSize().width, 250));
         try {
-            ordGrid = new OrdersGrid(DashBoard.getExchanger(),
+            ordGrid = new OrdersGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_ORDERS4CONTRACTS.replace("#", "" + contract_id), false);
             tp.add(ordGrid, "Orders");
         } catch (RemoteException ex) {

@@ -55,12 +55,12 @@ class EditLoanPanel extends RecordEditPanel {
         deductTimeModeCbModel = new DefaultComboBoxModel();
 
         authorizedByCbModel.addElement(new ComboItem(0, "---"));
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             requestedByCbModel.addElement(ci);
 //            authorizedByCbModel.addElement(ci);
             representedByCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees("management=1 and coalesce(wage_category,1)=1")) {
             authorizedByCbModel.addElement(ci);
         }
 

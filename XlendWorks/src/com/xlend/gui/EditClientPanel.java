@@ -14,8 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -138,7 +136,7 @@ public class EditClientPanel extends ProfilePanel {
 //        }
         try {
             cp.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(cp);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(cp);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

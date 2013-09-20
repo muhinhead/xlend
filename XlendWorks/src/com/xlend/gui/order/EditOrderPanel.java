@@ -80,7 +80,7 @@ public class EditOrderPanel extends RecordEditPanel {
             "Delivery address:", "Invoice Address:"
         };
         clienCBModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllClients(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllClients()) {
             clienCBModel.addElement(ci);
         }
         contractCBModel = new DefaultComboBoxModel();
@@ -213,7 +213,7 @@ public class EditOrderPanel extends RecordEditPanel {
                 xorder.setContactfax(contactFax.getText());
                 xorder.setDeliveryaddress(deliveryAddress.getText());
                 xorder.setInvoiceaddress(invoiceAddress.getText());
-                DbObject saved = DashBoard.getExchanger().saveDbObject(xorder);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(xorder);
                 setDbObject(saved);
                 return true;
             } catch (Exception ex) {
@@ -230,7 +230,7 @@ public class EditOrderPanel extends RecordEditPanel {
                 try {
                     if (clientRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                                new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
+                                new ClientsGrid(XlendWorks.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                                 new String[]{"clientcode", "companyname", "contactname"});
                     } else {
                         GeneralFrame.errMessageBox("Warning:", "Choose client first");
@@ -251,7 +251,7 @@ public class EditOrderPanel extends RecordEditPanel {
                     String select = Selects.SELECT_CONTRACTS4LOOKUP.replace("#", "" + itm.getId());
                     if (contractRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Contract Lookup", contractRefBox,
-                                new ContractsGrid(DashBoard.getExchanger(), select),
+                                new ContractsGrid(XlendWorks.getExchanger(), select),
                                 new String[]{"contractref", "description"});
                     } else {
                         GeneralFrame.errMessageBox("Warning", "Choose client first");
@@ -272,7 +272,7 @@ public class EditOrderPanel extends RecordEditPanel {
                     String select = Selects.SELECT_QUOTATIONS4LOOKUP.replace("#", "" + itm.getId());
                     if (rfcRefBox.getSelectedItem() != null) {
                         LookupDialog ld = new LookupDialog("Quotation Lookup", rfcRefBox,
-                                new QuotationsGrid(DashBoard.getExchanger(), select),
+                                new QuotationsGrid(XlendWorks.getExchanger(), select),
                                 new String[]{"rfcnumber"});
                     } else {
                         GeneralFrame.errMessageBox("Warning", "Choose client first");
@@ -297,11 +297,11 @@ public class EditOrderPanel extends RecordEditPanel {
     protected void syncCombos() {
         ComboItem itm = (ComboItem) clientRefBox.getSelectedItem();
         contractCBModel.removeAllElements();
-        for (ComboItem ci : XlendWorks.loadAllContracts(DashBoard.getExchanger(), itm.getId())) {
+        for (ComboItem ci : XlendWorks.loadAllContracts(itm.getId())) {
             contractCBModel.addElement(ci);
         }
         rfqRefCBModel.removeAllElements();
-        for (ComboItem ci : XlendWorks.loadAllRFQs(DashBoard.getExchanger(), itm.getId())) {
+        for (ComboItem ci : XlendWorks.loadAllRFQs(itm.getId())) {
             rfqRefCBModel.addElement(ci);
         }
     }
@@ -313,13 +313,13 @@ public class EditOrderPanel extends RecordEditPanel {
         Xorder xorder = (Xorder) getDbObject();
         int order_id = xorder == null ? 0 : xorder.getXorderId();
         try {
-            ordItemGrid = new OrderItemsGrid(DashBoard.getExchanger(),
+            ordItemGrid = new OrderItemsGrid(XlendWorks.getExchanger(),
                     Selects.SELECTORDERITEMS.replace("#", "" + order_id));
             tp.add(ordItemGrid, "Order Items");
-            pagesdPanel = new OrderPagesPanel(DashBoard.getExchanger(), order_id);
+            pagesdPanel = new OrderPagesPanel(XlendWorks.getExchanger(), order_id);
             JScrollPane sp;
             tp.add(sp = new JScrollPane(pagesdPanel), "Attached documents");
-            ordSitesGrid = new OrderSitesGrid(DashBoard.getExchanger(),
+            ordSitesGrid = new OrderSitesGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_ORDERISITES.replaceAll("#", "" + order_id));
             tp.add(ordSitesGrid, "Order Sites");
         } catch (RemoteException ex) {

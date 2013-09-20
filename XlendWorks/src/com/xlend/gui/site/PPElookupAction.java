@@ -3,6 +3,7 @@ package com.xlend.gui.site;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import com.xlend.gui.admin.PPEtypeGrid;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -26,7 +27,7 @@ public class PPElookupAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         try {
             LookupDialog ld = new LookupDialog("PPE Types Lookup", ppeTypeCB,
-                    new PPEtypeGrid(DashBoard.getExchanger()), new String[]{"xppetype"});
+                    new PPEtypeGrid(XlendWorks.getExchanger()), new String[]{"xppetype"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }

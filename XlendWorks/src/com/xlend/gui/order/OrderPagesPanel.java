@@ -94,7 +94,7 @@ public class OrderPagesPanel extends PagesPanel {
 
     @Override
     protected void processFiles(File[] files) throws SQLException, RemoteException, ForeignKeyViolationException {
-        int n = DashBoard.getExchanger().getDbObjects(Xorderpage.class,
+        int n = XlendWorks.getExchanger().getDbObjects(Xorderpage.class,
                 "xorder_id=" + parent_id, null).length + 1;
         for (File f : files) {
             Xorderpage orderPage = new Xorderpage(null);
@@ -115,7 +115,7 @@ public class OrderPagesPanel extends PagesPanel {
             if (parent_id == 0) {
                 newPages.add(orderPage);
             } else {
-                DbObject saved = DashBoard.getExchanger().saveDbObject(orderPage);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(orderPage);
             }
         }
         reloadPages();

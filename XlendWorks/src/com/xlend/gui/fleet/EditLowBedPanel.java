@@ -49,12 +49,12 @@ public class EditLowBedPanel extends RecordEditPanel {
         };
         machineCbModel = new DefaultComboBoxModel();
         machineCbModel.addElement(new ComboItem(0, ADD_NEW_TRACK));
-        for (ComboItem ci : XlendWorks.loadAllTracks(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllTracks()) {
             machineCbModel.addElement(ci);
         }
         driverCbModel = new DefaultComboBoxModel();
         assistantCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadAllEmployees()) {
             driverCbModel.addElement(itm);
             assistantCbModel.addElement(itm);
         }
@@ -122,7 +122,7 @@ public class EditLowBedPanel extends RecordEditPanel {
     private Component getTabbedPanel() {
         JTabbedPane tp = new MyJideTabbedPane();
         try {
-            JScrollPane sp = new JScrollPane(new TripsGrid(DashBoard.getExchanger(), (Xlowbed) getDbObject(), this));
+            JScrollPane sp = new JScrollPane(new TripsGrid(XlendWorks.getExchanger(), (Xlowbed) getDbObject(), this));
             sp.setPreferredSize(new Dimension(700, 200));
             tp.add(sp, "Trips");
         } catch (RemoteException ex) {

@@ -52,11 +52,11 @@ class EditXaddStockPanel extends RecordEditPanel {
         };
         enteredByCbModel = new DefaultComboBoxModel();
         supplierCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), Selects.activeEmployeeCondition)) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(Selects.activeEmployeeCondition)) {
             enteredByCbModel.addElement(ci);
         }
         supplierCbModel.addElement(new ComboItem(0, "--Add new supplier--"));
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{

@@ -179,16 +179,16 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         orderCbModel = new DefaultComboBoxModel();
         siteCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadAllEmployees()) {
             employeeCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadAllOrders(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadAllOrders()) {
             orderCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadSites(DashBoard.getExchanger(), "1=1")) {
+        for (ComboItem itm : XlendWorks.loadSites("1=1")) {
             siteCbModel.addElement(itm);
         }
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
         String[] titles = new String[]{
@@ -320,7 +320,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             imageData = (byte[]) ts.getImage();
             setImage(imageData);
             try {
-                DbObject[] ws = DashBoard.getExchanger().getDbObjects(Xwage.class, "xtimesheet_id=" + ts.getXtimesheetId(), "day");
+                DbObject[] ws = XlendWorks.getExchanger().getDbObjects(Xwage.class, "xtimesheet_id=" + ts.getXtimesheetId(), "day");
                 int i = 0;
                 for (DbObject o : ws) {
                     Xwage w = (Xwage) o;
@@ -368,10 +368,10 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 ts.setXemployeeId(getSelectedCbItem(employeeRefBox));
                 Integer xsiteID = getSelectedCbItem(siteRefBox);
                 ts.setXsiteId(xsiteID);
-                if (!XlendWorks.isActiveSite(DashBoard.getExchanger(), xsiteID)) {
+                if (!XlendWorks.isActiveSite(xsiteID)) {
                     if (GeneralFrame.yesNo("Attention!",
                             "Inactive site selected. Activate it?") == JOptionPane.YES_OPTION) {
-                        XlendWorks.activateSite(DashBoard.getExchanger(), xsiteID);
+                        XlendWorks.activateSite(xsiteID);
                     }
                 }
                 ts.setXmachineId(getSelectedCbItem(machineBox));
@@ -380,7 +380,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                 if (isNew) {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     String sd = dateFormat.format(weekend);
-                    int qty = DashBoard.getExchanger().getCount("select xtimesheet_id from xtimesheet "
+                    int qty = XlendWorks.getExchanger().getCount("select xtimesheet_id from xtimesheet "
                             + "where xmachine_id=" + ts.getXmachineId() + " and weekend='" + sd + "'");
                     if (qty > 0) {
                         if (GeneralFrame.yesNo("Attention!",
@@ -391,7 +391,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     }
                 }
                 ts.setImage(imageData);
-                setDbObject(ts = (Xtimesheet) DashBoard.getExchanger().saveDbObject(ts));
+                setDbObject(ts = (Xtimesheet) XlendWorks.getExchanger().saveDbObject(ts));
                 for (int d = 0; d < 7; d++) {
                     double norm, over, dbl;
                     if (dayWages[d] == null) {
@@ -411,7 +411,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                         ((JSpinner.DefaultEditor) sps[d * 4].getEditor()).getTextField().requestFocus();
                         return false;
                     } else {
-                        dayWages[d] = (Xwage) DashBoard.getExchanger().saveDbObject(dayWages[d]);
+                        dayWages[d] = (Xwage) XlendWorks.getExchanger().saveDbObject(dayWages[d]);
                     }
                 }
                 return true;
@@ -454,7 +454,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
     private void syncOrderComboOnSiteCombo() {
         ComboItem itm = (ComboItem) siteRefBox.getSelectedItem();
         if (itm != null && itm.getId() > 0) {
-            Integer order_id = XlendWorks.getOrderIdOnSiteId(DashBoard.getExchanger(), itm.getId());
+            Integer order_id = XlendWorks.getOrderIdOnSiteId(itm.getId());
             for (int i = 0; order_id != null && i < orderRefBox.getItemCount(); i++) {
                 ComboItem citm = (ComboItem) orderRefBox.getItemAt(i);
                 if (citm.getId() == order_id) {
@@ -479,7 +479,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Site Lookup", siteRefBox,
-                            new SitesGrid(DashBoard.getExchanger(), Selects.SELECT_ALLSITES4LOOKUP, true),
+                            new SitesGrid(XlendWorks.getExchanger(), Selects.SELECT_ALLSITES4LOOKUP, true),
                             new String[]{"name"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -494,7 +494,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Order Lookup", orderRefBox,
-                            new OrdersGrid(DashBoard.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
+                            new OrdersGrid(XlendWorks.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
                             new String[]{"companyname",
                                 "ordernumber"});
                 } catch (RemoteException ex) {

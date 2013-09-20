@@ -53,15 +53,15 @@ class EditPaymentPanel extends RecordEditPanel {
         };
         supplierCbModel = new DefaultComboBoxModel();
         supplierCbModel.addElement(new ComboItem(0, ADD_NEW_SUPPLIER));
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         paidFromCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadPaidFromCodes(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadPaidFromCodes()) {
             paidFromCbModel.addElement(ci);
         }
         paidByCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem itm : XlendWorks.loadAllEmployees()) {
             paidByCbModel.addElement(itm);
         }
         JComponent[] edits = new JComponent[]{

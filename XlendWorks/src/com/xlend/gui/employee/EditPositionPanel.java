@@ -3,6 +3,7 @@ package com.xlend.gui.employee;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xposition;
 import com.xlend.orm.dbobject.DbObject;
 import java.awt.GridLayout;
@@ -70,7 +71,7 @@ class EditPositionPanel extends RecordEditPanel {
         }
         try {
             pos.setPos(positionNameField.getText());
-            setDbObject(DashBoard.getExchanger().saveDbObject(pos));
+            setDbObject(XlendWorks.getExchanger().saveDbObject(pos));
             return true;
         } catch (Exception ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

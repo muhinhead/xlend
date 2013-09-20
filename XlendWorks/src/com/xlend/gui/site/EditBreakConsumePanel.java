@@ -43,7 +43,7 @@ class EditBreakConsumePanel extends RecordEditPanel {
         };
         breakConsumeCbModel = new DefaultComboBoxModel();
         int n = 0;
-        for (ComboItem ci : XlendWorks.loadConsumesForMachine(DashBoard.getExchanger(), EditBreakConsumeDialog.getXmachineID())) {
+        for (ComboItem ci : XlendWorks.loadConsumesForMachine(EditBreakConsumeDialog.getXmachineID())) {
             breakConsumeCbModel.addElement(ci);
             n++;
         }
@@ -89,7 +89,7 @@ class EditBreakConsumePanel extends RecordEditPanel {
 
     public void reloadMachineComboBox() {
         breakConsumeCbModel.removeAllElements();
-        for (ComboItem ci : XlendWorks.loadConsumesForMachine(DashBoard.getExchanger(), EditBreakConsumeDialog.getXmachineID())) {
+        for (ComboItem ci : XlendWorks.loadConsumesForMachine(EditBreakConsumeDialog.getXmachineID())) {
             breakConsumeCbModel.addElement(ci);
         }
     }
@@ -128,7 +128,7 @@ class EditBreakConsumePanel extends RecordEditPanel {
         Integer consumeID = getSelectedCbItem(breakConsumeCB);
         if (consumeID != null && consumeID > 0) {
             try {
-                Xconsume rec = (Xconsume) DashBoard.getExchanger().loadDbObjectOnID(Xconsume.class, consumeID);
+                Xconsume rec = (Xconsume) XlendWorks.getExchanger().loadDbObjectOnID(Xconsume.class, consumeID);
                 if (rec.getInvoicedate() != null) {
                     invDateLB.setText(rec.getInvoicedate().toString());
                 } else {
@@ -144,7 +144,7 @@ class EditBreakConsumePanel extends RecordEditPanel {
                 } else {
                     amtRandsLB.setText("");
                 }
-                Xsupplier sup = (Xsupplier) DashBoard.getExchanger().loadDbObjectOnID(Xsupplier.class, rec.getXsupplierId());
+                Xsupplier sup = (Xsupplier) XlendWorks.getExchanger().loadDbObjectOnID(Xsupplier.class, rec.getXsupplierId());
                 if (sup != null) {
                     supplierLB.setText(sup.getCompanyname());
                 } else {

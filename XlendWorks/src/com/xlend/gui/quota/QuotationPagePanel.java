@@ -94,7 +94,7 @@ public class QuotationPagePanel extends PagesPanel {
 
     @Override
     protected void processFiles(File[] files) throws SQLException, RemoteException, ForeignKeyViolationException {
-        int n = DashBoard.getExchanger().getDbObjects(Xquotationpage.class,
+        int n = XlendWorks.getExchanger().getDbObjects(Xquotationpage.class,
                 "xquotation_id=" + parent_id, null).length + 1;
         for (File f : files) {
             Xquotationpage quotationpage = new Xquotationpage(null);
@@ -115,7 +115,7 @@ public class QuotationPagePanel extends PagesPanel {
             if (parent_id == 0) {
                 newPages.add(quotationpage);
             } else {
-                DbObject saved = DashBoard.getExchanger().saveDbObject(quotationpage);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(quotationpage);
             }
         }
         reloadPages();

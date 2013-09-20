@@ -2,7 +2,6 @@ package com.xlend.gui.fleet;
 
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
-import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
@@ -81,12 +80,12 @@ public class EditMachServicePanel extends RecordEditPanel {
         machineCbModel = new DefaultComboBoxModel();
         servicedByCbModel.addElement(new ComboItem(0, "--select employee here--"));
         assistedByCbModel.addElement(new ComboItem(0, "--select employee here--"));
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             servicedByCbModel.addElement(ci);
             assistedByCbModel.addElement(ci);
         }
         machineCbModel.addElement(new ComboItem(0, "--select machine here--"));
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -156,7 +155,7 @@ public class EditMachServicePanel extends RecordEditPanel {
         machineCB.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String machTylpe = XlendWorks.getMachineType1(DashBoard.getExchanger(), getSelectedCbItem(machineCB));
+                String machTylpe = XlendWorks.getMachineType1(getSelectedCbItem(machineCB));
                 machTyleLBL.setText(machTylpe);
             }
         });
@@ -208,8 +207,7 @@ public class EditMachServicePanel extends RecordEditPanel {
             selectCb4Field(ms.getDiffChecked1(), diffCheck1CB, diffCheck1Field);
             selectCb4Field(ms.getDiffChecked2(), diffCheck2CB, diffCheck2Field);
             selectCb4Field(ms.getDiffChecked3(), diffCheck3CB, diffCheck3Field);
-            machTyleLBL.setText(XlendWorks.getMachineType1(DashBoard.getExchanger(),
-                    getSelectedCbItem(machineCB)));
+            machTyleLBL.setText(XlendWorks.getMachineType1(getSelectedCbItem(machineCB)));
         }
     }
 

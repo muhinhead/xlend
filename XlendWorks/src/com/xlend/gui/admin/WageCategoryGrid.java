@@ -80,7 +80,7 @@ public class WageCategoryGrid extends GeneralGridPanel {
                     try {
                         Cbitems itm = (Cbitems) exchanger.loadDbObjectOnID(Cbitems.class, id);
                         if (itm != null) {
-                            if (XlendWorks.existsEmployeeWithWageCategory(exchanger, itm.getId())) {
+                            if (XlendWorks.existsEmployeeWithWageCategory(itm.getId())) {
                                 GeneralFrame.errMessageBox("Error:",
                                         "There are some employees on this category, it couldn't be removed!");
                             } else if (GeneralFrame.yesNo("Attention!",

@@ -76,7 +76,7 @@ public abstract class ProfileDialog extends PopupDialog {
                             additionalEditPanel.setProfile_id(profile.getProfileId());
                         }
                         if (additionalEditPanel.save()) {
-                            DashBoard.getExchanger().commitTransaction();
+                            XlendWorks.getExchanger().commitTransaction();
                             EditContactDialog.okPressed = true;
                             dispose();
                         } else {
@@ -114,7 +114,7 @@ public abstract class ProfileDialog extends PopupDialog {
 
     private void startTransaction(String transactionName) {
         try {
-            DashBoard.getExchanger().startTransaction(transactionName);
+            XlendWorks.getExchanger().startTransaction(transactionName);
             insideTransaction = true;
         } catch (RemoteException ex1) {
             Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex1);
@@ -124,7 +124,7 @@ public abstract class ProfileDialog extends PopupDialog {
     private void rollbackTransaction(String transactionName) {
         if (insideTransaction) {
             try {
-                DashBoard.getExchanger().rollbackTransaction(transactionName);
+                XlendWorks.getExchanger().rollbackTransaction(transactionName);
                 insideTransaction = false;
             } catch (RemoteException ex1) {
                 Logger.getLogger(EditContactDialog.class.getName()).log(Level.SEVERE, null, ex1);

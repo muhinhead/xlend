@@ -70,15 +70,15 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         siteCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             operatorCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
         for (int i = 0; i < 7; i++) {
@@ -310,7 +310,7 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
             if (isNew) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String sd = dateFormat.format(dt);
-                int qty = DashBoard.getExchanger().getCount("select xopclocksheet_id from xopclocksheet "
+                int qty = XlendWorks.getExchanger().getCount("select xopclocksheet_id from xopclocksheet "
                         + "where xemployee_id=" + xs.getXemployeeId() + " and sheet_date='" + sd + "'");
                 if (qty > 0) {
                     if (GeneralFrame.yesNo("Attention!", 

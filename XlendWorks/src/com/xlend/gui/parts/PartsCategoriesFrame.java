@@ -91,7 +91,7 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
                         CategoryNode cat = (CategoryNode) selectedNode.getUserObject();
                         try {
                             DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) selectedNode.getParent();
-                            DashBoard.getExchanger().deleteObject(cat.getXpartCategory());
+                            XlendWorks.getExchanger().deleteObject(cat.getXpartCategory());
                             selectedNode.removeFromParent();
                             DefaultTreeModel model = (DefaultTreeModel) leftTree.getModel();
                             model.reload(parentNode);
@@ -359,7 +359,7 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
         splitPanelV.setLeftComponent(treeScrollPane = new JScrollPane(getLeftTree()));
         treeScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Categories"));
         try {
-            splitPanelV.setRightComponent(gridView = new PartsGrid(DashBoard.getExchanger(), getCurCategoryID()));
+            splitPanelV.setRightComponent(gridView = new PartsGrid(XlendWorks.getExchanger(), getCurCategoryID()));
             gridView.setBorder(partsBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Parts"));
         } catch (RemoteException ex) {
             XlendWorks.logAndShowMessage(ex);

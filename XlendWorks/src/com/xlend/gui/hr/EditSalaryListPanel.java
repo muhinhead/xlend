@@ -48,7 +48,7 @@ class EditSalaryListPanel extends RecordEditPanel {
             this.xsalary = xsalary;
             employeeCbModel = new DefaultComboBoxModel();
             markCB = new JCheckBox();
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees("management=1 and coalesce(wage_category,1)=1")) {
                 employeeCbModel.addElement(ci);
             }
             employeeCB = new JComboBox(employeeCbModel);
@@ -70,14 +70,14 @@ class EditSalaryListPanel extends RecordEditPanel {
                 if (xsalary.getXemployeeId() != null) {
                     selectComboItem(employeeCB, xsalary.getXemployeeId());
                 } else {
-                    ComboItem citm = XlendWorks.loadEmployeeExcept(DashBoard.getExchanger(), getAddedList());
+                    ComboItem citm = XlendWorks.loadEmployeeExcept(getAddedList());
                     selectComboItem(employeeCB, citm.getId());
                 }
                 if (xsalary.getAmount() != null) {
                     amountSP.setValue(xsalary.getAmount());
                 }
             } else {
-                ComboItem citm = XlendWorks.loadEmployeeExcept(DashBoard.getExchanger(), getAddedList());
+                ComboItem citm = XlendWorks.loadEmployeeExcept(getAddedList());
                 if (citm != null) {
                     xsalary = new Xsalary(null, 0, 0, citm.getId(), 0.0);
                     selectComboItem(employeeCB, citm.getId());
@@ -102,7 +102,7 @@ class EditSalaryListPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xsalary = (Xsalary) DashBoard.getExchanger().saveDbObject(dbOb);
+                xsalary = (Xsalary) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -228,7 +228,7 @@ class EditSalaryListPanel extends RecordEditPanel {
                 }
 
                 childRows.clear();
-                ComboItem[] emlist = XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1");
+                ComboItem[] emlist = XlendWorks.loadAllEmployees("management=1 and coalesce(wage_category,1)=1");
                 for (ComboItem ci : emlist) {
                     SalaryPanel p = new SalaryPanel(null);
                     Integer id = p.getSelectedEmployeeID();
@@ -276,7 +276,7 @@ class EditSalaryListPanel extends RecordEditPanel {
                 dateSP.setValue(new java.util.Date(xl.getPayday().getTime()));
             }
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xsalary.class, "xsalarylist_id=" + xl.getXsalarylistId(), "xsalary_id");
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xsalary.class, "xsalarylist_id=" + xl.getXsalarylistId(), "xsalary_id");
                 for (DbObject rec : recs) {
                     childRows.add(new SalaryPanel((Xsalary) rec));
                 }
@@ -311,7 +311,7 @@ class EditSalaryListPanel extends RecordEditPanel {
             }
             for (SalaryPanel p : toDelete) {
                 if (p.getXsalary() != null) {
-                    DashBoard.getExchanger().deleteObject(p.getXsalary());
+                    XlendWorks.getExchanger().deleteObject(p.getXsalary());
                 }
             }
         }

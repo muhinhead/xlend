@@ -64,13 +64,13 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
         driverCbModel = new DefaultComboBoxModel();
         supplierCbModel = new DefaultComboBoxModel();
         dieselCartCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             driverCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllDieselCarts(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllDieselCarts()) {
             dieselCartCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -123,8 +123,7 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
         Integer supplierID = getSelectedCbItem(supplierCB);
         if (supplierID != null) {
             java.util.Date dt = (java.util.Date) issueDateSP.getValue();
-            Double balance = XlendWorks.calcDieselBalanceAtSupplier(
-                           DashBoard.getExchanger(), supplierID, dt);
+            Double balance = XlendWorks.calcDieselBalanceAtSupplier(supplierID, dt);
             SpinnerNumberModel spModel = (SpinnerNumberModel) litresIssuedSP.getModel();
             spModel.setMaximum(balance.doubleValue() + 0.01);
             balanceSupplierLBL.setText(balance.toString());
@@ -135,8 +134,7 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
         Integer dieaselCartID = getSelectedCbItem(dieselCartCB);
         if (dieaselCartID != null) {
             java.util.Date dt = (java.util.Date) issueDateSP.getValue();
-            balanceInCartLBL.setText(XlendWorks.calcDieselBalanceAtCart(
-                    DashBoard.getExchanger(), dieaselCartID, dt));
+            balanceInCartLBL.setText(XlendWorks.calcDieselBalanceAtCart(dieaselCartID, dt));
         }
     }
 

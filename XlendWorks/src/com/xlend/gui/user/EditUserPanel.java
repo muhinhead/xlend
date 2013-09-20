@@ -130,7 +130,7 @@ public class EditUserPanel extends ProfilePanel {
         up.setPwdmd5(new String(passwordField.getPassword()));
         try {
             up.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(up);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(up);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

@@ -51,7 +51,7 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         String[] topLbls = new String[]{"Liters/Hour", "Diesel Price", "Dry",
             "Factor", "Competative Wet", "Real Wet", "Good Wet",
             "Competative Dry", "Real Dry", "Good Dry"};
-        ComboItem[] ratedMachines = XlendWorks.loadRatedMachines(DashBoard.getExchanger());
+        ComboItem[] ratedMachines = XlendWorks.loadRatedMachines();
 
         litersHoursSPs = new JSpinner[ratedMachines.length];
         drySPs = new JSpinner[ratedMachines.length];
@@ -173,7 +173,7 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
             factorSP.setValue(xmr.getFactor());
             for (int i = 0; i < cbitemIDs.length; i++) {
                 try {
-                    DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
+                    DbObject[] obs = XlendWorks.getExchanger().getDbObjects(Xmachrentalrateitm.class,
                             "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and xmachtype_id=" + cbitemIDs[i], null);
                     if (obs.length > 0) {
                         Xmachrentalrateitm itm = (Xmachrentalrateitm) obs[0];
@@ -216,7 +216,7 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
                 }
                 itemIds.append(cbitemIDs[i]);
                 Xmachrentalrateitm itm;
-                obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
+                obs = XlendWorks.getExchanger().getDbObjects(Xmachrentalrateitm.class,
                         "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and xmachtype_id=" + cbitemIDs[i], null);
                 if (obs.length == 0) {
                     isNew = true;
@@ -233,13 +233,13 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
                 itm.setRealWet((Double) realWetSPs[i].getValue());
                 itm.setGoodWet((Double) goodWetSPs[i].getValue());
                 itm.setNew(isNew);
-                DashBoard.getExchanger().saveDbObject(itm);
+                XlendWorks.getExchanger().saveDbObject(itm);
             }
             //to remove obsolete items (if any)
-            obs = DashBoard.getExchanger().getDbObjects(Xmachrentalrateitm.class,
+            obs = XlendWorks.getExchanger().getDbObjects(Xmachrentalrateitm.class,
                     "xmachrentalrate_id=" + xmr.getXmachrentalrateId() + " and not xmachtype_id in(" + itemIds.toString() + ")", null);
             for (DbObject ob : obs) {
-                DashBoard.getExchanger().deleteObject(ob);
+                XlendWorks.getExchanger().deleteObject(ob);
             }
         }
         return ok;

@@ -6,15 +6,12 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.mvc.dbtable.DbTableDocument;
-import com.xlend.orm.Xbookouts;
 import com.xlend.orm.Xparts;
 import com.xlend.remote.IMessageSender;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -140,7 +137,7 @@ class PartsGrid extends GeneralGridPanel {
                 EditXbookOutPanel.partID = getSelectedID();
                 if (EditXbookOutPanel.partID > 0) {
                     try {
-                        Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, EditXbookOutPanel.partID);
+                        Xparts part = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, EditXbookOutPanel.partID);
                         EditXbookOutDialog ed = new EditXbookOutDialog(label + " (part No_" + part.getPartnumber() + ")", null);
                         if (EditXbookOutDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),
@@ -163,7 +160,7 @@ class PartsGrid extends GeneralGridPanel {
                 EditXaddStockPanel.partID = getSelectedID();
                 if (EditXaddStockPanel.partID > 0) {
                     try {
-                        Xparts part = (Xparts) DashBoard.getExchanger().loadDbObjectOnID(Xparts.class, EditXaddStockPanel.partID);
+                        Xparts part = (Xparts) exchanger.loadDbObjectOnID(Xparts.class, EditXaddStockPanel.partID);
                         EditXaddStockDialog ed = new EditXaddStockDialog(label + " (part No_" + part.getPartnumber() + ")", null);
                         if (EditXaddStockDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(),

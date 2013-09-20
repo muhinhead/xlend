@@ -38,7 +38,7 @@ public class EditAccountPanel extends RecordEditPanel {
             "Branch:"
         };
         nameCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadDistinctAccNames(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadDistinctAccNames()) {
             nameCbModel.addElement(ci.getValue());
         }
         JComponent edits[] = new JComponent[]{

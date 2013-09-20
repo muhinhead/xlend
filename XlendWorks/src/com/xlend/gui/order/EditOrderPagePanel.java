@@ -4,6 +4,7 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.EditPagePanel;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xorderpage;
 import com.xlend.orm.dbobject.DbObject;
 
@@ -42,7 +43,7 @@ class EditOrderPagePanel extends EditPagePanel {
         opage.setDescription(descriptionField.getText());
         try {
             opage.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(opage);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(opage);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

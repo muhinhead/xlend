@@ -94,7 +94,7 @@ public abstract class PagesPanel extends JPanel {
     public void saveNewPages(int newParent_id) throws RemoteException, SQLException, ForeignKeyViolationException {
         for (DbObject page : newPages) {
             setParentId(page, newParent_id);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(page);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(page);
         }
     }
 

@@ -4,7 +4,6 @@ import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.hr.EmployeeLookupAction;
-import com.xlend.gui.supplier.SupplierLookupAction;
 import com.xlend.orm.Xbateryissue;
 import com.xlend.orm.Xbattery;
 import com.xlend.orm.dbobject.ComboItem;
@@ -13,8 +12,6 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -72,16 +69,16 @@ class EditBatteryIssuePanel extends RecordEditPanel {
         issuedToCbModel.addElement(new ComboItem(0, SELECT_HERE));
         machineCbModel.addElement(new ComboItem(0, SELECT_HERE));
 //        String[] batteryCodes = XlendWorks.loadAvailableBatteryCodes(DashBoard.getExchanger());
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             issuedByCbModel.addElement(ci);
             issuedToCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
         availableBattery1CbModel.addElement(new ComboItem(0, "---"));
         availableBattery2CbModel.addElement(new ComboItem(0, "---"));
-        for (ComboItem ci : XlendWorks.loadOldestAvailableBateries(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadOldestAvailableBateries()) {
             availableBattery1CbModel.addElement(ci);
             availableBattery2CbModel.addElement(ci);
         }
@@ -105,7 +102,7 @@ class EditBatteryIssuePanel extends RecordEditPanel {
         machineCB.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                machineTypeLBL.setText(XlendWorks.getMachineType1(DashBoard.getExchanger(),
+                machineTypeLBL.setText(XlendWorks.getMachineType1(
                         getSelectedCbItem(machineCB)));
             }
         });
@@ -119,7 +116,7 @@ class EditBatteryIssuePanel extends RecordEditPanel {
                     if (value.indexOf("(1 ") > 0) {
                         availableBattery2CbModel.removeAllElements();
                         availableBattery2CbModel.addElement(new ComboItem(0, "---"));
-                        for (ComboItem ci : XlendWorks.loadOldestAvailableBateries(DashBoard.getExchanger())) {
+                        for (ComboItem ci : XlendWorks.loadOldestAvailableBateries()) {
                             if (ci.getId() != battery1ID) {
                                 availableBattery2CbModel.addElement(ci);
                             }
@@ -153,7 +150,7 @@ class EditBatteryIssuePanel extends RecordEditPanel {
             selectComboItem(issuedToCB, xb.getIssuedTo());
             selectComboItem(machineCB, xb.getXmachineId());
             try {
-                DbObject[] itms = DashBoard.getExchanger().getDbObjects(Xbattery.class,
+                DbObject[] itms = XlendWorks.getExchanger().getDbObjects(Xbattery.class,
                         "xbateryissue_id=" + xb.getXbateryissueId(), "xbattery_id");
                 JComboBox[] cbs = new JComboBox[]{battery1CB, battery2CB};
                 DefaultComboBoxModel[] cbms = new DefaultComboBoxModel[]{availableBattery1CbModel, availableBattery2CbModel};
@@ -219,10 +216,10 @@ class EditBatteryIssuePanel extends RecordEditPanel {
             for (JComboBox cb : new JComboBox[]{battery1CB, battery2CB}) {
                 batId = getSelectedCbItem(cb);
                 if (batId != null && batId > 0) {
-                    battery = (Xbattery) DashBoard.getExchanger().loadDbObjectOnID(Xbattery.class, batId);
+                    battery = (Xbattery) XlendWorks.getExchanger().loadDbObjectOnID(Xbattery.class, batId);
                     if (battery != null) {
                         if (batId.intValue() == prevId) {
-                            DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xbattery.class,
+                            DbObject[] obs = XlendWorks.getExchanger().getDbObjects(Xbattery.class,
                                     "battery_code='" + battery.getBatteryCode() + "' "
                                     + "and xbateryissue_id is null "
                                     + "and xbattery_id<>" + battery.getXbatteryId(), null);
@@ -231,7 +228,7 @@ class EditBatteryIssuePanel extends RecordEditPanel {
                             }
                         }
                         battery.setXbateryissueId(issueID);
-                        DashBoard.getExchanger().saveDbObject(battery);
+                        XlendWorks.getExchanger().saveDbObject(battery);
                     }
                     prevId = batId.intValue();
                 }

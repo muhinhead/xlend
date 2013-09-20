@@ -111,15 +111,15 @@ class EditHourComparePanel extends RecordEditPanel {
         siteCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             operatorCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadMachines()) {
             machineCbModel.addElement(ci);
         }
         dowLabels = new JLabel[31];
@@ -176,7 +176,7 @@ class EditHourComparePanel extends RecordEditPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    OperatorClockSheetGrid grd = new OperatorClockSheetGrid(DashBoard.getExchanger());
+                    OperatorClockSheetGrid grd = new OperatorClockSheetGrid(XlendWorks.getExchanger());
                     new RefGridDialog(null, "Operator Clock Sheet", grd);
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -193,7 +193,7 @@ class EditHourComparePanel extends RecordEditPanel {
                 int year = cal.get(Calendar.YEAR);
                 int month = cal.get(Calendar.MONTH) + 1;
                 try {
-                    SpecSiteDiaryGrid grd = new SpecSiteDiaryGrid(DashBoard.getExchanger(),
+                    SpecSiteDiaryGrid grd = new SpecSiteDiaryGrid(XlendWorks.getExchanger(),
                             getSelectedCbItem(operatorCB), getSelectedCbItem(siteCB),
                             getSelectedCbItem(machineCB), year, month);
                     new RefGridDialog(null, "Site Diary", grd);
@@ -209,7 +209,7 @@ class EditHourComparePanel extends RecordEditPanel {
                     String select = Selects.SELECT_TIMESHEETS4EMPLOYEE.replaceAll(
                             "where ", "where t.xsite_id=" + getSelectedCbItem(siteCB) + " and ");
                     select = select.replaceAll("#", getSelectedCbItem(operatorCB).toString());
-                    TimeSheetsGrid grd = new TimeSheetsGrid(DashBoard.getExchanger(), select, false);
+                    TimeSheetsGrid grd = new TimeSheetsGrid(XlendWorks.getExchanger(), select, false);
                     new RefGridDialog(null, "Timesheet", grd);
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -342,7 +342,7 @@ class EditHourComparePanel extends RecordEditPanel {
                 selectComboItem(operatorCB, xh.getOperatorId());
             }
             try {
-                DbObject[] oldItms = DashBoard.getExchanger().getDbObjects(
+                DbObject[] oldItms = XlendWorks.getExchanger().getDbObjects(
                         Xhourcompareday.class,
                         "xhourcompare_id=" + xh.getXhourcompareId(), "day_no");
                 int d = 0;
@@ -390,13 +390,13 @@ class EditHourComparePanel extends RecordEditPanel {
         Xhourcompare xh = (Xhourcompare) getDbObject();
         if (xh != null) {
             try {
-                DbObject[] oldItms = DashBoard.getExchanger().getDbObjects(
+                DbObject[] oldItms = XlendWorks.getExchanger().getDbObjects(
                         Xhourcompareday.class,
                         "xhourcompare_id=" + xh.getXhourcompareId(),
                         "day_no");
                 int days = daysInMonth();
                 for (int i = oldItms.length - 1; i >= days; i--) {
-                    DashBoard.getExchanger().deleteObject(oldItms[i]);
+                    XlendWorks.getExchanger().deleteObject(oldItms[i]);
                 }
                 for (int i = 0; i < days; i++) {
                     Xhourcompareday itm = null;
@@ -417,7 +417,7 @@ class EditHourComparePanel extends RecordEditPanel {
                     itm.setTsh((Double) tshSpinners[i].getValue());
                     itm.setTsn((Double) tsnSpinners[i].getValue());
                     itm.setInvn((Double) invnSpinners[i].getValue());
-                    DashBoard.getExchanger().saveDbObject(itm);
+                    XlendWorks.getExchanger().saveDbObject(itm);
                 }
                 return true;
             } catch (Exception ex) {

@@ -63,7 +63,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     @Override
     protected void fillContent() {
         machineTypeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(), getFleetNumberChar())) {
+        for (ComboItem itm : XlendWorks.loadRootMachTypes(getFleetNumberChar())) {
             machineTypeCbModel.addElement(itm);
         }
         licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
@@ -310,7 +310,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
 
         try {
             machine.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(machine);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(machine);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {
@@ -333,7 +333,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         machineType2CbModel.removeAllElements();
         if (tp1 != null) {
             try {
-                DbObject[] tp2list = DashBoard.getExchanger().getDbObjects(
+                DbObject[] tp2list = XlendWorks.getExchanger().getDbObjects(
                         Xmachtype.class, "parenttype_id=" + tp1.getId(), "machtype,xmachtype_id");
                 String prevType = "";
                 for (DbObject tp2 : tp2list) {
@@ -342,7 +342,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
                         machineType2CbModel.addElement(
                                 new ComboItem(type2.getXmachtypeId(), type2.getMachtype()));
                     } else {
-                        DashBoard.getExchanger().deleteObject(type2); //to fix bug with duplicates
+                        XlendWorks.getExchanger().deleteObject(type2); //to fix bug with duplicates
                     }
                     prevType = type2.getMachtype();
                 }
@@ -379,7 +379,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     }
 
     private void fillAssignmentInfo() {
-        String[] lbls = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), (Xmachine) getDbObject());
+        String[] lbls = XlendWorks.findCurrentAssignment((Xmachine) getDbObject());
         if (lbls != null && lbls.length > 1) {
             siteAssignLbl.setText(lbls[0]);
             operatorAssignLbl.setText(lbls[1]);
@@ -390,7 +390,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     }
 
     private void fillLastServiceInfo() {
-        String[] lbls = XlendWorks.findLastService(DashBoard.getExchanger(), (Xmachine) getDbObject());
+        String[] lbls = XlendWorks.findLastService((Xmachine) getDbObject());
         if (lbls != null && lbls.length > 1) {
             lastServiceDateLBL.setText(lbls[0]);
             lastServicedByLBL.setText(lbls[1]);

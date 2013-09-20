@@ -61,10 +61,10 @@ public class EditApp4LeavePanel extends RecordEditPanel {
         applicantCbModel = new DefaultComboBoxModel();
         approvedByCbModel = new DefaultComboBoxModel();
         approvedByCbModel.addElement(new ComboItem(0, "--"));
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             applicantCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), "management=1 and coalesce(wage_category,1)=1")) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees("management=1 and coalesce(wage_category,1)=1")) {
             approvedByCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{

@@ -2,7 +2,6 @@ package com.xlend.gui.fleet;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
-import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.site.IssueToDieselCartGrid;
 import com.xlend.gui.XlendWorks;
 import com.xlend.gui.site.DieselToPlantGrid;
@@ -13,17 +12,12 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -58,7 +52,7 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
 //        litresCbModel = new DefaultComboBoxModel(new Object[]{"500", "1000", "5000"});
         assignedVehicleCbModel = new DefaultComboBoxModel();
         String selectVehicles = Selects.SELECT_FROM_MACHINE.replace("m.classify='M'", "m.classify='P' or m.classify='V'");
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), selectVehicles)) {
+        for (ComboItem ci : XlendWorks.loadMachines(selectVehicles)) {
             assignedVehicleCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -114,8 +108,8 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
         Xdieselcart xc = (Xdieselcart) getDbObject();
         if (xc != null) {
             try {
-                pane.add("Input", new IssueToDieselCartGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
-                pane.add("Output", new DieselToPlantGrid(DashBoard.getExchanger(), xc.getXdieselcartId()));
+                pane.add("Input", new IssueToDieselCartGrid(XlendWorks.getExchanger(), xc.getXdieselcartId()));
+                pane.add("Output", new DieselToPlantGrid(XlendWorks.getExchanger(), xc.getXdieselcartId()));
             } catch (RemoteException ex) {
                 XlendWorks.logAndShowMessage(ex);
             }

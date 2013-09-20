@@ -82,7 +82,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
         };
         labels = createLabelsArray(titles);
         cbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllClients(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllClients()) {
             cbModel.addElement(ci);
         }
         edits = new JComponent[]{
@@ -94,7 +94,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
             respYes = new JRadioButton("Yes"),
             respNo = new JRadioButton("No", true),
             responseDateSp = new SelectedDateSpinner(),
-            userRespondedCB = new JComboBox(XlendWorks.loadAllUsers(DashBoard.getExchanger())),
+            userRespondedCB = new JComboBox(XlendWorks.loadAllUsers()),
             respondedByCB = new JComboBox(new Object[]{"Email", "Fax", "Post", "Hand delivery"}),
             respCommentsField = new JTextField()
         };
@@ -261,7 +261,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
                 }
                 xq.setResponsecmnt(respCommentsField.getText());
 
-                DbObject saved = DashBoard.getExchanger().saveDbObject(xq);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(xq);
                 setDbObject(saved);
                 pagesdPanel.saveNewPages(((Xquotation) saved).getXquotationId());
                 return true;
@@ -278,7 +278,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
             public void actionPerformed(ActionEvent e) {
                 try {
                     LookupDialog ld = new LookupDialog("Client Lookup", clientRefBox,
-                            new ClientsGrid(DashBoard.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
+                            new ClientsGrid(XlendWorks.getExchanger(), Selects.SELECT_CLIENTS4LOOKUP, false),
                             new String[]{"clientcode", "companyname", "contactname"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -293,7 +293,7 @@ class EditQuotaPanel extends EditPanelWithPhoto {
         try {
             Xquotation q = (Xquotation) getDbObject();
             int xquotation_id = (q == null ? 0 : q.getXquotationId());
-            pagesdPanel = new QuotationPagePanel(DashBoard.getExchanger(), xquotation_id);
+            pagesdPanel = new QuotationPagePanel(XlendWorks.getExchanger(), xquotation_id);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

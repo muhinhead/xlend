@@ -32,7 +32,7 @@ public class ContractPagesPanel extends PagesPanel {
     }
 
     protected void processFiles(File[] files) throws SQLException, RemoteException, ForeignKeyViolationException {
-        int n = DashBoard.getExchanger().getDbObjects(Xcontractpage.class,
+        int n = XlendWorks.getExchanger().getDbObjects(Xcontractpage.class,
                 "xcontract_id=" + parent_id, null).length + 1;
         for (File f : files) {
             Xcontractpage contractPage = new Xcontractpage(null);
@@ -53,7 +53,7 @@ public class ContractPagesPanel extends PagesPanel {
             if (parent_id == 0) {
                 newPages.add(contractPage);
             } else {
-                DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
+                DbObject saved = XlendWorks.getExchanger().saveDbObject(contractPage);
             }
         }
         reloadPages();

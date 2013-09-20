@@ -74,19 +74,19 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
             siteFromCbModel = new DefaultComboBoxModel();
             siteToCbModel = new DefaultComboBoxModel();
             lowbedCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees()) {
                 operatorCbModel.addElement(ci);
             }
-            for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadActiveSites()) {
                 if (ci.getId() != 0) {
                     siteFromCbModel.addElement(ci);
                     siteToCbModel.addElement(ci);
                 }
             }
-            for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllLowbeds()) {
                 lowbedCbModel.addElement(ci);
             }
             add(getBorderPanel(new JComponent[]{
@@ -216,7 +216,7 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                rec = (Xtransscheduleitm) DashBoard.getExchanger().saveDbObject(dbOb);
+                rec = (Xtransscheduleitm) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -340,7 +340,7 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
         }
         for (RowPanel d : toDelete) {
             if (d.rec != null) {
-                DashBoard.getExchanger().deleteObject(d.rec);
+                XlendWorks.getExchanger().deleteObject(d.rec);
             }
         }
         return true;

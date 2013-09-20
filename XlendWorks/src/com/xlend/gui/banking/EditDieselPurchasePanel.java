@@ -77,7 +77,7 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         };
 
         supplierCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -115,11 +115,9 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         Integer supplierID = getSelectedCbItem(supplierCB);
         if (supplierID != null) {
             java.util.Date dt = (java.util.Date) purchaseDateSP.getValue();
-            Double lBalance = XlendWorks.calcDieselBalanceAtSupplier(
-                    DashBoard.getExchanger(), supplierID, dt);
+            Double lBalance = XlendWorks.calcDieselBalanceAtSupplier(supplierID, dt);
             balanceLitresAvailableLBL.setText(lBalance.toString());
-            Double rBalance = XlendWorks.calcMoneyForDieselBalanceAtSupplier(
-                    DashBoard.getExchanger(), supplierID, dt);
+            Double rBalance = XlendWorks.calcMoneyForDieselBalanceAtSupplier(supplierID, dt);
             if (rBalance < 0.0) {
                 balanceRandsAvailableLBL.setForeground(Color.red);
             } else {
@@ -165,12 +163,12 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
         xdp.setPaid((Double) paidSP.getValue());
 
         Double rBalance = XlendWorks.calcMoneyForDieselBalanceAtSupplier(
-                DashBoard.getExchanger(), supplierID, isNew ? null : dt);
+                supplierID, isNew ? null : dt);
 
         Double litres = (Double) litresPurchasedSP.getValue();
         Double price = (Double) randFactorSP.getValue();
 
-        Xsupplier supp = (Xsupplier) DashBoard.getExchanger().loadDbObjectOnID(Xsupplier.class, supplierID);
+        Xsupplier supp = (Xsupplier) XlendWorks.getExchanger().loadDbObjectOnID(Xsupplier.class, supplierID);
         if ((-rBalance) + (litres * price - (Double) paidSP.getValue()) > supp.getCreditLimit()) {
             GeneralFrame.errMessageBox("Attention!", "Available credit limit R" + supp.getCreditLimit() + " exceeded!");
             return false;

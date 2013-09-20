@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import com.xlend.gui.work.SuppliersGrid;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
@@ -31,7 +32,7 @@ public class SupplierLookupAction extends AbstractAction {
     private void showSupplierLookup() {
         try {
             LookupDialog ld = new LookupDialog("Suppliers Lookup", supplierCB,
-                    new SuppliersGrid(DashBoard.getExchanger(), Selects.SELECT_SUPPLIERS4LOOKUP, false),
+                    new SuppliersGrid(XlendWorks.getExchanger(), Selects.SELECT_SUPPLIERS4LOOKUP, false),
                     new String[]{"companyname", "vatnr", "company_regnr", "contactperson"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

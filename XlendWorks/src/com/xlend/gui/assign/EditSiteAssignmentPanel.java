@@ -42,11 +42,11 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
         operatorCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
         operatorCbModel.addElement(new ComboItem(0, "NO OPERATOR"));
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             operatorCbModel.addElement(ci);
         }
         machineCbModel.addElement(new ComboItem(0, "NO MACHINE"));
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), Selects.MACHINETVMS)) {
+        for (ComboItem ci : XlendWorks.loadMachines(Selects.MACHINETVMS)) {
             machineCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -103,7 +103,7 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
             assign.setXemployeeId(operator_id == 0 ? null : operator_id);
             assign.setXmachineId(machine_id == 0 ? null : machine_id);
             assign.setXsiteId(xsiteID);
-            Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machine_id, operator_id);
+            Xopmachassing previous = XlendWorks.findCurrentAssignment(machine_id, operator_id);
             if (previous != null) { //just move operator/machine pair to another site
                 if (previous.getXsiteId() == xsiteID) {
                     GeneralFrame.errMessageBox("Attention!", "This operator on this machine are already here");
@@ -111,13 +111,13 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                     previous.setDateEnd(new java.sql.Date(dt.getTime()));
                     previous.setXemployeeId(previous.getXemployeeId());
                     previous.setXmachineId(previous.getXmachineId() == 0 ? null : previous.getXmachineId());
-                    previous = (Xopmachassing) DashBoard.getExchanger().saveDbObject(previous);
+                    previous = (Xopmachassing) XlendWorks.getExchanger().saveDbObject(previous);
                     ok = true;
                 }
             } else {
-                previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machine_id, 0);
+                previous = XlendWorks.findCurrentAssignment(machine_id, 0);
                 if (previous != null) { //move previous operator
-                    Xemployee prevOperator = (Xemployee) DashBoard.getExchanger().loadDbObjectOnID(
+                    Xemployee prevOperator = (Xemployee) XlendWorks.getExchanger().loadDbObjectOnID(
                             Xemployee.class, previous.getXemployeeId());
                     if (prevOperator != null) {
                         EmployeeAssignmentPanel.setXemployee(prevOperator);
@@ -129,9 +129,9 @@ class EditSiteAssignmentPanel extends RecordEditPanel {
                             ok = true;
                         }
                     } else {
-                        previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), 0, operator_id);
+                        previous = XlendWorks.findCurrentAssignment(0, operator_id);
                         if (previous != null) {
-                            Xmachine prevMachine = (Xmachine) DashBoard.getExchanger().loadDbObjectOnID(
+                            Xmachine prevMachine = (Xmachine) XlendWorks.getExchanger().loadDbObjectOnID(
                                     Xmachine.class, previous.getXmachineId());
                             if (prevMachine != null) {
                                 if (GeneralFrame.yesNo("Attention!", "Previous machine "

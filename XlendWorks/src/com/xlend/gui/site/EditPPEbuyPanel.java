@@ -74,7 +74,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
             stockLevelLB.setBorder(BorderFactory.createEtchedBorder());
             ppeTypeCbModel = new DefaultComboBoxModel();
             ppeTypeCbModel.addElement(new ComboItem(0, "--select PPE here--"));
-            for (ComboItem ci : XlendWorks.loadAllPPEtypes(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllPPEtypes()) {
                 ppeTypeCbModel.addElement(ci);
             }
             add(markCB = new JCheckBox(), BorderLayout.WEST);
@@ -97,8 +97,8 @@ class EditPPEbuyPanel extends RecordEditPanel {
 
         public void updateStockLevels() {
             Integer xppetypeID = getSelectedCbItem(ppeTypeCB);
-            stockLevelLB.setText(XlendWorks.getStockLevels(DashBoard.getExchanger(), xppetypeID));
-            priceSP.setValue(Double.parseDouble(XlendWorks.getLastPPEprice(DashBoard.getExchanger(), xppetypeID)));
+            stockLevelLB.setText(XlendWorks.getStockLevels(xppetypeID));
+            priceSP.setValue(Double.parseDouble(XlendWorks.getLastPPEprice(xppetypeID)));
         }
 
         private void load() {
@@ -131,7 +131,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                item = (Xppebuyitem) DashBoard.getExchanger().saveDbObject(dbOb);
+                item = (Xppebuyitem) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -173,11 +173,11 @@ class EditPPEbuyPanel extends RecordEditPanel {
         boughtByCbModel = new DefaultComboBoxModel();
         supplierCbModel = new DefaultComboBoxModel();
         authorizedByCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             boughtByCbModel.addElement(ci);
             authorizedByCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         JComponent edits[] = new JComponent[]{
@@ -278,7 +278,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
             selectComboItem(supplierCB, xb.getXsupplierId());
             selectComboItem(authorizedByCB, xb.getAuthorizedbyId());
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xppebuyitem.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xppebuyitem.class,
                         "xppebuy_id=" + xb.getXppebuyId(), "xppebuyitem_id");
                 for (DbObject rec : recs) {
                     childRows.add(new ItemPanel((Xppebuyitem) rec));
@@ -316,7 +316,7 @@ class EditPPEbuyPanel extends RecordEditPanel {
             }
             for (ItemPanel d : toDelete) {
                 if (d.getItem() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getItem());
+                    XlendWorks.getExchanger().deleteObject(d.getItem());
                 }
             }
         }

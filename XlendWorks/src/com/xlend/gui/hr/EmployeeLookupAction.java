@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
@@ -37,7 +38,7 @@ public class EmployeeLookupAction extends AbstractAction {
                         + whereCond + " order by");
             }
             LookupDialog ld = new LookupDialog("Employee Lookup", employeeCB,
-                    new EmployeesGrid(DashBoard.getExchanger(), select, true),
+                    new EmployeesGrid(XlendWorks.getExchanger(), select, true),
                     new String[]{"id_num", "first_name", "sur_name", "clock_num"});
         } catch (RemoteException ex) {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());

@@ -46,7 +46,7 @@ public class LoginImagedDialog extends PopupDialog {
     private JPanel controlsPanel;
     private Java2sAutoComboBox loginField;
     private JPasswordField pwdField;
-    private static IMessageSender exchanger;
+//    private static IMessageSender exchanger;
     private static boolean okPressed;
 
     public LoginImagedDialog(Object obj) {
@@ -80,8 +80,8 @@ public class LoginImagedDialog extends PopupDialog {
                 XlendWorks.log(ie);
             }
         }
-        exchanger = (IMessageSender) getObject();
-        loginField = new Java2sAutoComboBox(XlendWorks.loadAllLogins(exchanger));
+//        exchanger = (IMessageSender) getObject();
+        loginField = new Java2sAutoComboBox(XlendWorks.loadAllLogins());
         loginField.setEditable(true);
         pwdField = new JPasswordField(20);
         controlsPanel = new JPanel(new BorderLayout());
@@ -137,7 +137,7 @@ public class LoginImagedDialog extends PopupDialog {
                 if (newAddress != null) {
                     DashBoard.getProperties().setProperty("ServerAddress", newAddress);
                     try {
-                        DashBoard.setExchanger(exchanger =
+                        XlendWorks.setExchanger(//exchanger =
                                 (IMessageSender) Naming.lookup("rmi://"
                                 + newAddress + "/XlendServer"));
                     } catch (Exception ex) {
@@ -297,7 +297,7 @@ public class LoginImagedDialog extends PopupDialog {
                 String pwd = new String(pwdField.getPassword());
                 try {
                     //TODO: check MD5(pwd) instead of pwd
-                    DbObject[] users = exchanger.getDbObjects(Userprofile.class,
+                    DbObject[] users = XlendWorks.getExchanger().getDbObjects(Userprofile.class,
                             "login='" + login + "' and pwdmd5='" + pwd + "'", null);
                     okPressed = (users.length > 0);
                     if (isOkPressed()) {

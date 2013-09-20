@@ -62,7 +62,7 @@ public class TimeSheetsGrid extends GeneralGridPanel {
                 try {
                     isInner = true;
                     LookupDialog ld = new LookupDialog("Duplicated timesheets", null,
-                            new TimeSheetsGrid(DashBoard.getExchanger(), Selects.SELECT_TIMESHEETSDUPLICATED, false),
+                            new TimeSheetsGrid(XlendWorks.getExchanger(), Selects.SELECT_TIMESHEETSDUPLICATED, false),
                             null);
                 } catch (RemoteException ex) {
                     isInner = false;

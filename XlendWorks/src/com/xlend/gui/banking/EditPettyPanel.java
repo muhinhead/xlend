@@ -16,29 +16,21 @@ import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
 import com.xlend.orm.Xpetty;
 import com.xlend.orm.Xpettyitem;
-import com.xlend.orm.Xsalarylist;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.PopupDialog;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -132,13 +124,13 @@ class EditPettyPanel extends RecordEditPanel {
         public PettyItemPanel(Xpettyitem xpettyItem) {
             super(new BorderLayout(5, 5));
             this.xpettyItem = xpettyItem;
-            pttyCategoryCbModel = new DefaultComboBoxModel(XlendWorks.loadAllXpettyCategories(DashBoard.getExchanger()));
+            pttyCategoryCbModel = new DefaultComboBoxModel(XlendWorks.loadAllXpettyCategories());
             pttyCategoryCB = new JComboBox(pttyCategoryCbModel);
-            siteCbModel = new DefaultComboBoxModel(XlendWorks.loadActiveSites(DashBoard.getExchanger()));
+            siteCbModel = new DefaultComboBoxModel(XlendWorks.loadActiveSites());
             markCB = new JCheckBox();
             machineCbModel = new DefaultComboBoxModel();
             machineCbModel.addElement(new ComboItem(0, "--NONE--"));
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
             machineCB = new JComboBox(machineCbModel);
@@ -207,7 +199,7 @@ class EditPettyPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xpettyItem = (Xpettyitem) DashBoard.getExchanger().saveDbObject(dbOb);
+                xpettyItem = (Xpettyitem) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -275,10 +267,10 @@ class EditPettyPanel extends RecordEditPanel {
             }
             selectComboItem(employeeOutCB, xp.getXemployeeOutId());
 //            balanceSP.setValue(XlendWorks.getPettyInOutBalance(DashBoard.getExchanger(), xp.getXpettyId()));
-            balanceSP.setValue(XlendWorks.getBalance4newXpetty(DashBoard.getExchanger(), dt));
+            balanceSP.setValue(XlendWorks.getBalance4newXpetty(dt));
             changeSP.setValue(xp.getChangeAmt());
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xpettyitem.class, "xpetty_id=" + xp.getXpettyId(), "xpettyitem_id");
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xpettyitem.class, "xpetty_id=" + xp.getXpettyId(), "xpettyitem_id");
                 for (DbObject rec : recs) {
                     childRows.add(new PettyItemPanel((Xpettyitem) rec));
                 }
@@ -291,7 +283,7 @@ class EditPettyPanel extends RecordEditPanel {
             syncOperatorNumField();
             syncReceipterNumFld();
         } else {
-            balanceSP.setValue(XlendWorks.getBalance4newXpetty(DashBoard.getExchanger()));
+            balanceSP.setValue(XlendWorks.getBalance4newXpetty());
         }
         enableEdit(XlendWorks.isCurrentAdmin());
         editToggleBtn.setSelected(XlendWorks.isCurrentAdmin());
@@ -334,7 +326,7 @@ class EditPettyPanel extends RecordEditPanel {
             }
             for (PettyItemPanel p : toDelete) {
                 if (p.getXpettyItem() != null) {
-                    DashBoard.getExchanger().deleteObject(p.getXpettyItem());
+                    XlendWorks.getExchanger().deleteObject(p.getXpettyItem());
                 }
             }
         }
@@ -351,8 +343,7 @@ class EditPettyPanel extends RecordEditPanel {
 //        siteCbModel = new DefaultComboBoxModel(
 //                XlendWorks.loadActiveSites(DashBoard.getExchanger()));
         employeeInCbModel = new DefaultComboBoxModel(
-                employeesArray = XlendWorks.loadAllEmployees(
-                DashBoard.getExchanger(), Selects.activeEmployeeCondition));
+                employeesArray = XlendWorks.loadAllEmployees(Selects.activeEmployeeCondition));
         operatorNumberField = new JTextField();
 //        machineCbModel = new DefaultComboBoxModel();
 //        machineCbModel.addElement(new ComboItem(0, "--NONE--"));
@@ -634,7 +625,7 @@ class EditPettyPanel extends RecordEditPanel {
             String pwd = new String(pwdFld.getPassword());
             if (pwd.length() > 0) {
                 try {
-                    ok = XlendWorks.checkAdminPassword(DashBoard.getExchanger(), pwd);
+                    ok = XlendWorks.checkAdminPassword(pwd);
                     if (!ok) {
                         GeneralFrame.errMessageBox("Attempt failed", "Access denied");
                     }

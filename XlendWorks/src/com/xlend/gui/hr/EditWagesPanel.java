@@ -85,7 +85,7 @@ class EditWagesPanel extends RecordEditPanel {
                 } else {
                     int i = 0;
                     for (Xemployee empl : employees) {
-                        Object[] vals = XlendWorks.getTimeSheetData(DashBoard.getExchanger(), xd, empl.getXemployeeId());
+                        Object[] vals = XlendWorks.getTimeSheetData(xd, empl.getXemployeeId());
                         xtimesheetIds[i] = (Integer) vals[0];
                         hoursSPs[i].setValue(vals[1]);
                         overSPs[i].setValue(vals[2]);
@@ -115,7 +115,7 @@ class EditWagesPanel extends RecordEditPanel {
         JPanel wagesgridPanel = new JPanel(new BorderLayout());
         wagesgridPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Empoyee List"));
         try {
-            DbObject[] emplRecs = DashBoard.getExchanger().getDbObjects(Xemployee.class,
+            DbObject[] emplRecs = XlendWorks.getExchanger().getDbObjects(Xemployee.class,
                     "wage_category in (2,3) and "
 //                    + "clock_num!='000' and "
                     + "upper(clock_num) not like 'S%' and "
@@ -174,7 +174,7 @@ class EditWagesPanel extends RecordEditPanel {
             for (int i = 0; i < employees.length; i++) {
                 DbObject[] obs;
                 try {
-                    obs = DashBoard.getExchanger().getDbObjects(Xwagesumitem.class,
+                    obs = XlendWorks.getExchanger().getDbObjects(Xwagesumitem.class,
                             "xwagesum_id=" + xs.getXwagesumId()
                             + " and xemployee_id=" + employees[i].getXemployeeId(), null);
                     if (obs.length > 0) {
@@ -207,7 +207,7 @@ class EditWagesPanel extends RecordEditPanel {
         try {
             if (isNew) {
                 xs.setNew(isNew);
-                xs = (Xwagesum) DashBoard.getExchanger().saveDbObject(xs);
+                xs = (Xwagesum) XlendWorks.getExchanger().saveDbObject(xs);
                 setDbObject(xs);
             }
             for (int i = 0; i < employees.length; i++) {
@@ -217,7 +217,7 @@ class EditWagesPanel extends RecordEditPanel {
                     itm.setXwagesumitemId(0);
                     itm.setNew(true);
                 } else {
-                    DbObject[] obs = DashBoard.getExchanger().getDbObjects(Xwagesumitem.class,
+                    DbObject[] obs = XlendWorks.getExchanger().getDbObjects(Xwagesumitem.class,
                             "xwagesum_id=" + xs.getXwagesumId()
                             + " and xemployee_id=" + employees[i].getXemployeeId(), null);
                     if (obs.length > 0) {
@@ -236,7 +236,7 @@ class EditWagesPanel extends RecordEditPanel {
                 itm.setNormaltime((Double) hoursSPs[i].getValue());
                 itm.setOvertime((Double) overSPs[i].getValue());
                 itm.setDoubletime((Double) dblSPs[i].getValue());
-                itm = (Xwagesumitem) DashBoard.getExchanger().saveDbObject(itm);
+                itm = (Xwagesumitem) XlendWorks.getExchanger().saveDbObject(itm);
             }
             return true;
         } catch (Exception ex) {

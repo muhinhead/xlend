@@ -3,7 +3,6 @@ package com.xlend.gui.banking;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xemployee;
-import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -12,13 +11,10 @@ import java.awt.print.PrinterException;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *
@@ -41,7 +37,7 @@ public class PersonalPettyBalance extends PopupDialog {
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {
-            emp = (Xemployee)DashBoard.getExchanger().loadDbObjectOnID(Xemployee.class, (Integer)params[1]);
+            emp = (Xemployee)XlendWorks.getExchanger().loadDbObjectOnID(Xemployee.class, (Integer)params[1]);
         } catch (RemoteException ex) {
             XlendWorks.log(ex);
         }

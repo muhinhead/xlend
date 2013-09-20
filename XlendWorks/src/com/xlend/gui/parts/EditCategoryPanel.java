@@ -2,6 +2,7 @@ package com.xlend.gui.parts;
 
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xpartcategory;
 import com.xlend.orm.dbobject.DbObject;
 import javax.swing.JComponent;
@@ -52,7 +53,7 @@ class EditCategoryPanel extends RecordEditPanel {
             xpc = new Xpartcategory(null);
             xpc.setXpartcategoryId(0);
             xpc.setParentId(parentID);
-            Xpartcategory parent = (Xpartcategory) DashBoard.getExchanger().loadDbObjectOnID(Xpartcategory.class, parentID);
+            Xpartcategory parent = (Xpartcategory) XlendWorks.getExchanger().loadDbObjectOnID(Xpartcategory.class, parentID);
             xpc.setGroupId(parent.getGroupId());
         }
         xpc.setNew(isNew);

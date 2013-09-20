@@ -3,6 +3,7 @@ package com.xlend.gui.quota;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.EditPagePanel;
 import com.xlend.gui.GeneralFrame;
+import com.xlend.gui.XlendWorks;
 import com.xlend.gui.contract.EditContractPagePanel;
 import com.xlend.orm.Xquotationpage;
 import com.xlend.orm.dbobject.DbObject;
@@ -42,7 +43,7 @@ class EditQuotaPagePanel extends EditPagePanel {
         qpage.setDescription(descriptionField.getText());
         try {
             qpage.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(qpage);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(qpage);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

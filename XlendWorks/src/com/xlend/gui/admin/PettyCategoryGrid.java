@@ -81,7 +81,7 @@ private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Intege
                     try {
                         Xpettycategory xc = (Xpettycategory) exchanger.loadDbObjectOnID(Xpettycategory.class, id);
                         if (xc != null) {
-                            if (XlendWorks.isXpettyCategoryUsed(exchanger, id)) {
+                            if (XlendWorks.isXpettyCategoryUsed(id)) {
                                 GeneralFrame.errMessageBox("Error:",
                                         "There are some petty of this category, it couldn't be removed!");
                             } else if (GeneralFrame.yesNo("Attention!",

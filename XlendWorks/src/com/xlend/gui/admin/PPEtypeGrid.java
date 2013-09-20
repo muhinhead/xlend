@@ -81,7 +81,7 @@ public class PPEtypeGrid extends GeneralGridPanel {
                     try {
                         Xppetype xt = (Xppetype) exchanger.loadDbObjectOnID(Xppetype.class, id);
                         if (xt != null) {
-                            if (XlendWorks.isXPPEtypeUsed(exchanger, id)) {
+                            if (XlendWorks.isXPPEtypeUsed(id)) {
                                 GeneralFrame.errMessageBox("Error:",
                                         "There are some operations of this type, it couldn't be removed!");
                             } else if (GeneralFrame.yesNo("Attention!",

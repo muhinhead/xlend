@@ -42,7 +42,7 @@ public class EmployeeReportPanel extends GeneralReportPanel {
     public EmployeeReportPanel(IMessageSender exchanger) {
         super(exchanger);
         DefaultComboBoxModel cats = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadWageCategories(exchanger)) {
+        for (ComboItem ci : XlendWorks.loadWageCategories()) {
             cats.addElement(ci);
         }
         upperPane.add(new JLabel("  Wage Category:"));

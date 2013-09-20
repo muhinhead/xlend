@@ -82,7 +82,7 @@ public class LookupDialog extends PopupDialog {
                     }
                     grid.setSelect(select);
                     try {
-                        GeneralFrame.updateGrid(DashBoard.getExchanger(),
+                        GeneralFrame.updateGrid(XlendWorks.getExchanger(),
                                 grid.getTableView(), grid.getTableDoc(), grid.getSelect(), null, -1);
                     } catch (RemoteException ex) {
                         XlendWorks.log(ex);

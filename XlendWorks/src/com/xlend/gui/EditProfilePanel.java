@@ -128,7 +128,7 @@ class EditProfilePanel extends RecordEditPanel {
         profile.setCellPhone(cellPhoneField.getText());
         profile.setEmail(emailField.getText());
         try {
-            DbObject saved = DashBoard.getExchanger().saveDbObject(profile);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(profile);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

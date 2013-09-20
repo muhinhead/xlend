@@ -58,7 +58,7 @@ class EditIncidentPanel extends RecordEditPanel {
             super(new BorderLayout(30, 20));
             this.xmi = xmi;
             machineCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
             machineCB = new JComboBox(machineCbModel);
@@ -96,7 +96,7 @@ class EditIncidentPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xmi = (Xmachineincident) DashBoard.getExchanger().saveDbObject(dbOb);
+                xmi = (Xmachineincident) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -123,7 +123,7 @@ class EditIncidentPanel extends RecordEditPanel {
             super(new BorderLayout(30, 20));
             this.xmi = xmi;
             employeeCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees()) {
                 employeeCbModel.addElement(ci);
             }
             employeeCB = new JComboBox(employeeCbModel);
@@ -161,7 +161,7 @@ class EditIncidentPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                xmi = (Xemployeeincident) DashBoard.getExchanger().saveDbObject(dbOb);
+                xmi = (Xemployeeincident) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -345,12 +345,12 @@ class EditIncidentPanel extends RecordEditPanel {
         reportedByCbModel = new DefaultComboBoxModel();
         reportedToCbModel = new DefaultComboBoxModel();
         verifiedByCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             reportedByCbModel.addElement(ci);
             reportedToCbModel.addElement(ci);
             verifiedByCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -530,12 +530,12 @@ class EditIncidentPanel extends RecordEditPanel {
                 lostIncomeSP.setValue(xi.getLostIncome());
             }
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xmachineincident.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xmachineincident.class,
                         "xincidents_id=" + xi.getXincidentsId(), "xmachineincident_id");
                 for (DbObject rec : recs) {
                     childMachineRows.add(new MachineRowPanel((Xmachineincident) rec));
                 }
-                recs = DashBoard.getExchanger().getDbObjects(Xemployeeincident.class,
+                recs = XlendWorks.getExchanger().getDbObjects(Xemployeeincident.class,
                         "xincidents_id=" + xi.getXincidentsId(), "xemployeeincident_id");
                 for (DbObject rec : recs) {
                     childPeopleRows.add(new PeopleRowPanel((Xemployeeincident) rec));
@@ -589,7 +589,7 @@ class EditIncidentPanel extends RecordEditPanel {
             }
             for (MachineRowPanel p : machinesToDelete) {
                 if (p.getXmi() != null) {
-                    DashBoard.getExchanger().deleteObject(p.getXmi());
+                    XlendWorks.getExchanger().deleteObject(p.getXmi());
                 }
             }
             for (PeopleRowPanel p : childPeopleRows) {
@@ -599,7 +599,7 @@ class EditIncidentPanel extends RecordEditPanel {
             }
             for (PeopleRowPanel p : peopleToDelete) {
                 if (p.getXmi() != null) {
-                    DashBoard.getExchanger().deleteObject(p.getXmi());
+                    XlendWorks.getExchanger().deleteObject(p.getXmi());
                 }
             }
         }

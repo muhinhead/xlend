@@ -50,13 +50,13 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
         };
         siteCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
         machineCbModel.addElement(new ComboItem(0, "NO MACHINE"));
-        for (ComboItem ci : XlendWorks.loadMachines(DashBoard.getExchanger(), Selects.MACHINETVMS //Selects.NOT_ASSIGNED_MACHINES
+        for (ComboItem ci : XlendWorks.loadMachines(Selects.MACHINETVMS //Selects.NOT_ASSIGNED_MACHINES
                 )) {
             machineCbModel.addElement(ci);
         }
@@ -85,13 +85,13 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
             Integer prevMachineID = null;
             Integer prevSiteID = null;
             java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
-            DbObject[] oldAssigns = DashBoard.getExchanger().getDbObjects(Xopmachassing.class,
+            DbObject[] oldAssigns = XlendWorks.getExchanger().getDbObjects(Xopmachassing.class,
                     "xemployee_id=" + xemployee.getXemployeeId() + " and date_end is null", null);
             for (DbObject rec : oldAssigns) {
                 Xopmachassing oldAssign = (Xopmachassing) rec;
                 oldAssign.setDateEnd(now);
                 oldAssign.setXmachineId(oldAssign.getXmachineId() == 0 ? null : oldAssign.getXmachineId());
-                DashBoard.getExchanger().saveDbObject(oldAssign);
+                XlendWorks.getExchanger().saveDbObject(oldAssign);
                 prevMachineID = oldAssign.getXmachineId();
                 prevSiteID = oldAssign.getXsiteId();
             }
@@ -114,9 +114,9 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
                 assignPrevMachine.setXmachineId(prevMachineID);
                 assignPrevMachine.setDateStart(now);
                 assignPrevMachine.setXsiteId(prevSiteID);
-                DashBoard.getExchanger().saveDbObject(assignPrevMachine);
+                XlendWorks.getExchanger().saveDbObject(assignPrevMachine);
             }
-            DashBoard.getExchanger().saveDbObject(assign);
+            XlendWorks.getExchanger().saveDbObject(assign);
             return true;
         } catch (Exception ex) {
             throw ex;
@@ -128,7 +128,7 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
         historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
 //            AssignmentsGrid asg;
-            historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
+            historyPanel.add(new AssignmentsGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_EMPLOYEE_ASSIGNMENTS.replace("#", xemployee.getXemployeeId().toString())) {
                 @Override
                 protected AbstractAction addAction() {

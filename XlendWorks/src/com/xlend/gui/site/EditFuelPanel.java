@@ -69,7 +69,7 @@ class EditFuelPanel extends RecordEditPanel {
         ComboItem unknown = new ComboItem(0, "--Unknown--");
         siteCbModel = new DefaultComboBoxModel();
         siteCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -78,14 +78,14 @@ class EditFuelPanel extends RecordEditPanel {
         issuedByCbModel = new DefaultComboBoxModel();
         issuedToCbModel.addElement(unknown);
         issuedByCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             issuedToCbModel.addElement(ci);
             issuedByCbModel.addElement(ci);
         }
         supplierCbModel = new DefaultComboBoxModel();
         supplierCbModel.addElement(new ComboItem(0, ADD_NEW_SUPPLIER));
 //        supplierCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadAllSuppliers(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllSuppliers()) {
             supplierCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{

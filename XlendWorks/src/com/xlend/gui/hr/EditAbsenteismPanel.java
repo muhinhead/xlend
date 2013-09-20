@@ -102,10 +102,10 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         reportedByCbModel = new DefaultComboBoxModel();
         grantedByCbModel = new DefaultComboBoxModel();
         machineCbModel.addElement(new ComboItem(0, "NO MACHINE"));
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -113,7 +113,7 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         ComboItem unknown = new ComboItem(0, "--unknown--");
         reportedToCbModel.addElement(unknown);
         reportedByCbModel.addElement(unknown);
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger(), Selects.activeEmployeeCondition)) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees(Selects.activeEmployeeCondition)) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
             employeeCbModel.addElement(ci);

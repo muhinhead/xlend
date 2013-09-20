@@ -3,7 +3,6 @@ package com.xlend.gui.hr;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.fleet.MachineLookupAction;
 import com.xlend.orm.Xjobcard;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
@@ -60,7 +59,7 @@ class EditJobCardPanel extends RecordEditPanel {
         vehicleCBs = new JComboBox[ARRLEN];
         commentsTAs = new JTextArea[ARRLEN];
         dowsLbls = new JLabel[ARRLEN];
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             employeeCbModel.addElement(ci);
         }
         for (int i = 0; i < ARRLEN; i++) {
@@ -70,7 +69,7 @@ class EditJobCardPanel extends RecordEditPanel {
             vehicleCbModels[i].addElement(new ComboItem(0, "NO VEHICLE"));
             commentsTAs[i] = new JTextArea();
         }
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             for (int i = 0; i < ARRLEN; i++) {
                 machineCbModels[i].addElement(ci);
                 vehicleCbModels[i].addElement(ci);

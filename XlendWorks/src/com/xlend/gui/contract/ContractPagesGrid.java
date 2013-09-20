@@ -52,7 +52,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
 
                     if (retVal == JFileChooser.APPROVE_OPTION) {
                         File[] files = chooser.getSelectedFiles();
-                        int n = DashBoard.getExchanger().getDbObjects(Xcontractpage.class, "xcontract_id=" + contract_id, null).length + 1;
+                        int n = XlendWorks.getExchanger().getDbObjects(Xcontractpage.class, "xcontract_id=" + contract_id, null).length + 1;
                         for (File f : files) {
                             Xcontractpage contractPage = new Xcontractpage(null);
                             contractPage.setXcontractpageId(0);
@@ -63,7 +63,7 @@ public class ContractPagesGrid extends GeneralGridPanel {
                             contractPage.setFileextension(extension);
                             contractPage.setPagescan(Util.readFile(f.getAbsolutePath()));
                             contractPage.setNew(true);
-                            DbObject saved = DashBoard.getExchanger().saveDbObject(contractPage);
+                            DbObject saved = XlendWorks.getExchanger().saveDbObject(contractPage);
                         }
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }

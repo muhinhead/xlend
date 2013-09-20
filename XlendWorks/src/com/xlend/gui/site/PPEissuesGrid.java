@@ -93,7 +93,7 @@ public class PPEissuesGrid extends GeneralGridPanel {
                         Xppeissue xi = (Xppeissue) exchanger.loadDbObjectOnID(Xppeissue.class, id);
                         if (xi != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete the record (stocks will be reduced)?") == JOptionPane.YES_OPTION) {
-                            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xppeissueitem.class,
+                            DbObject[] recs = exchanger.getDbObjects(Xppeissueitem.class,
                                     "xppeissue_id=" + xi.getXppeissueId(), "xppeissueitem_id");
                             for (DbObject rec : recs) {
                                 exchanger.deleteObject(rec);

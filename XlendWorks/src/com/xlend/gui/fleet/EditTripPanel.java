@@ -100,12 +100,12 @@ public class EditTripPanel extends RecordEditPanel {
             "Trip Type:"
         };
         lowbedCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllLowbeds()) {
             lowbedCbModel.addElement(ci);
         }
         if (machineCbModel == null) {
             machineCbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 machineCbModel.addElement(ci);
             }
         }
@@ -115,7 +115,7 @@ public class EditTripPanel extends RecordEditPanel {
             toSiteCbModel = new DefaultComboBoxModel();
             firstTime = true;
         }
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 if (firstTime) {
                     toSiteCbModel.addElement(ci);
@@ -133,7 +133,7 @@ public class EditTripPanel extends RecordEditPanel {
             firstTime = true;
         }
 
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             driverCbModel.addElement(ci);
             assistantCbModel.addElement(ci);
             if (firstTime) {
@@ -193,7 +193,7 @@ public class EditTripPanel extends RecordEditPanel {
             itm = (ComboItem) lowbedCbModel.getElementAt(0);
         }
         try {
-            Xlowbed lowbed = (Xlowbed) DashBoard.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
+            Xlowbed lowbed = (Xlowbed) XlendWorks.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
             selectComboItem(driverCB, lowbed.getDriverId());
             selectComboItem(assistantCB, lowbed.getAssistantId());
         } catch (RemoteException ex) {
@@ -224,7 +224,7 @@ public class EditTripPanel extends RecordEditPanel {
         Xlowbed xlb = null;
         if (xlowbed_id != null) {
             try {
-                xlb = (Xlowbed) DashBoard.getExchanger().loadDbObjectOnID(Xlowbed.class, xlowbed_id);
+                xlb = (Xlowbed) XlendWorks.getExchanger().loadDbObjectOnID(Xlowbed.class, xlowbed_id);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -321,9 +321,9 @@ public class EditTripPanel extends RecordEditPanel {
                 java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
                 int machID = xtr.getMachineId() == null ? 0 : xtr.getMachineId().intValue();
                 int opID = xtr.getOperatorId() == null ? 0 : xtr.getOperatorId().intValue();
-                Xopmachassing previous = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), machID, opID);
+                Xopmachassing previous = XlendWorks.findCurrentAssignment(machID, opID);
                 if (previous == null) {
-                    Xopmachassing previousOperatorsAssign = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), 0, xtr.getOperatorId());
+                    Xopmachassing previousOperatorsAssign = XlendWorks.findCurrentAssignment(0, xtr.getOperatorId());
                     if (previousOperatorsAssign != null) {
                         Xopmachassing assignPrevMachine = new Xopmachassing(null);
                         assignPrevMachine.setXopmachassingId(0);
@@ -332,14 +332,14 @@ public class EditTripPanel extends RecordEditPanel {
                         assignPrevMachine.setXemployeeId(null);
                         assignPrevMachine.setDateStart(now);
                         assignPrevMachine.setXsiteId(previousOperatorsAssign.getXsiteId());
-                        DashBoard.getExchanger().saveDbObject(assignPrevMachine);
+                        XlendWorks.getExchanger().saveDbObject(assignPrevMachine);
 //                        previousOperatorsAssign.setDateEnd(now);
 //                        previousOperatorsAssign.setXemployeeId(previousOperatorsAssign.getXemployeeId() == 0 ? null : previousOperatorsAssign.getXemployeeId());
 //                        previousOperatorsAssign.setXmachineId(previousOperatorsAssign.getXmachineId() == 0 ? null : previousOperatorsAssign.getXmachineId());
 //                        DashBoard.getExchanger().saveDbObject(previousOperatorsAssign);
                         setEndTimeStamp(previousOperatorsAssign, now);
                     }
-                    Xopmachassing previousMachineAssign = XlendWorks.findCurrentAssignment(DashBoard.getExchanger(), xtr.getMachineId(), 0);
+                    Xopmachassing previousMachineAssign = XlendWorks.findCurrentAssignment(xtr.getMachineId(), 0);
                     if (previousMachineAssign != null) {
                         Xemployee prevOperator = getOperator(previousMachineAssign.getXemployeeId());
                         if (prevOperator != null) {
@@ -351,7 +351,7 @@ public class EditTripPanel extends RecordEditPanel {
                             assignPrevOperator.setXmachineId(null);
                             assignPrevOperator.setDateStart(now);
                             assignPrevOperator.setXsiteId(ChooseDepotForOperatorDialog.getDepot_id());
-                            DashBoard.getExchanger().saveDbObject(assignPrevOperator);
+                            XlendWorks.getExchanger().saveDbObject(assignPrevOperator);
                         }
 //                        previousMachineAssign.setDateEnd(now);
 //                        previousMachineAssign.setXemployeeId(previousMachineAssign.getXemployeeId() == 0 ? null : previousMachineAssign.getXemployeeId());
@@ -374,7 +374,7 @@ public class EditTripPanel extends RecordEditPanel {
                 assign.setXmachineId(xtr.getMachineId());
                 assign.setXemployeeId(xtr.getOperatorId());
                 assign.setDateStart(now);
-                DashBoard.getExchanger().saveDbObject(assign);
+                XlendWorks.getExchanger().saveDbObject(assign);
 
             } catch (Exception ex) {
 //                ex.pr
@@ -390,7 +390,7 @@ public class EditTripPanel extends RecordEditPanel {
         previous.setDateEnd(now);
         previous.setXemployeeId(previous.getXemployeeId() == 0 ? null : previous.getXemployeeId());
         previous.setXmachineId(previous.getXmachineId() == 0 ? null : previous.getXmachineId());
-        DashBoard.getExchanger().saveDbObject(previous);
+        XlendWorks.getExchanger().saveDbObject(previous);
     }
 
     private ActionListener typeSwitchAction() {
@@ -416,13 +416,13 @@ public class EditTripPanel extends RecordEditPanel {
     }
 
     private static Xemployee getOperator(Integer xemployeeId) throws RemoteException {
-        return (Xemployee) DashBoard.getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeId);
+        return (Xemployee) XlendWorks.getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeId);
     }
 
     public static void syncAssignedOperatorOnMachine(JComboBox machineCB, JComboBox operatorCB) throws RemoteException {
         ComboItem ci = (ComboItem) machineCB.getSelectedItem();
         if (ci != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xopmachassing.class, "xmachine_id="
+            DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xopmachassing.class, "xmachine_id="
                     + ci.getId() + " and xopmachassing_id=(select max(xopmachassing_id) "
                     + "from xopmachassing where xmachine_id=" + ci.getId() + ")", null);
             if (recs.length > 0) {

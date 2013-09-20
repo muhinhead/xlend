@@ -32,6 +32,21 @@ import javax.swing.SpinnerNumberModel;
  * @author Nick Mukhin
  */
 public class XlendWorks {
+    private static IMessageSender exchanger;
+
+    /**
+     * @return the exchanger
+     */
+    public static IMessageSender getExchanger() {
+        return exchanger;
+    }
+
+    /**
+     * @param aExchanger the exchanger to set
+     */
+    public static void setExchanger(IMessageSender aExchanger) {
+        exchanger = aExchanger;
+    }
 
     public static class XDate extends java.sql.Date {
 
@@ -59,12 +74,12 @@ public class XlendWorks {
     public static void main(String[] args) {
         LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
         String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
-        IMessageSender exchanger;
+//        IMessageSender exchanger;
         while (true) {
             try {
-                exchanger = (IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer");
-                if (matchVersions(exchanger) && login(exchanger)) {
-                    new DashBoard(exchanger);
+                setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
+                if (matchVersions() && login()) {
+                    new DashBoard(getExchanger());
                     break;
                 } else {
                     System.exit(1);
@@ -136,12 +151,12 @@ public class XlendWorks {
         log(ne);
     }
 
-    public static boolean login(IMessageSender exchanger) {
+    public static boolean login() {
         try {
 //            JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
 //            loginField.setEditable(true);
 //            JPasswordField pwdField = new JPasswordField(20);
-            new LoginImagedDialog(exchanger);//new Object[]{loginField, pwdField, exchanger});
+            new LoginImagedDialog(getExchanger());//new Object[]{loginField, pwdField, exchanger});
             return LoginImagedDialog.isOkPressed();
         } catch (Throwable ee) {
             GeneralFrame.errMessageBox("Error:", "Server failure\nCheck your logs please");
@@ -150,8 +165,8 @@ public class XlendWorks {
         return false;
     }
 
-    public static boolean checkAdminPassword(IMessageSender exchanger, String pwd) throws RemoteException {
-        DbObject[] users = exchanger.getDbObjects(Userprofile.class,
+    public static boolean checkAdminPassword(String pwd) throws RemoteException {
+        DbObject[] users = getExchanger().getDbObjects(Userprofile.class,
                 "login='admin' and pwdmd5='" + pwd + "'", null);
         return users.length > 0;
     }
@@ -176,9 +191,9 @@ public class XlendWorks {
         }
     }
 
-    public static ComboItem[] loadAllContracts(IMessageSender exchanger, int client_id) {
+    public static ComboItem[] loadAllContracts(int client_id) {
         try {
-            DbObject[] contracts = exchanger.getDbObjects(Xcontract.class, "xclient_id=" + client_id, "contractref");
+            DbObject[] contracts = getExchanger().getDbObjects(Xcontract.class, "xclient_id=" + client_id, "contractref");
             ComboItem[] itms = new ComboItem[contracts.length + 1];
             itms[0] = new ComboItem(0, "--No contract yet--");
             int i = 1;
@@ -193,7 +208,7 @@ public class XlendWorks {
         return null;
     }
 
-    public static List<ComboItem> loadEmployeeList(IMessageSender exchanger, String field) {
+    public static List<ComboItem> loadEmployeeList(String field) {
         //        ArrayList<ComboItem> list = new ArrayList<ComboItem>();
         //        try {
         //            DbObject[] employees = exchanger.getDbObjects(Xemployee.class, Selects.activeEmployeeCondition, "clock_num");
@@ -205,7 +220,7 @@ public class XlendWorks {
         //            log(ex);
         //        }
         //        return list;
-        ComboItem[] arr = loadOnSelect(exchanger, "select xemployee_id,"
+        ComboItem[] arr = loadOnSelect("select xemployee_id,"
                 + (field.equals("name") ? "first_name" : "clock_num")
                 + " from xemployee where " + Selects.activeEmployeeCondition);
         ArrayList<ComboItem> list = new ArrayList<ComboItem>();
@@ -216,14 +231,14 @@ public class XlendWorks {
     }
     private static ArrayList<ComboItem> employeesCache = new ArrayList<ComboItem>();
 
-    public static void refreshEmployeeCache(IMessageSender exchanger) {
+    public static void refreshEmployeeCache() {
         employeesCache.clear();
-        loadEmployees(exchanger);
+        loadEmployees();
     }
 
-    public static ArrayList<ComboItem> loadAllEmployees(IMessageSender exchanger) {
+    public static ArrayList<ComboItem> loadAllEmployees() {
         if (employeesCache.isEmpty()) {
-            ComboItem[] emps = loadAllEmployees(exchanger, Selects.activeEmployeeCondition);
+            ComboItem[] emps = loadAllEmployees(Selects.activeEmployeeCondition);
             for (ComboItem ci : emps) {
                 employeesCache.add(ci);
             }
@@ -231,15 +246,15 @@ public class XlendWorks {
         return employeesCache;
     }
 
-    public static ComboItem[] loadAllEmployees(IMessageSender exchanger, String whereCond) {
-        return loadOnSelect(exchanger, "select xemployee_id,concat(clock_num,' ',first_name) from xemployee order by clock_numonly");
+    public static ComboItem[] loadAllEmployees(String whereCond) {
+        return loadOnSelect("select xemployee_id,concat(clock_num,' ',first_name) from xemployee order by clock_numonly");
     }
 
-    public static ComboItem[] loadAllXpettyCategories(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select xpettycategory_id,concat(lpad(xpettycategory_id,2,'0'),' ',category_name) from xpettycategory");
+    public static ComboItem[] loadAllXpettyCategories() {
+        return loadOnSelect("select xpettycategory_id,concat(lpad(xpettycategory_id,2,'0'),' ',category_name) from xpettycategory");
     }
 
-    public static ComboItem[] loadAllRFQs(IMessageSender exchanger, int client_id) {
+    public static ComboItem[] loadAllRFQs(int client_id) {
 //        try {
 //            DbObject[] rfqs = exchanger.getDbObjects(Xquotation.class, "xclient_id=" + client_id, "rfcnumber");
 //            ComboItem[] itms = new ComboItem[rfqs.length + 1];
@@ -254,10 +269,10 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xquotation_id,rfcnumber from xquotation where xclient_id=" + client_id + " order by rfcnumber");
+        return loadOnSelect("select xquotation_id,rfcnumber from xquotation where xclient_id=" + client_id + " order by rfcnumber");
     }
 
-    public static ComboItem[] loadAllOrderSites(IMessageSender exchanger, int order_id) {
+    public static ComboItem[] loadAllOrderSites(int order_id) {
 //        try {
 //            DbObject[] rfqs = exchanger.getDbObjects(Xsite.class,
 //                    "xorder_id=" + order_id, "name");
@@ -273,10 +288,10 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xsite_id,name from xsite where xorder_id=" + order_id + " order by name");
+        return loadOnSelect("select xsite_id,name from xsite where xorder_id=" + order_id + " order by name");
     }
 
-    public static ComboItem[] loadSites(IMessageSender exchanger, String whereCond) {
+    public static ComboItem[] loadSites(String whereCond) {
 //        try {
 //            DbObject[] orders = exchanger.getDbObjects(Xsite.class, whereCond, "name");
 //            ComboItem[] itms = new ComboItem[orders.length + 1];
@@ -291,10 +306,10 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xsite_id,name from xsite where " + whereCond + " order by name");
+        return loadOnSelect("select xsite_id,name from xsite where " + whereCond + " order by name");
     }
 
-    public static ComboItem loadSite(IMessageSender exchanger, Integer siteID) {
+    public static ComboItem loadSite(Integer siteID) {
         //        if (siteID != null && siteID.intValue() > 0) {
         //            try {
         //                Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, siteID);
@@ -304,18 +319,18 @@ public class XlendWorks {
         //            }
         //        }
         //        return null;
-        ComboItem citms[] = loadOnSelect(exchanger, "select xsite_id,name from xsite where xsite_id=" + siteID);
+        ComboItem citms[] = loadOnSelect("select xsite_id,name from xsite where xsite_id=" + siteID);
         if (citms != null && citms.length > 0) {
             return citms[0];
         }
         return null;
     }
 
-    public static ComboItem[] loadActiveSites(IMessageSender exchanger) {
-        return loadSites(exchanger, "is_active=1");
+    public static ComboItem[] loadActiveSites() {
+        return loadSites("is_active=1");
     }
 
-    public static ComboItem[] loadAllOrders(IMessageSender exchanger) {
+    public static ComboItem[] loadAllOrders() {
 //        try {
 //            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
 //            ComboItem[] itms = new ComboItem[orders.length + 2];
@@ -331,12 +346,12 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select -1 as xorder_id,'--ORDER NOT RECEIVED--' as ordernumber "
+        return loadOnSelect("select -1 as xorder_id,'--ORDER NOT RECEIVED--' as ordernumber "
                 + "union select 0,'--Add new order--' "
                 + "union select xorder_id,concat('Order Nr:',ordernumber) from xorder order by ordernumber");
     }
 
-    public static ComboItem[] loadRootMachTypes(IMessageSender exchanger, String classify) {
+    public static ComboItem[] loadRootMachTypes(String classify) {
 //        try {
 //            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
 //            ComboItem[] itms = new ComboItem[clients.length];
@@ -350,15 +365,15 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xmachtype_id,machtype "
+        return loadOnSelect("select xmachtype_id,machtype "
                 + "from xmachtype "
                 + "where parenttype_id is null "
                 + "and classify in ('" + classify + "') order by xmachtype_id");
     }
 
-    public static ComboItem[] loadAllPositions(IMessageSender exchanger) {
+    public static ComboItem[] loadAllPositions() {
         try {
-            DbObject[] clients = exchanger.getDbObjects(Xposition.class, null, "pos");
+            DbObject[] clients = getExchanger().getDbObjects(Xposition.class, null, "pos");
             ComboItem[] itms = new ComboItem[clients.length + 1];
             itms[0] = new ComboItem(0, "--Add new position--");
             int i = 1;
@@ -373,7 +388,7 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadAllUsers(IMessageSender exchanger) {
+    public static ComboItem[] loadAllUsers() {
 //        try {
 //            DbObject[] users = exchanger.getDbObjects(Profile.class, "profile_id in (select profile_id from userprofile)", "last_name");
 //            ComboItem[] itms = new ComboItem[users.length + 1];
@@ -389,10 +404,10 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select profile_id, concat(substr(first_name,1,1),'.',last_name) from profile order by last_name");
+        return loadOnSelect("select profile_id, concat(substr(first_name,1,1),'.',last_name) from profile order by last_name");
     }
 
-    public static ComboItem[] loadAllClients(IMessageSender exchanger) {
+    public static ComboItem[] loadAllClients() {
 //        try {
 //            DbObject[] clients = exchanger.getDbObjects(Xclient.class, null, "companyname");
 //            ComboItem[] itms = new ComboItem[clients.length + 1];
@@ -407,12 +422,12 @@ public class XlendWorks {
 //            log(ex);
 //        }
 //        return null;
-        return loadOnSelect(exchanger, "select xclient_id,companyname from xclient order by companyname");
+        return loadOnSelect("select xclient_id,companyname from xclient order by companyname");
     }
 
-    public static List loadAllLogins(IMessageSender exchanger) {
+    public static List loadAllLogins() {
         try {
-            DbObject[] users = exchanger.getDbObjects(Userprofile.class, null, "login");
+            DbObject[] users = getExchanger().getDbObjects(Userprofile.class, null, "login");
             ArrayList logins = new ArrayList();
             logins.add("");
             int i = 1;
@@ -427,13 +442,13 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadMachines(IMessageSender exchanger) {
-        return loadMachines(exchanger, Selects.MACHINETVMS);
+    public static ComboItem[] loadMachines() {
+        return loadMachines(Selects.MACHINETVMS);
     }
 
-    public static ComboItem[] loadMachines(IMessageSender exchanger, String select) {
+    public static ComboItem[] loadMachines(String select) {
         try {
-            Vector[] tab = exchanger.getTableBody(select);
+            Vector[] tab = getExchanger().getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -449,9 +464,9 @@ public class XlendWorks {
         return null;
     }
 
-    public static ComboItem[] loadAllMachines(IMessageSender exchanger) {
+    public static ComboItem[] loadAllMachines() {
         try {
-            Vector[] tab = exchanger.getTableBody(Selects.ALLMACHINETVMS);
+            Vector[] tab = getExchanger().getTableBody(Selects.ALLMACHINETVMS);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -467,9 +482,9 @@ public class XlendWorks {
         return null;
     }
 
-    private static String[] loadOnSelect(IMessageSender exchanger, String select, int fldNum, String initValue) {
+    private static String[] loadOnSelect(String select, int fldNum, String initValue) {
         try {
-            Vector[] tab = exchanger.getTableBody(select);
+            Vector[] tab = getExchanger().getTableBody(select);
             Vector rows = tab[1];
             String[] ans = new String[rows.size() + (initValue != null ? 1 : 0)];
             int n = 0;
@@ -487,9 +502,9 @@ public class XlendWorks {
         return new String[]{""};
     }
 
-    private static String[] loadStringsOnSelect(IMessageSender exchanger, String select) {
+    private static String[] loadStringsOnSelect(String select) {
         try {
-            Vector[] tab = exchanger.getTableBody(select);
+            Vector[] tab = getExchanger().getTableBody(select);
             Vector rows = tab[1];
             String[] ans = new String[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -503,9 +518,9 @@ public class XlendWorks {
         return new String[]{""};
     }
 
-    private static ComboItem[] loadOnSelect(IMessageSender exchanger, String select) {
+    private static ComboItem[] loadOnSelect(String select) {
         try {
-            Vector[] tab = exchanger.getTableBody(select);
+            Vector[] tab = getExchanger().getTableBody(select);
             Vector rows = tab[1];
             ComboItem[] ans = new ComboItem[rows.size()];
             for (int i = 0; i < rows.size(); i++) {
@@ -521,36 +536,36 @@ public class XlendWorks {
         return new ComboItem[]{new ComboItem(0, "")};
     }
 
-    public static ComboItem[] loadEmployees(IMessageSender exchanger) { //, boolean freeOnly) {
+    public static ComboItem[] loadEmployees() { //, boolean freeOnly) {
 //        String select = freeOnly ? Selects.FREEEMPLOYEES : Selects.EMPLOYEES;
-        return loadOnSelect(exchanger, Selects.EMPLOYEES);
+        return loadOnSelect(Selects.EMPLOYEES);
     }
 
-    public static ComboItem[] loadAllDieselCarts(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.DIESELCARTS);
+    public static ComboItem[] loadAllDieselCarts() {
+        return loadOnSelect(Selects.DIESELCARTS);
     }
 
-    public static ComboItem[] loadAllSuppliers(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SUPPLIERS);
+    public static ComboItem[] loadAllSuppliers() {
+        return loadOnSelect(Selects.SUPPLIERS);
     }
 
-    public static ComboItem[] loadPayMethods(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.PAYMETHODS);
+    public static ComboItem[] loadPayMethods() {
+        return loadOnSelect(Selects.PAYMETHODS);
     }
 
-    public static ComboItem[] loadAllPPEtypes(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SELECT_FROM_XPPETYPE);
+    public static ComboItem[] loadAllPPEtypes() {
+        return loadOnSelect(Selects.SELECT_FROM_XPPETYPE);
     }
 
-    public static double getBalance4newXpetty(IMessageSender exchanger) {
+    public static double getBalance4newXpetty() {
         double drawn = 0.0;
         double amt = 0.0;
-        ComboItem[] itms = loadOnSelect(exchanger,
+        ComboItem[] itms = loadOnSelect(
                 "Select 0,ifnull(sum(cash_drawn + add_monies),0) from xcashdrawn");
         if (itms.length > 0) {
             drawn = Double.parseDouble(itms[0].getValue());
         }
-        itms = loadOnSelect(exchanger,
+        itms = loadOnSelect(
                 "Select 0,ifnull(sum(amount),0) from xpetty");
         if (itms.length > 0) {
             amt = Double.parseDouble(itms[0].getValue());
@@ -558,19 +573,19 @@ public class XlendWorks {
         return drawn - amt;
     }
 
-    public static double getBalance4newXpetty(IMessageSender exchanger, java.util.Date dt) {
+    public static double getBalance4newXpetty(java.util.Date dt) {
         double drawn = 0.0;
         double amt = 0.0;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String sdt = df.format(dt);
-        ComboItem[] itms = loadOnSelect(exchanger,
+        ComboItem[] itms = loadOnSelect(
                 "Select 0,ifnull(sum(cash_drawn + add_monies),0) "
                 + "from xcashdrawn where cur_date<'"
                 + sdt + "'");
         if (itms.length > 0) {
             drawn = Double.parseDouble(itms[0].getValue());
         }
-        itms = loadOnSelect(exchanger,
+        itms = loadOnSelect(
                 "Select 0,ifnull(sum(amount),0) from xpetty where issue_date<'" + sdt + "'");
         if (itms.length > 0) {
             amt = Double.parseDouble(itms[0].getValue());
@@ -578,7 +593,7 @@ public class XlendWorks {
         return drawn - amt;
     }
 
-//    public static double getPettyInOutBalance(IMessageSender exchanger, int xpetty_id) {
+//    public static double getPettyInOutBalance(int xpetty_id) {
 //        try {
 //            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
 //                    "cur_date=(select max(cur_date) from xcashdrawn where cur_date<="
@@ -593,7 +608,7 @@ public class XlendWorks {
 //        return 0.0;
 //    }
 //
-//    public static double getPettyInOutBalance(IMessageSender exchanger) {
+//    public static double getPettyInOutBalance() {
 //        try {
 //            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
 //                    "cur_date=(select max(cur_date) from xcashdrawn)", "xcashdrawn_id desc");
@@ -606,7 +621,7 @@ public class XlendWorks {
 //        }
 //        return 0.0;
 //    }
-    //    public static Double getOutstandingPettyBalance(IMessageSender exchanger) {
+    //    public static Double getOutstandingPettyBalance() {
 //        ComboItem[] ciArr = loadOnSelect(exchanger,
 //                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
 //        if (ciArr!=null && ciArr.length>0) {
@@ -614,11 +629,11 @@ public class XlendWorks {
 //        }
 //        return 0.0;
 //    }
-//    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
+//    public static ComboItem[] loadAllLowbeds() {
 //        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
 //    }
-    public static ComboItem loadEmployeeExcept(IMessageSender exchanger, String excepts) {
-        ComboItem[] clist = loadOnSelect(exchanger, Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
+    public static ComboItem loadEmployeeExcept(String excepts) {
+        ComboItem[] clist = loadOnSelect(Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
         return (clist != null && clist.length > 0 ? clist[0] : null);
     }
 
@@ -646,9 +661,9 @@ public class XlendWorks {
         w.setIconImage(loadImage(iconName, w));
     }
 
-    public static Integer getOrderIdOnSiteId(IMessageSender exchanger, int site_id) {
+    public static Integer getOrderIdOnSiteId(int site_id) {
         try {
-            Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, site_id);
+            Xsite xsite = (Xsite) getExchanger().loadDbObjectOnID(Xsite.class, site_id);
             if (xsite != null) {
                 return xsite.getXorderId();
             }
@@ -658,19 +673,19 @@ public class XlendWorks {
         return 0;
     }
 
-    public static ComboItem[] loadConsumeInvNumbersOnSupplier(IMessageSender exchanger, int id) {
-        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4LOOKUP.replace("#", "" + id));
+    public static ComboItem[] loadConsumeInvNumbersOnSupplier(int id) {
+        return loadOnSelect(Selects.SELECT_CONSUMABLES4LOOKUP.replace("#", "" + id));
     }
 
-    public static ComboItem[] loadConsumesOnMachine(IMessageSender exchanger, int id) {
-        return loadOnSelect(exchanger, Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", "" + id));
+    public static ComboItem[] loadConsumesOnMachine(int id) {
+        return loadOnSelect(Selects.SELECT_CONSUMABLES4BREAKDOWN.replace("#", "" + id));
     }
 
-    public static Object[] getNotFixedTimeSheetDates(IMessageSender exchanger) {
+    public static Object[] getNotFixedTimeSheetDates() {
         HashSet hs = new HashSet();
         try {
             hs.add(new XDate(0));
-            DbObject[] recs = exchanger.getDbObjects(Xtimesheet.class,
+            DbObject[] recs = getExchanger().getDbObjects(Xtimesheet.class,
                     "weekend not in (select weekend from xwagesum)", "weekend");
             for (DbObject rec : recs) {
                 Xtimesheet ts = (Xtimesheet) rec;
@@ -684,11 +699,11 @@ public class XlendWorks {
         return hs.toArray();
     }
 
-    public static Object[] getTimeSheetData(IMessageSender exchanger, Date xd, int xemployee_Id) {
+    public static Object[] getTimeSheetData(Date xd, int xemployee_Id) {
         Object[] ans = new Object[]{new Integer(0), new Double(0.0), new Double(0.0), new Double(0.0)};
         try {
             java.sql.Date dt = new java.sql.Date(xd.getTime());
-            DbObject[] itms = exchanger.getDbObjects(Xwage.class, "xtimesheet_id="
+            DbObject[] itms = getExchanger().getDbObjects(Xwage.class, "xtimesheet_id="
                     + "(select xtimesheet_id from xtimesheet where xemployee_id="
                     + xemployee_Id + " and weekend='" + dt.toString() + "')", null);
             double normalTimeSum = 0.0;
@@ -710,7 +725,7 @@ public class XlendWorks {
         return ans;
     }
 
-    public static double calcOutstandingAmtSumBetweenDays(IMessageSender exchanger, int xsupplier_id, int lastday1, int lastday2) {
+    public static double calcOutstandingAmtSumBetweenDays(int xsupplier_id, int lastday1, int lastday2) {
         double sum = 0.0;
         Calendar started = Calendar.getInstance();
         started.set(Calendar.HOUR_OF_DAY, 0);
@@ -719,7 +734,7 @@ public class XlendWorks {
         started.set(Calendar.MILLISECOND, 0);
         long d;
         try {
-            DbObject[] recs = exchanger.getDbObjects(Xconsume.class,
+            DbObject[] recs = getExchanger().getDbObjects(Xconsume.class,
                     "xsupplier_id=" + xsupplier_id + " and xpaidmethod_id=4", null);
             for (DbObject rec : recs) {
                 Xconsume c = (Xconsume) rec;
@@ -728,7 +743,7 @@ public class XlendWorks {
                     sum += c.getAmountRands();
                 }
             }
-            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="
+            recs = getExchanger().getDbObjects(Xfuel.class, "xsupplier_id="
                     + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
@@ -743,22 +758,22 @@ public class XlendWorks {
         return sum;
     }
 
-    public static double calcOutstandingAmtSum(IMessageSender exchanger, int xsupplier_id) {
+    public static double calcOutstandingAmtSum(int xsupplier_id) {
         double sum = 0.0;
         try {
-            DbObject[] recs = exchanger.getDbObjects(Xconsume.class,
+            DbObject[] recs = getExchanger().getDbObjects(Xconsume.class,
                     "xsupplier_id=" + xsupplier_id + " and xpaidmethod_id=4", null);
             for (DbObject rec : recs) {
                 Xconsume c = (Xconsume) rec;
                 sum += c.getAmountRands();
             }
-            recs = exchanger.getDbObjects(Xfuel.class, "xsupplier_id="
+            recs = getExchanger().getDbObjects(Xfuel.class, "xsupplier_id="
                     + xsupplier_id + " and (iscache is null or not iscache)", null);
             for (DbObject rec : recs) {
                 Xfuel f = (Xfuel) rec;
                 sum += f.getAmmount();
             }
-            recs = exchanger.getDbObjects(Xpayment.class, "xsupplier_id=" + xsupplier_id, null);
+            recs = getExchanger().getDbObjects(Xpayment.class, "xsupplier_id=" + xsupplier_id, null);
             for (DbObject rec : recs) {
                 Xpayment xp = (Xpayment) rec;
                 sum -= xp.getAmmount();
@@ -769,55 +784,55 @@ public class XlendWorks {
         return sum;
     }
 
-    public static ComboItem[] loadSiteTypes(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select id,val from cbitems where name='site_types'");
+    public static ComboItem[] loadSiteTypes() {
+        return loadOnSelect("select id,val from cbitems where name='site_types'");
     }
 
-    public static ComboItem[] loadWageCategories(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select id,val from cbitems where name='wage_category'");
+    public static ComboItem[] loadWageCategories() {
+        return loadOnSelect("select id,val from cbitems where name='wage_category'");
     }
 
-    public static ComboItem[] loadPaidFromCodes(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select id,val from cbitems where name='paidfrom'");
+    public static ComboItem[] loadPaidFromCodes() {
+        return loadOnSelect("select id,val from cbitems where name='paidfrom'");
     }
 
-    public static ComboItem[] loadRootSheets(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id is null");
+    public static ComboItem[] loadRootSheets() {
+        return loadOnSelect("select sheet_id,sheetname from sheet where parent_id is null");
     }
 
-    public static ComboItem[] loadSubSheets(IMessageSender exchanger, int parent_id) {
-        return loadOnSelect(exchanger, "select sheet_id,sheetname from sheet where parent_id=" + parent_id);
+    public static ComboItem[] loadSubSheets(int parent_id) {
+        return loadOnSelect("select sheet_id,sheetname from sheet where parent_id=" + parent_id);
     }
 
-    public static ComboItem[] loadDistinctAccNames(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select distinct 0,accname from xaccounts");
+    public static ComboItem[] loadDistinctAccNames() {
+        return loadOnSelect("select distinct 0,accname from xaccounts");
     }
 
-    public static ComboItem[] loadReportGroup(IMessageSender exchanger, Integer sheetId) {
-        return loadOnSelect(exchanger,
+    public static ComboItem[] loadReportGroup(Integer sheetId) {
+        return loadOnSelect(
                 "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet where sheet_id=sheet.sheet_id and profile_id=" + XlendWorks.currentUser.getProfileId() + "), sheet.sheetname from sheet, reportgroup "
                 + "where reportgroup.sheet_id=sheet.sheet_id and sheetgroup_id=" + sheetId);
     }
 
-    public static ComboItem[] loadAllAccounts(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select xaccount_id,accname from xaccounts");
+    public static ComboItem[] loadAllAccounts() {
+        return loadOnSelect("select xaccount_id,accname from xaccounts");
     }
 
-    public static ComboItem[] loadAllTracks(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "Select xmachine_id, concat(m.classify,m.tmvnr) "
+    public static ComboItem[] loadAllTracks() {
+        return loadOnSelect("Select xmachine_id, concat(m.classify,m.tmvnr) "
                 + "from xmachine m left join xmachtype t1 "
                 + "on m.xmachtype_id=t1.xmachtype_id");// and t1.classify='T'");
     }
 
-    public static ComboItem[] loadRatedMachines(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, "select xmachtype_id,machtype from xmachtype where is_rated=1 order by machtype");
+    public static ComboItem[] loadRatedMachines() {
+        return loadOnSelect("select xmachtype_id,machtype from xmachtype where is_rated=1 order by machtype");
 //                "Select cbitem_id, val "
 //                + "from cbitems where name='rated_machines' order by id");
     }
 
-    public static boolean existsSiteOfType(IMessageSender exchanger, String siteType) {
+    public static boolean existsSiteOfType(String siteType) {
         try {
-            Vector[] tab = exchanger.getTableBody(
+            Vector[] tab = getExchanger().getTableBody(
                     "select xsite_id from xsite where substring(sitetype,1,1)='" + siteType.substring(0, 1) + "'");
             Vector rows = tab[1];
             return rows.size() > 0;
@@ -827,9 +842,9 @@ public class XlendWorks {
         return true;
     }
 
-    public static boolean isXpettyCategoryUsed(IMessageSender exchanger, Integer xpettyCategoryID) {
+    public static boolean isXpettyCategoryUsed(Integer xpettyCategoryID) {
         try {
-            Vector[] tab = exchanger.getTableBody("select xpettyitem_id from xpettyitem where xpettycategory_id=" + xpettyCategoryID);
+            Vector[] tab = getExchanger().getTableBody("select xpettyitem_id from xpettyitem where xpettycategory_id=" + xpettyCategoryID);
             Vector rows = tab[1];
             return rows.size() > 0;
         } catch (RemoteException ex) {
@@ -838,9 +853,9 @@ public class XlendWorks {
         return true;
     }
 
-    public static boolean isXPPEtypeUsed(IMessageSender exchanger, Integer xppetypeID) {
+    public static boolean isXPPEtypeUsed(Integer xppetypeID) {
         try {
-            Vector[] tab = exchanger.getTableBody("select xppebuyitem_id from xppebuyitem where xppetype_id="
+            Vector[] tab = getExchanger().getTableBody("select xppebuyitem_id from xppebuyitem where xppetype_id="
                     + xppetypeID + " union select xppeissueitem_id from xppeissueitem where xppetype_id=" + xppetypeID);
             Vector rows = tab[1];
             return rows.size() > 0;
@@ -850,9 +865,9 @@ public class XlendWorks {
         return true;
     }
 
-    public static boolean existsEmployeeWithWageCategory(IMessageSender exchanger, Integer wageCatID) {
+    public static boolean existsEmployeeWithWageCategory(Integer wageCatID) {
         try {
-            Vector[] tab = exchanger.getTableBody(
+            Vector[] tab = getExchanger().getTableBody(
                     "select xemployee_id from xemployee where xemployee_id="
                     + "(select min(xemployee_id) from xemployee where wage_category=" + wageCatID + ") and wage_category=" + wageCatID);
             Vector rows = tab[1];
@@ -863,21 +878,21 @@ public class XlendWorks {
         return true;
     }
 
-    public static ComboItem[] loadAllLowbeds(IMessageSender exchanger) {
-        return loadOnSelect(exchanger,
+    public static ComboItem[] loadAllLowbeds() {
+        return loadOnSelect(
                 "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
                 + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
                 + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
                 + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id");
     }
 
-    public static ComboItem[] loadConsumesForMachine(IMessageSender exchanger, Integer xmachineID) {
-        return loadOnSelect(exchanger, "select xconsume_id, invoicenumber from xconsume where xmachine_id=" + xmachineID);
+    public static ComboItem[] loadConsumesForMachine(Integer xmachineID) {
+        return loadOnSelect("select xconsume_id, invoicenumber from xconsume where xmachine_id=" + xmachineID);
     }
 
     public static boolean availableForCurrentUser(String sheetName) {
         try {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
+            DbObject[] recs = getExchanger().getDbObjects(Usersheet.class, "profile_id=" + getCurrentUser().getProfileId()
                     + " and sheet_id in (select sheet_id from sheet where sheetname like binary '" + sheetName + "')", null);
             return recs.length > 0;
         } catch (RemoteException ex) {
@@ -944,7 +959,7 @@ public class XlendWorks {
                 + " where operator_id=" + operatorID + " and xmachine_id=" + machineID
                 + " and year(partdate)=" + year + " and month(partdate)=" + month
                 + " and xsitediary_id in (select xsitediary_id from xsitediary where xsite_id=" + siteID + ")";
-        ComboItem[] itms = loadOnSelect(DashBoard.getExchanger(), select);
+        ComboItem[] itms = loadOnSelect(select);
         return itms;
     }
 
@@ -958,7 +973,7 @@ public class XlendWorks {
                 + " from xtimesheet ts, xwage xw where xw.xtimesheet_id=ts.xtimesheet_id "
                 + " and year(xw.day)=" + year + " and month(xw.day)=" + month + " and ts.xsite_id=" + siteID
                 + " and ts.xemployee_id=" + operatorID;
-        ComboItem[] itms = loadOnSelect(DashBoard.getExchanger(), select);
+        ComboItem[] itms = loadOnSelect(select);
         return itms;
     }
 
@@ -1005,7 +1020,7 @@ public class XlendWorks {
             }
             String whereCond = "xsite_id=" + siteID + " and xemployee_id=" + operatorID + " and xmachine_id=" + machineID
                     + " and sheet_date between '" + sd1 + "' and '" + sd2 + "'";
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(
+            DbObject[] recs = getExchanger().getDbObjects(
                     Xopclocksheet.class, whereCond, "sheet_date");
             Calendar calendar = Calendar.getInstance();
             for (DbObject rec : recs) {
@@ -1069,7 +1084,7 @@ public class XlendWorks {
 
     public static int getWageCategory(Integer xemployeeID) {
         try {
-            Xemployee emp = (Xemployee) DashBoard.getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeID);
+            Xemployee emp = (Xemployee) getExchanger().loadDbObjectOnID(Xemployee.class, xemployeeID);
             return emp == null ? 0 : (emp.getWageCategory() == null ? 1 : emp.getWageCategory());
         } catch (RemoteException ex) {
             log(ex);
@@ -1077,9 +1092,9 @@ public class XlendWorks {
         return 0;
     }
 
-    public static DbObject[] loadReportGrpSheets(IMessageSender exchanger) {
+    public static DbObject[] loadReportGrpSheets() {
         try {
-            return exchanger.getDbObjects(Sheet.class,
+            return getExchanger().getDbObjects(Sheet.class,
                     "parent_id is null and sheetname<>'REPORTS' and sheet_id in(select sheet_id from usersheet where profile_id="
                     + currentUser.getProfileId() + ")", null);
         } catch (RemoteException ex) {
@@ -1088,7 +1103,7 @@ public class XlendWorks {
         return null;
     }
 
-    public static Xopmachassing findCurrentAssignment(IMessageSender exchanger, int machine_id, int operator_id) {
+    public static Xopmachassing findCurrentAssignment(int machine_id, int operator_id) {
         Xopmachassing curAss = null;
         try {
             StringBuffer whereCond = new StringBuffer("");
@@ -1099,7 +1114,7 @@ public class XlendWorks {
                 whereCond.append("xemployee_id=" + operator_id).append(" and ");
             }
             whereCond.append("date_end is null");
-            DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class, whereCond.toString(), null);
+            DbObject[] obs = getExchanger().getDbObjects(Xopmachassing.class, whereCond.toString(), null);
             if (obs.length > 0) {
                 curAss = (Xopmachassing) obs[0];
             }
@@ -1109,16 +1124,16 @@ public class XlendWorks {
         return curAss;
     }
 
-    public static String[] findCurrentAssignment(IMessageSender exchanger, Xemployee xemployee) {
+    public static String[] findCurrentAssignment(Xemployee xemployee) {
         if (xemployee != null) {
             try {
-                DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class,
+                DbObject[] obs = getExchanger().getDbObjects(Xopmachassing.class,
                         "xemployee_id=" + xemployee.getXemployeeId() + " and date_end is null", null);
                 if (obs.length > 0) {
                     String[] ans = new String[2];
                     Xopmachassing assign = (Xopmachassing) obs[0];
-                    Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, assign.getXsiteId());
-                    Xmachine xmachine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, assign.getXmachineId());
+                    Xsite xsite = (Xsite) getExchanger().loadDbObjectOnID(Xsite.class, assign.getXsiteId());
+                    Xmachine xmachine = (Xmachine) getExchanger().loadDbObjectOnID(Xmachine.class, assign.getXmachineId());
                     ans[0] = xsite == null ? "unassigned" : xsite.getName();
                     ans[1] = xmachine == null ? "unassigned" : (xmachine.getClassify() + xmachine.getTmvnr());
                     return ans;
@@ -1130,17 +1145,17 @@ public class XlendWorks {
         return null;
     }
 
-    public static String[] findLastService(IMessageSender exchanger, Xmachine xmachine) {
+    public static String[] findLastService(Xmachine xmachine) {
         if (xmachine != null) {
             try {
-                DbObject[] obs = exchanger.getDbObjects(Xmachservice.class,
+                DbObject[] obs = getExchanger().getDbObjects(Xmachservice.class,
                         "xmachservice_id=(select max(xmachservice_id) from xmachservice where xmachine_id=" + xmachine.getXmachineId() + ")", null);
                 if (obs.length > 0) {
                     Xmachservice ms = (Xmachservice) obs[0];
                     String[] ans = new String[2];
                     XDate xdt = new XDate(ms.getServicedate().getTime());
                     ans[0] = xdt.toString();
-                    Xemployee serviceMan = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, ms.getServicedbyId());
+                    Xemployee serviceMan = (Xemployee) getExchanger().loadDbObjectOnID(Xemployee.class, ms.getServicedbyId());
                     ans[1] = serviceMan.getClockNum() + " " + serviceMan.getFirstName();
                     return ans;
                 }
@@ -1151,16 +1166,16 @@ public class XlendWorks {
         return null;
     }
 
-    public static String[] findCurrentAssignment(IMessageSender exchanger, Xmachine xmachine) {
+    public static String[] findCurrentAssignment(Xmachine xmachine) {
         if (xmachine != null) {
             try {
-                DbObject[] obs = exchanger.getDbObjects(Xopmachassing.class,
+                DbObject[] obs = getExchanger().getDbObjects(Xopmachassing.class,
                         "xmachine_id=" + xmachine.getXmachineId() + " and date_end is null", null);
                 if (obs.length > 0) {
                     String[] ans = new String[2];
                     Xopmachassing assign = (Xopmachassing) obs[0];
-                    Xsite xsite = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, assign.getXsiteId());
-                    Xemployee xemployee = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, assign.getXemployeeId());
+                    Xsite xsite = (Xsite) getExchanger().loadDbObjectOnID(Xsite.class, assign.getXsiteId());
+                    Xemployee xemployee = (Xemployee) getExchanger().loadDbObjectOnID(Xemployee.class, assign.getXemployeeId());
                     ans[0] = xsite == null ? "unassigned" : xsite.getName();
                     ans[1] = xemployee == null ? "unassigned" : (xemployee.getFirstName()
                             + " " + xemployee.getSurName()
@@ -1184,9 +1199,9 @@ public class XlendWorks {
         return s;
     }
 
-    private static boolean matchVersions(IMessageSender exchanger) {
+    private static boolean matchVersions() {
         try {
-            String servVersion = exchanger.getServerVersion();
+            String servVersion = getExchanger().getServerVersion();
             boolean match = removeTail(servVersion).equals(removeTail(version));
             if (!match) {
                 GeneralFrame.errMessageBox("Error:", "Client's software version (" + version + ") doesn't match server (" + servVersion + ")");
@@ -1198,9 +1213,9 @@ public class XlendWorks {
         return false;
     }
 
-    public static String getEmployeeClockNumOnID(IMessageSender exchanger, Integer id) {
+    public static String getEmployeeClockNumOnID(Integer id) {
         try {
-            Xemployee emp = (Xemployee) exchanger.loadDbObjectOnID(Xemployee.class, id);
+            Xemployee emp = (Xemployee) getExchanger().loadDbObjectOnID(Xemployee.class, id);
             if (emp != null) {
                 return emp.getClockNum();
             }
@@ -1210,9 +1225,9 @@ public class XlendWorks {
         return null;
     }
 
-    public static Integer getEmployeeOnClockNum(IMessageSender exchanger, String clock_num) {
+    public static Integer getEmployeeOnClockNum(String clock_num) {
         try {
-            DbObject[] obs = exchanger.getDbObjects(Xemployee.class, "clock_num='" + clock_num + "'", null);
+            DbObject[] obs = getExchanger().getDbObjects(Xemployee.class, "clock_num='" + clock_num + "'", null);
             if (obs.length > 0) {
                 Xemployee emp = (Xemployee) obs[0];
                 return emp.getXemployeeId();
@@ -1223,9 +1238,9 @@ public class XlendWorks {
         return null;
     }
 
-    public static boolean isActiveSite(IMessageSender exchanger, Integer xsiteID) {
+    public static boolean isActiveSite(Integer xsiteID) {
         try {
-            Xsite s = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, xsiteID);
+            Xsite s = (Xsite) getExchanger().loadDbObjectOnID(Xsite.class, xsiteID);
             if (s != null) {
                 return (s.getIsActive() != null && s.getIsActive().intValue() == 1);
             }
@@ -1235,13 +1250,13 @@ public class XlendWorks {
         return true;
     }
 
-    public static void activateSite(IMessageSender exchanger, Integer xsiteID) {
+    public static void activateSite(Integer xsiteID) {
         try {
-            Xsite s = (Xsite) exchanger.loadDbObjectOnID(Xsite.class, xsiteID);
+            Xsite s = (Xsite) getExchanger().loadDbObjectOnID(Xsite.class, xsiteID);
             if (s != null) {
                 try {
                     s.setIsActive(1);
-                    exchanger.saveDbObject(s);
+                    getExchanger().saveDbObject(s);
                 } catch (Exception ex) {
                     logAndShowMessage(ex);
                 }
@@ -1251,11 +1266,11 @@ public class XlendWorks {
         }
     }
 
-    public static String getMachineType1(IMessageSender exchanger, Integer machineID) {
+    public static String getMachineType1(Integer machineID) {
         try {
-            Xmachine m = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, machineID);
+            Xmachine m = (Xmachine) getExchanger().loadDbObjectOnID(Xmachine.class, machineID);
             if (m != null) {
-                Xmachtype mt = (Xmachtype) exchanger.loadDbObjectOnID(Xmachtype.class, m.getXmachtypeId());
+                Xmachtype mt = (Xmachtype) getExchanger().loadDbObjectOnID(Xmachtype.class, m.getXmachtypeId());
                 return mt != null ? mt.getMachtype() : "";
             }
         } catch (RemoteException ex) {
@@ -1264,32 +1279,32 @@ public class XlendWorks {
         return "";
     }
 
-    public static ComboItem[] loadAllWarehouses(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SELECT_FROM_STORES);
+    public static ComboItem[] loadAllWarehouses() {
+        return loadOnSelect(Selects.SELECT_FROM_STORES);
     }
 
-    public static String[] loadDistinctStoreNames(IMessageSender exchanger) {
-        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_STORES);
+    public static String[] loadDistinctStoreNames() {
+        return loadStringsOnSelect(Selects.SELECT_DISTINCT_STORES);
     }
 
-    public static String[] loadDistinctMachineModels(IMessageSender exchanger) {
-        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_MACHINEMODELS);
+    public static String[] loadDistinctMachineModels() {
+        return loadStringsOnSelect(Selects.SELECT_DISTINCT_MACHINEMODELS);
     }
 
-    public static String[] loadDistinctBatteryCodes(IMessageSender exchanger) {
-        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_BATTCODES);
+    public static String[] loadDistinctBatteryCodes() {
+        return loadStringsOnSelect(Selects.SELECT_DISTINCT_BATTCODES);
     }
 
-    public static ComboItem[] loadOldestAvailableBateries(IMessageSender exchanger) {
-        return loadOnSelect(exchanger, Selects.SELECT_OLDEST_AVAILABLE_BATTERIES);
+    public static ComboItem[] loadOldestAvailableBateries() {
+        return loadOnSelect(Selects.SELECT_OLDEST_AVAILABLE_BATTERIES);
     }
-//    public static String[] loadAvailableBatteryCodes(IMessageSender exchanger) {
+//    public static String[] loadAvailableBatteryCodes() {
 //        return loadStringsOnSelect(exchanger, Selects.SELECT_DISTINCT_AVAILABLE_BATTERIES);
 //    }
 
-    public static String getStockLevels(IMessageSender exchanger, Integer xppetypeID) {
+    public static String getStockLevels(Integer xppetypeID) {
         if (xppetypeID != null && xppetypeID.intValue() > 0) {
-            ComboItem[] itms = loadOnSelect(exchanger, "select " + xppetypeID
+            ComboItem[] itms = loadOnSelect("select " + xppetypeID
                     + ", (select ifnull(sum(quantity),0) from xppebuyitem where xppetype_id=" + xppetypeID + ") - "
                     + "(select ifnull(sum(quantity),0) from xppeissueitem where xppetype_id=" + xppetypeID + ")");
             return itms[0].getValue();
@@ -1298,9 +1313,9 @@ public class XlendWorks {
         }
     }
 
-    public static String getLastPPEprice(IMessageSender exchanger, Integer xppetypeID) {
+    public static String getLastPPEprice(Integer xppetypeID) {
         if (xppetypeID != null && xppetypeID.intValue() > 0) {
-            ComboItem[] itms = loadOnSelect(exchanger, "select "
+            ComboItem[] itms = loadOnSelect("select "
                     + xppetypeID + ", ifnull(priceperunit,0.0) from xppebuyitem where xppebuyitem_id="
                     + "(select max(xppebuyitem_id) from xppebuyitem where xppetype_id=" + xppetypeID + ")");
             if (itms.length > 0) {
@@ -1310,10 +1325,10 @@ public class XlendWorks {
         return "0";
     }
 
-    public static String calcDieselBalanceAtCart(IMessageSender exchanger, Integer dieselCartId, java.util.Date dt) {
+    public static String calcDieselBalanceAtCart(Integer dieselCartId, java.util.Date dt) {
         if (dieselCartId != null && dieselCartId.intValue() > 0) {
             String sDate = new SimpleDateFormat("yyyy-MM-dd").format(dt);
-            ComboItem[] itms = loadOnSelect(exchanger, "select " + dieselCartId + ","
+            ComboItem[] itms = loadOnSelect("select " + dieselCartId + ","
                     + "(select ifnull(sum(liters),0) from xdieselcartissue where xdieselcart_id=" + dieselCartId + " and issue_date<='" + sDate + "') - "
                     + "(select ifnull(sum(liters),0) from xdiesel2plantitem i, xdiesel2plant p "
                     + "where i.xdiesel2plant_id=p.xdiesel2plant_id and "
@@ -1325,11 +1340,11 @@ public class XlendWorks {
         return "0";
     }
 
-    public static Double calcDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
+    public static Double calcDieselBalanceAtSupplier(Integer xsupplierId, java.util.Date dt) {
         if (xsupplierId != null && xsupplierId.intValue() > 0) {
             try {
                 Double litres = 0.0;
-                DbObject[] obs = exchanger.getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
+                DbObject[] obs = getExchanger().getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
                 for (DbObject rec : obs) {
                     Xdieselpurchase xp = (Xdieselpurchase) rec;
                     if (xp.getPurchaseDate().getTime() <= dt.getTime()) {
@@ -1338,7 +1353,7 @@ public class XlendWorks {
                         break;
                     }
                 }
-                obs = exchanger.getDbObjects(Xdieselcartissue.class, "xsupplier_id=" + xsupplierId, "issue_date");
+                obs = getExchanger().getDbObjects(Xdieselcartissue.class, "xsupplier_id=" + xsupplierId, "issue_date");
                 for (DbObject rec : obs) {
                     Xdieselcartissue xi = (Xdieselcartissue) rec;
                     if (xi.getIssueDate().getTime() <= dt.getTime()) {
@@ -1355,11 +1370,11 @@ public class XlendWorks {
         return 0.0;
     }
 
-    public static Double calcMoneyForDieselBalanceAtSupplier(IMessageSender exchanger, Integer xsupplierId, java.util.Date dt) {
+    public static Double calcMoneyForDieselBalanceAtSupplier(Integer xsupplierId, java.util.Date dt) {
         if (xsupplierId != null && xsupplierId.intValue() > 0) {
             try {
                 Double balance = 0.0;
-                DbObject[] obs = exchanger.getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
+                DbObject[] obs = getExchanger().getDbObjects(Xdieselpurchase.class, "xsupplier_id=" + xsupplierId, "purchase_date");
                 for (DbObject rec : obs) {
                     Xdieselpurchase xp = (Xdieselpurchase) rec;
                     if (dt == null || xp.getPurchaseDate().getTime() <= dt.getTime()) {
@@ -1376,9 +1391,9 @@ public class XlendWorks {
         return 0.0;
     }
 
-    public static String getPrevHourMeter(IMessageSender exchanger, Integer xdiesel2plantitemID, Integer machineID) {
+    public static String getPrevHourMeter(Integer xdiesel2plantitemID, Integer machineID) {
         if (machineID != null) {
-            ComboItem[] itms = loadOnSelect(exchanger,
+            ComboItem[] itms = loadOnSelect(
                     "select " + machineID + ", hour_meter "
                     + "from xdiesel2plantitem where xdiesel2plantitem_id="
                     + "(select max(xdiesel2plantitem_id) from xdiesel2plantitem where xmachine_id="

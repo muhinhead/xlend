@@ -77,7 +77,7 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
             for (DbObject rec : recs) {
                 Xsupplier sup = (Xsupplier) rec;
                 int supplier_id = sup.getXsupplierId();
-                if (XlendWorks.calcOutstandingAmtSum(exchanger, sup.getXsupplierId()) != 0) {
+                if (XlendWorks.calcOutstandingAmtSum(sup.getXsupplierId()) != 0) {
                     line = "<tr><td style=\"font-size: " + zoomer.getValue() + "%; font-family: sans-serif\">" + sup.getCompanyname() + "</td>"
                             + get30OutstandingAmount(supplier_id)
                             + get60OutstandingAmount(supplier_id)
@@ -104,38 +104,38 @@ public class SuppliersCreditorsReportPanel extends GeneralReportPanel {
     }
 
     private String get30OutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(exchanger, xsupplierId, 30, 0);
+        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(xsupplierId, 30, 0);
         total30 += sum;
         return showCeil(sum);
     }
 
     private String get60OutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(exchanger, xsupplierId, 60, 30);
+        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(xsupplierId, 60, 30);
         total60 += sum;
         return showCeil(sum);
     }
 
     private String get90OutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(exchanger, xsupplierId, 90, 60);
+        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(xsupplierId, 90, 60);
         total90 += sum;
         return showCeil(sum);
     }
 
     private String get120OutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(exchanger, xsupplierId, 120, 90);
+        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(xsupplierId, 120, 90);
         total120 += sum;
         return showCeil(sum);
     }
 
     private String getMore120OutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(exchanger, xsupplierId, 0, 120);
+        double sum = XlendWorks.calcOutstandingAmtSumBetweenDays(xsupplierId, 0, 120);
         total0 += sum;
         return showCeil(sum);
     }
 
     //calcOutstandingAmtSum30
     private String getTotalOutstandingAmount(Integer xsupplierId) {
-        double sum = XlendWorks.calcOutstandingAmtSum(exchanger, xsupplierId);
+        double sum = XlendWorks.calcOutstandingAmtSum(xsupplierId);
         total += sum;
         return showCeil(sum);
     }

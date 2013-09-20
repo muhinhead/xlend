@@ -125,18 +125,18 @@ public class EditTripSheetPanel extends RecordEditPanel {
             assistantCbModel = new DefaultComboBoxModel();
             loaded1CbModel = new DefaultComboBoxModel();
             loaded2CbModel = new DefaultComboBoxModel();
-            for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadActiveSites()) {
                 if (!ci.getValue().startsWith("--")) {
                     fromSiteCbModel.addElement(ci);
                     toSiteCbModel.addElement(ci);
                 }
             }
 
-            for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees()) {
                 assistantCbModel.addElement(ci);
             }
 //            loaded2CbModel.addElement(new ComboItem(0, "-"));
-            for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllMachines()) {
                 loaded1CbModel.addElement(ci);
                 loaded2CbModel.addElement(ci);
             }
@@ -291,7 +291,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                tripSheetPart = (Xtripsheetpart) DashBoard.getExchanger().saveDbObject(dbOb);
+                tripSheetPart = (Xtripsheetpart) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -323,10 +323,10 @@ public class EditTripSheetPanel extends RecordEditPanel {
         driverCbModel = new DefaultComboBoxModel();
         authorizedCbModel = new DefaultComboBoxModel();
         lowbedCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllLowbeds(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllLowbeds()) {
             lowbedCbModel.addElement(ci);
         }
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             driverCbModel.addElement(ci);
             authorizedCbModel.addElement(ci);
         }
@@ -453,7 +453,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
                 selectComboItem(driverCB, xt.getDriverId());
             }
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xtripsheetpart.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xtripsheetpart.class,
                         "xtripsheet_id=" + xt.getXtripsheetId(), "xtripsheetpart_id");
                 for (DbObject rec : recs) {
                     childRows.add(new RowPanel((Xtripsheetpart) rec));
@@ -491,7 +491,7 @@ public class EditTripSheetPanel extends RecordEditPanel {
             }
             for (RowPanel d : toDelete) {
                 if (d.getTripSheetPart() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getTripSheetPart());
+                    XlendWorks.getExchanger().deleteObject(d.getTripSheetPart());
                 }
             }
         }

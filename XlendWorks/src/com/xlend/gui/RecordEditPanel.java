@@ -156,7 +156,7 @@ public abstract class RecordEditPanel extends JPanel {
                 return;
             }
         }
-        ComboItem newItm = XlendWorks.loadSite(DashBoard.getExchanger(), id);
+        ComboItem newItm = XlendWorks.loadSite(id);
         if (newItm != null) {
             cbm.addElement(newItm);
         }
@@ -247,7 +247,7 @@ public abstract class RecordEditPanel extends JPanel {
     protected boolean saveDbRecord(DbObject dbOb, boolean isNew) {
         try {
             dbOb.setNew(isNew);
-            setDbObject(DashBoard.getExchanger().saveDbObject(dbOb));
+            setDbObject(XlendWorks.getExchanger().saveDbObject(dbOb));
             return true;
         } catch (Exception ex) {
             XlendWorks.log(ex);

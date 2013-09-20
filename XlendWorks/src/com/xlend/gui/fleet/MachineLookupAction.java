@@ -4,6 +4,7 @@ import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
+import com.xlend.gui.XlendWorks;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import javax.swing.AbstractAction;
@@ -28,7 +29,7 @@ public class MachineLookupAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         try {
             LookupDialog ld = new LookupDialog("Machines Lookup", machineCB,
-                    new MachineGrid(DashBoard.getExchanger(),
+                    new MachineGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_MASCHINES4LOOKUP
                     + (additionalCondition == null ? "" : (" and " + additionalCondition))
                     + " order by m.classify,cast(m.tmvnr as decimal)", false),

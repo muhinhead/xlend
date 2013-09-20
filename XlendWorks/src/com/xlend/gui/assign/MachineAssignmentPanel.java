@@ -53,14 +53,14 @@ public class MachineAssignmentPanel extends RecordEditPanel {
         };
         siteCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
         }
         operatorCbModel.addElement(new ComboItem(0, "NO OPERATOR"));
 //        почему комбобокс пустой ???
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             operatorCbModel.addElement(ci);
         }
         JComponent[] edits = new JComponent[]{
@@ -84,7 +84,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
 
     @Override
     public boolean save() throws Exception {
-        IMessageSender exchanger = DashBoard.getExchanger();
+        IMessageSender exchanger = XlendWorks.getExchanger();
         Integer prevOperatorID = null;
         try {
             java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
@@ -139,7 +139,7 @@ public class MachineAssignmentPanel extends RecordEditPanel {
         JPanel historyPanel = new JPanel(new BorderLayout());
         historyPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Assignments History"));
         try {
-            historyPanel.add(new AssignmentsGrid(DashBoard.getExchanger(),
+            historyPanel.add(new AssignmentsGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_MACHINE_ASSIGNMENTS.replace("#", xmachine.getXmachineId().toString())) {
                 @Override
                 protected AbstractAction addAction() {

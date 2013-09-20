@@ -36,6 +36,7 @@ public class IncidentsGrid extends GeneralGridPanel {
         super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#",
                 "where xincidents_id in (select xincidents_id from xemployeeincident where xemployee_id=" + employee_id + ")"), maxWidths, false);
         getAddAction().setEnabled(false);
+        getEditAction().setEnabled(getTableView().getRowCount()>0);
         getDelAction().setEnabled(false);
     }
 

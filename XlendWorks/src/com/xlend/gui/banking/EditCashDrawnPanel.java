@@ -86,14 +86,14 @@ public class EditCashDrawnPanel extends RecordEditPanel {
             } else {
                 dt = new Date();
             }
-            initialBalance = XlendWorks.getBalance4newXpetty(DashBoard.getExchanger(), dt);
+            initialBalance = XlendWorks.getBalance4newXpetty(dt);
             cashDrawnSP.setValue(cd.getCashDrawn());
             addMoneySP.setValue(cd.getAddMonies());
             totalLbl.setText(String.format("%.2f", initialBalance
                     + cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
             notesTA.setText(cd.getNotes());
         } else {
-            initialBalance = XlendWorks.getBalance4newXpetty(DashBoard.getExchanger());
+            initialBalance = XlendWorks.getBalance4newXpetty();
             totalLbl.setText("" + initialBalance);
         }
     }

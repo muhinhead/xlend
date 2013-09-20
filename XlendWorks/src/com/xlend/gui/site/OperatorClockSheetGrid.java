@@ -6,7 +6,6 @@ import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.hr.TimeSheetsGrid;
 import com.xlend.orm.Xopclocksheet;
 import com.xlend.remote.IMessageSender;
 import java.awt.Cursor;
@@ -48,7 +47,7 @@ public class OperatorClockSheetGrid extends GeneralGridPanel {
                 try {
                     isInner = true;
                     LookupDialog ld = new LookupDialog("Duplicated Operator Clock Sheets", null,
-                            new OperatorClockSheetGrid(DashBoard.getExchanger(), Selects.SELECT_DUPLICATEDOPCLOCKSHEET, false),
+                            new OperatorClockSheetGrid(exchanger, Selects.SELECT_DUPLICATEDOPCLOCKSHEET, false),
                             null);
                 } catch (RemoteException ex) {
                     isInner = false;

@@ -59,7 +59,7 @@ public class ReportsMenuDialog extends PopupDialog {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         //reportsChecked.clear();
 
-        DbObject[] repGrpSheets = XlendWorks.loadReportGrpSheets(DashBoard.getExchanger());
+        DbObject[] repGrpSheets = XlendWorks.loadReportGrpSheets();
         for (DbObject rec : repGrpSheets) {
             Sheet sheet = (Sheet) rec;
             JToggleButton grpButton = new JToggleButton(toggleButtonAction(sheet.getSheetname()));
@@ -67,7 +67,7 @@ public class ReportsMenuDialog extends PopupDialog {
             JPanel linePanel = new JPanel(new GridLayout(1, 1));
             linePanel.add(grpButton);
             mainPanel.add(linePanel);
-            ComboItem[] reportSheets = XlendWorks.loadReportGroup(DashBoard.getExchanger(), sheet.getSheetId());
+            ComboItem[] reportSheets = XlendWorks.loadReportGroup(sheet.getSheetId());
             JCheckBox[] childCbs = new JCheckBox[reportSheets.length];
             for (int i = 0; i < reportSheets.length; i++) {
                 if (reportsChecked.get(reportSheets[i].getValue()) != null) {

@@ -84,12 +84,12 @@ class EditBreakdownPanel extends RecordEditPanel {
         };
         machineCbModel = new DefaultComboBoxModel();
         vehicleByCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllMachines(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllMachines()) {
             machineCbModel.addElement(ci);
             vehicleByCbModel.addElement(ci);
         }
         siteCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadActiveSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -104,7 +104,7 @@ class EditBreakdownPanel extends RecordEditPanel {
 //        attendedByCbModel.addElement(new ComboItem(0, UNKNOWN));
 //        operatorCbModel.addElement(new ComboItem(0, UNKNOWN));
 
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             reportedToCbModel.addElement(ci);
             reportedByCbModel.addElement(ci);
             attendedByCbModel.addElement(ci);
@@ -197,7 +197,7 @@ class EditBreakdownPanel extends RecordEditPanel {
 //        JComponent purPanel;
         String title = "Purchases";
         try {
-            purPanel = new BreakdownConsumesGrid(DashBoard.getExchanger(),
+            purPanel = new BreakdownConsumesGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_BREAKDOWNCONSUMES.replaceAll("#", "" + xbreakdown_id),
                     getSelectedCbItem(machineCB), this);
             purPanel.setPreferredSize(new Dimension(purPanel.getPreferredSize().width, 200));
@@ -357,7 +357,7 @@ class EditBreakdownPanel extends RecordEditPanel {
         purchasesCbModel.removeAllElements();
         if (ci != null) {
             PurchaseLookupAction.setXmachineID(ci.getId());
-            for (ComboItem itm : XlendWorks.loadConsumesOnMachine(DashBoard.getExchanger(), ci.getId())) {
+            for (ComboItem itm : XlendWorks.loadConsumesOnMachine(ci.getId())) {
                 purchasesCbModel.addElement(itm);
             }
         } else {

@@ -87,13 +87,13 @@ public class BatteryIssuesGrid extends GeneralGridPanel {
                 try {
                     Xbateryissue bi = (Xbateryissue) exchanger.loadDbObjectOnID(Xbateryissue.class, id);
                     if (bi != null && GeneralFrame.yesNo("Attention!", "Do you want to delete issue record?") == JOptionPane.YES_OPTION) {
-                        DbObject[] itms = DashBoard.getExchanger().getDbObjects(Xbattery.class,
+                        DbObject[] itms = exchanger.getDbObjects(Xbattery.class,
                                 "xbateryissue_id=" + bi.getXbateryissueId(), null);
                         try {
                             for (DbObject o : itms) {
                                 Xbattery bat = (Xbattery) o;
                                 bat.setXbateryissueId(null);
-                                DashBoard.getExchanger().saveDbObject(bat);
+                                XlendWorks.getExchanger().saveDbObject(bat);
                             }
                             exchanger.deleteObject(bi);
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),

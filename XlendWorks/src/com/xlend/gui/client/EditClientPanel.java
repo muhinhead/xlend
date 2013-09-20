@@ -127,11 +127,11 @@ public class EditClientPanel extends RecordEditPanel {
         try {
             Xclient xclient = (Xclient) getDbObject();
             int client_id = xclient == null ? 0 : xclient.getXclientId();
-            tp.add(clientsGrid = new ClientContractsGrid(DashBoard.getExchanger(),
+            tp.add(clientsGrid = new ClientContractsGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_CONTRACTS4CLIENT.replace("#", "" + client_id)), "Contracts");
-            tp.add(rfqsGrid = new ClientQuotationsGrid(DashBoard.getExchanger(),
+            tp.add(rfqsGrid = new ClientQuotationsGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_QUOTATIONS4CLIENTS.replace("#", "" + client_id)), "RFQs");
-            tp.add(ordersGrid = new ClientOrdersGrid(DashBoard.getExchanger(),
+            tp.add(ordersGrid = new ClientOrdersGrid(XlendWorks.getExchanger(),
                     Selects.SELECT_ORDERS4CLIENT.replace("#", "" + client_id)), "Orders");
             Dimension prefDimension = new Dimension(500, 200);
             clientsGrid.setPreferredSize(prefDimension);
@@ -176,7 +176,7 @@ public class EditClientPanel extends RecordEditPanel {
         xclient.setAddress(addressField.getText());
         try {
             xclient.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(xclient);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(xclient);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

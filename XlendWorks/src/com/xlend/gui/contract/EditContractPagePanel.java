@@ -3,6 +3,7 @@ package com.xlend.gui.contract;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.EditPagePanel;
 import com.xlend.gui.GeneralFrame;
+import com.xlend.gui.XlendWorks;
 import com.xlend.orm.Xcontractpage;
 import com.xlend.orm.dbobject.DbObject;
 
@@ -41,7 +42,7 @@ public class EditContractPagePanel extends EditPagePanel {
         contrpage.setDescription(descriptionField.getText());
         try {
             contrpage.setNew(isNew);
-            DbObject saved = DashBoard.getExchanger().saveDbObject(contrpage);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(contrpage);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

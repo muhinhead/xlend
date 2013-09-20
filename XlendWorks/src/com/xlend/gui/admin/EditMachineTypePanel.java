@@ -51,7 +51,7 @@ class EditMachineTypePanel extends RecordEditPanel {
         if (mt != null) {
             machineTypeID = mt.getXmachtypeId();
             try {
-                add(new MachineTypeGrid(DashBoard.getExchanger(), Selects.SELECT_MACHTYPES.replaceAll(" is null", "=" + machineTypeID), null, false));
+                add(new MachineTypeGrid(XlendWorks.getExchanger(), Selects.SELECT_MACHTYPES.replaceAll(" is null", "=" + machineTypeID), null, false));
             } catch (RemoteException ex) {
                 XlendWorks.logAndShowMessage(ex);
             }

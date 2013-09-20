@@ -72,7 +72,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
             stockLevelLB.setBorder(BorderFactory.createEtchedBorder());
             ppeTypeCbModel = new DefaultComboBoxModel();
             ppeTypeCbModel.addElement(new ComboItem(0, "--select PPE here--"));
-            for (ComboItem ci : XlendWorks.loadAllPPEtypes(DashBoard.getExchanger())) {
+            for (ComboItem ci : XlendWorks.loadAllPPEtypes()) {
                 ppeTypeCbModel.addElement(ci);
             }
             add(markCB = new JCheckBox(), BorderLayout.WEST);
@@ -93,7 +93,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
         }
 
         private void updateStockLevels() {
-            String slevel = XlendWorks.getStockLevels(DashBoard.getExchanger(), getSelectedCbItem(ppeTypeCB));
+            String slevel = XlendWorks.getStockLevels(getSelectedCbItem(ppeTypeCB));
             int ilevel = Integer.parseInt(slevel);
             SpinnerNumberModel model = (SpinnerNumberModel) qtySP.getModel();
             model.setMaximum(ilevel);
@@ -127,7 +127,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
         private boolean saveDbRecord(DbObject dbOb, boolean isNew) {
             try {
                 dbOb.setNew(isNew);
-                item = (Xppeissueitem) DashBoard.getExchanger().saveDbObject(dbOb);
+                item = (Xppeissueitem) XlendWorks.getExchanger().saveDbObject(dbOb);
                 return true;
             } catch (Exception ex) {
                 GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -169,7 +169,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
         issuedByCbModel = new DefaultComboBoxModel();
         issuedToCbModel = new DefaultComboBoxModel();
         authorizedByCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadAllEmployees(DashBoard.getExchanger())) {
+        for (ComboItem ci : XlendWorks.loadAllEmployees()) {
             issuedByCbModel.addElement(ci);
             issuedToCbModel.addElement(ci);
             authorizedByCbModel.addElement(ci);
@@ -270,7 +270,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
             selectComboItem(issuedToCB, xi.getIssuedtoId());
             selectComboItem(authorizedByCB, xi.getAuthorizedbyId());
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Xppeissueitem.class,
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xppeissueitem.class,
                         "xppeissue_id=" + xi.getXppeissueId(), "xppeissueitem_id");
                 for (DbObject rec : recs) {
                     childRows.add(new ItemPanel((Xppeissueitem) rec));
@@ -308,7 +308,7 @@ public class EditPPEissuePanel extends RecordEditPanel {
             }
             for (ItemPanel d : toDelete) {
                 if (d.getItem() != null) {
-                    DashBoard.getExchanger().deleteObject(d.getItem());
+                    XlendWorks.getExchanger().deleteObject(d.getItem());
                 }
             }
         }

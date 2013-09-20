@@ -133,8 +133,8 @@ public class AdminFrame extends GeneralFrame {
                     if (GeneralFrame.yesNo("ATTENTION!!!", "The Operator/Machine assignments list will be completely cleared!\n"
                             + "It is an irreversible operation!\nAre you sure?") == JOptionPane.YES_OPTION) {
                         try {
-                            int count = DashBoard.getExchanger().getCount("select * from xopmachassing");
-                            DashBoard.getExchanger().truncateTable("xopmachassing");
+                            int count = XlendWorks.getExchanger().getCount("select * from xopmachassing");
+                            XlendWorks.getExchanger().truncateTable("xopmachassing");
                             GeneralFrame.infoMessageBox("Ok", "" + count + " rows deleted");
                         } catch (RemoteException ex) {
                             XlendWorks.logAndShowMessage(ex);

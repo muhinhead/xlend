@@ -52,7 +52,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
     @Override
     protected void fillContent() {
         machineTypeCbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadRootMachTypes(DashBoard.getExchanger(), "T','M")) {
+        for (ComboItem itm : XlendWorks.loadRootMachTypes("T','M")) {
             machineTypeCbModel.addElement(itm);
         }
         String[] titles = new String[]{
@@ -154,7 +154,7 @@ public class EditOrderItemPanel extends RecordEditPanel {
             xorditem.setPriceperone((Double) priceOneSpin.getValue());
             xorditem.setTotalvalue((Double) totalValSpin.getValue());
             xorditem.setDescription(descriptionField.getText());
-            DbObject saved = DashBoard.getExchanger().saveDbObject(xorditem);
+            DbObject saved = XlendWorks.getExchanger().saveDbObject(xorditem);
             setDbObject(saved);
             return true;
         } catch (Exception ex) {

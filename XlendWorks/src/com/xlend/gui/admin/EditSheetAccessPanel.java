@@ -39,7 +39,7 @@ class EditSheetAccessPanel extends RecordEditPanel {
         insideChildCb = false;
         checkBoxes = new Hashtable<Integer, JCheckBox>();
         cbGroups = new Hashtable<JCheckBox, JCheckBox[]>();
-        ComboItem[] citms = XlendWorks.loadRootSheets(DashBoard.getExchanger());
+        ComboItem[] citms = XlendWorks.loadRootSheets();
         setLayout(new BorderLayout(5, 5));
         JPanel leftPanel = new JPanel(new GridLayout(citms.length, 1, 10, 10));
         JPanel cntrPanel = new JPanel(new GridLayout(citms.length, 1, 10, 10));
@@ -60,7 +60,7 @@ class EditSheetAccessPanel extends RecordEditPanel {
         Userprofile user = (Userprofile) getDbObject();
         if (user != null) {
             try {
-                DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + user.getProfileId(), null);
+                DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + user.getProfileId(), null);
                 for (DbObject o : recs) {
                     Usersheet us = (Usersheet) o;
                     JCheckBox cb = checkBoxes.get(us.getSheetId());
@@ -80,9 +80,9 @@ class EditSheetAccessPanel extends RecordEditPanel {
     public boolean save() throws Exception {
         Userprofile user = (Userprofile) getDbObject();
         if (user != null) {
-            DbObject[] recs = DashBoard.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + user.getProfileId(), null);
+            DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Usersheet.class, "profile_id=" + user.getProfileId(), null);
             for (DbObject rec : recs) {
-                DashBoard.getExchanger().deleteObject(rec);
+                XlendWorks.getExchanger().deleteObject(rec);
             }
             for (JCheckBox cb : checkBoxes.values()) {
                 Integer sheetId = findSheetIdOnCheckBox(cb);
@@ -99,7 +99,7 @@ class EditSheetAccessPanel extends RecordEditPanel {
     }
 
     private JPanel rightPanel(int parent_id, JCheckBox parentCb) {
-        ComboItem[] citms = XlendWorks.loadSubSheets(DashBoard.getExchanger(), parent_id);
+        ComboItem[] citms = XlendWorks.loadSubSheets(parent_id);
         JCheckBox[] cbGrp = new JCheckBox[citms.length];
         JPanel rPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));//new JPanel(new GridLayout(1, citms.length, 5, 5));
         rPanel.setBorder(BorderFactory.createEtchedBorder());

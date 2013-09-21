@@ -462,7 +462,7 @@ public class DbConnection {
     }
 
     public static void fixLocalDB(Connection connection) {
-        sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "true").equalsIgnoreCase("true"));
+        sqlBatch(fixLocalDBsqls, connection, props.getProperty("LogDbFixes", "false").equalsIgnoreCase("true"));
         fixWrongAssignments(connection);
     }
 

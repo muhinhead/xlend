@@ -254,7 +254,7 @@ public class EditOrderPanel extends RecordEditPanel {
                                 new ContractsGrid(XlendWorks.getExchanger(), select),
                                 new String[]{"contractref", "description"});
                     } else {
-                        GeneralFrame.errMessageBox("Warning", "Choose client first");
+                        GeneralFrame.errMessageBox("Warning", "Choose contract first");
                     }
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
@@ -275,7 +275,7 @@ public class EditOrderPanel extends RecordEditPanel {
                                 new QuotationsGrid(XlendWorks.getExchanger(), select),
                                 new String[]{"rfcnumber"});
                     } else {
-                        GeneralFrame.errMessageBox("Warning", "Choose client first");
+                        GeneralFrame.errMessageBox("Warning", "Choose reference first");
                     }
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());

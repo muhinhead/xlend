@@ -32,6 +32,7 @@ import javax.swing.SpinnerNumberModel;
  * @author Nick Mukhin
  */
 public class XlendWorks {
+
     private static IMessageSender exchanger;
 
     /**
@@ -63,7 +64,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.77";
+    public static final String version = "0.77.b";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -80,6 +81,7 @@ public class XlendWorks {
                 setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
                 if (matchVersions() && login()) {
                     new DashBoard(getExchanger());
+//                    new DashBoard(getExchanger());
                     break;
                 } else {
                     System.exit(1);
@@ -153,9 +155,6 @@ public class XlendWorks {
 
     public static boolean login() {
         try {
-//            JComboBox loginField = new JComboBox(loadAllLogins(exchanger));
-//            loginField.setEditable(true);
-//            JPasswordField pwdField = new JPasswordField(20);
             new LoginImagedDialog(getExchanger());//new Object[]{loginField, pwdField, exchanger});
             return LoginImagedDialog.isOkPressed();
         } catch (Throwable ee) {

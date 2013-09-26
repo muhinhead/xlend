@@ -317,6 +317,7 @@ class EditPettyPanel extends RecordEditPanel {
         xp.setNotes(notesArea.getText());
         xp.setAmount((Double) amountSP.getValue());
         xp.setChangeAmt((Double) changeSP.getValue());
+        xp.setXemployeeInId(getSelectedCbItem(employeeInCB));
         boolean ok = saveDbRecord(xp, isNew);
         if (ok) {
             for (PettyItemPanel p : childRows) {

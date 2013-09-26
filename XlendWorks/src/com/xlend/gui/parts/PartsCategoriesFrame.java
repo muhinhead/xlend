@@ -191,8 +191,8 @@ public class PartsCategoriesFrame extends JFrame implements WindowListener {
         boolean maximize = (width < 0 || width < 0);
         width = (width > 0.0 ? width : (float) 0.8);
         height = (height > 0.0 ? height : (float) 0.8);
-        DashBoard.setSizes(this, width, height);
-        DashBoard.centerWindow(this);
+        AbstractDashBoard.setSizes(this, width, height);
+        AbstractDashBoard.centerWindow(this);
         if (maximize) {
             setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         }

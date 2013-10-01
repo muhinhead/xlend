@@ -18,28 +18,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.prefs.Preferences;
-import javafx.animation.KeyFrame;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TimelineBuilder;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.ColorAdjustBuilder;
-import javafx.scene.effect.Reflection;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -70,11 +59,11 @@ public class DashBoard extends AbstractDashBoard {
 
     private static class InternalApplet extends JApplet {
 
-        private static final int JFXPANEL_WIDTH_INT = 700;
-        private static final int JFXPANEL_HEIGHT_INT = 600;
+//        private static final int JFXPANEL_WIDTH_INT = 700;
+//        private static final int JFXPANEL_HEIGHT_INT = 600;
         private static JFXPanel fxContainer;
-        private static final double SCALE = 1.3; // коэффициент увеличения
-        private static final double DURATION = 300; // время анимации в мс
+//        private static final double SCALE = 1.3; // коэффициент увеличения
+//        private static final double DURATION = 300; // время анимации в мс
         private HBox taskBar1;
         private VBox taskBar;
         private HBox taskBar2;
@@ -82,12 +71,12 @@ public class DashBoard extends AbstractDashBoard {
         private Text userLogin;
         private Node adminButtonNode;
         private Node logoutButtonNode;
-        private boolean insideExitProcess = false;
+//        private boolean insideExitProcess = false;
 
         @Override
         public void init() {
             fxContainer = new JFXPanel();
-            fxContainer.setPreferredSize(new Dimension(JFXPANEL_WIDTH_INT, JFXPANEL_HEIGHT_INT));
+//            fxContainer.setPreferredSize(new Dimension(JFXPANEL_WIDTH_INT, JFXPANEL_HEIGHT_INT));
             add(fxContainer, BorderLayout.CENTER);
             // create JavaFX scene
             Platform.runLater(new Runnable() {
@@ -99,262 +88,312 @@ public class DashBoard extends AbstractDashBoard {
         }
 
         private void createScene() {
-            String[] icons = new String[]{
-                "Docs.png", "HR.png", "Parts.png", "Sites.png",
-                "Fleet.png", "Banking.png", "Reports.png", "Logistics.png",
-                "AdminFX.png", "ExitFX.png"
-            };
+//            String[] icons = new String[]{
+//                "Docs.png", "HR.png", "Parts.png", "Sites.png",
+//                "Fleet.png", "Banking.png", "Reports.png", "Logistics.png",
+//                "AdminFX.png", "ExitFX.png"
+//            };
+//
+//            Runnable[] btnRuns = new Runnable[]{
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.workFrame == null) {
+//                            ourInstance.workFrame = new DocFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.workFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.workFrame.setVisible(true);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.hrFrame == null) {
+//                            ourInstance.hrFrame = new HRFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.hrFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.hrFrame.setVisible(true);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
+//                        if (partsDashBoard == null) {
+//                            new PartsDashBoard(ourInstance);
+//                        } else {
+//                            partsDashBoard.setVisible(true);
+//                            partsDashBoard.requestFocus();
+//                            java.awt.EventQueue.invokeLater(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    partsDashBoard.toFront();
+//                                    partsDashBoard.repaint();
+//                                }
+//                            });
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.sitesFrame == null) {
+//                            ourInstance.sitesFrame = new SitesFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.sitesFrame.setVisible(true);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.fleetFrame == null) {
+//                            ourInstance.fleetFrame = new FleetFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.fleetFrame.setVisible(true);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.bankingFrame == null) {
+//                            ourInstance.bankingFrame = new BankingFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.bankingFrame.setVisible(true);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        new ReportsMenuDialog();
+//                        if (ReportsMenuDialog.okPressed) {
+//                            ReportsFrame reportsFrame = new ReportsFrame(exchanger);
+//                        }
+//                    }
+//                },
+//                new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (ourInstance.logisticsFrame == null) {
+//                            ourInstance.logisticsFrame = new LogisticsFrame(exchanger);
+//                        } else {
+//                            try {
+//                                ourInstance.logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                        UIManager.getSystemLookAndFeelClassName()));
+//                            } catch (Exception ex) {
+//                            }
+//                            ourInstance.logisticsFrame.setVisible(true);
+//                        }
+//                    }
+//                }
+//            };
+//
+//            BorderPane root = new BorderPane();
+//            upperPane = new BorderPane();
+//            upperPane.setPadding(new Insets(10, 10, 10, 10));
+//
+//            taskBar = new VBox(12);
+//            taskBar1 = new HBox(10);
+//            taskBar1.setAlignment(Pos.CENTER);
+//
+//            taskBar2 = new HBox(30);
+//            taskBar2.setAlignment(Pos.CENTER);
+//
+//            taskBar.getChildren().add(taskBar1);
+//            taskBar.getChildren().add(taskBar2);
+//
+//            root.setBottom(taskBar);
+//            root.setTop(upperPane);
+//            root.setLeft(userLogin = new Text("    Hi " + XlendWorks.getCurrentUserLogin()));
+//
+//            String image = DashBoard.InternalApplet.class.getResource("/BackgroundFX.png").toExternalForm();
+//            root.setStyle("-fx-background-color: #646464;");
+//            root.setStyle("-fx-background-image: url('" + image + "');"
+//                    + "-fx-background-position: center center;"
+//                    + "-fx-background-repeat: stretch;");
+//
+//            for (int i = 0; i < 5; i++) {
+//                Node node = FXutils.createButton(DashBoard.class, "/" + icons[i], btnRuns[i]);
+//                taskBar1.getChildren().add(node);
+//            }
+//            for (int i = 5; i < icons.length - 2; i++) {
+//                Node node = FXutils.createButton(DashBoard.class, "/" + icons[i], btnRuns[i]);
+//                taskBar2.getChildren().add(node);
+//            }
+//
+//            adminButtonNode = FXutils.createButton(DashBoard.class, "/" + icons[icons.length - 2], new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (ourInstance.adminFrame == null) {
+//                        ourInstance.adminFrame = new AdminFrame(exchanger);
+//                    } else {
+//                        try {
+//                            ourInstance.adminFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                    UIManager.getSystemLookAndFeelClassName()));
+//                        } catch (Exception ex) {
+//                        }
+//                        ourInstance.adminFrame.setVisible(true);
+//                    }
+//                }
+//            });
+//            upperPane.setLeft(adminButtonNode);
+//            adminButtonNode.setVisible(XlendWorks.isCurrentAdmin());
+//            logoutButtonNode = FXutils.createButton(DashBoard.class, "/" + icons[icons.length - 1], new Runnable() {
+//                @Override
+//                public void run() {
+//                    ourInstance.exit();
+//                }
+//            });
+//            upperPane.setRight(logoutButtonNode);
 
-            Runnable[] btnRuns = new Runnable[]{
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.workFrame == null) {
-                            ourInstance.workFrame = new DocFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.workFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.workFrame.setVisible(true);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.hrFrame == null) {
-                            ourInstance.hrFrame = new HRFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.hrFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.hrFrame.setVisible(true);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
-                        if (partsDashBoard == null) {
-                            new PartsDashBoard(ourInstance);
-                        } else {
-                            partsDashBoard.setVisible(true);
-                            partsDashBoard.requestFocus();
-                            java.awt.EventQueue.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    partsDashBoard.toFront();
-                                    partsDashBoard.repaint();
-                                }
-                            });
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.sitesFrame == null) {
-                            ourInstance.sitesFrame = new SitesFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.sitesFrame.setVisible(true);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.fleetFrame == null) {
-                            ourInstance.fleetFrame = new FleetFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.fleetFrame.setVisible(true);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.bankingFrame == null) {
-                            ourInstance.bankingFrame = new SitesFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.bankingFrame.setVisible(true);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        new ReportsMenuDialog();
-                        if (ReportsMenuDialog.okPressed) {
-                            ReportsFrame reportsFrame = new ReportsFrame(exchanger);
-                        }
-                    }
-                },
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ourInstance.logisticsFrame == null) {
-                            ourInstance.logisticsFrame = new LogisticsFrame(exchanger);
-                        } else {
-                            try {
-                                ourInstance.logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                        UIManager.getSystemLookAndFeelClassName()));
-                            } catch (Exception ex) {
-                            }
-                            ourInstance.logisticsFrame.setVisible(true);
-                        }
-                    }
-                }
-            };
-
-            BorderPane root = new BorderPane();
-            upperPane = new BorderPane();
-//        upperPane.setHgap(10);
-//        upperPane.setVgap(10);
-            upperPane.setPadding(new Insets(10, 10, 10, 10));
-
-            taskBar = new VBox(12);
-            taskBar1 = new HBox(10);
-//        taskBar1.setPadding(new Insets(10, 30, 50, 30));
-//        taskBar1.setPrefHeight(150);
-            taskBar1.setAlignment(Pos.CENTER);
-
-            taskBar2 = new HBox(30);
-//        taskBar2.setPadding(new Insets(10, 30, 50, 30));
-//        taskBar2.setPrefHeight(150);
-            taskBar2.setAlignment(Pos.CENTER);
-
-            taskBar.getChildren().add(taskBar1);
-            taskBar.getChildren().add(taskBar2);
-
-            root.setBottom(taskBar);
-            root.setTop(upperPane);
-            root.setLeft(userLogin = new Text("    Hi " + XlendWorks.getCurrentUserLogin()));
-//        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-
-            String image = DashBoard.InternalApplet.class.getResource("/BackgroundFX.png").toExternalForm();
-            root.setStyle("-fx-background-color: #646464;");
-//        System.out.println("!!image: "+image);
-            root.setStyle("-fx-background-image: url('" + image + "');"
-                    + "-fx-background-position: center center;"
-                    + "-fx-background-repeat: stretch;");
-
-            for (int i = 0; i < 5; i++) {
-                Node node = createButton("/" + icons[i], btnRuns[i]);
-                taskBar1.getChildren().add(node);
-            }
-            for (int i = 5; i < icons.length - 2; i++) {
-                Node node = createButton("/" + icons[i], btnRuns[i]);
-                taskBar2.getChildren().add(node);
-            }
-
-            adminButtonNode = createButton("/" + icons[icons.length - 2], new Runnable() {
-                @Override
-                public void run() {
-                    if (ourInstance.adminFrame == null) {
-                        ourInstance.adminFrame = new AdminFrame(exchanger);
-                    } else {
-                        try {
-                            ourInstance.adminFrame.setLookAndFeel(readProperty("LookAndFeel",
-                                    UIManager.getSystemLookAndFeelClassName()));
-                        } catch (Exception ex) {
-                        }
-                        ourInstance.adminFrame.setVisible(true);
-                    }
-                }
-            });
-            upperPane.setLeft(adminButtonNode);
-            adminButtonNode.setVisible(XlendWorks.isCurrentAdmin());
-            logoutButtonNode = createButton("/" + icons[icons.length - 1], new Runnable() {
-                @Override
-                public void run() {
-                    ourInstance.exit();
-                }
-            });
-            upperPane.setRight(logoutButtonNode);
+            ScreensController mainController = new ScreensController();
+            mainController.loadScreen("FXdashboard", "FXdashboard.fxml");
+            mainController.setScreen("FXdashboard");
+            Group root = new Group();
+            root.getChildren().addAll(mainController);
             fxContainer.setScene(new Scene(root));
         }
+    }
 
-        private void setInsideExitProcess(boolean yes) {
-            insideExitProcess = yes;
-            System.out.println("!! insideExitProcess=" + yes + " !!");
+    public static void showDocs() {
+        if (ourInstance.workFrame == null) {
+            ourInstance.workFrame = new DocFrame(exchanger);
+        } else {
+            try {
+                ourInstance.workFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.workFrame.setVisible(true);
         }
+    }
 
-        private Node createButton(String iconName, final Runnable action) {
-            // загружаем картинку
-            final ImageView node = new ImageView(new Image(getClass().getResource(iconName).toString()));
+    public static void showHR() {
+        if (ourInstance.hrFrame == null) {
+            ourInstance.hrFrame = new HRFrame(exchanger);
+        } else {
+            try {
+                ourInstance.hrFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.hrFrame.setVisible(true);
+        }
+    }
 
-            // создаём анимацию увеличения картинки      
-            final ScaleTransition animationGrow = new ScaleTransition(Duration.valueOf("" + DURATION + "ms"), node);
-            animationGrow.setToX(SCALE);
-            animationGrow.setToY(SCALE);
-
-            // и уменьшения
-            final ScaleTransition animationShrink = new ScaleTransition(Duration.valueOf("" + DURATION + "ms"), node);
-            animationShrink.setToX(1);
-            animationShrink.setToY(1);
-
-            // добавляем эффект отражения
-            final Reflection effect = new Reflection();
-//        node.setEffect(effect);
-
-            final ColorAdjust effectPressed = ColorAdjustBuilder.create().brightness(-0.5d).build();
-            node.setOnMouseReleased(new EventHandler<MouseEvent>() {
-                public void handle(MouseEvent event) {
-                    // в обработчике нажатия применяем эффект. Тут имеется следующая тонкость: это уже второй эффект для кнопки,
-                    // поэтому мы его выставляем не напрямую, а как input для первого эффекта
-                    effect.setInput(effectPressed);
-                    // создаём Timeline, который через 300 мс отключит затемнение.
-                    TimelineBuilder.create().keyFrames(new KeyFrame(Duration.valueOf("300ms"), new EventHandler<ActionEvent>() {
-                        public void handle(ActionEvent event) {
-                            effect.setInput(null);
-                        }
-                    })).build().play();
-                    action.run();
+    public static void showParts() {
+        final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
+        if (partsDashBoard == null) {
+            new PartsDashBoard(ourInstance);
+        } else {
+            partsDashBoard.setVisible(true);
+            partsDashBoard.requestFocus();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    partsDashBoard.toFront();
+                    partsDashBoard.repaint();
                 }
             });
+        }
+    }
 
-            // обработчик нажатия мыши
-            node.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                public void handle(MouseEvent event) {
-                    action.run();
-                }
-            });
-            // при наведении курсора мы запускаем анимацию увеличения кнопки
-            node.setOnMouseEntered(new EventHandler<MouseEvent>() {
-                public void handle(MouseEvent event) {
-                    node.toFront();
-                    animationShrink.stop();
-                    animationGrow.playFromStart();
-                }
-            });
-            // когда курсор сдвигается -- запускаем анимацию уменьшения
-            node.setOnMouseExited(new EventHandler<MouseEvent>() {
-                public void handle(MouseEvent event) {
-                    animationGrow.stop();
-                    animationShrink.playFromStart();
-                }
-            });
-            return node;
+    public static void showFleet() {
+        if (ourInstance.fleetFrame == null) {
+            ourInstance.fleetFrame = new FleetFrame(exchanger);
+        } else {
+            try {
+                ourInstance.fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.fleetFrame.setVisible(true);
+        }
+    }
+
+    public static void showSites() {
+        if (ourInstance.sitesFrame == null) {
+            ourInstance.sitesFrame = new SitesFrame(exchanger);
+        } else {
+            try {
+                ourInstance.sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.sitesFrame.setVisible(true);
+        }
+    }
+
+    public static void showBanking() {
+        if (ourInstance.bankingFrame == null) {
+            ourInstance.bankingFrame = new BankingFrame(exchanger);
+        } else {
+            try {
+                ourInstance.bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.bankingFrame.setVisible(true);
+        }
+    }
+
+    public static void showReports() {
+        new ReportsMenuDialog();
+        if (ReportsMenuDialog.okPressed) {
+            ReportsFrame reportsFrame = new ReportsFrame(exchanger);
+        }
+    }
+
+    public static void showLogistics() {
+        if (ourInstance.logisticsFrame == null) {
+            ourInstance.logisticsFrame = new LogisticsFrame(exchanger);
+        } else {
+            try {
+                ourInstance.logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.logisticsFrame.setVisible(true);
+        }
+    }
+
+    public static void showAdmin() {
+        if (ourInstance.adminFrame == null) {
+            ourInstance.adminFrame = new AdminFrame(exchanger);
+        } else {
+            try {
+                ourInstance.adminFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.adminFrame.setVisible(true);
         }
     }
 

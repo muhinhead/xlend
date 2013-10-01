@@ -36,6 +36,10 @@ public class LoginImagedDialog extends PopupDialog {
 
     private static final String BACKGROUNDIMAGE = "Login.png";
     private final String NMSOFTWARE = "Nick Mukhin (c)2013";
+    private JPanel controlsPanel;
+    private Java2sAutoComboBox loginField;
+    private JPasswordField pwdField;
+    private static boolean okPressed;
 
     /**
      * @return the okPressed
@@ -43,11 +47,6 @@ public class LoginImagedDialog extends PopupDialog {
     public static boolean isOkPressed() {
         return okPressed;
     }
-    private JPanel controlsPanel;
-    private Java2sAutoComboBox loginField;
-    private JPasswordField pwdField;
-//    private static IMessageSender exchanger;
-    private static boolean okPressed;
 
     public LoginImagedDialog(Object obj) {
         super(null, "Login", obj);
@@ -56,7 +55,7 @@ public class LoginImagedDialog extends PopupDialog {
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
-        okPressed = false;
+        okPressed = true;
         buildMenu();
         try {
             String theme = DashBoard.readProperty("LookAndFeel",
@@ -67,7 +66,7 @@ public class LoginImagedDialog extends PopupDialog {
                 NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
             } else if (theme.indexOf("Bernstein") > 0) {
                 BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
-            } else if(theme.indexOf("Aero")>0) {
+            } else if (theme.indexOf("Aero") > 0) {
                 AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
             }
             UIManager.setLookAndFeel(theme);
@@ -80,7 +79,18 @@ public class LoginImagedDialog extends PopupDialog {
                 XlendWorks.log(ie);
             }
         }
-//        exchanger = (IMessageSender) getObject();
+
+//        JApplet applet = new InternalApplet();
+//        applet.init();
+//
+//        setContentPane(applet.getContentPane());
+//
+//        pack();
+//        setLocationRelativeTo(null);
+//        setVisible(true);
+//
+//        applet.start();
+        
         loginField = new Java2sAutoComboBox(XlendWorks.loadAllLogins());
         loginField.setEditable(true);
         pwdField = new JPasswordField(20);

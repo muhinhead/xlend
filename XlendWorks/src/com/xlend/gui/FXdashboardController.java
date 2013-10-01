@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
  */
 public class FXdashboardController implements Initializable, ControlledScreen {
 
-    ScreensController myController;
+    private ScreensController myController;
     @FXML
     private BorderPane upperPane;
     @FXML
@@ -64,7 +64,8 @@ public class FXdashboardController implements Initializable, ControlledScreen {
             @Override
             public void run() {
                 //TODO: here should be switching to login screen
-                DashBoard.ourInstance.exit();
+//                DashBoard.ourInstance.exit();
+                myController.setScreen("FXlogin");
             }
         });
         upperPane.setRight(logoutButtonNode);

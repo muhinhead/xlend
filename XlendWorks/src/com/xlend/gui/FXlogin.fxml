@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="597.0" prefWidth="787.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.xlend.gui.FXloginController">
+  <children>
+    <Label layoutX="267.0" layoutY="324.0" text="Login:" textFill="WHITE">
+      <font>
+        <Font size="18.0" fx:id="x1" />
+      </font>
+    </Label>
+    <Label font="$x1" layoutX="235.0" layoutY="367.0" text="Password:" textFill="WHITE" />
+    <ComboBox editable="true" layoutX="324.0" layoutY="328.0" prefWidth="154.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <PasswordField layoutX="324.0" layoutY="369.0" prefWidth="154.0" />
+    <MenuBar layoutX="0.0" layoutY="0.0" prefWidth="787.0000999999975">
+      <menus>
+        <Menu mnemonicParsing="false" text="Options">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Close" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <HBox fx:id="btnHbox" alignment="CENTER" layoutX="301.0" layoutY="432.0" prefHeight="100.0" prefWidth="200.0" />
+  </children>
+  <stylesheets>
+    <URL value="@fxdashboard.css" />
+  </stylesheets>
+</AnchorPane>

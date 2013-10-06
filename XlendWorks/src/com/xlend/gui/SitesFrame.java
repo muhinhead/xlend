@@ -23,29 +23,29 @@ public class SitesFrame extends GeneralFrame {
 //    private GeneralGridPanel dieselIsissPanel = null;
     private GeneralGridPanel consumablesPanel = null;
     private GeneralGridPanel breakdownsPanel;
-    private GeneralGridPanel fuelPanel;
+//    private GeneralGridPanel fuelPanel;
 //    private GeneralGridPanel issuePanel;
     private GeneralGridPanel siteDiaryPanel;
     private GeneralGridPanel incidentsPanel;
     private GeneralGridPanel operatorClockSheetPanel;
     private GeneralGridPanel ppeBuysPanel;
     private GeneralGridPanel ppeIssuesPanel;
-    private GeneralGridPanel issueToDieselCartPanel;
-    private GeneralGridPanel dieselToPlantPanel;
+//    private GeneralGridPanel issueToDieselCartPanel;
+//    private GeneralGridPanel dieselToPlantPanel;
     private static String[] sheetList = new String[]{
         "Sites",
         //        "Diesel Purchases",//"Diesel Rurchases", 
         //        "Yard Diesel",//Diesel Issuing", 
         "Consumables",
         "Breakdowns",
-        "Petrol Issued",//Fuel", 
+//        "Petrol Issued",//Fuel", 
         //"Site Diesel",//Issuing", 
         "Site Diary",
         "Incidents",
         "Operator Clock Sheet",
         "PPE and Safety",
-        "Issue to Diesel Cart",
-        "Diesel to Plant"
+//        "Issue to Diesel Cart",
+//        "Diesel to Plant"
     };
 
     public SitesFrame(IMessageSender exch) {
@@ -63,10 +63,11 @@ public class SitesFrame extends GeneralFrame {
 
     @Override
     protected JTabbedPane getMainPanel() {
+        int n = 0;
         MyJideTabbedPane workTab = new MyJideTabbedPane();
 //        workTab.addTab(getContractsPanel(), "Contracts");
-        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
-            workTab.addTab(getSitesPanel(), sheets()[0]);
+        if (XlendWorks.availableForCurrentUser(sheets()[n])) {
+            workTab.addTab(getSitesPanel(), sheets()[n]);
         }
 //        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
 //            workTab.addTab(getDieselPrchsPanel(), sheets()[1]);
@@ -74,36 +75,36 @@ public class SitesFrame extends GeneralFrame {
 //        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
 //            workTab.addTab(getDieselCardsPanel(), sheets()[2]);
 //        }
-        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
-            workTab.addTab(getConsumablesPanel(), sheets()[1]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getConsumablesPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
-            workTab.addTab(getBreakdownsPanel(), sheets()[2]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getBreakdownsPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
-            workTab.addTab(getFuelPanel(), sheets()[3]);
-        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[3])) {
+//            workTab.addTab(getFuelPanel(), sheets()[3]);
+//        }
 //        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
 //            workTab.addTab(getIssuesPanel(), sheets()[6]);
 //        }
-        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            workTab.addTab(getSiteDiaryPanel(), sheets()[4]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getSiteDiaryPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
-            workTab.addTab(getIncidentsPanel(), sheets()[5]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getIncidentsPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[6])) {
-            workTab.addTab(getOperatorClockSheetPanel(), sheets()[6]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getOperatorClockSheetPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[7])) {
-            workTab.addTab(getPPEandSafetyPanel(), sheets()[7]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getPPEandSafetyPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
-            workTab.addTab(getIssueToDieselCartPanel(), sheets()[8]);
-        }
-        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
-            workTab.addTab(getDieselToPlantPanel(), sheets()[9]);
-        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
+//            workTab.addTab(getIssueToDieselCartPanel(), sheets()[8]);
+//        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[9])) {
+//            workTab.addTab(getDieselToPlantPanel(), sheets()[9]);
+//        }
         return workTab;
     }
 
@@ -166,17 +167,17 @@ public class SitesFrame extends GeneralFrame {
         return breakdownsPanel;
     }
 
-    private JPanel getFuelPanel() {
-        if (fuelPanel == null) {
-            try {
-                registerGrid(fuelPanel = new FuelGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return fuelPanel;
-    }
+//    private JPanel getFuelPanel() {
+//        if (fuelPanel == null) {
+//            try {
+//                registerGrid(fuelPanel = new FuelGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return fuelPanel;
+//    }
 
 //    private JPanel getIssuesPanel() {
 //        if (issuePanel == null) {
@@ -225,29 +226,29 @@ public class SitesFrame extends GeneralFrame {
         return operatorClockSheetPanel;
     }
 
-    private JComponent getIssueToDieselCartPanel() {
-        if (issueToDieselCartPanel == null) {
-            try {
-                registerGrid(issueToDieselCartPanel = new IssueToDieselCartGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return issueToDieselCartPanel;
-    }
+//    private JComponent getIssueToDieselCartPanel() {
+//        if (issueToDieselCartPanel == null) {
+//            try {
+//                registerGrid(issueToDieselCartPanel = new IssueToDieselCartGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return issueToDieselCartPanel;
+//    }
 
-    private JComponent getDieselToPlantPanel() {
-        if (dieselToPlantPanel == null) {
-            try {
-                registerGrid(dieselToPlantPanel = new DieselToPlantGrid(getExchanger()));
-            } catch (RemoteException ex) {
-                XlendWorks.log(ex);
-                errMessageBox("Error:", ex.getMessage());
-            }
-        }
-        return dieselToPlantPanel;
-    }
+//    private JComponent getDieselToPlantPanel() {
+//        if (dieselToPlantPanel == null) {
+//            try {
+//                registerGrid(dieselToPlantPanel = new DieselToPlantGrid(getExchanger()));
+//            } catch (RemoteException ex) {
+//                XlendWorks.log(ex);
+//                errMessageBox("Error:", ex.getMessage());
+//            }
+//        }
+//        return dieselToPlantPanel;
+//    }
 
     private JComponent getPPEandSafetyPanel() {
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

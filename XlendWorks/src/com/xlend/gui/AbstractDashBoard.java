@@ -65,7 +65,7 @@ public abstract class AbstractDashBoard extends JFrame {
     public AbstractDashBoard(String title) {
         super(title);
         setUndecorated(true);
-        setResizable(false);
+//        setResizable(false);
         lowLevelInit();
         initBackground();
         fillControlsPanel();

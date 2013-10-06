@@ -52,6 +52,7 @@ public class DashBoard extends AbstractDashBoard {
     private GeneralFrame adminFrame = null;
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
+    private GeneralFrame fuelFrame = null;
 
     public static Properties getProperties() {
         return props;
@@ -89,10 +90,10 @@ public class DashBoard extends AbstractDashBoard {
 
         private void createScene() {
             ScreensController mainController = new ScreensController();
-            mainController.loadScreen("FXlogin","FXlogin.fxml");
+//            mainController.loadScreen("FXlogin","FXlogin.fxml");
+//            mainController.setScreen("FXlogin");
             mainController.loadScreen("FXdashboard", "FXdashboard.fxml");
-//            mainController.setScreen("FXdashboard");
-            mainController.setScreen("FXlogin");
+            mainController.setScreen("FXdashboard");
             Group root = new Group();
             root.getChildren().addAll(mainController);
             fxContainer.setScene(new Scene(root));
@@ -201,6 +202,20 @@ public class DashBoard extends AbstractDashBoard {
         }
     }
 
+    public static void showFuel() {
+        if (ourInstance.fuelFrame == null) {
+            ourInstance.fuelFrame = new FuelFrame(exchanger);
+        } else {
+            try {
+                ourInstance.fuelFrame.setLookAndFeel(readProperty("LookAndFeel",
+                        UIManager.getSystemLookAndFeelClassName()));
+            } catch (Exception ex) {
+            }
+            ourInstance.fuelFrame.setVisible(true);
+        }
+    }
+
+    
     public static void showAdmin() {
         if (ourInstance.adminFrame == null) {
             ourInstance.adminFrame = new AdminFrame(exchanger);
@@ -234,6 +249,8 @@ public class DashBoard extends AbstractDashBoard {
         ourInstance = this;
         updateSheetList(exch);
 //        setPreferredSize(new Dimension(800, 600));
+        setSize(800,600);
+        centerOnScreen();
         setVisible(true);
     }
 
@@ -242,7 +259,7 @@ public class DashBoard extends AbstractDashBoard {
         HashSet<String> allSheetNames = new HashSet<String>();
         for (String[] sheetList : new String[][]{DocFrame.sheets(), SitesFrame.sheets(),
             HRFrame.sheets(), ReportsFrame.sheets(), FleetFrame.sheets(), LogisticsFrame.sheets(),
-            BankingFrame.sheets(), PartsDashBoard.sheets()}) {
+            BankingFrame.sheets(), PartsDashBoard.sheets(), FuelFrame.sheets()}) {
             for (String sheetName : sheetList) {
                 allSheetNames.add(sheetName);
             }
@@ -281,6 +298,7 @@ public class DashBoard extends AbstractDashBoard {
         updateSheetList("LOGISTICS", LogisticsFrame.sheets());
         updateSheetList("BANKING", BankingFrame.sheets());
         updateSheetList("PARTS", PartsDashBoard.sheets());
+        updateSheetList("FUEL", FuelFrame.sheets());
     }
 
     private static void updateSheetList(String parentName, String[] sheetNames) {

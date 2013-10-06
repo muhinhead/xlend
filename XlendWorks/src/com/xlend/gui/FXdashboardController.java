@@ -31,6 +31,7 @@ public class FXdashboardController implements Initializable, ControlledScreen {
     private static final String[] icons = new String[]{
         "Docs.png", "HR.png", "Parts.png", "Sites.png",
         "Fleet.png", "Banking.png", "Reports.png", "Logistics.png",
+        "Fuel.png",
         "AdminFX.png", "ExitFX.png"
     };
     private Node adminButtonNode;
@@ -43,6 +44,7 @@ public class FXdashboardController implements Initializable, ControlledScreen {
     private Node bankingButtonNode;
     private Node reportsButtonNode;
     private Node logisticsButtonNode;
+    private Node fuelButtonNode;
 
     /**
      * Initializes the controller class.
@@ -64,8 +66,8 @@ public class FXdashboardController implements Initializable, ControlledScreen {
             @Override
             public void run() {
                 //TODO: here should be switching to login screen
-//                DashBoard.ourInstance.exit();
-                myController.setScreen("FXlogin");
+                DashBoard.ourInstance.exit();
+//                myController.setScreen("FXlogin");
             }
         });
         upperPane.setRight(logoutButtonNode);
@@ -125,6 +127,13 @@ public class FXdashboardController implements Initializable, ControlledScreen {
                 DashBoard.showLogistics();
             }
         });
+        
+        fuelButtonNode = FXutils.createButton(getClass(), "/" + icons[8], new Runnable() {
+            @Override
+            public void run() {
+                DashBoard.showFuel();
+            }
+        });
 
         taskBar1.getChildren().add(docsButtonNode);
         taskBar1.getChildren().add(hrButtonNode);
@@ -135,6 +144,7 @@ public class FXdashboardController implements Initializable, ControlledScreen {
         taskBar2.getChildren().add(bankingButtonNode);
         taskBar2.getChildren().add(reportsButtonNode);
         taskBar2.getChildren().add(logisticsButtonNode);
+        taskBar2.getChildren().add(fuelButtonNode);
     }
 
     /**

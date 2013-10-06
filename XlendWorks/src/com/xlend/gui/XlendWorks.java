@@ -64,7 +64,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.77.b";
+    public static final String version = "0.78.a";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -73,15 +73,21 @@ public class XlendWorks {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        try {
+            String current = new java.io.File(".").getCanonicalPath();
+            System.out.println("Current dir:" + current);
+            String currentDir = System.getProperty("user.dir");
+            System.out.println("Current dir using System:" + currentDir);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
         String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
-//        IMessageSender exchanger;
         while (true) {
             try {
                 setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
                 if (matchVersions() && login()) {
                     new DashBoard(getExchanger());
-//                    new DashBoard(getExchanger());
                     break;
                 } else {
                     System.exit(1);

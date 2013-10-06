@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 45;
-    public static final String DB_VERSION = "0.45";
+    private static final int DB_VERSION_ID = 46;
+    public static final String DB_VERSION = "0.46";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");

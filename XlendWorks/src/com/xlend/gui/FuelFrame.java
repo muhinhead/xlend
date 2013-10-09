@@ -47,15 +47,15 @@ public class FuelFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
         MyJideTabbedPane fuelTab = new MyJideTabbedPane();
-        int n = 0;
-        if (XlendWorks.availableForCurrentUser(sheets()[n])) {
-            fuelTab.addTab(getFuelPanel(), sheets()[n]);
+//        int n = 0;
+        if (XlendWorks.availableForCurrentUser(sheets()[0])) {
+            fuelTab.addTab(getFuelPanel(), sheets()[0]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
-            fuelTab.addTab(getIssueToDieselCartPanel(), sheets()[n]);
+        if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+            fuelTab.addTab(getIssueToDieselCartPanel(), sheets()[1]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
-            fuelTab.addTab(getDieselToPlantPanel(), sheets()[n]);
+        if (XlendWorks.availableForCurrentUser(sheets()[2])) {
+            fuelTab.addTab(getDieselToPlantPanel(), sheets()[2]);
         }
         return fuelTab;
     }

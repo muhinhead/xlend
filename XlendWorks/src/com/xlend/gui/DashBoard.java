@@ -6,9 +6,10 @@ import com.xlend.gui.reports.ReportsMenuDialog;
 import com.xlend.orm.Sheet;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.HeadlessException;
+import com.xlend.util.ImagePanel;
+import com.xlend.util.ToolBarButton;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,33 +19,40 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.prefs.Preferences;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javax.swing.JApplet;
-import javax.swing.JFrame;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.UIManager;
 
 /**
  *
- * @author Nick Mukhin
+ * @author Admin
  */
 public class DashBoard extends AbstractDashBoard {
 
-    public static DashBoard ourInstance;
     private static IMessageSender exchanger = null;
+    public static final String XLEND_PLANT = "Xlend Plant Cc.";
     private static final String PROPERTYFILENAME = "XlendWorks.config";
-    private static final String BACKGROUNDIMAGE = "BackgroundFX.png";
-    public final static String LASTLOGIN = "LastLogin";
+    private static final String BACKGROUNDIMAGE = "Background.png";//"gears-background+xcost.jpg";
+    public final static String LASTLOGIN = "LastLogin";//    public final static String PWDMD5 = "PWDMD5";
     private static Properties props;
+    public static DashBoard ourInstance;
+
+    public static Properties getProperties() {
+        return props;
+    }
+    private JButton docsButton;
+    private JButton sitesButton;
+    private JButton hrbutton;
+    private JButton partsbutton;
+    private JButton fleetbutton;
+    private JButton logisticsButton;
+    private JButton bankingbutton;
+    private JButton logoutButton;
+    private JButton reportsButton;
+    private JButton fuelButton;
+    private JButton adminButton;
+    private JLabel userLogin;
     private GeneralFrame workFrame = null;
     private GeneralFrame sitesFrame = null;
     private GeneralFrame hrFrame = null;
@@ -53,51 +61,281 @@ public class DashBoard extends AbstractDashBoard {
     private GeneralFrame logisticsFrame = null;
     private GeneralFrame bankingFrame = null;
     private GeneralFrame fuelFrame = null;
+//    private int dashWidth;
+//    private int dashHeight;
 
-    public static Properties getProperties() {
-        return props;
+    public DashBoard(IMessageSender exch) {
+        super("Xcost");
+        ourInstance = this;
+        setExchanger(exch);
+        updateSheetList(exch);
+        setVisible(true);
     }
 
-    private static class InternalApplet extends JApplet {
+    @Override
+    protected void fillControlsPanel() throws HeadlessException {
+        ImagePanel img = new ImagePanel(XlendWorks.loadImage("AdminFX.png", this));
 
-//        private static final int JFXPANEL_WIDTH_INT = 700;
-//        private static final int JFXPANEL_HEIGHT_INT = 600;
-        private static JFXPanel fxContainer;
-//        private static final double SCALE = 1.3; // коэффициент увеличения
-//        private static final double DURATION = 300; // время анимации в мс
-        private HBox taskBar1;
-        private VBox taskBar;
-        private HBox taskBar2;
-        private BorderPane upperPane;
-        private Text userLogin;
-        private Node adminButtonNode;
-        private Node logoutButtonNode;
-//        private boolean insideExitProcess = false;
+        adminButton = new ToolBarButton("AdminFX.png");
+        adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
+        main.add(adminButton);
+        adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        @Override
-        public void init() {
-            fxContainer = new JFXPanel();
-//            fxContainer.setPreferredSize(new Dimension(JFXPANEL_WIDTH_INT, JFXPANEL_HEIGHT_INT));
-            add(fxContainer, BorderLayout.CENTER);
-            // create JavaFX scene
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    createScene();
-                }
-            });
-        }
+        docsButton = new ToolBarButton("Docs.png");
+        sitesButton = new ToolBarButton("Sites.png");
+        reportsButton = new ToolBarButton("Reports.png");
+        hrbutton = new ToolBarButton("HR.png");
+        partsbutton = new ToolBarButton("Parts.png");
+        fleetbutton = new ToolBarButton("Fleet.png");
+        bankingbutton = new ToolBarButton("Banking.png");
+        logisticsButton = new ToolBarButton("Logistics.png");
+        logoutButton = new ToolBarButton("ExitFX.png");
+        fuelButton = new ToolBarButton("Fuel.png");
 
-        private void createScene() {
-            ScreensController mainController = new ScreensController();
-//            mainController.loadScreen("FXlogin","FXlogin.fxml");
-//            mainController.setScreen("FXlogin");
-            mainController.loadScreen("FXdashboard", "FXdashboard.fxml");
-            mainController.setScreen("FXdashboard");
-            Group root = new Group();
-            root.getChildren().addAll(mainController);
-            fxContainer.setScene(new Scene(root));
-        }
+        img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
+        docsButton.setBounds(32, 285, img.getWidth(), img.getHeight());
+//        docsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(docsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("HR.png", this));
+        hrbutton.setBounds(192, 285, img.getWidth(), img.getHeight());
+//        hrbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(hrbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Parts.png", this));
+        partsbutton.setBounds(352, 285, img.getWidth(), img.getHeight());
+//        partsbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(partsbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Sites.png", this));
+        sitesButton.setBounds(512, 285, img.getWidth(), img.getHeight());
+//        sitesButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(sitesButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Fleet.png", this));
+        fleetbutton.setBounds(672, 285, img.getWidth(), img.getHeight());
+//        fleetbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(fleetbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Banking.png", this));
+        bankingbutton.setBounds(86, 447, img.getWidth(), img.getHeight());
+//        bankingbutton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(bankingbutton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Reports.png", this));
+        reportsButton.setBounds(260, 447, img.getWidth(), img.getHeight());
+//        reportsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(reportsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Logistics.png", this));
+        logisticsButton.setBounds(410, 445, img.getWidth(), img.getHeight());
+//        logisticsButton.setBackground(new Color(.5f, .5f, .5f, .0f));
+        main.add(logisticsButton);
+
+        img = new ImagePanel(XlendWorks.loadImage("Fuel.png", this));
+        fuelButton.setBounds(590, 445, img.getWidth(), img.getHeight());
+        main.add(fuelButton);
+        
+        img = new ImagePanel(XlendWorks.loadImage("ExitFX.png", this));
+        logoutButton.setBounds(dashWidth - img.getWidth() - 76, 37, img.getWidth(), img.getHeight());
+        main.add(logoutButton);
+
+        adminButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showAdmin();
+//                if (adminFrame == null) {
+//                    adminFrame = new AdminFrame(exchanger);
+//                } else {
+//                    try {
+//                        adminFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    adminFrame.setVisible(true);
+//                }
+            }
+        });
+
+        docsButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showDocs();
+//                if (workFrame == null) {
+//                    workFrame = new DocFrame(exchanger);
+//                } else {
+//                    try {
+//                        workFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    workFrame.setVisible(true);
+//                }
+            }
+        });
+
+        partsbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showParts();
+//                final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
+//                if (partsDashBoard == null) {
+//                    new PartsDashBoard(DashBoard.this);
+//                } else {
+//                    partsDashBoard.setVisible(true);
+//                    partsDashBoard.requestFocus();
+//                    java.awt.EventQueue.invokeLater(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            partsDashBoard.toFront();
+//                            partsDashBoard.repaint();
+//                        }
+//                    });
+//                }
+            }
+        });
+
+        sitesButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showSites();
+//                if (sitesFrame == null) {
+//                    sitesFrame = new SitesFrame(exchanger);
+//                } else {
+//                    try {
+//                        sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    sitesFrame.setVisible(true);
+//                }
+            }
+        });
+
+        reportsButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showReports();
+//                new ReportsMenuDialog();
+//                if (ReportsMenuDialog.okPressed) {
+//                    ReportsFrame reportsFrame = new ReportsFrame(exchanger);
+//                }
+            }
+        });
+
+        hrbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showHR();
+//                if (hrFrame == null) {
+//                    hrFrame = new HRFrame(exchanger);
+//                } else {
+//                    try {
+//                        hrFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    hrFrame.setVisible(true);
+//                }
+            }
+        });
+
+        fleetbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showFleet();
+//                if (fleetFrame == null) {
+//                    fleetFrame = new FleetFrame(exchanger);
+//                } else {
+//                    try {
+//                        fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    fleetFrame.setVisible(true);
+//                }
+            }
+        });
+
+        logisticsButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showLogistics();
+//                if (logisticsFrame == null) {
+//                    logisticsFrame = new LogisticsFrame(exchanger);
+//                } else {
+//                    try {
+//                        logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    logisticsFrame.setVisible(true);
+//                }
+            }
+        });
+
+        bankingbutton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showBanking();
+//                if (bankingFrame == null) {
+//                    bankingFrame = new BankingFrame(exchanger);
+//                } else {
+//                    try {
+//                        bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    bankingFrame.setVisible(true);
+//                }
+            }
+        });
+
+        logoutButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DashBoard.ourInstance.exit();
+//                setVisible(false);
+//                saveProps();
+//                if (XlendWorks.login()) {
+//                    userLogin.setText(XlendWorks.getCurrentUserLogin());
+//                    adminButton.setVisible(XlendWorks.isCurrentAdmin());
+//                    setVisible(true);
+//                    repaint();
+//                } else {
+//                    exit();
+//                }
+            }
+        });
+
+        fuelButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                showFuel();
+//                if (ourInstance.fuelFrame == null) {
+//                    ourInstance.fuelFrame = new FuelFrame(exchanger);
+//                } else {
+//                    try {
+//                        ourInstance.fuelFrame.setLookAndFeel(readProperty("LookAndFeel",
+//                                UIManager.getSystemLookAndFeelClassName()));
+//                    } catch (Exception ex) {
+//                    }
+//                    ourInstance.fuelFrame.setVisible(true);
+//                }
+            }
+        });
+
+        JLabel greeting = new JLabel("WELCOME");
+        greeting.setFont(greeting.getFont().deriveFont(Font.BOLD, 12));
+        greeting.setBounds(10, 10, greeting.getPreferredSize().width, greeting.getPreferredSize().height);
+        main.add(greeting);
+        userLogin = new JLabel(XlendWorks.getCurrentUserLogin());
+        userLogin.setFont(greeting.getFont());
+        userLogin.setBounds(10, 30, 50, userLogin.getPreferredSize().height);
+        main.add(userLogin);
+
+        centerOnScreen();
+        setResizable(false);
     }
 
     public static void showDocs() {
@@ -215,7 +453,6 @@ public class DashBoard extends AbstractDashBoard {
         }
     }
 
-    
     public static void showAdmin() {
         if (ourInstance.adminFrame == null) {
             ourInstance.adminFrame = new AdminFrame(exchanger);
@@ -227,31 +464,6 @@ public class DashBoard extends AbstractDashBoard {
             }
             ourInstance.adminFrame.setVisible(true);
         }
-    }
-
-    /**
-     * @return the exchanger
-     */
-    public static IMessageSender getExchanger() {
-        return exchanger;
-    }
-
-    /**
-     * @param aExchanger the exchanger to set
-     */
-    public static void setExchanger(IMessageSender aExchanger) {
-        exchanger = aExchanger;
-    }
-
-    public DashBoard(IMessageSender exch) {
-        super("Xcost");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ourInstance = this;
-        updateSheetList(exch);
-//        setPreferredSize(new Dimension(800, 600));
-        setSize(800,600);
-        centerOnScreen();
-        setVisible(true);
     }
 
     private void updateSheetList(IMessageSender exch) {
@@ -345,6 +557,13 @@ public class DashBoard extends AbstractDashBoard {
         }
     }
 
+    @Override
+    protected void initBackground() {
+
+        super.initBackground();
+        addWindowListener(new DashBoard.WinListener(this));
+    }
+
     public static void saveProperties() {
         try {
             if (props != null) {
@@ -368,9 +587,6 @@ public class DashBoard extends AbstractDashBoard {
         saveProperties();
     }
 
-    /**
-     *
-     */
     protected void exit() {
         saveProps();
         super.exit();
@@ -425,9 +641,12 @@ public class DashBoard extends AbstractDashBoard {
         super.setVisible(show);
     }
 
-    @Override
-    protected void initBackground() {
-        XlendWorks.setWindowIcon(this, "Xcost.png");
+//    public static IMessageSender getExchanger() {
+//        return exchanger;
+//    }
+//
+    static void setExchanger(IMessageSender iMessageSender) {
+        exchanger = iMessageSender;
     }
 
     @Override
@@ -438,19 +657,5 @@ public class DashBoard extends AbstractDashBoard {
     @Override
     public void lowLevelInit() {
         readProperty("junk", ""); // just to init properties
-    }
-
-    @Override
-    protected void fillControlsPanel() throws HeadlessException {
-        JApplet applet = new InternalApplet();
-        applet.init();
-
-        setContentPane(applet.getContentPane());
-
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
-
-        applet.start();
     }
 }

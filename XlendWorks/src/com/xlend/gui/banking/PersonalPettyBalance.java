@@ -58,7 +58,7 @@ public class PersonalPettyBalance extends PopupDialog {
                 + "</tr>"
                 + "<tr>"
                 + "<td align=\"left\">Notes:</td>"
-                + "<th rowspan=\"4\"></th>"
+                + "<th rowspan=\"4\" width=\"250\" align=\"left\">"+params[3]+"</th>"
                 + "</tr>"
                 + "<tr><td></td></tr>"
                 + "<tr><td></td></tr>"

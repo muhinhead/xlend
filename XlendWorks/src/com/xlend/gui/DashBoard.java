@@ -161,16 +161,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showDocs();
-//                if (workFrame == null) {
-//                    workFrame = new DocFrame(exchanger);
-//                } else {
-//                    try {
-//                        workFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    workFrame.setVisible(true);
-//                }
             }
         });
 
@@ -178,20 +168,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showParts();
-//                final PartsDashBoard partsDashBoard = PartsDashBoard.getInstance();
-//                if (partsDashBoard == null) {
-//                    new PartsDashBoard(DashBoard.this);
-//                } else {
-//                    partsDashBoard.setVisible(true);
-//                    partsDashBoard.requestFocus();
-//                    java.awt.EventQueue.invokeLater(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            partsDashBoard.toFront();
-//                            partsDashBoard.repaint();
-//                        }
-//                    });
-//                }
             }
         });
 
@@ -199,16 +175,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showSites();
-//                if (sitesFrame == null) {
-//                    sitesFrame = new SitesFrame(exchanger);
-//                } else {
-//                    try {
-//                        sitesFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    sitesFrame.setVisible(true);
-//                }
             }
         });
 
@@ -216,10 +182,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showReports();
-//                new ReportsMenuDialog();
-//                if (ReportsMenuDialog.okPressed) {
-//                    ReportsFrame reportsFrame = new ReportsFrame(exchanger);
-//                }
             }
         });
 
@@ -227,16 +189,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showHR();
-//                if (hrFrame == null) {
-//                    hrFrame = new HRFrame(exchanger);
-//                } else {
-//                    try {
-//                        hrFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    hrFrame.setVisible(true);
-//                }
             }
         });
 
@@ -244,16 +196,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showFleet();
-//                if (fleetFrame == null) {
-//                    fleetFrame = new FleetFrame(exchanger);
-//                } else {
-//                    try {
-//                        fleetFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    fleetFrame.setVisible(true);
-//                }
             }
         });
 
@@ -261,16 +203,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showLogistics();
-//                if (logisticsFrame == null) {
-//                    logisticsFrame = new LogisticsFrame(exchanger);
-//                } else {
-//                    try {
-//                        logisticsFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    logisticsFrame.setVisible(true);
-//                }
             }
         });
 
@@ -278,16 +210,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showBanking();
-//                if (bankingFrame == null) {
-//                    bankingFrame = new BankingFrame(exchanger);
-//                } else {
-//                    try {
-//                        bankingFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    bankingFrame.setVisible(true);
-//                }
             }
         });
 
@@ -295,16 +217,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DashBoard.ourInstance.exit();
-//                setVisible(false);
-//                saveProps();
-//                if (XlendWorks.login()) {
-//                    userLogin.setText(XlendWorks.getCurrentUserLogin());
-//                    adminButton.setVisible(XlendWorks.isCurrentAdmin());
-//                    setVisible(true);
-//                    repaint();
-//                } else {
-//                    exit();
-//                }
             }
         });
 
@@ -312,16 +224,6 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 showFuel();
-//                if (ourInstance.fuelFrame == null) {
-//                    ourInstance.fuelFrame = new FuelFrame(exchanger);
-//                } else {
-//                    try {
-//                        ourInstance.fuelFrame.setLookAndFeel(readProperty("LookAndFeel",
-//                                UIManager.getSystemLookAndFeelClassName()));
-//                    } catch (Exception ex) {
-//                    }
-//                    ourInstance.fuelFrame.setVisible(true);
-//                }
             }
         });
 

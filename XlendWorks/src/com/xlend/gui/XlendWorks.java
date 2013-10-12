@@ -49,6 +49,22 @@ public class XlendWorks {
         exchanger = aExchanger;
     }
 
+    public static Double getTotalPettyForSite(Integer siteID, java.util.Date dt1, java.util.Date dt2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        ComboItem[] itm = loadOnSelect(
+                "select 0, sum(i.amount) "
+                + "from xpetty p, xpettyitem i where i.xpetty_id=p.xpetty_id "
+                + " and receipt_date between '" + fmt.format(dt1) + "' and '" + fmt.format(dt2) + "' "
+                + " and i.xsite_id=" + siteID);
+        try {
+            if (itm.length > 0) {
+                return new Double(itm[0].getValue());
+            }
+        } catch (NumberFormatException nfe) {
+        }
+        return null;
+    }
+
     public static class XDate extends java.sql.Date {
 
         public XDate(long t) {
@@ -64,7 +80,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.78.a-J";
+    public static final String version = "0.79.J";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -815,7 +831,9 @@ public class XlendWorks {
 
     public static ComboItem[] loadReportGroup(Integer sheetId) {
         return loadOnSelect(
-                "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet where sheet_id=sheet.sheet_id and profile_id=" + XlendWorks.currentUser.getProfileId() + "), sheet.sheetname from sheet, reportgroup "
+                "select (select coalesce(max(sign(usersheet_id)),-1) from usersheet "
+                + "where sheet_id=sheet.sheet_id and profile_id="
+                + XlendWorks.currentUser.getProfileId() + "), sheet.sheetname from sheet, reportgroup "
                 + "where reportgroup.sheet_id=sheet.sheet_id and sheetgroup_id=" + sheetId);
     }
 

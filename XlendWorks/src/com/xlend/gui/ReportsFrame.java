@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.reports.PettyReport;
 import com.xlend.gui.reports.EmployeeReportPanel;
 import com.xlend.gui.reports.GeneralReportPanel;
 import com.xlend.gui.reports.IncidentsReport;
@@ -23,7 +24,8 @@ public class ReportsFrame extends GeneralFrame {
     private static String[] sheetList = new String[]{
         "Creditor Age Analysis", "Employee Summary",
         "Loans Report", "Incidents Report",
-        "Assignments Report"
+        "Assignments Report",
+        "Petty Report"
     };
     private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
     private EmployeeReportPanel employeePanel;
@@ -31,6 +33,7 @@ public class ReportsFrame extends GeneralFrame {
     private AssignmentsReport assignmentsPanel;
     private MyJideTabbedPane reportsTab;
     private IncidentsReport incidentsPanel;
+    private PettyReport pettyPanel;
 
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
@@ -49,22 +52,25 @@ public class ReportsFrame extends GeneralFrame {
     @Override
     protected JTabbedPane getMainPanel() {
 //        new ReportsMenuDialog();
-
+        int n = -1;
         reportsTab = new MyJideTabbedPane();
-        if (XlendWorks.availableForCurrentUser(sheets()[0]) && ReportsMenuDialog.isCheckedReport(sheets()[0])) {
-            reportsTab.addTab(getSuppliersCreditorsPanel(), sheets()[0]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getSuppliersCreditorsPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[1]) && ReportsMenuDialog.isCheckedReport(sheets()[1])) {
-            reportsTab.addTab(getEmployeePanel(), sheets()[1]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getEmployeePanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[2]) && ReportsMenuDialog.isCheckedReport(sheets()[2])) {
-            reportsTab.addTab(getLoansPanel(), sheets()[2]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getLoansPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[3])) {
-            reportsTab.addTab(getIncidentsPanel(), sheets()[3]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getIncidentsPanel(), sheets()[n]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[3]) && ReportsMenuDialog.isCheckedReport(sheets()[4])) {
-            reportsTab.addTab(getAssignmentsPanel(), sheets()[4]);
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getAssignmentsPanel(), sheets()[n]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getPettyPanel(), sheets()[n]);
         }
 
         return reportsTab;
@@ -105,6 +111,14 @@ public class ReportsFrame extends GeneralFrame {
         return incidentsPanel;
     }
 
+    private JComponent getPettyPanel() {
+        //TODO!
+       if (pettyPanel == null) {
+            registerGrid(pettyPanel = new PettyReport(getExchanger()));
+        }
+        return pettyPanel;
+    }
+    
     @Override
     protected ActionListener getPrintAction() {
         return new AbstractAction() {

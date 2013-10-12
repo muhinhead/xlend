@@ -335,7 +335,7 @@ class EditPettyPanel extends RecordEditPanel {
             //GeneralFrame.errMessageBox("Attention!", "Balance is " + balanceIssueSP.getValue().toString());
             ShowPersonalBalance(
                     ((Double) balanceIssueSP.getValue()).doubleValue(),
-                    xp.getXemployeeOutId(), null);
+                    xp.getXemployeeOutId(), null, xp.getNotes());
         }
         return ok;
     }
@@ -726,8 +726,8 @@ class EditPettyPanel extends RecordEditPanel {
                 : amtValue.doubleValue()) - sum - changeValue.doubleValue());
     }
 
-    private void ShowPersonalBalance(double balance, Integer xemployeeOutId, Date dt) {
+    private void ShowPersonalBalance(double balance, Integer xemployeeOutId, Date dt, String notes) {
         //TODO
-        new PersonalPettyBalance(new Object[]{balance, xemployeeOutId, dt});
+        new PersonalPettyBalance(new Object[]{balance, xemployeeOutId, dt, notes});
     }
 }

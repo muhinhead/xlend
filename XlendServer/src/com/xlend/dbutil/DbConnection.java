@@ -295,74 +295,74 @@ public class DbConnection {
         //        + "   return sub; "
         //        + "end; ",
 
-//        //41->42
-//        "alter table xmachtype add is_rated bit",
-//        "update xmachtype set is_rated=(parenttype_id is null)",
-//        "alter table xmachrentalrateitm drop foreign key xmachrentalrateitm_cbitem_fk",
-//        "alter table xmachrentalrateitm drop cbitem_id",
-//        "alter table xmachrentalrateitm add xmachtype_id int",
-//        "alter table xmachrentalrateitm add "
-//        + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
-//        + "references xmachtype(xmachtype_id) on delete cascade",
-//        "alter table xmachine add fueltype int default 1",
-//        //42->43
-//        "create table xpettycategory"
-//        + "("
-//        + "    xpettycategory_id   int not null auto_increment,"
-//        + "    category_name       varchar(64) not null,"
-//        + "    stamp               timestamp,"
-//        + "    constraint xpettycategory_pk primary key (xpettycategory_id)"
-//        + ")",
-//        "create table xpetty"
-//        + "("
-//        + "    xpetty_id           int not null auto_increment,"
-//        + "    issue_date          date not null,"
-//        + "    xemployee_in_id     int not null,"
-//        + "    xmachine_id         int not null,"
-//        + "    xsite_id            int not null,"
-//        + "    amount              decimal(6,2) not null,"
-//        + "    change_amt          decimal(6,2) not null,"
-//        + "    is_loan             bit default 0,"
-//        + "    is_petty            bit default 0,"
-//        + "    is_allowance        bit default 0,"
-//        + "    notes               text,"
-//        + "    receipt_date        date,"
-//        + "    xemployee_out_id    int,"
-//        + "    stamp               timestamp,"
-//        + "    constraint xpetty_pk primary key (xpetty_id),"
-//        + "    constraint xpetty_xemployee_fk foreign key (xemployee_in_id) references xemployee (xemployee_id),"
-//        + "    constraint xpetty_xemployee_fk2 foreign key (xemployee_out_id) references xemployee (xemployee_id),"
-//        + "    constraint xpetty_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
-//        + "    constraint xpetty_xsite_fk foreign key (xsite_id) references xsite (xsite_id)"
-//        + ")",
-//        "create table xpettyitem"
-//        + "("
-//        + "    xpettyitem_id       int not null auto_increment,"
-//        + "    xpetty_id           int not null,"
-//        + "    xpettycategory_id   int not null,"
-//        + "    amount              decimal(6,2) not null,"
-//        + "    stamp               timestamp,"
-//        + "    constraint xpettyitem_pk primary key (xpettyitem_id),"
-//        + "    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade,"
-//        + "    constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)"
-//        + ")",
-//        // 43-> 44
-//        "alter table xpetty modify xmachine_id int null",
-//        "alter table xpetty add change_amt decimal(6,2) not null default 0",
-//        "alter table xpetty add balance decimal(6,2) not null default 0",
-//        "create table xcashdrawn"
-//        +"("
-//        +"     xcashdrawn_id       int not null auto_increment,"
-//        +"     cur_date            date not null,"
-//        +"     cash_drawn          decimal(6,2) not null,"
-//        +"     add_monies          decimal(6,2) not null default 0.0,"
-//        +"     notes               text,"
-//        +"     stamp               timestamp,"
-//        +"     constraint xcashdrawn_pk primary key (xcashdrawn_id)"
-//        + ")",
-//        "alter table xpetty drop balance",
-//        "alter table xpettyitem drop foreign key xpettyitem_xpetty_fk",
-//        "alter table xpettyitem add constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade",
+        //        //41->42
+        //        "alter table xmachtype add is_rated bit",
+        //        "update xmachtype set is_rated=(parenttype_id is null)",
+        //        "alter table xmachrentalrateitm drop foreign key xmachrentalrateitm_cbitem_fk",
+        //        "alter table xmachrentalrateitm drop cbitem_id",
+        //        "alter table xmachrentalrateitm add xmachtype_id int",
+        //        "alter table xmachrentalrateitm add "
+        //        + "constraint xmachrentalrateitm_xmachtype_fk foreign key (xmachtype_id) "
+        //        + "references xmachtype(xmachtype_id) on delete cascade",
+        //        "alter table xmachine add fueltype int default 1",
+        //        //42->43
+        //        "create table xpettycategory"
+        //        + "("
+        //        + "    xpettycategory_id   int not null auto_increment,"
+        //        + "    category_name       varchar(64) not null,"
+        //        + "    stamp               timestamp,"
+        //        + "    constraint xpettycategory_pk primary key (xpettycategory_id)"
+        //        + ")",
+        //        "create table xpetty"
+        //        + "("
+        //        + "    xpetty_id           int not null auto_increment,"
+        //        + "    issue_date          date not null,"
+        //        + "    xemployee_in_id     int not null,"
+        //        + "    xmachine_id         int not null,"
+        //        + "    xsite_id            int not null,"
+        //        + "    amount              decimal(6,2) not null,"
+        //        + "    change_amt          decimal(6,2) not null,"
+        //        + "    is_loan             bit default 0,"
+        //        + "    is_petty            bit default 0,"
+        //        + "    is_allowance        bit default 0,"
+        //        + "    notes               text,"
+        //        + "    receipt_date        date,"
+        //        + "    xemployee_out_id    int,"
+        //        + "    stamp               timestamp,"
+        //        + "    constraint xpetty_pk primary key (xpetty_id),"
+        //        + "    constraint xpetty_xemployee_fk foreign key (xemployee_in_id) references xemployee (xemployee_id),"
+        //        + "    constraint xpetty_xemployee_fk2 foreign key (xemployee_out_id) references xemployee (xemployee_id),"
+        //        + "    constraint xpetty_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+        //        + "    constraint xpetty_xsite_fk foreign key (xsite_id) references xsite (xsite_id)"
+        //        + ")",
+        //        "create table xpettyitem"
+        //        + "("
+        //        + "    xpettyitem_id       int not null auto_increment,"
+        //        + "    xpetty_id           int not null,"
+        //        + "    xpettycategory_id   int not null,"
+        //        + "    amount              decimal(6,2) not null,"
+        //        + "    stamp               timestamp,"
+        //        + "    constraint xpettyitem_pk primary key (xpettyitem_id),"
+        //        + "    constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade,"
+        //        + "    constraint xpettyitem_xpettycategory_fk foreign key (xpettycategory_id) references xpettycategory (xpettycategory_id)"
+        //        + ")",
+        //        // 43-> 44
+        //        "alter table xpetty modify xmachine_id int null",
+        //        "alter table xpetty add change_amt decimal(6,2) not null default 0",
+        //        "alter table xpetty add balance decimal(6,2) not null default 0",
+        //        "create table xcashdrawn"
+        //        +"("
+        //        +"     xcashdrawn_id       int not null auto_increment,"
+        //        +"     cur_date            date not null,"
+        //        +"     cash_drawn          decimal(6,2) not null,"
+        //        +"     add_monies          decimal(6,2) not null default 0.0,"
+        //        +"     notes               text,"
+        //        +"     stamp               timestamp,"
+        //        +"     constraint xcashdrawn_pk primary key (xcashdrawn_id)"
+        //        + ")",
+        //        "alter table xpetty drop balance",
+        //        "alter table xpettyitem drop foreign key xpettyitem_xpetty_fk",
+        //        "alter table xpettyitem add constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade",
         // 44-> 45
         "alter table xpetty drop foreign key xpetty_xmachine_fk",
         "alter table xpetty drop foreign key xpetty_xsite_fk",
@@ -371,7 +371,15 @@ public class DbConnection {
         "alter table xpettyitem add xmachine_id int null",
         "alter table xpettyitem add xsite_id int null",
         "alter table xpettyitem add constraint xpettyitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id)",
-        "alter table xpettyitem add constraint xpettyitem_xmachine_fk foreign key (xmachine_id) references xsite (xmachine_id)"
+        "alter table xpettyitem add constraint xpettyitem_xmachine_fk foreign key (xmachine_id) references xsite (xmachine_id)",
+        "insert into sheet(sheetname,parent_id) select 'Petty Report',sheet_id from sheet where sheetname='REPORTS' "
+        + "and not exists(select sheet_id from sheet where sheetname='Petty Report')",
+        "insert into reportgroup(sheetgroup_id,sheet_id) "
+        + "       select s.sheet_id,ss.sheet_id "
+        + "         from sheet s,sheet ss "
+        + "   where s.sheetname='BANKING' "
+        + "     and ss.sheetname='Petty Report' "
+        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Petty Report'))"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

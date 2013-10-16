@@ -57,8 +57,6 @@ public class AssignmentsReport extends GeneralReportPanel {
                     + "</tr>"
                     + "<tr><th style=\"font-size: " + (int) (prevZoomerValue * 1.1) 
                     + "%; font-family: sans-serif\">Operators and machines working on sites at "+dateFormat.format(dt) +"</th>"
-                    //                    + "<tr><tr></tr>"
-                    //                    + "</tr><tr> "
                     + "</tr>"
                     + "</table></tr>"
                     + "<tr><table frame=\"abowe\" ><tr bgcolor=\"#dedede\">"

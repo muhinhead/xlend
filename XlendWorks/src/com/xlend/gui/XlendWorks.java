@@ -49,6 +49,23 @@ public class XlendWorks {
         exchanger = aExchanger;
     }
 
+    public static Double getUnallocatedTotalPettyForSite(Integer siteID, java.util.Date dt1, java.util.Date dt2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        ComboItem[] itm = loadOnSelect(
+                "select 0, sum(i.amount) "
+                + "from xpetty p, xpettyitem i left outer join xmachine m on i.xmachine_id=m.xmachine_id "
+                + "where i.xpetty_id=p.xpetty_id "
+                + " and receipt_date between '" + fmt.format(dt1) + "' and '" + fmt.format(dt2) + "' "
+                + " and i.xsite_id=" + siteID + " and (m.xmachine_id is null or classify not in ('T','M'))");
+        try {
+            if (itm.length > 0) {
+                return new Double(itm[0].getValue());
+            }
+        } catch (NumberFormatException nfe) {
+        }
+        return null;
+    }
+    
     public static Double getTotalPettyForSite(Integer siteID, java.util.Date dt1, java.util.Date dt2) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         ComboItem[] itm = loadOnSelect(
@@ -607,7 +624,8 @@ public class XlendWorks {
             drawn = Double.parseDouble(itms[0].getValue());
         }
         itms = loadOnSelect(
-                "Select 0,ifnull(sum(amount),0) from xpetty where issue_date<'" + sdt + "'");
+                "Select 0,ifnull(sum(amount),0)+ifnull(sum(change_amt),0) "
+                + " from xpetty where issue_date<'" + sdt + "'");
         if (itms.length > 0) {
             amt = Double.parseDouble(itms[0].getValue());
         }

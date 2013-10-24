@@ -431,12 +431,10 @@ public class Selects {
             + "from xaccounts";
     public static final String SELECT_FROM_PETTY =
             "Select xpetty_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\","
-//            + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xpetty.xmachine_id) \"Machine\","
-//            + "(Select name from xsite where xsite_id=xpetty.xsite_id) \"Site\","
-            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Issued by\","
-            + "amount \"Amount\","
-            + "to_char(receipt_date,'DD/MM/YYYY') \"Receipt Date\", "
-            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_in_id) \"Receiptor\" "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_out_id) \"Issued to\","
+            + "amount \"Amount,R\",change_amt \"Change,R\","
+            + "if(is_loan,'LOAN',if(is_petty,'PETTY','ALLOWANCE')) \"Loan/Petty/Alowance\", "
+            + "if(exists(select xpettyitem_id from xpettyitem where xpetty_id=xpetty.xpetty_id),'No','OUTSTANDING') \"Is Outstanding\" "
             + "from xpetty order by issue_date desc";
     public static final String SELECT_FROM_CASHDRAWN = 
             "Select xcashdrawn_id \"Id\", to_char(cur_date,'DD/MM/YYYY') \"Date\",cash_drawn \"Cash Drawn\","

@@ -18,6 +18,7 @@ import com.xlend.orm.Xpetty;
 import com.xlend.orm.Xpettyitem;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
+import com.xlend.orm.dbobject.ForeignKeyViolationException;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
@@ -29,8 +30,11 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -105,6 +109,8 @@ class EditPettyPanel extends RecordEditPanel {
 //    private SiteLookupAction siteLookupAction;
     private SelectedNumberSpinner changeSP;
 //    private SelectedNumberSpinner balancePersonSP;
+    private double initialBalance;
+    private boolean insideLoad = false;
 
     private class PettyItemPanel extends JPanel {
 
@@ -243,16 +249,21 @@ class EditPettyPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
+        insideLoad = true;
+        java.util.Date dt = new java.util.Date();
+        initialBalance = XlendWorks.getBalance4newXpetty(dt);
         BankingFrame.instance.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//        double calcBalance;
         Xpetty xp = (Xpetty) getDbObject();
         if (xp != null) {
-            java.util.Date dt;
             idField.setText(xp.getXpettyId().toString());
             if (xp.getIssueDate() != null) {
                 issueDateSP.setValue(dt = new java.util.Date(xp.getIssueDate().getTime()));
-            } else {
-                dt = new java.util.Date();
             }
+            initialBalance = XlendWorks.getBalance4newXpetty(dt) - xp.getAmount() + xp.getChangeAmt();
+//            calcBalance = initialBalance;
+
+            //Math.round(100 * XlendWorks.getBalance4newXpetty(dt)) / 100;
             selectComboItem(employeeInCB, xp.getXemployeeInId());
 //            selectComboItem(machineCB, xp.getXmachineId());
 //            selectComboItem(siteCB, xp.getXsiteId());
@@ -266,8 +277,16 @@ class EditPettyPanel extends RecordEditPanel {
                 receiptDateSP.setValue(new java.util.Date(xp.getReceiptDate().getTime()));
             }
             selectComboItem(employeeOutCB, xp.getXemployeeOutId());
-//            balanceSP.setValue(XlendWorks.getPettyInOutBalance(DashBoard.getExchanger(), xp.getXpettyId()));
-            balanceSP.setValue(XlendWorks.getBalance4newXpetty(dt));
+            if (xp.getBalance() != null && (long) (100 * initialBalance) != (long) (100 * xp.getBalance())) {
+                GeneralFrame.errMessageBox("Attention!",
+                        String.format("stored balance %.2f <> calculated %.2f", xp.getBalance(), initialBalance));
+                try {
+                    xp.setBalance(initialBalance);
+                } catch (Exception ex) {
+                    XlendWorks.logAndShowMessage(ex);
+                }
+            }
+            balanceSP.setValue(initialBalance);
             changeSP.setValue(xp.getChangeAmt());
             try {
                 DbObject[] recs = XlendWorks.getExchanger().getDbObjects(Xpettyitem.class, "xpetty_id=" + xp.getXpettyId(), "xpettyitem_id");
@@ -283,12 +302,14 @@ class EditPettyPanel extends RecordEditPanel {
             syncOperatorNumField();
             syncReceipterNumFld();
         } else {
-            balanceSP.setValue(XlendWorks.getBalance4newXpetty());
+            balanceSP.setValue(initialBalance = XlendWorks.getBalance4newXpetty(dt));
         }
+
         enableEdit(XlendWorks.isCurrentAdmin());
         editToggleBtn.setSelected(XlendWorks.isCurrentAdmin());
         editToggleBtn.setEnabled(xp != null);
         BankingFrame.instance.setCursor(Cursor.getDefaultCursor());
+        insideLoad = false;
     }
 
     @Override
@@ -318,6 +339,7 @@ class EditPettyPanel extends RecordEditPanel {
         xp.setAmount((Double) amountSP.getValue());
         xp.setChangeAmt((Double) changeSP.getValue());
         xp.setXemployeeInId(getSelectedCbItem(employeeInCB));
+        xp.setBalance((Double) balanceSP.getValue());
         boolean ok = saveDbRecord(xp, isNew);
         if (ok) {
             for (PettyItemPanel p : childRows) {
@@ -546,7 +568,7 @@ class EditPettyPanel extends RecordEditPanel {
         rightPanel.add(scrollPane = new JScrollPane(downShellPanel), BorderLayout.CENTER);
         scrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Items"));
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        scrollPane.setPreferredSize(new Dimension(3*d.width / 5, 300));
+        scrollPane.setPreferredSize(new Dimension(3 * d.width / 5, 300));
 
         rightPanel.add(getBorderPanel(new JComponent[]{
             null, null, getGridPanel(new JComponent[]{
@@ -558,26 +580,21 @@ class EditPettyPanel extends RecordEditPanel {
         editToggleBtn.addActionListener(getEditToggleAction());
         receipterNumberField.setEnabled(false);
         employeeOutCB.setEnabled(false);
-//        balancePersonSP.setEnabled(false);
         return rightPanel;
     }
 
     private void enableEdit(boolean enable) {
         for (JComponent c : new JComponent[]{
             operatorNumberField,
-            //            machineCB, 
             employeeInCB,
-            //            siteCB,
             amountSP, loanRB, pettyRB, allowRB,
             issueDateSP, notesArea,
             addItmBtn, delItmBtn, receiptDateSP, selectAllCB
         }) {
             c.setEnabled(enable);
         }
-//        empOutLookupAction.setEnabled(enable);
         for (AbstractAction a : new AbstractAction[]{
             empLookupAction
-//            , siteLookupAction, machineLookupAction
         }) {
             a.setEnabled(enable);
         }
@@ -587,9 +604,7 @@ class EditPettyPanel extends RecordEditPanel {
         if (getDbObject() == null) {
             for (JComponent c : new JComponent[]{
                 operatorNumberField,
-                //                machineCB, 
                 employeeInCB,
-                //                siteCB,
                 amountSP, loanRB, pettyRB, allowRB,
                 issueDateSP, notesArea,}) {
                 c.setEnabled(true);
@@ -607,12 +622,6 @@ class EditPettyPanel extends RecordEditPanel {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 JToggleButton tBtn = (JToggleButton) ae.getSource();
-//                if (tBtn.isSelected() && haveAdminRights()) {
-//                    enableEdit(true);
-//                    enableEdit(tBtn.isSelected());
-//                } else {
-//                    tBtn.setSelected(false);
-//                }
                 enableEdit(tBtn.isSelected());
             }
         };
@@ -714,20 +723,24 @@ class EditPettyPanel extends RecordEditPanel {
     }
 
     private void recalc() {
-        Double sum = 0.0;
-        for (PettyItemPanel rp : childRows) {
-            if (rp.amtSP.getValue() != null) {
-                sum += (Double) rp.amtSP.getValue();
+        if (!insideLoad) {
+            Double sum = 0.0;
+            for (PettyItemPanel rp : childRows) {
+                if (rp.amtSP.getValue() != null) {
+                    sum += (Double) rp.amtSP.getValue();
+                }
             }
+            Double amtValue = (Double) amountSP.getValue();
+            Double changeValue = (Double) changeSP.getValue();
+            java.util.Date dt = (java.util.Date) issueDateSP.getValue();
+            initialBalance = XlendWorks.getBalance4newXpetty(dt) - amtValue + changeValue;
+            balanceSP.setValue(initialBalance);
+            balanceIssueSP.setValue((amtValue == null ? 0
+                    : amtValue.doubleValue()) - sum - changeValue.doubleValue());
         }
-        Double amtValue = (Double) amountSP.getValue();
-        Double changeValue = (Double) changeSP.getValue();
-        balanceIssueSP.setValue((amtValue == null ? 0
-                : amtValue.doubleValue()) - sum - changeValue.doubleValue());
     }
 
     private void ShowPersonalBalance(double balance, Integer xemployeeOutId, Date dt, String notes) {
-        //TODO
         new PersonalPettyBalance(new Object[]{balance, xemployeeOutId, dt, notes});
     }
 }

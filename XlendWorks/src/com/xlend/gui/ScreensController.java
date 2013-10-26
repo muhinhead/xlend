@@ -23,6 +23,7 @@ import javafx.util.Duration;
  */
 public class ScreensController extends StackPane {
     private HashMap<String, Node> screens;
+    private ControlledScreen myScreenController;
 
     public ScreensController() {
         super();
@@ -41,7 +42,7 @@ public class ScreensController extends StackPane {
         try {
             FXMLLoader myLoader = new FXMLLoader(getClass().getResource(resource));
             Parent loadScreen = (Parent) myLoader.load();
-            ControlledScreen myScreenController = (ControlledScreen) myLoader.getController();
+            myScreenController = (ControlledScreen) myLoader.getController();
             myScreenController.setScreenParent(this);
             addScreen(name, loadScreen);
             return true;
@@ -53,6 +54,7 @@ public class ScreensController extends StackPane {
 
     public boolean setScreen(final String name) {
         if (screens.get(name) != null) {
+            myScreenController.setScreenParent(this);
             final DoubleProperty opacity = opacityProperty();
             if (!getChildren().isEmpty()) {
                 Timeline fade = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(opacity, 1.0)), new KeyFrame(new Duration(1000), new EventHandler<ActionEvent>() {

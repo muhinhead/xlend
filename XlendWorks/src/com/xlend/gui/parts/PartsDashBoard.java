@@ -42,11 +42,12 @@ public class PartsDashBoard extends AbstractDashBoard {
     private PartsCategoriesFrame liquidsPartsFrame;
 
     public PartsDashBoard(JFrame parentFrame) {
-        super("Parts");
+        super("Parts", true);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         instance = this;
         setVisible(true);
         setResizable(false);
+//        setUndecorated(false);
     }
 
     @Override

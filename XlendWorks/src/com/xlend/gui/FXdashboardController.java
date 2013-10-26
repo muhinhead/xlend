@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.orm.Userprofile;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,6 +17,13 @@ import javafx.scene.layout.VBox;
  * @author Администратор
  */
 public class FXdashboardController implements Initializable, ControlledScreen {
+
+    /**
+     * @return the instance
+     */
+    public static FXdashboardController getInstance() {
+        return instance;
+    }
 
     private ScreensController myController;
     @FXML
@@ -45,15 +53,14 @@ public class FXdashboardController implements Initializable, ControlledScreen {
     private Node reportsButtonNode;
     private Node logisticsButtonNode;
     private Node fuelButtonNode;
+    private static FXdashboardController instance;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        userLogin.setText("Hi " + XlendWorks.getCurrentUserLogin());
-
+        instance = this;
         adminButtonNode = FXutils.createButton(getClass(), "/" + icons[icons.length - 2], new Runnable() {
             @Override
             public void run() {
@@ -66,8 +73,8 @@ public class FXdashboardController implements Initializable, ControlledScreen {
             @Override
             public void run() {
                 //TODO: here should be switching to login screen
-                DashBoard.ourInstance.exit();
-//                myController.setScreen("FXlogin");
+//                DashBoard.ourInstance.exit();
+                myController.setScreen("FXlogin");
             }
         });
         upperPane.setRight(logoutButtonNode);
@@ -127,7 +134,7 @@ public class FXdashboardController implements Initializable, ControlledScreen {
                 DashBoard.showLogistics();
             }
         });
-        
+
         fuelButtonNode = FXutils.createButton(getClass(), "/" + icons[8], new Runnable() {
             @Override
             public void run() {
@@ -154,5 +161,12 @@ public class FXdashboardController implements Initializable, ControlledScreen {
     @Override
     public void setScreenParent(ScreensController screenParent) {
         this.myController = screenParent;
+    }
+
+    public static void setGreeting(Userprofile curUser) {
+        if (getInstance()!=null && getInstance().adminButtonNode != null && getInstance().userLogin != null && curUser != null) {
+            getInstance().userLogin.setText("Hi " + (curUser == null ? "" : curUser.getLogin()));
+            getInstance().adminButtonNode.setVisible(XlendWorks.isCurrentAdmin());
+        }
     }
 }

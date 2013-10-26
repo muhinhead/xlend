@@ -24,6 +24,14 @@
               </VBox.margin>
             </HBox>
             <HBox fx:id="taskBar2" alignment="TOP_CENTER" padding="$x1" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.margin="$x2" />
+            <HBox id="taskBar2" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+              <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" fx:id="x1" />
+              </padding>
+              <VBox.margin>
+                <Insets left="10.0" right="10.0" top="10.0" fx:id="x2" />
+              </VBox.margin>
+            </HBox>
           </children>
         </VBox>
       </bottom>

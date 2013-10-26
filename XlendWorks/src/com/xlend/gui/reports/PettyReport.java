@@ -1,14 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.xlend.gui.reports;
 
 import com.xlend.gui.XlendWorks;
-import com.xlend.orm.Cbitems;
-import com.xlend.orm.Xpettyitem;
 import com.xlend.orm.dbobject.ComboItem;
-import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.Util;
@@ -19,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;

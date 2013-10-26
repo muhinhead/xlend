@@ -45,6 +45,7 @@ public class PettyInOutGrid extends GeneralGridPanel {
                     EditPettyDialog ed = new EditPettyDialog("New Petty Cash", null);
                     if (EditPettyDialog.okPressed) {
                         Xpetty xp = (Xpetty) ed.getEditPanel().getDbObject();
+                        XlendWorks.recalcAllCashBalances();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
                                 getSelect(), xp.getXpettyId(), getPageSelector().getSelectedIndex());
                     }
@@ -67,6 +68,7 @@ public class PettyInOutGrid extends GeneralGridPanel {
                         Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
                         new EditPettyDialog("Edit Petty Cash", xt);
                         if (EditPettyDialog.okPressed) {
+                            XlendWorks.recalcAllCashBalances();
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
@@ -90,11 +92,12 @@ public class PettyInOutGrid extends GeneralGridPanel {
                         Xpetty xt = (Xpetty) exchanger.loadDbObjectOnID(Xpetty.class, id);
                         if (xt != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
-                            DbObject[] itms = exchanger.getDbObjects(Xpettyitem.class, "xpetty_id="+id, null);
+                            DbObject[] itms = exchanger.getDbObjects(Xpettyitem.class, "xpetty_id=" + id, null);
                             for (DbObject itm : itms) {
                                 exchanger.deleteObject(itm);
                             }
                             exchanger.deleteObject(xt);
+                            XlendWorks.recalcAllCashBalances();
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
                                     getPageSelector().getSelectedIndex());
                         }

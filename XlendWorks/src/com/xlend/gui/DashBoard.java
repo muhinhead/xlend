@@ -65,7 +65,7 @@ public class DashBoard extends AbstractDashBoard {
 //    private int dashHeight;
 
     public DashBoard(IMessageSender exch) {
-        super("Xcost");
+        super("Xcost", true);
         ourInstance = this;
         setExchanger(exch);
         updateSheetList(exch);

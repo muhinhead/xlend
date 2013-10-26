@@ -65,7 +65,7 @@ public class XlendWorks {
         }
         return null;
     }
-    
+
     public static Double getTotalPettyForSite(Integer siteID, java.util.Date dt1, java.util.Date dt2) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         ComboItem[] itm = loadOnSelect(
@@ -97,7 +97,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.79.J";
+    public static final String version = "0.81";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -184,7 +184,7 @@ public class XlendWorks {
     }
 
     public static boolean isCurrentAdmin() {
-        return currentUser.getLogin().equalsIgnoreCase("admin");
+        return currentUser != null && currentUser.getLogin().equalsIgnoreCase("admin");
     }
 
     public static void logAndShowMessage(Throwable ne) {
@@ -596,81 +596,62 @@ public class XlendWorks {
     }
 
     public static double getBalance4newXpetty() {
-        double drawn = 0.0;
-        double amt = 0.0;
-        ComboItem[] itms = loadOnSelect(
-                "Select 0,ifnull(sum(cash_drawn + add_monies),0) from xcashdrawn");
-        if (itms.length > 0) {
-            drawn = Double.parseDouble(itms[0].getValue());
+        return getBalance4newXpetty(null);
+    }
+
+    public static void recalcAllCashBalances() {
+        try {
+            double inBalance;
+            DbObject[] obs = getExchanger().getDbObjects(Xcashdrawn.class, null, null);
+            for (DbObject o : obs) {
+                Xcashdrawn cd = (Xcashdrawn) o;
+                java.util.Date dt = new java.util.Date(cd.getCurDate().getTime());
+                inBalance = getBalance4newXpetty(dt);
+                if (inBalance != cd.getBalance() - cd.getCashDrawn() - cd.getAddMonies()) {
+                    cd.setBalance(inBalance + cd.getCashDrawn() + cd.getAddMonies());
+                    getExchanger().saveDbObject(cd);
+                }
+            }
+            obs = getExchanger().getDbObjects(Xpetty.class, null, null);
+            for (DbObject o : obs) {
+                Xpetty xp = (Xpetty) o;
+                java.util.Date dt = new java.util.Date(xp.getIssueDate().getTime());
+                inBalance = getBalance4newXpetty(dt);
+                if (inBalance != xp.getBalance() + xp.getAmount() - xp.getChangeAmt()) {
+                    xp.setBalance(inBalance - xp.getAmount() + xp.getChangeAmt());
+                    getExchanger().saveDbObject(xp);
+                }
+            }
+        } catch (Exception ex) {
+            log(ex);
         }
-        itms = loadOnSelect(
-                "Select 0,ifnull(sum(amount),0) from xpetty");
-        if (itms.length > 0) {
-            amt = Double.parseDouble(itms[0].getValue());
-        }
-        return drawn - amt;
     }
 
     public static double getBalance4newXpetty(java.util.Date dt) {
+        if (dt == null) {
+            return 0.0;
+        }
         double drawn = 0.0;
         double amt = 0.0;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String sdt = df.format(dt);
+        String sdt = (dt == null ? null : df.format(dt));
         ComboItem[] itms = loadOnSelect(
-                "Select 0,ifnull(sum(cash_drawn + add_monies),0) "
-                + "from xcashdrawn where cur_date<'"
-                + sdt + "'");
+                "Select 0,ifnull(sum(cash_drawn + add_monies),0.0) "
+                + " from xcashdrawn "
+                + (dt != null ? "where cur_date<'" + sdt + "'" : ""));
         if (itms.length > 0) {
             drawn = Double.parseDouble(itms[0].getValue());
         }
         itms = loadOnSelect(
-                "Select 0,ifnull(sum(amount),0)+ifnull(sum(change_amt),0) "
-                + " from xpetty where issue_date<'" + sdt + "'");
+                "Select 0,ifnull(sum(amount),0.0)-ifnull(sum(change_amt),0.0) "
+                + " from xpetty "
+                + (dt != null ? "where issue_date<'" + sdt + "'" : ""));
         if (itms.length > 0) {
             amt = Double.parseDouble(itms[0].getValue());
         }
         return drawn - amt;
     }
 
-//    public static double getPettyInOutBalance(int xpetty_id) {
-//        try {
-//            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
-//                    "cur_date=(select max(cur_date) from xcashdrawn where cur_date<="
-//                    + "(select issue_date from xpetty where xpetty_id=" + xpetty_id + "))", "xcashdrawn_id desc");
-//            if (recs.length > 0) {
-//                Xcashdrawn cd = (Xcashdrawn) recs[0];
-//                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
-//            }
-//        } catch (RemoteException ex) {
-//            log(ex);
-//        }
-//        return 0.0;
-//    }
-//
-//    public static double getPettyInOutBalance() {
-//        try {
-//            DbObject[] recs = exchanger.getDbObjects(Xcashdrawn.class,
-//                    "cur_date=(select max(cur_date) from xcashdrawn)", "xcashdrawn_id desc");
-//            if (recs.length > 0) {
-//                Xcashdrawn cd = (Xcashdrawn) recs[0];
-//                return cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue();
-//            }
-//        } catch (RemoteException ex) {
-//            log(ex);
-//        }
-//        return 0.0;
-//    }
-    //    public static Double getOutstandingPettyBalance() {
-//        ComboItem[] ciArr = loadOnSelect(exchanger,
-//                "select 0,(select ifnull(sum(amount),0) from xpetty)-(select ifnull(sum(amount),0) from xpettyitem)");
-//        if (ciArr!=null && ciArr.length>0) {
-//            return new Double(ciArr[0].getValue());
-//        }
-//        return 0.0;
-//    }
-//    public static ComboItem[] loadAllLowbeds() {
-//        return loadOnSelect(exchanger, Selects.SELECT_LOWBEDS4LOOKUP);
-//    }
     public static ComboItem loadEmployeeExcept(String excepts) {
         ComboItem[] clist = loadOnSelect(Selects.SELECT_FROM_SALEMPLOYEE_EXCLUDING.replace("#", excepts));
         return (clist != null && clist.length > 0 ? clist[0] : null);

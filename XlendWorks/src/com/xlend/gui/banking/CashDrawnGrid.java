@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
  * @author Nick Mukhin
  */
 public class CashDrawnGrid extends GeneralGridPanel {
+
     private static HashMap<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
 
     static {
@@ -40,6 +41,7 @@ public class CashDrawnGrid extends GeneralGridPanel {
                     EditCashDrawnDialog ed = new EditCashDrawnDialog("New Cash Drawn", null);
                     if (EditCashDrawnDialog.okPressed) {
                         Xcashdrawn xd = (Xcashdrawn) ed.getEditPanel().getDbObject();
+                        XlendWorks.recalcAllCashBalances();
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(),
                                 getSelect(), xd.getXcashdrawnId(), getPageSelector().getSelectedIndex());
                     }
@@ -53,7 +55,7 @@ public class CashDrawnGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-         return new AbstractAction("Edit Cash Drawn") {
+        return new AbstractAction("Edit Cash Drawn") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -62,6 +64,7 @@ public class CashDrawnGrid extends GeneralGridPanel {
                         Xcashdrawn xd = (Xcashdrawn) exchanger.loadDbObjectOnID(Xcashdrawn.class, id);
                         new EditCashDrawnDialog("Edit Cash Drawn", xd);
                         if (EditCashDrawnDialog.okPressed) {
+                            XlendWorks.recalcAllCashBalances();
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
                         }
@@ -86,6 +89,7 @@ public class CashDrawnGrid extends GeneralGridPanel {
                         if (xd != null && GeneralFrame.yesNo("Attention!",
                                 "Do you want to delete this record?") == JOptionPane.YES_OPTION) {
                             exchanger.deleteObject(xd);
+                            XlendWorks.recalcAllCashBalances();
                             GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null,
                                     getPageSelector().getSelectedIndex());
                         }

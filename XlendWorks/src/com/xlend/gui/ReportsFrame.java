@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.gui.reports.CashTurnoverReport;
 import com.xlend.gui.reports.PettyReport;
 import com.xlend.gui.reports.EmployeeReportPanel;
 import com.xlend.gui.reports.GeneralReportPanel;
@@ -25,7 +26,7 @@ public class ReportsFrame extends GeneralFrame {
         "Creditor Age Analysis", "Employee Summary",
         "Loans Report", "Incidents Report",
         "Assignments Report",
-        "Petty Report"
+        "Petty Report","Cash Turnover"
     };
     private SuppliersCreditorsReportPanel suppliersCreditorsPanel;
     private EmployeeReportPanel employeePanel;
@@ -34,6 +35,7 @@ public class ReportsFrame extends GeneralFrame {
     private MyJideTabbedPane reportsTab;
     private IncidentsReport incidentsPanel;
     private PettyReport pettyPanel;
+    private CashTurnoverReport cashTurnPanel;
 
     public ReportsFrame(IMessageSender exch) {
         super("Reports", exch);
@@ -71,6 +73,9 @@ public class ReportsFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
             reportsTab.addTab(getPettyPanel(), sheets()[n]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[++n]) && ReportsMenuDialog.isCheckedReport(sheets()[n])) {
+            reportsTab.addTab(getCashTurnPanel(), sheets()[n]);
         }
 
         return reportsTab;
@@ -112,11 +117,17 @@ public class ReportsFrame extends GeneralFrame {
     }
 
     private JComponent getPettyPanel() {
-        //TODO!
        if (pettyPanel == null) {
             registerGrid(pettyPanel = new PettyReport(getExchanger()));
         }
         return pettyPanel;
+    }
+    
+    private JComponent getCashTurnPanel() {
+       if (cashTurnPanel == null) {
+            registerGrid(cashTurnPanel = new CashTurnoverReport(getExchanger()));
+        }
+        return cashTurnPanel;
     }
     
     @Override

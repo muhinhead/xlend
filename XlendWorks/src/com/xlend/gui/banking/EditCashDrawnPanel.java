@@ -1,6 +1,7 @@
 package com.xlend.gui.banking;
 
 import com.xlend.gui.DashBoard;
+import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
 import static com.xlend.gui.RecordEditPanel.getBorderPanel;
 import static com.xlend.gui.RecordEditPanel.getGridPanel;
@@ -86,21 +87,31 @@ public class EditCashDrawnPanel extends RecordEditPanel {
             } else {
                 dt = new Date();
             }
-            initialBalance = XlendWorks.getBalance4newXpetty(dt);
+            double calculatedBalance = cd.getCashDrawn() + cd.getAddMonies()
+                    + XlendWorks.getBalance4newXpetty(dt);
+
+            if (cd.getBalance() != null && (long) (100 * calculatedBalance) != (long) (100 * cd.getBalance())) {
+                GeneralFrame.errMessageBox("Attention!", String.format(
+                        "the stored balance %.2f <> calculated %.2f", cd.getBalance(),
+                        calculatedBalance));
+            }
+            initialBalance = calculatedBalance;
             cashDrawnSP.setValue(cd.getCashDrawn());
             addMoneySP.setValue(cd.getAddMonies());
-            totalLbl.setText(String.format("%.2f", initialBalance
-                    + cd.getCashDrawn().doubleValue() + cd.getAddMonies().doubleValue()));
+            totalLbl.setText(String.format("%.2f", initialBalance).replace(',', '.'));
             notesTA.setText(cd.getNotes());
         } else {
             initialBalance = XlendWorks.getBalance4newXpetty();
-            totalLbl.setText("" + initialBalance);
+            totalLbl.setText(String.format("%.2f", initialBalance).replace(',', '.'));
         }
     }
 
     private void calcSum() {
-        totalLbl.setText(String.format("%.2f", initialBalance
-                + (Double) cashDrawnSP.getValue() + (Double) addMoneySP.getValue()));
+        java.util.Date dt = (java.util.Date) dateSP.getValue();
+        double calcBalance = XlendWorks.getBalance4newXpetty(dt); 
+//                Math.round(100 * XlendWorks.getBalance4newXpetty(dt)) / 100;
+        totalLbl.setText(String.format("%.2f", calcBalance
+                + (Double) cashDrawnSP.getValue() + (Double) addMoneySP.getValue()).replace(',', '.'));
     }
 
     @Override
@@ -119,6 +130,7 @@ public class EditCashDrawnPanel extends RecordEditPanel {
         cd.setCashDrawn((Double) cashDrawnSP.getValue());
         cd.setAddMonies((Double) addMoneySP.getValue());
         cd.setNotes(notesTA.getText());
+        cd.setBalance(new Double(totalLbl.getText()));
         return saveDbRecord(cd, isNew);
     }
 

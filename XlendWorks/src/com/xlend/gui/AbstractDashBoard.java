@@ -62,9 +62,9 @@ public abstract class AbstractDashBoard extends JFrame {
 
     protected abstract void fillControlsPanel() throws HeadlessException;
 
-    public AbstractDashBoard(String title) {
+    public AbstractDashBoard(String title, boolean decorated) {
         super(title);
-//        setUndecorated(true);
+        setUndecorated(!decorated);
 //        setResizable(false);
         lowLevelInit();
         initBackground();

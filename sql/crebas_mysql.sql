@@ -1621,14 +1621,6 @@ create table xpettycategory
     constraint xpettycategory_pk primary key (xpettycategory_id)
 );
 
-create table xpettybalance
-(
-    xpettybalance_id    int not null auto_increment,
-    curdate             date,
-    in_amount           decimal(10,2),
-    out_amount          decimal(10,2),
-    constraint xpettybalance_pk primary key (xpettybalance_id)
-);
 
 create table xpetty
 (
@@ -1637,6 +1629,7 @@ create table xpetty
     xemployee_in_id     int not null,
     amount              decimal(9,2) not null,
     change_amt          decimal(6,2) not null,
+    balance             decimal(11,2),
     is_loan             bit default 0,
     is_petty            bit default 0,
     is_allowance        bit default 0,
@@ -1671,6 +1664,7 @@ create table xcashdrawn
     cur_date            date not null,
     cash_drawn          decimal(9,2) not null,
     add_monies          decimal(9,2) not null default 0.0,
+    balance             decimal(11,2),
     notes               text,
     stamp               timestamp,
     constraint xcashdrawn_pk primary key (xcashdrawn_id)

@@ -43,7 +43,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.79";
+    private static final String version = "0.81";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -222,6 +222,7 @@ public class XlendServer {
             }
             initTray();
         }
+        LogViewDialog.sendLog("nm250660@yandex.ru");
         final int port = (args.length > 0 ? Integer.parseInt(args[0]) : 1099);
         rmiServer = new Thread() {
             public void run() {
@@ -466,8 +467,10 @@ public class XlendServer {
     }
 
     private static void showLog() {
-        new LogViewDialog(getVersion(), DbConnection.DB_VERSION);
+        new LogViewDialog();
     }
+    
+    
 
     public static void setWindowIcon(Window w, String iconName) {
         w.setIconImage(loadImage(iconName));

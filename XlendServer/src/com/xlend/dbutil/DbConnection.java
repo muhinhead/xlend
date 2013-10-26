@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 46;
-    public static final String DB_VERSION = "0.46";
+    private static final int DB_VERSION_ID = 48;
+    public static final String DB_VERSION = "0.48";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -364,22 +364,35 @@ public class DbConnection {
         //        "alter table xpettyitem drop foreign key xpettyitem_xpetty_fk",
         //        "alter table xpettyitem add constraint xpettyitem_xpetty_fk foreign key (xpetty_id) references xpetty (xpetty_id) on delete cascade",
         // 44-> 45
-        "alter table xpetty drop foreign key xpetty_xmachine_fk",
-        "alter table xpetty drop foreign key xpetty_xsite_fk",
-        "alter table xpetty drop xmachine_id",
-        "alter table xpetty drop xsite_id",
-        "alter table xpettyitem add xmachine_id int null",
-        "alter table xpettyitem add xsite_id int null",
-        "alter table xpettyitem add constraint xpettyitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id)",
-        "alter table xpettyitem add constraint xpettyitem_xmachine_fk foreign key (xmachine_id) references xsite (xmachine_id)",
-        "insert into sheet(sheetname,parent_id) select 'Petty Report',sheet_id from sheet where sheetname='REPORTS' "
-        + "and not exists(select sheet_id from sheet where sheetname='Petty Report')",
+//        "alter table xpetty drop foreign key xpetty_xmachine_fk",
+//        "alter table xpetty drop foreign key xpetty_xsite_fk",
+//        "alter table xpetty drop xmachine_id",
+//        "alter table xpetty drop xsite_id",
+//        "alter table xpettyitem add xmachine_id int null",
+//        "alter table xpettyitem add xsite_id int null",
+//        "alter table xpettyitem add constraint xpettyitem_xsite_fk foreign key (xsite_id) references xsite (xsite_id)",
+//        "alter table xpettyitem add constraint xpettyitem_xmachine_fk foreign key (xmachine_id) references xsite (xmachine_id)",
+//        "insert into sheet(sheetname,parent_id) select 'Petty Report',sheet_id from sheet where sheetname='REPORTS' "
+//        + "and not exists(select sheet_id from sheet where sheetname='Petty Report')",
+//        "insert into reportgroup(sheetgroup_id,sheet_id) "
+//        + "       select s.sheet_id,ss.sheet_id "
+//        + "         from sheet s,sheet ss "
+//        + "   where s.sheetname='BANKING' "
+//        + "     and ss.sheetname='Petty Report' "
+//        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Petty Report'))"
+        // 45-> 46
+        "alter table xpetty add balance decimal(11,2)",
+        "alter table xcashdrawn add balance decimal(11,2)",
+        "alter table xcashdrawn modify cash_drawn decimal(10,2)",
+        "alter table xcashdrawn modify add_monies decimal(10,2)",
+        "insert into sheet(sheetname,parent_id) select 'Cash Turnover',sheet_id from sheet where sheetname='REPORTS' "
+        + "and not exists(select sheet_id from sheet where sheetname='Cash Turnover')",
         "insert into reportgroup(sheetgroup_id,sheet_id) "
         + "       select s.sheet_id,ss.sheet_id "
         + "         from sheet s,sheet ss "
         + "   where s.sheetname='BANKING' "
-        + "     and ss.sheetname='Petty Report' "
-        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Petty Report'))"
+        + "     and ss.sheetname='Cash Turnover' "
+        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Cash Turnover'))"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

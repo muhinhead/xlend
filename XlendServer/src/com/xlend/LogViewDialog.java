@@ -1,5 +1,6 @@
 package com.xlend;
 
+import com.xlend.dbutil.DbConnection;
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,8 +8,14 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.Message.RecipientType;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -34,11 +41,36 @@ public class LogViewDialog extends PopupDialog {
     private JScrollPane sp;
 //    private String serverVersion;
 //    private String dbVersion;
-    public static StringBuffer logBuffer = new StringBuffer().append(loadFile()).append("--Started at:" + Calendar.getInstance().getTime() + "\n");
+    public static StringBuffer logBuffer = new StringBuffer().append(loadFile())
+            .append(getIPs())
+            .append("--Started at:" + Calendar.getInstance().getTime() + "\n");
 
-    public LogViewDialog(String serverVerion, String dbVersion) {
-        super(null, "Xcost Server Log", new String[]{serverVerion, dbVersion});
+    public LogViewDialog() {
+        super(null, "Xcost Server Log", null);
         XlendServer.setWindowIcon(this, "Xcost.png");
+    }
+
+//    private static StringBuffer getLogBuffer(String app) {
+//        return new StringBuffer().append(loadFile()).append(app);
+//    }
+
+    protected static String getIPs() {
+        StringBuffer buf = new StringBuffer("===========================\n--Current IPs:");
+        try {
+            Enumeration e = NetworkInterface.getNetworkInterfaces();
+            while (e.hasMoreElements()) {
+                NetworkInterface n = (NetworkInterface) e.nextElement();
+                Enumeration ee = n.getInetAddresses();
+                while (ee.hasMoreElements()) {
+                    InetAddress i = (InetAddress) ee.nextElement();
+                    buf.append(" "+i.getHostAddress());
+                }
+            }
+
+        } catch (SocketException ex) {
+            buf.append(ex.getMessage());
+        }
+        return buf.toString()+"\n";
     }
 
     protected void fillContent() {
@@ -48,11 +80,10 @@ public class LogViewDialog extends PopupDialog {
 //        dbVersion = versions[1];
 
         JTextArea logViewArea = new JTextArea();
-        logViewArea.setText(logBuffer.toString());
+        logViewArea.setText(logBuffer.toString());//getLogBuffer("--Started at:" + Calendar.getInstance().getTime() + "\n").toString());
 
         JPanel btnPanel = new JPanel();
         btnPanel.add(sendLogBtn = new JButton(sendLogAction = new AbstractAction("Send log to developer") {
-
             public void actionPerformed(ActionEvent e) {
                 if (sendLog("mukhin.nick@gmail.com")) {
                     JOptionPane.showMessageDialog(null, "The server's log sent succesfully");
@@ -62,7 +93,6 @@ public class LogViewDialog extends PopupDialog {
             }
         }));
         btnPanel.add(closeBtn = new JButton(closeAction = new AbstractAction("Close") {
-
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
@@ -105,15 +135,15 @@ public class LogViewDialog extends PopupDialog {
         return "...Error loading log...";
     }
 
-    public boolean sendLog(String email) {
+    public static boolean sendLog(String email) {
         Properties mailProps = new Properties();
-        String[] versions = (String[]) getObject();
+//        String[] versions = (String[]) getObject();
         String STARTTLS = "true";
         String AUTH = "true";
         String DEBUG = "true";
         String SOCKET_FACTORY = "javax.net.ssl.SSLSocketFactory";
-        String SUBJECT = "XlendServer server version:" + versions[0] 
-                + " db version:"+ versions[1] + " sent:" + Calendar.getInstance().getTime();
+        String SUBJECT = "XlendServer server version:" + XlendServer.getVersion()
+                + " db version:" + DbConnection.DB_VERSION + " sent:" + Calendar.getInstance().getTime();
         String PORT = "465";
         String HOST = "smtp.yandex.ru";
         String FROM = "nm250660@yandex.ru";

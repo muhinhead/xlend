@@ -437,6 +437,10 @@ public class DbConnection {
         return props.getProperty("ftpLogin", "jaco84oliver");
     }
 
+    public static boolean needBackup() {
+        return props.getProperty("doBackup","yes").equals("yes");
+    }
+    
     public static Connection getConnection() throws RemoteException {
         for (ConnectionWithFlag con : connections) {
             if (!con.isBusy) {

@@ -244,7 +244,7 @@ public class XlendServer {
         };
         rmiServer.start();
         log("Start backup...");
-        if (makeBackup()) {
+        if (DbConnection.needBackup() && makeBackup()) {
             log("Backup completed!");
         } else {
             log("Backup skipped or failed!");

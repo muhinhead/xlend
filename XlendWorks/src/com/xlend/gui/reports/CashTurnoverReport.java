@@ -40,9 +40,9 @@ public class CashTurnoverReport extends GeneralReportPanel {
                 updateReport();
             }
         }));
-        fromDateSP.setEditor(new JSpinner.DateEditor(fromDateSP, "dd/MM/yyyy"));
+        fromDateSP.setEditor(new JSpinner.DateEditor(fromDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(fromDateSP);
-        toDateSP.setEditor(new JSpinner.DateEditor(toDateSP, "dd/MM/yyyy"));
+        toDateSP.setEditor(new JSpinner.DateEditor(toDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(toDateSP);
 
         Date today = new Date();
@@ -58,7 +58,7 @@ public class CashTurnoverReport extends GeneralReportPanel {
     @Override
     protected JEditorPane createEditorPanel() {
         if (html == null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date dt1 = (Date) fromDateSP.getValue();
             Date dt2 = (Date) toDateSP.getValue();
             html = new StringBuffer("<html>"
@@ -86,16 +86,16 @@ public class CashTurnoverReport extends GeneralReportPanel {
 
     private String getReportBody(Date dt1, Date dt2) {
         StringBuilder sb = new StringBuilder("<tr><table>");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             String select;
             Vector[] data = exchanger.getTableBody(select =
-                    "select xcashdrawn_id as id,'Cash drawn' as \"Operation\", '' as \"Mode\", cur_date as \"Date\", concat('R ',cash_drawn+add_monies) as \"Amount\", "
+                    "select xcashdrawn_id as id,'Cash drawn' as \"Operation\", '' as \"Mode\", to_char(cur_date,'YYYY-MM-DD HH24:MI') as \"Date\", concat('R ',cash_drawn+add_monies) as \"Amount\", "
                     + " concat('R ',balance) as \"Balance\" "
                     + "  from xcashdrawn where cur_date between '" + dateFormat.format(dt1) + "' and '" + dateFormat.format(dt2) + "' "
                     + "union "
                     + "select xpetty_id as id,'Petty in/out' as \"Operation\",if(is_loan,'LOAN',if(is_petty,'PETTY',if(is_allowance,'ALLOWANCE','unknown'))) as \"Mode\","
-                    + "       issue_date as \"Date\",concat('R ',amount-ifnull(change_amt,0)) as \"Amount\", concat('R ',balance) as \"Balance\" "
+                    + "       to_char(issue_date,'YYYY-MM-DD HH24:MI') as \"Date\",concat('R ',amount-ifnull(change_amt,0)) as \"Amount\", concat('R ',balance) as \"Balance\" "
                     + "  from xpetty where issue_date between '" + dateFormat.format(dt1) + "' and '" + dateFormat.format(dt2) + "' "
                     + " order by date");
             Vector hdr = data[0];

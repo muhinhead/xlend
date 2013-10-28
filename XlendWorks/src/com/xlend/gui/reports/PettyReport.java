@@ -60,9 +60,9 @@ public class PettyReport extends GeneralReportPanel {
             }
         });
 
-        fromDateSP.setEditor(new JSpinner.DateEditor(fromDateSP, "dd/MM/yyyy"));
+        fromDateSP.setEditor(new JSpinner.DateEditor(fromDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(fromDateSP);
-        toDateSP.setEditor(new JSpinner.DateEditor(toDateSP, "dd/MM/yyyy"));
+        toDateSP.setEditor(new JSpinner.DateEditor(toDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(toDateSP);
 //        setEnabledDateFilter(false);
 
@@ -79,7 +79,7 @@ public class PettyReport extends GeneralReportPanel {
     @Override
     protected JEditorPane createEditorPanel() {
         if (html == null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             Date dt1 = (Date) fromDateSP.getValue();
             Date dt2 = (Date) toDateSP.getValue();
             ComboItem siteItm = (ComboItem) sitesCB.getSelectedItem();
@@ -199,7 +199,7 @@ public class PettyReport extends GeneralReportPanel {
 
     private String categoriesList(int siteID, Date dt1, Date dt2) {
         StringBuilder sb = new StringBuilder("");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             String select;
             Vector[] data = exchanger.getTableBody(

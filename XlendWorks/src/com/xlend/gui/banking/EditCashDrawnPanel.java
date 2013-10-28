@@ -65,7 +65,7 @@ public class EditCashDrawnPanel extends RecordEditPanel {
             getGridPanel(totalLbl = new JLabel("      ", SwingConstants.RIGHT), 4)
         };
         idField.setEnabled(false);
-        dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy"));
+        dateSP.setEditor(new JSpinner.DateEditor(dateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(dateSP);
         organizePanels(titles, edits, null);
         JScrollPane sp;
@@ -125,7 +125,7 @@ public class EditCashDrawnPanel extends RecordEditPanel {
         }
         java.util.Date dt = (java.util.Date) dateSP.getValue();
         if (dt != null) {
-            cd.setCurDate(new java.sql.Date(dt.getTime()));
+            cd.setCurDate(new java.sql.Timestamp(dt.getTime()));
         }
         cd.setCashDrawn((Double) cashDrawnSP.getValue());
         cd.setAddMonies((Double) addMoneySP.getValue());

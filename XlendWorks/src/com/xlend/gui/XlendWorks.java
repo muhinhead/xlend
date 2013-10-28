@@ -97,7 +97,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.81";
+    public static final String version = "0.82";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -633,7 +633,7 @@ public class XlendWorks {
         }
         double drawn = 0.0;
         double amt = 0.0;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String sdt = (dt == null ? null : df.format(dt));
         ComboItem[] itms = loadOnSelect(
                 "Select 0,ifnull(sum(cash_drawn + add_monies),0.0) "

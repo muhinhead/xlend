@@ -236,9 +236,9 @@ class EditPettyPanel extends RecordEditPanel {
         splitter.setTopComponent(getLeftPanel());
         splitter.setBottomComponent(getRightPanel());
 
-        issueDateSP.setEditor(new JSpinner.DateEditor(issueDateSP, "dd/MM/yyyy"));
+        issueDateSP.setEditor(new JSpinner.DateEditor(issueDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(issueDateSP);
-        receiptDateSP.setEditor(new JSpinner.DateEditor(receiptDateSP, "dd/MM/yyyy"));
+        receiptDateSP.setEditor(new JSpinner.DateEditor(receiptDateSP, "dd/MM/yyyy HH:mm"));
         Util.addFocusSelectAllAction(receiptDateSP);
         idField.setEnabled(false);
         balanceSP.setEnabled(false);
@@ -323,11 +323,11 @@ class EditPettyPanel extends RecordEditPanel {
         isNew = xp.getXpettyId() == 0;
         java.util.Date dt = (java.util.Date) issueDateSP.getValue();
         if (dt != null) {
-            xp.setIssueDate(new java.sql.Date(dt.getTime()));
+            xp.setIssueDate(new java.sql.Timestamp(dt.getTime()));
         }
         dt = (Date) receiptDateSP.getValue();
         if (dt != null) {
-            xp.setReceiptDate(new java.sql.Date(dt.getTime()));
+            xp.setReceiptDate(new java.sql.Timestamp(dt.getTime()));
         }
         xp.setXemployeeOutId(getSelectedCbItem(employeeOutCB));
 //        xp.setXsiteId(getSelectedCbItem(siteCB));
@@ -723,21 +723,21 @@ class EditPettyPanel extends RecordEditPanel {
     }
 
     private void recalc() {
-        if (!insideLoad) {
-            Double sum = 0.0;
-            for (PettyItemPanel rp : childRows) {
-                if (rp.amtSP.getValue() != null) {
-                    sum += (Double) rp.amtSP.getValue();
-                }
+        Double amtValue = (Double) amountSP.getValue();
+        Double sum = 0.0;
+        for (PettyItemPanel rp : childRows) {
+            if (rp.amtSP.getValue() != null) {
+                sum += (Double) rp.amtSP.getValue();
             }
-            Double amtValue = (Double) amountSP.getValue();
-            Double changeValue = (Double) changeSP.getValue();
+        }
+        Double changeValue = (Double) changeSP.getValue();
+        if (!insideLoad) {
             java.util.Date dt = (java.util.Date) issueDateSP.getValue();
             initialBalance = XlendWorks.getBalance4newXpetty(dt) - amtValue + changeValue;
             balanceSP.setValue(initialBalance);
-            balanceIssueSP.setValue((amtValue == null ? 0
-                    : amtValue.doubleValue()) - sum - changeValue.doubleValue());
         }
+        balanceIssueSP.setValue((amtValue == null ? 0
+                : amtValue.doubleValue()) - sum - changeValue.doubleValue());
     }
 
     private void ShowPersonalBalance(double balance, Integer xemployeeOutId, Date dt, String notes) {

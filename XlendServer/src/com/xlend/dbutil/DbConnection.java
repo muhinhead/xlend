@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 48;
-    public static final String DB_VERSION = "0.48";
+    private static final int DB_VERSION_ID = 49;
+    public static final String DB_VERSION = "0.49";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -392,7 +392,14 @@ public class DbConnection {
         + "         from sheet s,sheet ss "
         + "   where s.sheetname='BANKING' "
         + "     and ss.sheetname='Cash Turnover' "
-        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Cash Turnover'))"
+        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Cash Turnover'))",
+        // 48->49
+        "alter table xcashdrawn modify cur_date datetime",
+        "alter table xpetty modify issue_date datetime",
+        "alter table xpetty modify receipt_date datetime",
+        "alter table xpetty modify amount decimal(10,2)",
+        "alter table xpetty modify change_amt decimal(10,2)",
+        "alter table xpettyitem modify amount decimal(10,2)",
     };
 
 //    public synchronized static Connection getLogDBconnection() {

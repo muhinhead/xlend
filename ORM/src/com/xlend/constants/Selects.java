@@ -434,11 +434,13 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xpetty.xemployee_out_id) \"Issued to\","
             + "amount \"Amount,R\",change_amt \"Change,R\","
             + "if(is_loan,'LOAN',if(is_petty,'PETTY','ALLOWANCE')) \"Loan/Petty/Alowance\", "
+            + "balance as \"Total balance\", "
             + "if(exists(select xpettyitem_id from xpettyitem where xpetty_id=xpetty.xpetty_id),'No','OUTSTANDING') \"Is Outstanding\" "
             + "from xpetty order by issue_date desc";
     public static final String SELECT_FROM_CASHDRAWN = 
             "Select xcashdrawn_id \"Id\", to_char(cur_date,'DD/MM/YYYY') \"Date\",cash_drawn \"Cash Drawn\","
-            + "add_monies \"Additional Monies\", cash_drawn + add_monies \"Balance\" from xcashdrawn order by cur_date desc";
+            + "add_monies \"Additional Monies\", cash_drawn + add_monies \"!Balance\", "
+            + "balance as \"Total balance\" from xcashdrawn order by cur_date desc";
     public static final String SELECT_FROM_BANKBALANCE =
             "Select xbankbalance_id \"Id\", to_char(balancedate,'DD/MM/YYYY HH24:MI') \"Date/time\", totalvalue "
             + "from xbankbalance order by balancedate";

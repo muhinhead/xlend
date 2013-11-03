@@ -14,6 +14,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -25,13 +26,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implements IMessageSender {
 
-    private static final int CACHESIZE = 1000;
+    private static final int CACHESIZE = 2048;
     public static Boolean isMySQL = null;
     private static ConcurrentHashMap dbObjectMap;
+    private static ConcurrentHashMap<String, Vector> colnamesMap;
     private static List synchList;
 
     public RmiMessageSender() throws java.rmi.RemoteException {
         dbObjectMap = new ConcurrentHashMap();
+        colnamesMap = new ConcurrentHashMap<String, Vector>();
         synchList = (List) Collections.synchronizedList(new ArrayList());
     }
 
@@ -161,45 +164,70 @@ public class RmiMessageSender extends java.rmi.server.UnicastRemoteObject implem
 
 //    @Override
     public Vector getColNames(String select) throws RemoteException {
-        Connection connection = DbConnection.getConnection();
-        Vector colNames = new Vector();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = connection.prepareStatement(select);
-            rs = ps.executeQuery();
-            ResultSetMetaData md = rs.getMetaData();
-            for (int i = 0; i < md.getColumnCount(); i++) {
-                colNames.add(md.getColumnLabel(i + 1));
-            }
-            return colNames;
-        } catch (SQLException ex) {
-            XlendServer.log(ex);
-            throw new java.rmi.RemoteException(ex.getMessage());
-        } finally {
+        Vector colNames = colnamesMap.get(select);
+        if (colNames == null) {
+            String original = null;
+            Connection connection = DbConnection.getConnection();
+            colNames = new Vector();
+            PreparedStatement ps = null;
+            ResultSet rs = null;
             try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException se1) {
-            } finally {
-                try {
-                    if (ps != null) {
-                        ps.close();
+                int i;
+                int bracesLevel = 0;
+                StringBuffer sb = null;
+                for (i = 0; i < select.length(); i++) {
+                    char c = select.charAt(i);
+                    if (c == '(') {
+                        bracesLevel++;
+                    } else if (c == ')') {
+                        bracesLevel--;
+                    } else if (bracesLevel == 0 && select.substring(i).toUpperCase().startsWith("WHERE ")) {
+                        if (sb == null) {
+                            original = select;
+                            sb = new StringBuffer(select);
+                        }
+                        sb.insert(i + 6, "1=0 AND ");
+                        break;
                     }
-                } catch (SQLException se2) {
                 }
-            }
-            try {
-                DbConnection.closeConnection(connection);
+                if (sb != null) {
+                    select = sb.toString();
+                }
+                ps = connection.prepareStatement(select);
+                rs = ps.executeQuery();
+                ResultSetMetaData md = rs.getMetaData();
+                for (i = 0; i < md.getColumnCount(); i++) {
+                    colNames.add(md.getColumnLabel(i + 1));
+                }
+                colnamesMap.put(sb == null ? select : original, colNames);
             } catch (SQLException ex) {
                 XlendServer.log(ex);
                 throw new java.rmi.RemoteException(ex.getMessage());
+            } finally {
+                try {
+                    if (rs != null) {
+                        rs.close();
+                    }
+                } catch (SQLException se1) {
+                } finally {
+                    try {
+                        if (ps != null) {
+                            ps.close();
+                        }
+                    } catch (SQLException se2) {
+                    }
+                }
+                try {
+                    DbConnection.closeConnection(connection);
+                } catch (SQLException ex) {
+                    XlendServer.log(ex);
+                    throw new java.rmi.RemoteException(ex.getMessage());
+                }
             }
         }
+        return colNames;
     }
 
-//    @Override
     public Object[] getColNamesTypes(String select) throws RemoteException {
         Connection connection = DbConnection.getConnection();
         HashMap<String, Integer> types = new HashMap<String, Integer>();

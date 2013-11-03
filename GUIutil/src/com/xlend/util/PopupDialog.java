@@ -23,7 +23,7 @@ public abstract class PopupDialog extends JDialog {
     private void init() {
         fillContent();
         initSize();
-        setMinimumSize(getSize());
+//        setMinimumSize(getSize());
         setVisible(true);
     }
 
@@ -52,6 +52,12 @@ public abstract class PopupDialog extends JDialog {
     protected void initSize() {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         pack();
+        if(d.width < getWidth()) {
+            setSize((int)(d.width),getHeight());
+        }
+        if(d.height*.93 < getHeight()) {
+            setSize(getWidth(),(int)(d.height*.93));
+        }
         setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
         this.setModal(true);
     }

@@ -27,6 +27,7 @@ public class ToolBarButton extends JButton implements MouseListener {
     private ImageIcon originalIcon = null;
     private int originalWidth;
     private Rectangle originalRect;
+    private boolean animate = false;
 
     public ToolBarButton(Icon icon) {
         super(icon);
@@ -36,15 +37,20 @@ public class ToolBarButton extends JButton implements MouseListener {
         addMouseListener(this);
     }
 
-    public ToolBarButton(String imageFile) {
+    public ToolBarButton(String imageFile, boolean animate) {
         super(staticIcon = new ImageIcon(staticImage = Util.loadImage(imageFile)));
 //        originalRect = getBounds();
+        this.animate = animate;
         originalImage = staticImage;
         originalIcon = staticIcon;
         originalWidth = staticIcon.getIconWidth();
         addMouseListener(this);
     }
 
+    public ToolBarButton(String imageFile) {
+        this(imageFile, false);
+    }
+    
     public ToolBarButton(String imageFile, String text) {
         super(text);
         setIcon(staticIcon = new ImageIcon(staticImage = Util.loadImage(imageFile)));

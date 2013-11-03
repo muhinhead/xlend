@@ -39,7 +39,7 @@ public class LoginImagedDialog extends PopupDialog {
     private JPanel controlsPanel;
     private Java2sAutoComboBox loginField;
     private JPasswordField pwdField;
-    private static boolean okPressed;
+    private static boolean okPressed = false;
 
     /**
      * @return the okPressed
@@ -55,7 +55,7 @@ public class LoginImagedDialog extends PopupDialog {
     @Override
     protected void fillContent() {
         XlendWorks.setWindowIcon(this, "Xcost.png");
-        okPressed = true;
+        okPressed = false;
         buildMenu();
         try {
             String theme = DashBoard.readProperty("LookAndFeel",
@@ -118,7 +118,7 @@ public class LoginImagedDialog extends PopupDialog {
         pwdField.setBorder(null);
         main.add(pwdField);
 
-        JButton okButton = new ToolBarButton("Lock.png");
+        JButton okButton = new ToolBarButton("Lock.png", true);
         img = new ImagePanel(XlendWorks.loadImage("Lock.png", this));
 
         okButton.setBounds(dashWidth - img.getWidth() - xShift, dashHeight - img.getHeight() - yShift,

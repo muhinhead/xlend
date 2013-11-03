@@ -46,7 +46,9 @@ public class AdminFrame extends GeneralFrame {
         admTab.addTab(getUsersPanel(), getSheetList()[0]);
         admTab.addTab(getDictionariesPanel(), getSheetList()[1]);
         admTab.addTab(getDataControl(), getSheetList()[2]);
-        admTab.addTab(getWebView(), getSheetList()[3]);
+//        if (System.getProperty("os.name").equals("Windows XP")) {
+//            admTab.addTab(getWebView(), getSheetList()[3]);
+//        }
         return admTab;
     }
 
@@ -147,7 +149,7 @@ public class AdminFrame extends GeneralFrame {
     }
 
     private JComponent getWebView() {
-        if (webViewHTMLpanel==null) {
+        if (webViewHTMLpanel == null) {
             webViewHTMLpanel = new JPanel(new BorderLayout());
             HTMLapplet browser = new HTMLapplet("http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
             browser.init();

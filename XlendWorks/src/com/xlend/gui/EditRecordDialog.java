@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -24,6 +25,8 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     public EditRecordDialog(String title, Object obj) {
         super(null, title, obj);
+        setResizable(true);
+//        setUndecorated(false);
     }
 
     protected void fillContent(RecordEditPanel editPanel) {
@@ -41,15 +44,17 @@ public abstract class EditRecordDialog extends PopupDialog {
         saveButton.setToolTipText("Save changes and close dialog");
         cancelButton.setToolTipText("Discard changes and close dialog");
 
-        getContentPane().add(new JPanel(), BorderLayout.WEST);
-        getContentPane().add(new JPanel(), BorderLayout.EAST);
-        getContentPane().add(editPanel, BorderLayout.CENTER);
+        JPanel innerPanel = new JPanel(new BorderLayout());
+        
+        innerPanel.add(new JPanel(), BorderLayout.WEST);
+        innerPanel.add(new JPanel(), BorderLayout.EAST);
+        innerPanel.add(editPanel, BorderLayout.CENTER);
 
         JPanel aroundButton = new JPanel(new BorderLayout());
         aroundButton.add(btnPanel, BorderLayout.EAST);
-        getContentPane().add(aroundButton, BorderLayout.SOUTH);
+        innerPanel.add(aroundButton, BorderLayout.SOUTH);
+        getContentPane().add(new JScrollPane(innerPanel), BorderLayout.CENTER);
         getRootPane().setDefaultButton(saveButton);
-
     }
 
     @Override

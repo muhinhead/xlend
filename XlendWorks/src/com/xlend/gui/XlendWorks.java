@@ -97,7 +97,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.82";
+    public static final String version = "0.82.c";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -108,6 +108,12 @@ public class XlendWorks {
     public static void main(String[] args) {
         try {
             String current = new java.io.File(".").getCanonicalPath();
+//            String osName = System.getProperty("os.name");
+//            String osVersion = System.getProperty("os.version");
+//    if("Windows 7".equals(osName))
+//            System.out.println("OS:["+osName+"]");
+//            System.out.println("Vr:["+osVersion+"]");
+            
             System.out.println("Current dir:" + current);
             String currentDir = System.getProperty("user.dir");
             System.out.println("Current dir using System:" + currentDir);

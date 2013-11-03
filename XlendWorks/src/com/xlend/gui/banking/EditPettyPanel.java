@@ -83,7 +83,7 @@ class EditPettyPanel extends RecordEditPanel {
     private SelectedNumberSpinner amountSP;
     private JRadioButton loanRB;
     private JRadioButton pettyRB;
-    private JRadioButton allowRB;
+//    private JRadioButton allowRB;
     private JTextField receipterNumberField;
     private JComboBox employeeOutCB;
 //    private DefaultComboBoxModel employeeOutCbModel;
@@ -271,7 +271,7 @@ class EditPettyPanel extends RecordEditPanel {
 
             loanRB.setSelected(xp.getIsLoan() != null && xp.getIsLoan() == 1);
             pettyRB.setSelected(xp.getIsPetty() != null && xp.getIsPetty() == 1);
-            allowRB.setSelected(xp.getIsAllowance() != null && xp.getIsAllowance() == 1);
+//            allowRB.setSelected(xp.getIsAllowance() != null && xp.getIsAllowance() == 1);
             notesArea.setText(xp.getNotes());
             if (xp.getReceiptDate() != null) {
                 receiptDateSP.setValue(new java.util.Date(xp.getReceiptDate().getTime()));
@@ -334,7 +334,7 @@ class EditPettyPanel extends RecordEditPanel {
 //        xp.setXmachineId(getSelectedCbItem(machineCB));
         xp.setIsLoan(loanRB.isSelected() ? 1 : 0);
         xp.setIsPetty(pettyRB.isSelected() ? 1 : 0);
-        xp.setIsAllowance(allowRB.isSelected() ? 1 : 0);
+//        xp.setIsAllowance(allowRB.isSelected() ? 1 : 0);
         xp.setNotes(notesArea.getText());
         xp.setAmount((Double) amountSP.getValue());
         xp.setChangeAmt((Double) changeSP.getValue());
@@ -415,13 +415,13 @@ class EditPettyPanel extends RecordEditPanel {
         upperPanel.add(getGridPanel(new JComponent[]{
             new JPanel(), pettyRB = new JRadioButton("PETTY"), new JPanel()
         }));
-        upperPanel.add(getGridPanel(new JComponent[]{
-            new JPanel(), allowRB = new JRadioButton("ALLOWANCE"), new JPanel()
-        }));
+//        upperPanel.add(getGridPanel(new JComponent[]{
+//            new JPanel(), allowRB = new JRadioButton("ALLOWANCE"), new JPanel()
+//        }));
         ButtonGroup group = new ButtonGroup();
         group.add(loanRB);
         group.add(pettyRB);
-        group.add(allowRB);
+//        group.add(allowRB);
 
         leftPanel.add(upperPanel, BorderLayout.NORTH);
 
@@ -587,7 +587,8 @@ class EditPettyPanel extends RecordEditPanel {
         for (JComponent c : new JComponent[]{
             operatorNumberField,
             employeeInCB,
-            amountSP, loanRB, pettyRB, allowRB,
+            amountSP, loanRB, pettyRB, 
+//            allowRB,
             issueDateSP, notesArea,
             addItmBtn, delItmBtn, receiptDateSP, selectAllCB
         }) {
@@ -605,7 +606,8 @@ class EditPettyPanel extends RecordEditPanel {
             for (JComponent c : new JComponent[]{
                 operatorNumberField,
                 employeeInCB,
-                amountSP, loanRB, pettyRB, allowRB,
+                amountSP, loanRB, pettyRB, 
+//                allowRB,
                 issueDateSP, notesArea,}) {
                 c.setEnabled(true);
             }

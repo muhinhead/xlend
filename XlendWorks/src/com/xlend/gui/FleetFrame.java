@@ -10,8 +10,10 @@ import java.io.LineNumberReader;
 import java.net.URL;
 import java.rmi.RemoteException;
 import javax.swing.JComponent;
+import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
@@ -61,33 +63,43 @@ public class FleetFrame extends GeneralFrame {
     protected JTabbedPane getMainPanel() {
         MyJideTabbedPane fleetTab = new MyJideTabbedPane();
         if (XlendWorks.availableForCurrentUser(sheets()[0])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getMachinesPanel()...");
             fleetTab.addTab(getMachinesPanel(), sheets()[0]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[1])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getTrackPanel()...");
             fleetTab.addTab(getTrackPanel(), sheets()[1]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[2])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getLowBedsPanel()...");
             fleetTab.addTab(getLowBedsPanel(), sheets()[2]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getPoolVehiclesPanel()...");
             fleetTab.addTab(getPoolVehiclesPanel(), sheets()[3]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[4])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getCompanyVehiclesPanel()...");
             fleetTab.addTab(getCompanyVehiclesPanel(), sheets()[4]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[5])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getMachineRentalRates()...");
             fleetTab.addTab(getMachineRentalRates(), sheets()[5]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getDieselCarts()...");
             fleetTab.addTab(getDieselCarts(), sheets()[6]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[7])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getMachineServices()...");
             fleetTab.addTab(getMachineServices(), sheets()[7]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[8])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getBatteries()...");
             fleetTab.addTab(getBatteries(), sheets()[8]);
         }
         if (XlendWorks.availableForCurrentUser(sheets()[9])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getDieselPrices()...");
             fleetTab.addTab(getDieselPrices(), sheets()[9]);
         }
         return fleetTab;
@@ -214,15 +226,18 @@ public class FleetFrame extends GeneralFrame {
     private JComponent getDieselPrices() {
         if (dieselPricesHTMLpanel == null) {
             dieselPricesHTMLpanel = new JPanel(new BorderLayout());
-//            String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-//            JEditorPane htmlPanel = new JEditorPane("text/html", html);
-//            dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
+            if (System.getProperty("os.name").equals("Windows XP")) {
+                HTMLapplet browser = new HTMLapplet("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
 //            HTMLapplet.setUrl(//"http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
 //                "http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-            HTMLapplet browser = new HTMLapplet("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-            browser.init();
-            dieselPricesHTMLpanel.add(browser.getContentPane());
-            browser.start();
+                browser.init();
+                dieselPricesHTMLpanel.add(browser.getContentPane());
+                browser.start();
+            } else {
+                String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+                JEditorPane htmlPanel = new JEditorPane("text/html", html);
+                dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
+            }
         }
         return dieselPricesHTMLpanel;
     }

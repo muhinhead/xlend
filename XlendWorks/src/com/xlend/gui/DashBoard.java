@@ -76,21 +76,21 @@ public class DashBoard extends AbstractDashBoard {
     protected void fillControlsPanel() throws HeadlessException {
         ImagePanel img = new ImagePanel(XlendWorks.loadImage("AdminFX.png", this));
 
-        adminButton = new ToolBarButton("AdminFX.png");
+        adminButton = new ToolBarButton("AdminFX.png",true);
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        docsButton = new ToolBarButton("Docs.png");
-        sitesButton = new ToolBarButton("Sites.png");
-        reportsButton = new ToolBarButton("Reports.png");
-        hrbutton = new ToolBarButton("HR.png");
-        partsbutton = new ToolBarButton("Parts.png");
-        fleetbutton = new ToolBarButton("Fleet.png");
-        bankingbutton = new ToolBarButton("Banking.png");
-        logisticsButton = new ToolBarButton("Logistics.png");
-        logoutButton = new ToolBarButton("ExitFX.png");
-        fuelButton = new ToolBarButton("Fuel.png");
+        docsButton = new ToolBarButton("Docs.png",true);
+        sitesButton = new ToolBarButton("Sites.png",true);
+        reportsButton = new ToolBarButton("Reports.png",true);
+        hrbutton = new ToolBarButton("HR.png",true);
+        partsbutton = new ToolBarButton("Parts.png",true);
+        fleetbutton = new ToolBarButton("Fleet.png",true);
+        bankingbutton = new ToolBarButton("Banking.png",true);
+        logisticsButton = new ToolBarButton("Logistics.png",true);
+        logoutButton = new ToolBarButton("ExitFX.png",true);
+        fuelButton = new ToolBarButton("Fuel.png",true);
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
         docsButton.setBounds(32, 285, img.getWidth(), img.getHeight());

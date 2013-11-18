@@ -251,6 +251,7 @@ class EditPettyPanel extends RecordEditPanel {
     public void loadData() {
         insideLoad = true;
         java.util.Date dt = new java.util.Date();
+        
         initialBalance = XlendWorks.getBalance4newXpetty(dt);
         BankingFrame.instance.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 //        double calcBalance;
@@ -734,6 +735,9 @@ class EditPettyPanel extends RecordEditPanel {
         }
         Double changeValue = (Double) changeSP.getValue();
         if (!insideLoad) {
+            if (getDbObject()==null) {
+                issueDateSP.setValue(new java.util.Date());
+            }
             java.util.Date dt = (java.util.Date) issueDateSP.getValue();
             initialBalance = XlendWorks.getBalance4newXpetty(dt) - amtValue + changeValue;
             balanceSP.setValue(initialBalance);

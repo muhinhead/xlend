@@ -107,8 +107,11 @@ public class EditCashDrawnPanel extends RecordEditPanel {
     }
 
     private void calcSum() {
+        if (getDbObject() == null) {
+            dateSP.setValue(new java.util.Date());
+        }
         java.util.Date dt = (java.util.Date) dateSP.getValue();
-        double calcBalance = XlendWorks.getBalance4newXpetty(dt); 
+        double calcBalance = XlendWorks.getBalance4newXpetty(dt);
 //                Math.round(100 * XlendWorks.getBalance4newXpetty(dt)) / 100;
         totalLbl.setText(String.format("%.2f", calcBalance
                 + (Double) cashDrawnSP.getValue() + (Double) addMoneySP.getValue()).replace(',', '.'));

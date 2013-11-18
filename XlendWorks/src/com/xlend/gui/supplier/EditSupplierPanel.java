@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.rmi.RemoteException;
 import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,6 +47,7 @@ class EditSupplierPanel extends RecordEditPanel {
     private JSpinner outStandAmtSP;
     private JSpinner creditLimitSP;
     private JLabel outStandAmtLB;
+    private JCheckBox isFuelSuppCB;
 
     public EditSupplierPanel(DbObject dbObject) {
         super(dbObject);
@@ -59,6 +61,7 @@ class EditSupplierPanel extends RecordEditPanel {
             "Tel Nr:", "Fax Nr:", "Cell Nr:", "Email:",
             "Vat Nr:", "Company Reg.Nr:",
             "Credit Limit:",
+            "Is Fuel Supplier:",
             "Product Description:", "Address:", "Banking details:"
         };
         JComponent[] edits = new JComponent[]{
@@ -76,7 +79,8 @@ class EditSupplierPanel extends RecordEditPanel {
             getGridPanel(emailField = new JTextField(), 3),
             getGridPanel(vatNrField = new JTextField(), 4),
             getGridPanel(companyRegNrField = new JTextField(), 3),
-            getGridPanel(creditLimitSP = new SelectedNumberSpinner(0, 0, 250000, 10), 6),
+            getGridPanel(creditLimitSP = new SelectedNumberSpinner(0, 0, 1000000, 10), 6),
+            getGridPanel(isFuelSuppCB = new JCheckBox(), 4),
             productDescrField = new JTextArea(7, 20),
             addressField = new JTextArea(7, 20),
             bankingField = new JTextArea(7, 20)
@@ -91,18 +95,18 @@ class EditSupplierPanel extends RecordEditPanel {
     }
 
     protected void organizePanels(String[] titles, JComponent[] edits) {
-        super.organizePanels(titles.length - 2, edits.length - 2);
+        super.organizePanels(titles.length - 3, edits.length - 3);
         labels = createLabelsArray(titles);
-        for (int i = 0; i < labels.length - 2; i++) {
+        for (int i = 0; i < labels.length - 3; i++) {
             lblPanel.add(labels[i]);
         }
-        for (int i = 0; i < edits.length - 2; i++) {
+        for (int i = 0; i < edits.length - 3; i++) {
             editPanel.add(edits[i]);
         }
         JPanel centerPanel = new JPanel(new GridLayout(1, 3));
 
         JPanel descrPanel = new JPanel(new BorderLayout());
-        descrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[9].getText()));
+        descrPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[11].getText()));
         descrPanel.add(new JScrollPane(productDescrField,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
@@ -111,7 +115,7 @@ class EditSupplierPanel extends RecordEditPanel {
         centerPanel.add(descrPanel);
 
         JPanel addressPanel = new JPanel(new BorderLayout());
-        addressPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[10].getText()));
+        addressPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[12].getText()));
         addressPanel.add(new JScrollPane(addressField,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
@@ -120,7 +124,7 @@ class EditSupplierPanel extends RecordEditPanel {
         centerPanel.add(addressPanel);
 
         JPanel bankingPanel = new JPanel(new BorderLayout());
-        bankingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[11].getText()));
+        bankingPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), labels[13].getText()));
         bankingPanel.add(new JScrollPane(bankingField,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
@@ -187,6 +191,7 @@ class EditSupplierPanel extends RecordEditPanel {
             productDescrField.setText(sup.getProductdesc());
             addressField.setText(sup.getAddress());
             bankingField.setText(sup.getBanking());
+            isFuelSuppCB.setSelected(sup.getIsFuelSuppllier() == 1);
             double outAmt = XlendWorks.calcOutstandingAmtSum(sup.getXsupplierId());
             outStandAmtSP.setValue(outAmt);
             if (outAmt > 0) {
@@ -220,6 +225,7 @@ class EditSupplierPanel extends RecordEditPanel {
         sup.setProductdesc(productDescrField.getText());
         sup.setAddress(addressField.getText());
         sup.setBanking(bankingField.getText());
+        sup.setIsFuelSuppllier(isFuelSuppCB.isSelected() ? 1 : 0);
         if (creditLimitSP.getValue() != null) {
             sup.setCreditLimit((Integer) creditLimitSP.getValue());
         }

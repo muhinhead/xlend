@@ -3,7 +3,6 @@ package com.xlend.gui;
 import com.xlend.gui.hr.*;
 import com.xlend.remote.IMessageSender;
 import java.rmi.RemoteException;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 

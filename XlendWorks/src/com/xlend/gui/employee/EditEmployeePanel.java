@@ -4,6 +4,7 @@
  */
 package com.xlend.gui.employee;
 
+import com.sun.deploy.panel.JSmartTextArea;
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
 import com.xlend.gui.admin.XlendMasterTableView;
@@ -21,6 +22,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,6 +92,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JLabel managementTeamLbl;
     private JEditorPane imagePanel2;
     private JEditorPane imagePanel3;
+    private JTextArea notesTextArea;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -236,8 +239,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         abscondedDateSP.setVisible(false);
         resignedDateSP.setVisible(false);
         for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
-                    emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP,
-                    resignedDateSP}) {
+            emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP,
+            resignedDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
         }
@@ -280,7 +283,17 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             }
         });
 
-        add(getDetailsPanel(), BorderLayout.CENTER);
+        JPanel downPanel = new JPanel(new BorderLayout());//new GridLayout(1, 2, 5, 5));
+        downPanel.add(getDetailsPanel(), BorderLayout.CENTER);
+        JScrollPane sp = new JScrollPane(notesTextArea = new JTextArea(),
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        notesTextArea.setWrapStyleWord(true);
+        notesTextArea.setLineWrap(true);
+        sp.setPreferredSize(new Dimension(350,sp.getPreferredSize().height));
+        sp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Notes"));
+        downPanel.add(sp,BorderLayout.EAST);
+        add(downPanel, BorderLayout.CENTER);
     }
 
     private AbstractAction getAssignmentsAction(String title) {
@@ -463,6 +476,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 surNameField.setEnabled(false);
             }
             managementCb.setSelected(emp.getManagement() != null && emp.getManagement() == 1);
+            notesTextArea.setText(emp.getNotes());
             fillAssignmentInfo();
         }
     }
@@ -571,6 +585,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhoto2(imageData2);
                 emp.setPhoto3(imageData3);
                 emp.setManagement(managementCb.isSelected() ? 1 : 0);
+                emp.setNotes(notesTextArea.getText());
                 setDbObject(XlendWorks.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {

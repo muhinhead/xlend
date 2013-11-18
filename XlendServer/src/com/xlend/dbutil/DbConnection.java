@@ -40,8 +40,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 49;
-    public static final String DB_VERSION = "0.49";
+    private static final int DB_VERSION_ID = 50;
+    public static final String DB_VERSION = "0.50";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -380,26 +380,29 @@ public class DbConnection {
 //        + "   where s.sheetname='BANKING' "
 //        + "     and ss.sheetname='Petty Report' "
 //        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Petty Report'))"
-        // 45-> 46
-        "alter table xpetty add balance decimal(11,2)",
-        "alter table xcashdrawn add balance decimal(11,2)",
-        "alter table xcashdrawn modify cash_drawn decimal(10,2)",
-        "alter table xcashdrawn modify add_monies decimal(10,2)",
-        "insert into sheet(sheetname,parent_id) select 'Cash Turnover',sheet_id from sheet where sheetname='REPORTS' "
-        + "and not exists(select sheet_id from sheet where sheetname='Cash Turnover')",
-        "insert into reportgroup(sheetgroup_id,sheet_id) "
-        + "       select s.sheet_id,ss.sheet_id "
-        + "         from sheet s,sheet ss "
-        + "   where s.sheetname='BANKING' "
-        + "     and ss.sheetname='Cash Turnover' "
-        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Cash Turnover'))",
-        // 48->49
-        "alter table xcashdrawn modify cur_date datetime",
-        "alter table xpetty modify issue_date datetime",
-        "alter table xpetty modify receipt_date datetime",
-        "alter table xpetty modify amount decimal(10,2)",
-        "alter table xpetty modify change_amt decimal(10,2)",
-        "alter table xpettyitem modify amount decimal(10,2)",
+//        // 45-> 46
+//        "alter table xpetty add balance decimal(11,2)",
+//        "alter table xcashdrawn add balance decimal(11,2)",
+//        "alter table xcashdrawn modify cash_drawn decimal(10,2)",
+//        "alter table xcashdrawn modify add_monies decimal(10,2)",
+//        "insert into sheet(sheetname,parent_id) select 'Cash Turnover',sheet_id from sheet where sheetname='REPORTS' "
+//        + "and not exists(select sheet_id from sheet where sheetname='Cash Turnover')",
+//        "insert into reportgroup(sheetgroup_id,sheet_id) "
+//        + "       select s.sheet_id,ss.sheet_id "
+//        + "         from sheet s,sheet ss "
+//        + "   where s.sheetname='BANKING' "
+//        + "     and ss.sheetname='Cash Turnover' "
+//        + "     and not exists(select * from reportgroup where sheet_id=(select sheet_id from sheet where sheetname='Cash Turnover'))",
+//        // 48->49
+//        "alter table xcashdrawn modify cur_date datetime",
+//        "alter table xpetty modify issue_date datetime",
+//        "alter table xpetty modify receipt_date datetime",
+//        "alter table xpetty modify amount decimal(10,2)",
+//        "alter table xpetty modify change_amt decimal(10,2)",
+//        "alter table xpettyitem modify amount decimal(10,2)",
+        // 49->50
+        "alter table xemployee add notes text",
+        "alter table xsupplier add is_fuel_suppllier bit default 0"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

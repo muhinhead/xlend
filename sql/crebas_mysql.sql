@@ -7,6 +7,8 @@ CREAte table dbversion
     constraint dbversion_pk primary key (dbversion_id)
 );
 
+insert into dbversion values(1,50,'0.50');
+
 create table picture
 (
     picture_id   int not null auto_increment,
@@ -269,6 +271,7 @@ create table xemployee
     employment_start date,
     management      bit default 0,
     clock_numonly   smallint,
+    notes           text,
     stamp timestamp,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition (xposition_id)
@@ -441,20 +444,21 @@ create table xorderitem
 
 create table xsupplier
 (
-    xsupplier_id     int not null auto_increment,
-    companyname      varchar(64)  not null,
-    contactperson    varchar(64),
-    productdesc      varchar(512) not null,
-    phone            varchar(64),
-    fax              varchar(32),
-    cell             varchar(64),
-    email            varchar(128),
-    vatnr            varchar(32),
-    company_regnr    varchar(32),
-    address          varchar(255),
-    banking          varchar(255),
-    credit_limit     int,
-    stamp timestamp,
+    xsupplier_id      int not null auto_increment,
+    companyname       varchar(64)  not null,
+    contactperson     varchar(64),
+    productdesc       varchar(512) not null,
+    phone             varchar(64),
+    fax               varchar(32),
+    cell              varchar(64),
+    email             varchar(128),
+    vatnr             varchar(32),
+    company_regnr     varchar(32),
+    address           varchar(255),
+    banking           varchar(255),
+    credit_limit      int,
+    is_fuel_suppllier bit default 0,
+    stamp             timestamp,
     constraint xsupplier_pk primary key (xsupplier_id)
 );
 

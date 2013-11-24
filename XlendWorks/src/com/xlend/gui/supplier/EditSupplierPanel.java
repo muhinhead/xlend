@@ -191,7 +191,7 @@ class EditSupplierPanel extends RecordEditPanel {
             productDescrField.setText(sup.getProductdesc());
             addressField.setText(sup.getAddress());
             bankingField.setText(sup.getBanking());
-            isFuelSuppCB.setSelected(sup.getIsFuelSuppllier() == 1);
+            isFuelSuppCB.setSelected(sup.getIsFuelSuppllier() != null && sup.getIsFuelSuppllier() == 1);
             double outAmt = XlendWorks.calcOutstandingAmtSum(sup.getXsupplierId());
             outStandAmtSP.setValue(outAmt);
             if (outAmt > 0) {

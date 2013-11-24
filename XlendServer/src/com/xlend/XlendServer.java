@@ -43,7 +43,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.83";
+    private static final String version = "0.83.a";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -139,6 +139,20 @@ public class XlendServer {
             return chooser.getSelectedFile().getAbsolutePath();
         }
         return null;
+    }
+
+    /**
+     * @return the isCycle
+     */
+    public static boolean isCycle() {
+        return isCycle;
+    }
+
+    /**
+     * @param aIsCycle the isCycle to set
+     */
+    public static void setIsCycle(boolean aIsCycle) {
+        isCycle = aIsCycle;
     }
 
     private static class CtrlCtrapper extends Thread {
@@ -405,7 +419,7 @@ public class XlendServer {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     rmiServer.stop();
-                    isCycle = false;
+                    setIsCycle(false);
                     System.exit(0);
                 }
             });
@@ -459,7 +473,7 @@ public class XlendServer {
             tray.add(ti);
         } catch (Exception ex) {
             log("RMI server trouble: " + ex.getMessage());
-            isCycle = false;
+            setIsCycle(false);
             System.exit(2);
         }
     }

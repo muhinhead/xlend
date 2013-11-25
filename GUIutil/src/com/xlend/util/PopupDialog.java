@@ -30,11 +30,11 @@ public abstract class PopupDialog extends JDialog {
     protected Color getHeaderBackground() {
         return new Color(226, 148, 37);
     }
-    
+
     protected Color getHeaderForeground() {
         return new Color(255, 255, 255);
     }
-    
+
     protected void fillContent() {
         getContentPane().setLayout(new BorderLayout(10, 10));
         Color bg = getHeaderBackground();
@@ -52,11 +52,11 @@ public abstract class PopupDialog extends JDialog {
     protected void initSize() {
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         pack();
-        if(d.width < getWidth()) {
-            setSize((int)(d.width),getHeight());
+        if (d.width < getWidth()) {
+            setSize((int) (d.width), getHeight());
         }
-        if(d.height*.93 < getHeight()) {
-            setSize(getWidth(),(int)(d.height*.93));
+        if (d.height * .93 < getHeight()) {
+            setSize(getWidth(), (int) (d.height * .93));
         }
         setLocation(d.width / 2 - getWidth() / 2, d.height / 2 - getHeight() / 2);
         this.setModal(true);
@@ -102,7 +102,9 @@ public abstract class PopupDialog extends JDialog {
         }
     }
 
-    public abstract void freeResources();
+    public void freeResources() {
+        System.gc();
+    }
 
     @Override
     public void dispose() {

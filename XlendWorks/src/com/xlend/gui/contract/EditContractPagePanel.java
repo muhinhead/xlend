@@ -50,4 +50,9 @@ public class EditContractPagePanel extends EditPagePanel {
         }
         return false;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

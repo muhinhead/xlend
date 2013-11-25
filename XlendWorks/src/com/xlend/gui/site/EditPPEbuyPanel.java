@@ -333,4 +333,9 @@ class EditPPEbuyPanel extends RecordEditPanel {
         downGridPanel.repaint();
         downGridPanel.setVisible(true);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

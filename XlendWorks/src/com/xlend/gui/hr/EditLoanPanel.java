@@ -231,4 +231,9 @@ class EditLoanPanel extends RecordEditPanel {
         lblAt.setEnabled(deductActive);
         deductTimeModeCB.setEnabled(deductActive);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

@@ -60,4 +60,9 @@ class EditRatedMachinePanel extends RecordEditPanel {
         itm.setVal(ratedMachineField.getText());
         return saveDbRecord(itm, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }    
 }

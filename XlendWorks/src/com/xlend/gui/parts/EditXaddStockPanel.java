@@ -127,4 +127,9 @@ class EditXaddStockPanel extends RecordEditPanel {
         }
         return false;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

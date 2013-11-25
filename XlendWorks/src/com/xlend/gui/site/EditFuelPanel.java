@@ -210,4 +210,9 @@ class EditFuelPanel extends RecordEditPanel {
             return saveDbRecord(xfl, isNew);
         }
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

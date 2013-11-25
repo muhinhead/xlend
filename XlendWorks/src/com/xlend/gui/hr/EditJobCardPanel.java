@@ -440,4 +440,9 @@ class EditJobCardPanel extends RecordEditPanel {
 
         return saveDbRecord(xj, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

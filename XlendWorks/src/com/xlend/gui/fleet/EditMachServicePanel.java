@@ -257,4 +257,9 @@ public class EditMachServicePanel extends RecordEditPanel {
         ms.setDiffChecked3(diffCheck3Field.getText());
         return saveDbRecord(ms, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

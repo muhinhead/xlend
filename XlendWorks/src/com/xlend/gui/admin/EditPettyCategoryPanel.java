@@ -15,6 +15,7 @@ import javax.swing.JTextField;
  * @author Администратор
  */
 class EditPettyCategoryPanel extends RecordEditPanel {
+
     private JTextField idField;
     private JTextField categoryField;
 
@@ -46,7 +47,7 @@ class EditPettyCategoryPanel extends RecordEditPanel {
 
     @Override
     public boolean save() throws Exception {
-         boolean isNew = false;
+        boolean isNew = false;
         Xpettycategory xc = (Xpettycategory) getDbObject();
         if (xc == null) {
             xc = new Xpettycategory(null);
@@ -55,5 +56,10 @@ class EditPettyCategoryPanel extends RecordEditPanel {
         }
         xc.setCategoryName(categoryField.getText());
         return saveDbRecord(xc, isNew);
+    }
+
+    @Override
+    public void freeResources() {
+        //TODO
     }
 }

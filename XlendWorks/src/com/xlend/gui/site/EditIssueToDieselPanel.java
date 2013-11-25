@@ -173,4 +173,9 @@ public class EditIssueToDieselPanel extends RecordEditPanel {
         xi.setXsupplierId(getSelectedCbItem(supplierCB));
         return saveDbRecord(xi, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

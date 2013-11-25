@@ -313,4 +313,10 @@ class EditQuotaPanel extends EditPanelWithPhoto {
             clientRefBox.setEnabled(false);
         }
     }
+
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

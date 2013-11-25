@@ -148,5 +148,6 @@ public class ConfigEditor extends PopupDialog {
         cancelAction = null;
         chooseFldrBtn.removeActionListener(chooseFldrAct);
         chooseFldrAct = null;
+        super.freeResources();
     }
 }

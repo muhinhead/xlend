@@ -446,4 +446,8 @@ public class EditTripPanel extends RecordEditPanel {
             }
         };
     }
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

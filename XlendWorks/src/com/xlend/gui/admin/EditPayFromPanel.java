@@ -60,4 +60,9 @@ class EditPayFromPanel extends RecordEditPanel {
         itm.setVal(paySourceField.getText());
         return saveDbRecord(itm, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

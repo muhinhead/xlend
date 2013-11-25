@@ -59,5 +59,6 @@ public class AboutDialog extends PopupDialog {
     public void freeResources() {
         closeBtn.removeActionListener(closeAction);
         closeAction = null;
+        super.freeResources();
     }
 }

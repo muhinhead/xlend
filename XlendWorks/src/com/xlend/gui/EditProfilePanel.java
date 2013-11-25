@@ -40,10 +40,10 @@ class EditProfilePanel extends RecordEditPanel {
 
     private Object[] distinctStates() {
         return new String[]{
-                    "Gauteng", "Freestate", "North-West",
-                    "Limpopo", "Mpumalanga", "Kwazulu-Natal", "Northern Cape",
-                    "Eastern Cape", "Western Cape"
-                };
+            "Gauteng", "Freestate", "North-West",
+            "Limpopo", "Mpumalanga", "Kwazulu-Natal", "Northern Cape",
+            "Eastern Cape", "Western Cape"
+        };
     }
 
     @Override
@@ -135,5 +135,10 @@ class EditProfilePanel extends RecordEditPanel {
             GeneralFrame.errMessageBox("Error:", ex.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public void freeResources() {
+        //TODO
     }
 }

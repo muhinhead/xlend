@@ -164,4 +164,9 @@ public class EditClientPanel extends ProfilePanel {
     public int getProfile_id() {
         return profile_id;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

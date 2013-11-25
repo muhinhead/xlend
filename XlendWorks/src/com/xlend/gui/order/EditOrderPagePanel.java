@@ -51,4 +51,9 @@ class EditOrderPagePanel extends EditPagePanel {
         }
         return false;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

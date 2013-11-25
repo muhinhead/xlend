@@ -364,4 +364,9 @@ class EditBreakdownPanel extends RecordEditPanel {
             PurchaseLookupAction.setXmachineID(null);
         }
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

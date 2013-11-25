@@ -377,4 +377,9 @@ public class EditMachineRentalRatesPanel extends RecordEditPanel {
         goodDryLBLs[i].setText("" + roundDecimal((Double) goodWetSPs[i].getValue()
                 - (Double) dieselPriceSP.getValue() * (Double) litersHoursSPs[i].getValue(), 2));
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

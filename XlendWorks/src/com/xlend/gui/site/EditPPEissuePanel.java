@@ -325,4 +325,9 @@ public class EditPPEissuePanel extends RecordEditPanel {
         downGridPanel.repaint();
         downGridPanel.setVisible(true);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

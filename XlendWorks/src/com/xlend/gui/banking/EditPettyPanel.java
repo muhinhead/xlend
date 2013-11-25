@@ -749,4 +749,9 @@ class EditPettyPanel extends RecordEditPanel {
     private void ShowPersonalBalance(double balance, Integer xemployeeOutId, Date dt, String notes) {
         new PersonalPettyBalance(new Object[]{balance, xemployeeOutId, dt, notes});
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

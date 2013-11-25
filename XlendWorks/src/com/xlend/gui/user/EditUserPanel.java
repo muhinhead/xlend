@@ -138,4 +138,9 @@ public class EditUserPanel extends ProfilePanel {
         }
         return false;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

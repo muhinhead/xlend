@@ -276,4 +276,9 @@ public class EditConsumablePanel extends RecordEditPanel {
             }
         };
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

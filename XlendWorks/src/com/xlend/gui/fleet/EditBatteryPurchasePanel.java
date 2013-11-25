@@ -83,25 +83,25 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
 
             add(markCB = new JCheckBox(), BorderLayout.WEST);
             add(getGridPanel(new JComponent[]{
-                        new JLabel(BATT_CODE, SwingConstants.RIGHT),
-                        batteryCodeCB = new JComboBox(XlendWorks.loadDistinctBatteryCodes()),
-                        new JLabel(VAT_EXCL, SwingConstants.RIGHT),
-                        vatExclUnitSP = new SelectedNumberSpinner(0.0, 0.0, 999999.99, .1),
-                        new JLabel(BATT_ID, SwingConstants.RIGHT),
-                        batteryIDfield = new JTextField(),
-                        getBorderPanel(new JComponent[]{issuedBtn = new JButton(new AbstractAction("Issued") {
+                new JLabel(BATT_CODE, SwingConstants.RIGHT),
+                batteryCodeCB = new JComboBox(XlendWorks.loadDistinctBatteryCodes()),
+                new JLabel(VAT_EXCL, SwingConstants.RIGHT),
+                vatExclUnitSP = new SelectedNumberSpinner(0.0, 0.0, 999999.99, .1),
+                new JLabel(BATT_ID, SwingConstants.RIGHT),
+                batteryIDfield = new JTextField(),
+                getBorderPanel(new JComponent[]{issuedBtn = new JButton(new AbstractAction("Issued") {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             Integer issueID = getItem().getXbateryissueId();
-                                try {
-                                    Xbateryissue issue = (Xbateryissue) XlendWorks.getExchanger().loadDbObjectOnID(Xbateryissue.class, issueID);
-                                    new EditBatteryIssueDialog("Edit Battery Issue", issue);
-                                } catch (RemoteException ex) {
-                                    Logger.getLogger(EditBatteryPurchasePanel.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                            try {
+                                Xbateryissue issue = (Xbateryissue) XlendWorks.getExchanger().loadDbObjectOnID(Xbateryissue.class, issueID);
+                                new EditBatteryIssueDialog("Edit Battery Issue", issue);
+                            } catch (RemoteException ex) {
+                                Logger.getLogger(EditBatteryPurchasePanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     })})
-                    }));
+            }));
             batteryCodeCB.setEditable(true);
             load();
             vatExclUnitSP.addChangeListener(new ChangeListener() {
@@ -379,15 +379,20 @@ class EditBatteryPurchasePanel extends RecordEditPanel {
 
     private JComponent getDownPanel() {
         JComponent comp = getGridPanel(new JComponent[]{
-                    new JPanel(),
-                    new JLabel("Invoice Vat.Incl.Total (R):", SwingConstants.RIGHT),
-                    vatInclTotalLBL = new JLabel("", SwingConstants.RIGHT),
-                    new JLabel("Invoice Vat.Excl.Total (R):", SwingConstants.RIGHT),
-                    vatExclTotalLBL = new JLabel("", SwingConstants.RIGHT),
-                    new JPanel()
-                });
+            new JPanel(),
+            new JLabel("Invoice Vat.Incl.Total (R):", SwingConstants.RIGHT),
+            vatInclTotalLBL = new JLabel("", SwingConstants.RIGHT),
+            new JLabel("Invoice Vat.Excl.Total (R):", SwingConstants.RIGHT),
+            vatExclTotalLBL = new JLabel("", SwingConstants.RIGHT),
+            new JPanel()
+        });
         vatInclTotalLBL.setBorder(BorderFactory.createLoweredBevelBorder());
         vatExclTotalLBL.setBorder(BorderFactory.createLoweredBevelBorder());
         return comp;
+    }
+
+    @Override
+    public void freeResources() {
+        //TODO
     }
 }

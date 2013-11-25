@@ -236,4 +236,9 @@ class EditBatteryIssuePanel extends RecordEditPanel {
         }
         return ok;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

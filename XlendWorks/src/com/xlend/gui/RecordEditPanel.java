@@ -118,6 +118,8 @@ public abstract class RecordEditPanel extends JPanel {
     public abstract void loadData();
 
     public abstract boolean save() throws Exception;
+    
+    public abstract void freeResources();
 
     /**
      * @return the dbObject

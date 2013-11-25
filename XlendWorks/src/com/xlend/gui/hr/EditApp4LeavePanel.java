@@ -249,4 +249,9 @@ public class EditApp4LeavePanel extends RecordEditPanel {
             }
         };
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

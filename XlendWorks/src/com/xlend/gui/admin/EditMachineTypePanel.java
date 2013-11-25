@@ -92,4 +92,9 @@ class EditMachineTypePanel extends RecordEditPanel {
         }
         return ok;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

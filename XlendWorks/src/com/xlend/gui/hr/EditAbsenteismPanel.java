@@ -359,4 +359,9 @@ public class EditAbsenteismPanel extends RecordEditPanel {
         xa.setReason(reasonTextArea.getText());
         return saveDbRecord(xa, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

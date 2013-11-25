@@ -569,4 +569,9 @@ public class EditDieselToPlantPanel extends RecordEditPanel {
         downGridPanel.setVisible(true);
         recalcDieselCartBalance();
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

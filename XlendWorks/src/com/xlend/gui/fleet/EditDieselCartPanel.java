@@ -162,4 +162,9 @@ class EditDieselCartPanel extends AbstractMechDevicePanel {
         xc.setPhoto(imageData);
         return saveDbRecord(xc, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

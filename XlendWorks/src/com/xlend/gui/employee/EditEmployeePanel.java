@@ -4,7 +4,6 @@
  */
 package com.xlend.gui.employee;
 
-import com.sun.deploy.panel.JSmartTextArea;
 import com.xlend.constants.Selects;
 import com.xlend.gui.*;
 import com.xlend.gui.admin.XlendMasterTableView;
@@ -22,7 +21,6 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,8 +40,16 @@ import javax.swing.event.ChangeListener;
  */
 class EditEmployeePanel extends EditPanelWithPhoto {
 
-    private DefaultComboBoxModel positionCbModel;
-    private DefaultComboBoxModel wageCategoryDbModel;
+    private static DefaultComboBoxModel positionCbModel;
+    private static DefaultComboBoxModel wageCategoryDbModel;
+    private static ComboItem[] durations = new ComboItem[]{
+        new ComboItem(1, "1 month"),
+        new ComboItem(2, "2 month"),
+        new ComboItem(3, "3 month"),
+        new ComboItem(6, "6 month"),
+        new ComboItem(12, "1 year"),
+        new ComboItem(0, "Permanent")
+    };
     private JTextField idField;
     private JTextField clockNumField;
     private JTextField firstNameField;
@@ -61,7 +67,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner contractEndSP;
     private JSpinner rateSP;
     private JComboBox positionCB;
-    private JCheckBox deceasedCb, dismissedCb, abscondedCb, managementCb;
+    private JCheckBox deceasedCB, dismissedCB, abscondedCB, managementCb;
     private JTextField taxnumField;
     private ImageIcon currentPicture2;
     protected JPanel picPanel2;
@@ -74,7 +80,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JSpinner deceasedDateSP;
     private JSpinner dismissedDateSP;
     private JSpinner abscondedDateSP;
-    private JCheckBox resignedCb;
+    private JCheckBox resignedCB;
     private JSpinner resignedDateSP;
     private JComboBox wageCategoryCB;
     private JTextField bankNameTF;
@@ -93,6 +99,33 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JEditorPane imagePanel2;
     private JEditorPane imagePanel3;
     private JTextArea notesTextArea;
+    private AbstractAction openInWindowAction2;
+    private AbstractAction printImageAction2;
+    private AbstractAction replaceImageAction2;
+    private AbstractAction saveImageToFileAction2;
+    private AbstractAction removeImageFromDbAction2;
+    private AbstractAction openInWindowAction3;
+    private AbstractAction printImageAction3;
+    private AbstractAction replaceImageAction3;
+    private AbstractAction saveImageToFileAction3;
+    private AbstractAction removeImageFromDbAction3;
+    private JButton assignmentsBtn;
+    private AbstractAction assignmentAction;
+    private AbstractAction wageCategoryCBaction;
+    private AbstractAction contractLenCBAction;
+    private ChangeListener deceasedCbListener;
+    private ChangeListener dismissedCbListener;
+    private ChangeListener abscondedCbListener;
+    private ChangeListener resignedCbListener;
+    private ChangeListener contractStartSPListener;
+    private JButton loadButton2;
+    private ActionListener loadButton2Action;
+    private ActionListener loadButton3Action;
+    private JButton loadButton3;
+    private MouseAdapter imagePanel2MouseAdapter;
+    private MouseAdapter imagePanel3MouseAdapter;
+    private PopupListener imagePanel2PopupListener;
+    private PopupListener imagePanel3PopupListener;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -115,21 +148,25 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             "", "", "",
             "", "", ""
         };
-        ComboItem[] durations = new ComboItem[]{
-            new ComboItem(1, "1 month"),
-            new ComboItem(2, "2 month"),
-            new ComboItem(3, "3 month"),
-            new ComboItem(6, "6 month"),
-            new ComboItem(12, "1 year"),
-            new ComboItem(0, "Permanent")
-        };
-        positionCbModel = new DefaultComboBoxModel();
-        wageCategoryDbModel = new DefaultComboBoxModel();
-        for (ComboItem itm : XlendWorks.loadAllPositions()) {
-            positionCbModel.addElement(itm);
+//        ComboItem[] durations = new ComboItem[]{
+//            new ComboItem(1, "1 month"),
+//            new ComboItem(2, "2 month"),
+//            new ComboItem(3, "3 month"),
+//            new ComboItem(6, "6 month"),
+//            new ComboItem(12, "1 year"),
+//            new ComboItem(0, "Permanent")
+//        };
+        if (null == positionCbModel) {
+            positionCbModel = new DefaultComboBoxModel();
+            for (ComboItem itm : XlendWorks.loadAllPositions()) {
+                positionCbModel.addElement(itm);
+            }
         }
-        for (ComboItem ci : XlendWorks.loadWageCategories()) {
-            wageCategoryDbModel.addElement(ci);
+        if (null == wageCategoryDbModel) {
+            wageCategoryDbModel = new DefaultComboBoxModel();
+            for (ComboItem ci : XlendWorks.loadWageCategories()) {
+                wageCategoryDbModel.addElement(ci);
+            }
         }
         JComponent edits[] = new JComponent[]{
             getGridPanel(new JComponent[]{
@@ -184,7 +221,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             getGridPanel(new JComponent[]{
                 siteAssignLbl = new JLabel(),
                 getBorderPanel(new JComponent[]{new JLabel("machine:"), machineAssignLbl = new JLabel()}),
-                new JButton(getAssignmentsAction("Assignments..."))
+                assignmentsBtn = new JButton(assignmentAction = getAssignmentsAction("Assignments..."))
             }),
             new JLabel("Bank Accounts:", SwingConstants.CENTER),
             getGridPanel(new JComponent[]{
@@ -208,10 +245,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 bankBranchCode3TF = new JTextField(10)
             }),
             getGridPanel(new JComponent[]{
-                deceasedCb = new JCheckBox("Deceased"),
-                dismissedCb = new JCheckBox("Dismissed"),
-                abscondedCb = new JCheckBox("Absconded"),
-                resignedCb = new JCheckBox("Resigned")
+                deceasedCB = new JCheckBox("Deceased"),
+                dismissedCB = new JCheckBox("Dismissed"),
+                abscondedCB = new JCheckBox("Absconded"),
+                resignedCB = new JCheckBox("Resigned")
             }),
             getGridPanel(new JComponent[]{
                 deceasedDateSP = new SelectedDateSpinner(),
@@ -220,7 +257,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 resignedDateSP = new SelectedDateSpinner()
             })
         };
-        wageCategoryCB.addActionListener(new AbstractAction() {
+        wageCategoryCB.addActionListener(wageCategoryCBaction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ComboItem ci = (ComboItem) wageCategoryCB.getSelectedItem();
@@ -245,38 +282,38 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             Util.addFocusSelectAllAction(sp);
         }
 
-        contractLenCB.setAction(new AbstractAction() {
+        contractLenCB.setAction(contractLenCBAction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 adjustEndDate();
             }
         });
 
-        deceasedCb.addChangeListener(new ChangeListener() {
+        deceasedCB.addChangeListener(deceasedCbListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                deceasedDateSP.setVisible(deceasedCb.isSelected());
+                deceasedDateSP.setVisible(deceasedCB.isSelected());
             }
         });
-        dismissedCb.addChangeListener(new ChangeListener() {
+        dismissedCB.addChangeListener(dismissedCbListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                dismissedDateSP.setVisible(dismissedCb.isSelected());
+                dismissedDateSP.setVisible(dismissedCB.isSelected());
             }
         });
-        abscondedCb.addChangeListener(new ChangeListener() {
+        abscondedCB.addChangeListener(abscondedCbListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                abscondedDateSP.setVisible(abscondedCb.isSelected());
+                abscondedDateSP.setVisible(abscondedCB.isSelected());
             }
         });
-        resignedCb.addChangeListener(new ChangeListener() {
+        resignedCB.addChangeListener(resignedCbListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                resignedDateSP.setVisible(resignedCb.isSelected());
+                resignedDateSP.setVisible(resignedCB.isSelected());
             }
         });
-        contractStartSP.addChangeListener(new ChangeListener() {
+        contractStartSP.addChangeListener(contractStartSPListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 adjustEndDate();
@@ -290,9 +327,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         notesTextArea.setWrapStyleWord(true);
         notesTextArea.setLineWrap(true);
-        sp.setPreferredSize(new Dimension(350,sp.getPreferredSize().height));
+        sp.setPreferredSize(new Dimension(350, sp.getPreferredSize().height));
         sp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Notes"));
-        downPanel.add(sp,BorderLayout.EAST);
+        downPanel.add(sp, BorderLayout.EAST);
         add(downPanel, BorderLayout.CENTER);
     }
 
@@ -453,16 +490,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 setEndDateVisible(emp.getContractLen() > 0);
             }
             if (emp.getDeceased() != null && emp.getDeceased() == 1) {
-                deceasedCb.setSelected(true);
+                deceasedCB.setSelected(true);
             }
             if (emp.getDismissed() != null && emp.getDismissed() == 1) {
-                dismissedCb.setSelected(true);
+                dismissedCB.setSelected(true);
             }
             if (emp.getAbsconded() != null && emp.getAbsconded() == 1) {
-                abscondedCb.setSelected(true);
+                abscondedCB.setSelected(true);
             }
             if (emp.getResigned() != null && emp.getResigned() == 1) {
-                resignedCb.setSelected(true);
+                resignedCB.setSelected(true);
             }
             imageData = (byte[]) emp.getPhoto();
             setImage(imageData);
@@ -542,30 +579,30 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setXpositionId(null);
                 }
-                emp.setDeceased(deceasedCb.isSelected() ? 1 : 0);
+                emp.setDeceased(deceasedCB.isSelected() ? 1 : 0);
 
-                if (deceasedCb.isSelected() && deceasedDateSP.getValue() != null) {
+                if (deceasedCB.isSelected() && deceasedDateSP.getValue() != null) {
                     dt = (Date) deceasedDateSP.getValue();
                     emp.setDeceasedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setDeceasedDate(null);
                 }
-                emp.setDismissed(dismissedCb.isSelected() ? 1 : 0);
-                if (dismissedCb.isSelected() && dismissedDateSP.getValue() != null) {
+                emp.setDismissed(dismissedCB.isSelected() ? 1 : 0);
+                if (dismissedCB.isSelected() && dismissedDateSP.getValue() != null) {
                     dt = (Date) dismissedDateSP.getValue();
                     emp.setDismissedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setDismissedDate(null);
                 }
-                emp.setAbsconded(abscondedCb.isSelected() ? 1 : 0);
-                if (abscondedCb.isSelected() && abscondedDateSP.getValue() != null) {
+                emp.setAbsconded(abscondedCB.isSelected() ? 1 : 0);
+                if (abscondedCB.isSelected() && abscondedDateSP.getValue() != null) {
                     dt = (Date) abscondedDateSP.getValue();
                     emp.setAbscondedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setAbscondedDate(null);
                 }
-                emp.setResigned(resignedCb.isSelected() ? 1 : 0);
-                if (resignedCb.isSelected() && resignedDateSP.getValue() != null) {
+                emp.setResigned(resignedCB.isSelected() ? 1 : 0);
+                if (resignedCB.isSelected() && resignedDateSP.getValue() != null) {
                     dt = (Date) resignedDateSP.getValue();
                     emp.setResignedDate(new java.sql.Date(dt.getTime()));
                 } else {
@@ -630,12 +667,12 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JPopupMenu getPhotoPopupMenu2() {
         if (null == picturePopMenu2) {
             picturePopMenu2 = new JPopupMenu();
-            picturePopMenu2.add(new AbstractAction("Open in window") {
+            picturePopMenu2.add(openInWindowAction2 = new AbstractAction("Open in window") {
                 public void actionPerformed(ActionEvent e) {
                     viewDocumentImage(currentPicture2);
                 }
             });
-            picturePopMenu2.add(new AbstractAction("Print image") {
+            picturePopMenu2.add(printImageAction2 = new AbstractAction("Print image") {
                 public void actionPerformed(ActionEvent e) {
 //                    if (imagePanel2 != null) {
 //                        try {
@@ -647,17 +684,17 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     new PrintUtilities(imagePanel2).print();
                 }
             });
-            picturePopMenu2.add(new AbstractAction("Replace image") {
+            picturePopMenu2.add(replaceImageAction2 = new AbstractAction("Replace image") {
                 public void actionPerformed(ActionEvent e) {
                     loadDocImageFromFile2();
                 }
             });
-            picturePopMenu2.add(new AbstractAction("Save image to file") {
+            picturePopMenu2.add(saveImageToFileAction2 = new AbstractAction("Save image to file") {
                 public void actionPerformed(ActionEvent e) {
                     exportDocImage(imageData2);
                 }
             });
-            picturePopMenu2.add(new AbstractAction("Remove image from DB") {
+            picturePopMenu2.add(removeImageFromDbAction2 = new AbstractAction("Remove image from DB") {
                 public void actionPerformed(ActionEvent e) {
                     noImage2();
                 }
@@ -723,7 +760,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     private JButton getLoadPictureButton2() {
         JButton loadButton = new JButton("Choose picture...");
-        loadButton.addActionListener(new ActionListener() {
+        loadButton.addActionListener(loadButton2Action = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile2();
             }
@@ -733,7 +770,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     private JButton getLoadPictureButton3() {
         JButton loadButton = new JButton("Choose picture...");
-        loadButton.addActionListener(new ActionListener() {
+        loadButton.addActionListener(loadButton3Action = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadDocImageFromFile3();
             }
@@ -770,7 +807,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         picPanel2.setVisible(false);
         picPanel2.removeAll();
         JPanel insPanel = new JPanel();
-        insPanel.add(getLoadPictureButton2());
+        insPanel.add(loadButton2 = getLoadPictureButton2());
         picPanel2.add(insPanel);
         picPanel2.setVisible(true);
         currentPicture2 = null;
@@ -781,7 +818,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         picPanel3.setVisible(false);
         picPanel3.removeAll();
         JPanel insPanel = new JPanel();
-        insPanel.add(getLoadPictureButton3());
+        insPanel.add(loadButton3 = getLoadPictureButton3());
         picPanel3.add(insPanel);
         picPanel3.setVisible(true);
         currentPicture3 = null;
@@ -828,14 +865,14 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         imagePanel2.setEditable(false);
         picPanel2.add(sp = new JScrollPane(imagePanel2), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
-        imagePanel2.addMouseListener(new MouseAdapter() {
+        imagePanel2.addMouseListener(imagePanel2MouseAdapter = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture2);
                 }
             }
         });
-        imagePanel2.addMouseListener(new PopupListener(getPhotoPopupMenu2()));
+        imagePanel2.addMouseListener(imagePanel2PopupListener = new PopupListener(getPhotoPopupMenu2()));
         new File(tmpImgFile).deleteOnExit();
         picPanel2.setVisible(true);
     }
@@ -867,52 +904,49 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         imagePanel3.setEditable(false);
         picPanel3.add(sp = new JScrollPane(imagePanel3), BorderLayout.CENTER);
         sp.setPreferredSize(new Dimension(300, 250));
-        imagePanel3.addMouseListener(new MouseAdapter() {
+        imagePanel3.addMouseListener(imagePanel3MouseAdapter = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     viewDocumentImage(currentPicture3);
                 }
             }
         });
-        imagePanel3.addMouseListener(new PopupListener(getPhotoPopupMenu3()));
+        imagePanel3.addMouseListener(imagePanel3PopupListener = new PopupListener(getPhotoPopupMenu3()));
         new File(tmpImgFile).deleteOnExit();
         picPanel3.setVisible(true);
     }
 
-    private AbstractAction updateEndContract() {
-        return new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                syncEndContract();
-            }
-        };
-
-    }
-
-    private void syncEndContract() {
-        ComboItem ci = (ComboItem) contractLenCB.getSelectedItem();
-        if (ci.getId() > 0 && contractStartSP.getValue() != null) {
-            java.util.Date dt = (java.util.Date) contractStartSP.getValue();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dt);
-            calendar.add(Calendar.MONTH, ci.getId());
-            Date dt2 = calendar.getTime();
-            contractEndSP.setValue(dt2);
-        }
-    }
-
-    private ChangeListener startContractChangeListener() {
-        return new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                SpinnerModel dateModel = contractStartSP.getModel();
-                if (dateModel instanceof SpinnerDateModel) {
-                    syncEndContract();
-                }
-            }
-        };
-    }
-
+//    private AbstractAction updateEndContract() {
+//        return new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                syncEndContract();
+//            }
+//        };
+//
+//    }
+//    private void syncEndContract() {
+//        ComboItem ci = (ComboItem) contractLenCB.getSelectedItem();
+//        if (ci.getId() > 0 && contractStartSP.getValue() != null) {
+//            java.util.Date dt = (java.util.Date) contractStartSP.getValue();
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(dt);
+//            calendar.add(Calendar.MONTH, ci.getId());
+//            Date dt2 = calendar.getTime();
+//            contractEndSP.setValue(dt2);
+//        }
+//    }
+//    private ChangeListener startContractChangeListener() {
+//        return new ChangeListener() {
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                SpinnerModel dateModel = contractStartSP.getModel();
+//                if (dateModel instanceof SpinnerDateModel) {
+//                    syncEndContract();
+//                }
+//            }
+//        };
+//    }
     private void fillAssignmentInfo() {
         String[] lbls = XlendWorks.findCurrentAssignment((Xemployee) getDbObject());
         if (lbls != null && lbls.length > 1) {
@@ -921,6 +955,60 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         } else {
             siteAssignLbl.setText("unassigned yet");
             machineAssignLbl.setText("unassigned yet");
+        }
+    }
+
+    @Override
+    public void freeResources() {
+        //TODO
+        if (picturePopMenu2 != null) {
+            picturePopMenu2.removeAll();
+        }
+        openInWindowAction2 = null;
+        printImageAction2 = null;
+        replaceImageAction2 = null;
+        saveImageToFileAction2 = null;
+        removeImageFromDbAction2 = null;
+        if (picturePopMenu3 != null) {
+            picturePopMenu3.removeAll();
+        }
+        openInWindowAction3 = null;
+        printImageAction3 = null;
+        replaceImageAction3 = null;
+        saveImageToFileAction3 = null;
+        removeImageFromDbAction3 = null;
+
+        assignmentsBtn.removeActionListener(assignmentAction);
+        assignmentAction = null;
+        wageCategoryCB.removeActionListener(wageCategoryCBaction);
+        wageCategoryCBaction = null;
+        contractLenCB.removeActionListener(contractLenCBAction);
+        contractLenCBAction = null;
+        deceasedCB.removeChangeListener(deceasedCbListener);
+        deceasedCbListener = null;
+        dismissedCB.removeChangeListener(dismissedCbListener);
+        dismissedCbListener = null;
+        abscondedCB.removeChangeListener(abscondedCbListener);
+        abscondedCbListener = null;
+        resignedCB.removeChangeListener(resignedCbListener);
+        resignedCbListener = null;
+        contractStartSP.removeChangeListener(contractStartSPListener);
+        contractStartSPListener = null;
+        loadButton2.removeActionListener(loadButton2Action);
+        loadButton2Action = null;
+        loadButton3.removeActionListener(loadButton3Action);
+        loadButton3Action = null;
+        if (imagePanel2 != null) {
+            imagePanel2.removeMouseListener(imagePanel2MouseAdapter);
+            imagePanel2.removeMouseListener(imagePanel2PopupListener);
+            imagePanel2MouseAdapter = null;
+            imagePanel2PopupListener = null;
+        }
+        if (imagePanel3 != null) {
+            imagePanel3.removeMouseListener(imagePanel3MouseAdapter);
+            imagePanel3.removeMouseListener(imagePanel3PopupListener);
+            imagePanel3MouseAdapter = null;
+            imagePanel3PopupListener = null;
         }
     }
 }

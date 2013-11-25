@@ -80,4 +80,9 @@ public class EditAccountPanel extends RecordEditPanel {
         xa.setBranch(branchField.getText());
         return saveDbRecord(xa, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

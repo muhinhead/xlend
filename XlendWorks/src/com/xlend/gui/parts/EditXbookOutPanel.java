@@ -138,4 +138,9 @@ class EditXbookOutPanel extends RecordEditPanel {
         bookOut.setXpartsId(partID);
         return saveDbRecord(bookOut, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

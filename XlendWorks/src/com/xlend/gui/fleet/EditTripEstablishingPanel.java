@@ -88,4 +88,9 @@ public class EditTripEstablishingPanel extends RecordEditPanel implements EditSu
     public void setMachineID(Integer machineID) {
         selectComboItem(machineCB, machineID);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

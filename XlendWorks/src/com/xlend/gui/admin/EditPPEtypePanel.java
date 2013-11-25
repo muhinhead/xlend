@@ -56,4 +56,9 @@ public class EditPPEtypePanel extends RecordEditPanel {
         }
         return saveDbRecord(xt, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

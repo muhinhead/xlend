@@ -155,4 +155,9 @@ class EditBreakConsumePanel extends RecordEditPanel {
             }
         }
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

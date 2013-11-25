@@ -8,6 +8,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -31,6 +32,7 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     protected void fillContent(RecordEditPanel editPanel) {
         super.fillContent();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setOkPressed(false);
         XlendWorks.setWindowIcon(this, "Xcost.png");
         this.editPanel = editPanel;
@@ -45,7 +47,7 @@ public abstract class EditRecordDialog extends PopupDialog {
         cancelButton.setToolTipText("Discard changes and close dialog");
 
         JPanel innerPanel = new JPanel(new BorderLayout());
-        
+
         innerPanel.add(new JPanel(), BorderLayout.WEST);
         innerPanel.add(new JPanel(), BorderLayout.EAST);
         innerPanel.add(editPanel, BorderLayout.CENTER);
@@ -65,6 +67,7 @@ public abstract class EditRecordDialog extends PopupDialog {
         saveAction = null;
         cancelAction = null;
 //        applyAction = null;
+        super.freeResources();
     }
 
 //    protected AbstractAction getApplyAction() {

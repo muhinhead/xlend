@@ -496,7 +496,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
                     LookupDialog ld = new LookupDialog("Order Lookup", orderRefBox,
                             new OrdersGrid(XlendWorks.getExchanger(), Selects.SELECT_ORDERS4LOOKUP, false),
                             new String[]{"companyname",
-                                "ordernumber"});
+                        "ordernumber"});
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                 }
@@ -546,5 +546,10 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
             daysLabels[i].setText(days[d++]);
             d = (d >= 7 ? 0 : d);
         }
+    }
+
+    @Override
+    public void freeResources() {
+        //TODO
     }
 }

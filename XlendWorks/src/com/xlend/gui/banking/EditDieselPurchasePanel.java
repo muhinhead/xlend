@@ -176,4 +176,9 @@ public class EditDieselPurchasePanel extends RecordEditPanel {
 
         return saveDbRecord(xdp, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }    
 }

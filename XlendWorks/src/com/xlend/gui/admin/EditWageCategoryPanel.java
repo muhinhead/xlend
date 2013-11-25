@@ -60,4 +60,9 @@ class EditWageCategoryPanel extends RecordEditPanel {
         itm.setVal(wageCategoryField.getText());
         return saveDbRecord(itm, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

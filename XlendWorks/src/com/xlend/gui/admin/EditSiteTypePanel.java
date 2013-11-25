@@ -3,12 +3,9 @@ package com.xlend.gui.admin;
 import com.xlend.gui.RecordEditPanel;
 import com.xlend.orm.Cbitems;
 import com.xlend.orm.dbobject.DbObject;
-import com.xlend.util.SelectedNumberSpinner;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.JComponent;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 /**
@@ -87,4 +84,9 @@ public class EditSiteTypePanel extends RecordEditPanel {
         itm.setVal(siteTypeField.getText());
         return saveDbRecord(itm, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }    
 }

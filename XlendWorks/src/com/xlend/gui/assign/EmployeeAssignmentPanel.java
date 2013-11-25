@@ -155,4 +155,9 @@ public class EmployeeAssignmentPanel extends RecordEditPanel {
         }
         return historyPanel;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }    
 }

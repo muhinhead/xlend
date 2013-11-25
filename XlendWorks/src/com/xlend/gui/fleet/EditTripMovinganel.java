@@ -98,4 +98,9 @@ public class EditTripMovinganel extends RecordEditPanel implements EditSubPanel 
     public void setMachineID(Integer machineID) {
         selectComboItem(machineCB, machineID);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

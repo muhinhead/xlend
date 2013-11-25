@@ -60,4 +60,10 @@ class EditCategoryPanel extends RecordEditPanel {
         xpc.setName(categoryNameField.getText());
         return saveDbRecord(xpc, isNew);
     }
+
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

@@ -53,4 +53,9 @@ class EditPayMethodPanel extends RecordEditPanel {
         pm.setMethod(methodField.getText());
         return saveDbRecord(pm, isNew);
     }
+    
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

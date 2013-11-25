@@ -281,4 +281,9 @@ public class EditBalancePanel extends RecordEditPanel {
         }
         return ok;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

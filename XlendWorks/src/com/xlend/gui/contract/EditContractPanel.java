@@ -210,4 +210,9 @@ public class EditContractPanel extends RecordEditPanel {
             clientRefBox.setEnabled(false);
         }
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

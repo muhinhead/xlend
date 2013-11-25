@@ -403,4 +403,9 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     protected JComponent getConsumptionLabel() {
         return new JLabel("Consumption (litre/hour):", SwingConstants.RIGHT);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

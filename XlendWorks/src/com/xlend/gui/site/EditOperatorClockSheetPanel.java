@@ -463,4 +463,9 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
 
         return saveDbRecord(xs, isNew);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

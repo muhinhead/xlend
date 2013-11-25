@@ -279,4 +279,9 @@ class EditWagesPanel extends RecordEditPanel {
         resetNumData(overSPs);
         resetNumData(dblSPs);
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

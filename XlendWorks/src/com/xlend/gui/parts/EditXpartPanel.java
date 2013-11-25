@@ -181,4 +181,10 @@ class EditXpartPanel extends RecordEditPanel {
         }
         return histPanel;
     }
+
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

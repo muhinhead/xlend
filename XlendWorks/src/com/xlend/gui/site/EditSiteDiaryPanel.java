@@ -473,4 +473,9 @@ public class EditSiteDiaryPanel extends RecordEditPanel {
         }
         return ok;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

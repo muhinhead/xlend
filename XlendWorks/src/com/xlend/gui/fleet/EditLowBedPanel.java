@@ -130,4 +130,9 @@ public class EditLowBedPanel extends RecordEditPanel {
         }
         return tp;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

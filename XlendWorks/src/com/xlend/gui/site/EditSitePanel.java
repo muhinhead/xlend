@@ -286,4 +286,9 @@ public class EditSitePanel extends RecordEditPanel {
             }
         }
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

@@ -317,4 +317,9 @@ class EditSalaryListPanel extends RecordEditPanel {
         }
         return ok;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

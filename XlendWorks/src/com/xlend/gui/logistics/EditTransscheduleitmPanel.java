@@ -363,4 +363,9 @@ class EditTransscheduleitmPanel extends RecordEditPanel {
     public static void resetFixedAttribute() {
         fixedAttribute = null;
     }
+
+    @Override
+    public void freeResources() {
+        //TODO
+    }
 }

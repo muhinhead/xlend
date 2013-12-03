@@ -16,6 +16,7 @@ public abstract class PopupDialog extends JDialog {
     public PopupDialog(Frame owner, String title, Object obj) {
         super(owner, title);
         ownerFrame = owner;
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setObject(obj);
         init();
     }
@@ -86,6 +87,7 @@ public abstract class PopupDialog extends JDialog {
     }
 
     private void removeComponents(Container cont) {
+        //System.out.println("!! removeComponents(" + cont.getClass().getName() + ")");
         Component[] components = cont.getComponents();
         for (int i = components.length - 1; i >= 0; i--) {
             Component comp = components[i];
@@ -102,16 +104,15 @@ public abstract class PopupDialog extends JDialog {
         }
     }
 
-    public void freeResources() {
-        System.gc();
+    public void freeResources(){
+        getContentPane().removeAll();
     }
 
     @Override
     public void dispose() {
+        removeComponents(getContentPane());
         freeResources();
-//        removeComponents(getContentPane());
         super.dispose();
-        Runtime.getRuntime().gc();
     }
 
     public static void updateList(final JTable tableView) {

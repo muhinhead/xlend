@@ -2,13 +2,12 @@ package com.xlend.gui;
 
 import com.xlend.util.PopupDialog;
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
 
 /**
  *
@@ -32,7 +31,7 @@ public abstract class EditRecordDialog extends PopupDialog {
 
     protected void fillContent(RecordEditPanel editPanel) {
         super.fillContent();
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+//        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setOkPressed(false);
         XlendWorks.setWindowIcon(this, "Xcost.png");
         this.editPanel = editPanel;

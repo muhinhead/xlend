@@ -6,6 +6,7 @@ import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.rmi.ExchangeFactory;
 import java.awt.Image;
 import java.awt.Window;
 import java.io.File;
@@ -45,7 +46,10 @@ public class XlendWorks {
     /**
      * @param aExchanger the exchanger to set
      */
-    public static void setExchanger(IMessageSender aExchanger) {
+    public static void setExchanger(IMessageSender aExchanger) throws Exception {
+        if (aExchanger == null) {
+            throw new Exception("Data exchanger creation fails");
+        }
         exchanger = aExchanger;
     }
 
@@ -97,7 +101,8 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.83.c";
+    public static final String version = "0.83.D";
+    public static String protocol = "unknown";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -113,7 +118,7 @@ public class XlendWorks {
 //    if("Windows 7".equals(osName))
 //            System.out.println("OS:["+osName+"]");
 //            System.out.println("Vr:["+osVersion+"]");
-            
+
             System.out.println("Current dir:" + current);
             String currentDir = System.getProperty("user.dir");
             System.out.println("Current dir using System:" + currentDir);
@@ -124,7 +129,13 @@ public class XlendWorks {
         String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
         while (true) {
             try {
-                setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
+                IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
+//                setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
+                if (exc == null) {
+                    exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://localhost/xlend"),
+                            DashBoard.getProperties());
+                }
+                setExchanger(exc);
                 if (matchVersions() && login()) {
                     new DashBoard(getExchanger());
                     break;

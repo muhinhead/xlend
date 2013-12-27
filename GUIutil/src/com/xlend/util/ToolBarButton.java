@@ -18,7 +18,7 @@ import javax.swing.JButton;
  */
 public class ToolBarButton extends JButton implements MouseListener {
 
-    private static final double KOEFF =  1.2;
+    private static final double KOEFF = 1.2;
     private static Cursor handCursor = new Cursor(Cursor.HAND_CURSOR);
     private boolean containsCursor = false;
     private static ImageIcon staticIcon = null;
@@ -50,7 +50,7 @@ public class ToolBarButton extends JButton implements MouseListener {
     public ToolBarButton(String imageFile) {
         this(imageFile, false);
     }
-    
+
     public ToolBarButton(String imageFile, String text) {
         super(text);
         setIcon(staticIcon = new ImageIcon(staticImage = Util.loadImage(imageFile)));
@@ -81,30 +81,30 @@ public class ToolBarButton extends JButton implements MouseListener {
     }
 
     public void mouseEntered(MouseEvent e) {
-        originalRect = getBounds();
-        if (isEnabled()) {
-            containsCursor = true;
-            setCursor(new Cursor(Cursor.HAND_CURSOR));
-            if (originalImage != null) {
-                int deltaX, deltaY;
-                deltaX = (int) (originalWidth * 1.3 - originalWidth) / 2;
-                deltaY = (int) (originalRect.height * 1.3 - originalRect.height) / 2;
-                Rectangle newBounds = 
-//                        new Rectangle(originalRect.x,originalRect.y,
-//                        (int) (originalRect.width * 1.3), (int) (originalRect.height * 1.3));
-                        new Rectangle(originalRect.x - deltaX, originalRect.y - deltaY,
-                        (int) (originalRect.width * KOEFF), (int) (originalRect.height * KOEFF));
-                setBounds(newBounds);
-                Image scaledImage = originalImage.getScaledInstance(
-                        (int) (originalWidth * KOEFF), -1, Image.SCALE_FAST);
-                setIcon(new ImageIcon(scaledImage));
-                repaint();
+        if (animate) {
+            originalRect = getBounds();
+            if (isEnabled()) {
+                containsCursor = true;
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
+                if (originalImage != null) {
+                    int deltaX, deltaY;
+                    deltaX = (int) (originalWidth * 1.3 - originalWidth) / 2;
+                    deltaY = (int) (originalRect.height * 1.3 - originalRect.height) / 2;
+                    Rectangle newBounds =
+                            new Rectangle(originalRect.x - deltaX, originalRect.y - deltaY,
+                            (int) (originalRect.width * KOEFF), (int) (originalRect.height * KOEFF));
+                    setBounds(newBounds);
+                    Image scaledImage = originalImage.getScaledInstance(
+                            (int) (originalWidth * KOEFF), -1, Image.SCALE_FAST);
+                    setIcon(new ImageIcon(scaledImage));
+                    repaint();
+                }
             }
         }
     }
 
     public void mouseExited(MouseEvent e) {
-        if (isEnabled()) {
+        if (isEnabled() && animate) {
             if (originalImage != null) {
                 setBounds(originalRect);
                 setIcon(new ImageIcon(originalImage));

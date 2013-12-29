@@ -7,6 +7,7 @@ import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.orm.Userprofile;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
+import com.xlend.rmi.ExchangeFactory;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,6 +15,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.Naming;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -35,7 +39,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class LoginImagedDialog extends PopupDialog {
 
     private static final String BACKGROUNDIMAGE = "Login.png";
-    private final String NMSOFTWARE = "Nick Mukhin (c)2013";
+//    private final String NMSOFTWARE = "Nick Mukhin (c)2013";
     private JPanel controlsPanel;
     private Java2sAutoComboBox loginField;
     private JPasswordField pwdField;
@@ -61,13 +65,13 @@ public class LoginImagedDialog extends PopupDialog {
             String theme = DashBoard.readProperty("LookAndFeel",
                     "com.nilo.plaf.nimrod.NimRODLookAndFeel");
             if (theme.indexOf("HiFi") > 0) {
-                HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                HiFiLookAndFeel.setTheme("Default", "", XlendWorks.NMSOFTWARE);
             } else if (theme.indexOf("Noire") > 0) {
-                NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                NoireLookAndFeel.setTheme("Default", "", XlendWorks.NMSOFTWARE);
             } else if (theme.indexOf("Bernstein") > 0) {
-                BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                BernsteinLookAndFeel.setTheme("Default", "", XlendWorks.NMSOFTWARE);
             } else if (theme.indexOf("Aero") > 0) {
-                AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
+                AeroLookAndFeel.setTheme("Green", "", XlendWorks.NMSOFTWARE);
             }
             UIManager.setLookAndFeel(theme);
             SwingUtilities.updateComponentTreeUI(this);
@@ -90,7 +94,7 @@ public class LoginImagedDialog extends PopupDialog {
 //        setVisible(true);
 //
 //        applet.start();
-        
+
         loginField = new Java2sAutoComboBox(XlendWorks.loadAllLogins());
         loginField.setEditable(true);
         pwdField = new JPasswordField(20);
@@ -139,160 +143,137 @@ public class LoginImagedDialog extends PopupDialog {
 
     private void buildMenu() {
         JMenuBar bar = new JMenuBar();
-        JMenu m = new JMenu("Options");
-        m.add(new JMenuItem(new AbstractAction("Settings") {
+        JMenu m = new JMenu("Settings");
+        m.add(new JMenuItem(new AbstractAction("Connection") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newAddress = XlendWorks.serverSetup("Options");
-                if (newAddress != null) {
-                    DashBoard.getProperties().setProperty("ServerAddress", newAddress);
-                    try {
-                        XlendWorks.setExchanger(//exchanger =
-                                (IMessageSender) Naming.lookup("rmi://"
-                                + newAddress + "/XlendServer"));
-                    } catch (Exception ex) {
-                        XlendWorks.logAndShowMessage(ex);
-                        System.exit(1);
-                    }
-                }
+                XlendWorks.configureConnection();
             }
         }));
-        m.add(appearanceMenu("Theme"));
+        m.add(XlendWorks.appearanceMenu("Theme",this));
         bar.add(m);
         setJMenuBar(bar);
     }
 
-    protected JMenu appearanceMenu(String item) {
-        JMenu m;
-        JMenuItem it;
-        m = new JMenu(item);
-        it = m.add(new JMenuItem("Tiny"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-//        ch.randelshofer.quaqua.QuaquaLookAndFeel
-        it = m.add(new JMenuItem("Quaqua"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
+//    protected JMenu appearanceMenu(String item) {
+//        JMenu m;
+//        JMenuItem it;
+//        m = new JMenu(item);
+//        it = m.add(new JMenuItem("Tiny"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Nimbus"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Nimrod"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Plastic"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("HiFi"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+//                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Noire"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+//                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Bernstein"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+//                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Aero"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
+//                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//
+//        it = m.add(new JMenuItem("System"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Java"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        it = m.add(new JMenuItem("Motif"));
+//        it.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+//                } catch (Exception e1) {
+//                }
+//            }
+//        });
+//        return m;
+//    }
 
-        it = m.add(new JMenuItem("Nimbus"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Nimrod"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Plastic"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("HiFi"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
-                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Noire"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
-                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Bernstein"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
-                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Aero"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
-                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-
-        it = m.add(new JMenuItem("System"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Java"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        it = m.add(new JMenuItem("Motif"));
-        it.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-                } catch (Exception e1) {
-                }
-            }
-        });
-        return m;
-    }
-
-    private void setLookAndFeel(String lf) throws ClassNotFoundException,
-            InstantiationException, IllegalAccessException,
-            UnsupportedLookAndFeelException {
-        UIManager.setLookAndFeel(lf);
-        SwingUtilities.updateComponentTreeUI(this);
-        DashBoard.getProperties().setProperty("LookAndFeel", lf);
-        DashBoard.saveProps();
-    }
+//    private void setLookAndFeel(String lf, Component root) throws ClassNotFoundException,
+//            InstantiationException, IllegalAccessException,
+//            UnsupportedLookAndFeelException {
+//        UIManager.setLookAndFeel(lf);
+//        SwingUtilities.updateComponentTreeUI(root);
+//        DashBoard.getProperties().setProperty("LookAndFeel", lf);
+//        DashBoard.saveProps();
+//    }
 
     @Override
     public void freeResources() {

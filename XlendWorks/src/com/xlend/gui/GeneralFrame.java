@@ -282,6 +282,16 @@ public abstract class GeneralFrame extends JFrame implements WindowListener {
         });
         m.add(mi);
         bar.add(m);
+        m = createMenu("Settings", "Application settins");
+        mi = createMenuItem("Connection", "Setup data connection");
+        mi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                XlendWorks.configureConnection();
+            }
+        });
+        m.add(mi);
+//        m.add(XlendWorks.appearanceMenu("Theme",this));
+//        bar.add(m);
 
 //        m = createMenu("Edit", "Edit operations");
 //        mi = createMenuItem("Find...", "Search on fragment");

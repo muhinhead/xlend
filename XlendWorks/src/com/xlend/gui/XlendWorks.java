@@ -1,17 +1,23 @@
 package com.xlend.gui;
 
 import com.jidesoft.plaf.LookAndFeelFactory;
+import com.jtattoo.plaf.aero.AeroLookAndFeel;
+import com.jtattoo.plaf.bernstein.BernsteinLookAndFeel;
+import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
+import com.jtattoo.plaf.noire.NoireLookAndFeel;
 import com.xlend.constants.Selects;
 import com.xlend.orm.*;
 import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.ExchangeFactory;
+import java.awt.Component;
 import java.awt.Image;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -24,9 +30,15 @@ import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -34,6 +46,7 @@ import javax.swing.SpinnerNumberModel;
  */
 public class XlendWorks {
 
+    public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
     private static IMessageSender exchanger;
 
     /**
@@ -51,6 +64,144 @@ public class XlendWorks {
             throw new Exception("Data exchanger creation fails");
         }
         exchanger = aExchanger;
+    }
+
+    public static void configureConnection() {
+        String cnctStr = XlendWorks.serverSetup("Options");
+        if (cnctStr != null) {
+            try {
+                if (ConfigEditor.getProtocol().equals("rmi")) {
+                    DashBoard.getProperties().setProperty("ServerAddress", cnctStr);
+                    XlendWorks.setExchanger(ExchangeFactory.createRMIexchanger(cnctStr));
+                } else {
+                    String[] dbParams = cnctStr.split(";");
+                    XlendWorks.setExchanger(ExchangeFactory.createJDBCexchanger(dbParams));
+                }
+            } catch (Exception ex) {
+                XlendWorks.logAndShowMessage(ex);
+                System.exit(1);
+            }
+        }
+    }
+
+    public static JMenu appearanceMenu(String item, final Component root) {
+        JMenu m;
+        JMenuItem it;
+        m = new JMenu(item);
+        it = m.add(new JMenuItem("Tiny"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("de.muntjak.tinylookandfeel.TinyLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Nimbus"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Nimrod"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.nilo.plaf.nimrod.NimRODLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Plastic"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.jgoodies.plaf.plastic.PlasticXPLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("HiFi"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    HiFiLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.hifi.HiFiLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Noire"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    NoireLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.noire.NoireLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Bernstein"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    BernsteinLookAndFeel.setTheme("Default", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.bernstein.BernsteinLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Aero"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    AeroLookAndFeel.setTheme("Green", "", NMSOFTWARE);
+                    setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+
+        it = m.add(new JMenuItem("System"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName(), root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Java"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        it = m.add(new JMenuItem("Motif"));
+        it.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel", root);
+                } catch (Exception e1) {
+                }
+            }
+        });
+        return m;
+    }
+
+    private static void setLookAndFeel(String lf, Component root) throws ClassNotFoundException,
+            InstantiationException, IllegalAccessException,
+            UnsupportedLookAndFeelException {
+        UIManager.setLookAndFeel(lf);
+        SwingUtilities.updateComponentTreeUI(root);
+        DashBoard.getProperties().setProperty("LookAndFeel", lf);
+        DashBoard.saveProps();
     }
 
     public static Double getUnallocatedTotalPettyForSite(Integer siteID, java.util.Date dt1, java.util.Date dt2) {
@@ -101,7 +252,7 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.83.D";
+    public static final String version = "0.83.E";
     public static String protocol = "unknown";
     private static Userprofile currentUser;
     private static Logger logger = null;
@@ -130,7 +281,6 @@ public class XlendWorks {
         while (true) {
             try {
                 IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
-//                setExchanger((IMessageSender) Naming.lookup("rmi://" + serverIP + "/XlendServer"));
                 if (exc == null) {
                     exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://localhost/xlend"),
                             DashBoard.getProperties());
@@ -227,6 +377,7 @@ public class XlendWorks {
     }
 
     public static String serverSetup(String title) {
+        String cnctStr = null;
         String address = DashBoard.readProperty("ServerAddress", "localhost");
         String[] vals = address.split(":");
         JTextField imageDirField = new JTextField(DashBoard.getProperties().getProperty("imagedir"));
@@ -234,16 +385,34 @@ public class XlendWorks {
         addressField.setText(vals[0]);
         JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
-        JComponent[] edits = new JComponent[]{imageDirField, addressField, portSpinner};
+        JTextField dbConnectionField = new JTextField(DashBoard.getProperties()
+                .getProperty("JDBCconnection", "jdbc:mysql://localhost/xlend"));
+        JTextField dbDriverField = new JTextField(DashBoard.getProperties()
+                .getProperty("dbDriverName", "com.mysql.jdbc.Driver"));
+        JTextField dbUserField = new JTextField(DashBoard.getProperties()
+                .getProperty("dbUser", "root"));
+        JPasswordField dbPasswordField = new JPasswordField();
+
+        JComponent[] edits = new JComponent[]{
+            imageDirField, addressField, portSpinner,
+            dbConnectionField, dbDriverField, dbUserField, dbPasswordField
+        };
         new ConfigEditor(title, edits);
-        if (addressField.getText().trim().length() > 0) {
-            String addr = addressField.getText() + ":" + portSpinner.getValue();
-            DashBoard.getProperties().setProperty("ServerAddress", addr);
-            DashBoard.getProperties().setProperty("imagedir", imageDirField.getText());
-            return addr;
-        } else {
-            return null;
+        if (ConfigEditor.getProtocol().equals("rmi")) {
+            if (addressField.getText().trim().length() > 0) {
+                cnctStr = addressField.getText() + ":" + portSpinner.getValue();
+                DashBoard.getProperties().setProperty("ServerAddress", cnctStr);
+                DashBoard.getProperties().setProperty("imagedir", imageDirField.getText());
+            }
+        } else if (ConfigEditor.getProtocol().equals("jdbc")) {
+            if (dbConnectionField.getText().trim().length() > 0) {
+                cnctStr = dbDriverField.getText() + ";"
+                        + dbConnectionField.getText() + ";"
+                        + dbUserField.getText() + ";"
+                        + new String(dbPasswordField.getPassword());
+            }
         }
+        return cnctStr;
     }
 
     public static ComboItem[] loadAllContracts(int client_id) {

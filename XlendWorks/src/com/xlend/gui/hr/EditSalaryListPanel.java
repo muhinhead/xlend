@@ -48,7 +48,8 @@ class EditSalaryListPanel extends RecordEditPanel {
             this.xsalary = xsalary;
             employeeCbModel = new DefaultComboBoxModel();
             markCB = new JCheckBox();
-            for (ComboItem ci : XlendWorks.loadAllEmployees("management=1 and coalesce(wage_category,1)=1")) {
+            for (ComboItem ci : XlendWorks.loadAllEmployees(//"management=1 and " +
+                    "coalesce(wage_category,1)=1")) {
                 employeeCbModel.addElement(ci);
             }
             employeeCB = new JComboBox(employeeCbModel);

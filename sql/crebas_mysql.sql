@@ -1674,6 +1674,39 @@ create table xcashdrawn
     constraint xcashdrawn_pk primary key (xcashdrawn_id)
 );
 
+create table xmachineorder
+(
+    xmachineorder_id    int not null auto_increment,
+    issue_date          date not null,
+    require_date        date not null,
+    xemployee_id        int not null,
+    xsite_id            int not null,
+    xclient_id          int,
+    xorder_id           int,
+    site_address        varchar(128),
+    distance2site       int,
+    foreman_req_plant   varchar(128),
+    foreman_contact     varchar(128),
+    constraint xmachineorder_pk primary key (xmachineorder_id),
+    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
+    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
+    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),
+    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)
+);
+
+create table xmachineorderitm
+(
+    xmachineorderitm_id int not null auto_increment,
+    xmachineorder_id    int not null,
+    xmachine_id         int not null,
+    xemployee_id        int not null,
+    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),
+    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id),
+    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
+    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)
+);
+
+
 #----------------- auxiliary tables -------------------
 
 create or replace view v_userprofile as

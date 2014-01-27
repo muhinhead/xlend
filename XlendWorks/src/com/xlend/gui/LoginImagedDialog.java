@@ -152,6 +152,18 @@ public class LoginImagedDialog extends PopupDialog {
         }));
         m.add(XlendWorks.appearanceMenu("Theme",this));
         bar.add(m);
+        m.add(new JMenuItem(new AbstractAction("Export dump"){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String dumpFile = XlendWorks.makeBackup();
+                if (dumpFile!=null) {
+                    JOptionPane.showMessageDialog(null, "Database dump exported to "
+                            +dumpFile,
+                    "Backup succeed", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }));
+        bar.add(m);
         setJMenuBar(bar);
     }
 

@@ -1,6 +1,7 @@
 package com.xlend.gui;
 
 import com.jidesoft.swing.JideTabbedPane;
+import static com.xlend.gui.GeneralFrame.errMessageBox;
 import com.xlend.gui.work.*;
 import com.xlend.remote.IMessageSender;
 import java.awt.Component;
@@ -21,8 +22,10 @@ public class DocFrame extends GeneralFrame {
     private GeneralGridPanel suppliersPanel = null;
     private GeneralGridPanel paymentsPanel = null;
     private GeneralGridPanel hourComparePanel = null;
+    private GeneralGridPanel internalOrderPlacementsPanel = null;
     private static String[] sheetList = new String[]{
-        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Payments", "Hour Comparison"
+        "Contracts", "RFQ/Quotes", "Orders", "Clients", "Suppliers", "Payments", 
+        "Hour Comparison", "Machine Order Placements"
     };
 
     public DocFrame(IMessageSender exch) {
@@ -62,6 +65,9 @@ public class DocFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
             workTab.addTab(getHourComparePanel(), sheets()[6]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[7])) {
+            workTab.addTab(getInternalOrderPlacementsPanel(), sheets()[7]);
         }
 //        workTab.setShowTabButtons(true);
 //        workTab.setBoldActiveTab(true);
@@ -152,5 +158,17 @@ public class DocFrame extends GeneralFrame {
             }
         }
         return hourComparePanel;
+    }
+    
+    private JPanel getInternalOrderPlacementsPanel() {
+        if (internalOrderPlacementsPanel == null) {
+            try {
+                registerGrid(internalOrderPlacementsPanel = new InternalMachineOrderPlacementGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return internalOrderPlacementsPanel;
     }
 }

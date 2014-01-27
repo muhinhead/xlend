@@ -11,12 +11,15 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.ExchangeFactory;
+import com.xlend.util.FileFilterOnExtension;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.Date;
@@ -30,8 +33,10 @@ import java.util.logging.SimpleFormatter;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -47,6 +52,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
+    public static final String version = "0.84";
+    public static String protocol = "unknown";
     private static IMessageSender exchanger;
 
     /**
@@ -252,8 +259,6 @@ public class XlendWorks {
             return s.substring(8) + "/" + s.substring(5, 7) + "/" + s.substring(0, 4);
         }
     };
-    public static final String version = "0.83.E";
-    public static String protocol = "unknown";
     private static Userprofile currentUser;
     private static Logger logger = null;
     private static FileHandler fh;
@@ -1613,5 +1618,86 @@ public class XlendWorks {
             }
         }
         return "";
+    }
+
+    private static String pickPath2MySQLdump() {
+        JFileChooser chooser = new JFileChooser("./");
+        chooser.setFileFilter(new FileFilterOnExtension("exe"));
+        chooser.setDialogTitle("Specify the path to the program mysqldump.exe");
+        chooser.setApproveButtonText("Choose");
+        int retVal = chooser.showOpenDialog(null);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile().getAbsolutePath();
+        }
+        return null;
+    }
+
+    public static String makeBackup() {
+        Process p;
+        String mysqlDumpPath = DashBoard.readProperty("dbDump", "unknown");
+//                "E:\\Program Files\\MySQL\\MySQL Server 5.1\\bi\\mysqldump.exe");//findPath(DbConnection.getBackupCommand());
+        if (mysqlDumpPath.equals("unknown")) {
+            mysqlDumpPath = pickPath2MySQLdump();
+            if (mysqlDumpPath == null) {
+                JOptionPane.showMessageDialog(null, "Data backup skipped\nServer will work as usually",
+                        "Attention!", JOptionPane.ERROR_MESSAGE);
+                return null;
+            } else {
+                DashBoard.getProperties().setProperty("dbDump", mysqlDumpPath);
+                DashBoard.saveProps();
+            }
+        }
+        String[] runCmd = new String[]{mysqlDumpPath, "-u",
+            DashBoard.readProperty("dbUser", "root"), "-p" + DashBoard.readProperty("dbPassword", "root"), 
+            "xlend"
+        };
+        Calendar cal = Calendar.getInstance();
+        String dumpFileName = "xlend-" + cal.get(Calendar.YEAR) + "-"
+                + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + ".dmp";
+        File dump = new File(dumpFileName);
+        cal.add(Calendar.DATE, -5);
+        String fileToRemove = "xlend-" + cal.get(Calendar.YEAR) + "-"
+                + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH)
+                + ".dmp";
+
+        DataInputStream std = null;
+        DataInputStream stderr = null;
+        FileOutputStream dumpStream = null;
+        try {
+            p = Runtime.getRuntime().exec(runCmd);
+            stderr = new DataInputStream(p.getInputStream());
+            std = new DataInputStream(p.getInputStream());
+            dumpStream = new FileOutputStream(dump);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = std.read(buf)) > 0) {
+                dumpStream.write(buf, 0, len);
+            }
+            StringBuffer errbuff = new StringBuffer();
+            String line;
+            while ((line = stderr.readLine()) != null) {
+                errbuff.append(line);
+            }
+            if (errbuff.length() > 0) {
+                JOptionPane.showMessageDialog(null, errbuff.toString(),
+                        "Backup error:", JOptionPane.ERROR_MESSAGE);
+            }
+            return dumpFileName;
+        } catch (Exception ex) {
+            log(ex);
+            JOptionPane.showMessageDialog(null, ex.getMessage() 
+                    + "\nThe programm will work as usually",
+                    "Backup failed", JOptionPane.WARNING_MESSAGE);
+            return null;
+        } finally {
+            try {
+                if (dumpStream != null) {
+                    dumpStream.flush();
+                    dumpStream.close();
+                }
+            } catch (IOException ioe) {
+            }
+        }
     }
 }

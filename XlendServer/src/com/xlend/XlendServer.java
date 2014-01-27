@@ -43,7 +43,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.83.a";
+    private static final String version = "0.84";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

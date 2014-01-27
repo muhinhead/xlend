@@ -187,6 +187,14 @@ public class Selects {
             + "concat(d.clock_num,' ',d.first_name) \"Driver\", concat(a.clock_num,' ',a.first_name) \"Assistant\" "
             + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
             + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id";
+    public static final String SELECT_FROM_MACHINEORDERS = 
+            "Select xmachineorder_id \"Id\", to_char(issue_date,'DD/MM/YYYY') \"Date of Issue\","
+            + "to_char(require_date,'DD/MM/YYYY') \"Date Required\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmachineorder.xemployee_id) \"Requested by\","
+            + "(select name from xsite where xsite_id=xmachineorder.xsite_id) \"Site\","
+            + "(select companyname from xclient where xclient_id=xmachineorder.xclient_id) \"Client\","
+            + "(select ordernumber from xorder where xorder_id=xmachineorder.xorder_id) \"Order No\" "
+            + "from xmachineorder";
     public static final String SELECT_FROM_MACHINE =
             "Select xmachine_id \"IId\", concat(m.classify,m.tmvnr) \"TMVnr\", "
             + "(select machtype from xmachtype where xmachtype_id=m.xmachtype_id) \"Machine Type\", reg_nr \"Reg.Nr\", "

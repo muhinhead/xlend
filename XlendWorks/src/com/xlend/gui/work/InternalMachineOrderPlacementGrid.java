@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -47,16 +48,43 @@ public class InternalMachineOrderPlacementGrid extends GeneralGridPanel {
                 }
             }
         };
-        /*
-   return new AbstractAction("New Company Vehicle") {
+    }
+
+    @Override
+    protected AbstractAction editAction() {
+        return new AbstractAction("Edit Machine Order Placement") {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                int id = getSelectedID();
+                if (id > 0) {
+                    try {
+                        Xmachineorder mo = (Xmachineorder) exchanger.loadDbObjectOnID(Xmachineorder.class, id);
+                        new EditMachineOrderPlacementDialog("Edit Machine Order Placement", mo);
+                        if (EditMachineOrderPlacementDialog.okPressed) {
+                            GeneralFrame.updateGrid(exchanger, getTableView(),
+                                    getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+                        }
+                    } catch (RemoteException ex) {
+                        XlendWorks.log(ex);
+                        GeneralFrame.errMessageBox("Error:", ex.getMessage());
+                    }
+                }
+            }
+        };
+    }
+
+    @Override
+    protected AbstractAction delAction() {
+        return new AbstractAction("Delete Machine Order Placement") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int id = getSelectedID();
                 try {
-                    EditCompanyVehicleDialog ed = new EditCompanyVehicleDialog("New Company Vehicle", null);
-                    if (EditCompanyVehicleDialog.okPressed) {
-                        Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
-                        GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), machine.getXmachineId(), getPageSelector().getSelectedIndex());
+                    Xmachineorder mo = (Xmachineorder) exchanger.loadDbObjectOnID(Xmachineorder.class, id);
+                    if (mo != null && GeneralFrame.yesNo("Attention!", "Do you want to delete this row?") == JOptionPane.YES_OPTION) {
+                        exchanger.deleteObject(mo);
+                        GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());
                     }
                 } catch (RemoteException ex) {
                     XlendWorks.log(ex);
@@ -64,17 +92,5 @@ public class InternalMachineOrderPlacementGrid extends GeneralGridPanel {
                 }
             }
         };
-         */
-//        return null;
-    }
-
-    @Override
-    protected AbstractAction editAction() {
-        return null;
-    }
-
-    @Override
-    protected AbstractAction delAction() {
-        return null;
     }    
 }

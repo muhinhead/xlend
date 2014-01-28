@@ -559,41 +559,18 @@ public class XlendWorks {
         return loadSites("is_active=1");
     }
 
+    public static ComboItem[] loadAllOrdersWOadd() {
+        return loadOnSelect("select xorder_id,concat('Order Nr:',ordernumber) "
+                + "from xorder where not ordernumber is null and ordernumber<>''");
+    }
+    
     public static ComboItem[] loadAllOrders() {
-//        try {
-//            DbObject[] orders = exchanger.getDbObjects(Xorder.class, null, "ordernumber");
-//            ComboItem[] itms = new ComboItem[orders.length + 2];
-//            itms[0] = new ComboItem(-1, "--ORDER NOT RECEIVED--");
-//            itms[1] = new ComboItem(0, "--Add new order--");
-//            int i = 2;
-//            for (DbObject o : orders) {
-//                Xorder xorder = (Xorder) o;
-//                itms[i++] = new ComboItem(xorder.getXorderId(), "Order Nr:" + xorder.getOrdernumber());
-//            }
-//            return itms;
-//        } catch (RemoteException ex) {
-//            log(ex);
-//        }
-//        return null;
         return loadOnSelect("select -1 as xorder_id,'--ORDER NOT RECEIVED--' as ordernumber "
                 + "union select 0,'--Add new order--' "
                 + "union select xorder_id,concat('Order Nr:',ordernumber) from xorder order by ordernumber");
     }
 
     public static ComboItem[] loadRootMachTypes(String classify) {
-//        try {
-//            DbObject[] clients = exchanger.getDbObjects(Xmachtype.class, "parenttype_id is null and classify in ('" + classify + "')", "xmachtype_id");
-//            ComboItem[] itms = new ComboItem[clients.length];
-//            int i = 0;
-//            for (DbObject o : clients) {
-//                Xmachtype tp = (Xmachtype) o;
-//                itms[i++] = new ComboItem(tp.getXmachtypeId(), tp.getMachtype());
-//            }
-//            return itms;
-//        } catch (RemoteException ex) {
-//            log(ex);
-//        }
-//        return null;
         return loadOnSelect("select xmachtype_id,machtype "
                 + "from xmachtype "
                 + "where parenttype_id is null "

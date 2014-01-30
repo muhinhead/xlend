@@ -42,8 +42,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 50;
-    public static final String DB_VERSION = "0.50";
+    private static final int DB_VERSION_ID = 51;
+    public static final String DB_VERSION = "0.51";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -70,7 +70,38 @@ public class DbConnection {
         //        "alter table xpettyitem modify amount decimal(10,2)",
         // 49->50
         "alter table xemployee add notes text",
-        "alter table xsupplier add is_fuel_suppllier bit default 0"
+        "alter table xsupplier add is_fuel_suppllier bit default 0",
+        // 50->51
+        "create table xmachineorder"
+        + "("
+        + "    xmachineorder_id    int not null auto_increment,"
+        + "    issue_date          date not null,"
+        + "    require_date        date not null,"
+        + "    xemployee_id        int not null,"
+        + "    xsite_id            int not null,"
+        + "    xclient_id          int,"
+        + "    xorder_id           int,"
+        + "    site_address        varchar(128),"
+        + "    distance2site       int,"
+        + "    foreman_req_plant   varchar(128),"
+        + "    foreman_contact     varchar(128),"
+        + "    constraint xmachineorder_pk primary key (xmachineorder_id),"
+        + "    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
+        + "    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
+        + "    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),"
+        + "    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)"
+        + ")",
+        "create table xmachineorderitm"
+        + "("
+        + "    xmachineorderitm_id int not null auto_increment,"
+        + "    xmachineorder_id    int not null,"
+        + "    xmachine_id         int not null,"
+        + "    xemployee_id        int not null,"
+        + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
+        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id),"
+        + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
+        + ")"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

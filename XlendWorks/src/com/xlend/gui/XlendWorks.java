@@ -52,7 +52,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
-    public static final String version = "0.84";
+    public static final String version = "0.84.a";
     public static String protocol = "unknown";
     private static IMessageSender exchanger;
 

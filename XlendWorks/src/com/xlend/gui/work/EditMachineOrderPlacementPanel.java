@@ -23,6 +23,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -359,7 +361,7 @@ public class EditMachineOrderPlacementPanel extends RecordEditPanel {
     }
 
     private JPanel createItmBtnPanel() {
-        JPanel itemBtnPanel = new JPanel(new GridLayout(1, 2));
+        JPanel itemBtnPanel = new JPanel(new GridLayout(1, 4));
         JButton addBtn;
         itemBtnPanel.add(addBtn = new JButton(new AbstractAction("+") {
             @Override
@@ -392,6 +394,22 @@ public class EditMachineOrderPlacementPanel extends RecordEditPanel {
             }
         }));
         delBtn.setToolTipText("Delete Item(s)");
+        itemBtnPanel.add(new JPanel());
+        itemBtnPanel.add(new JButton(new AbstractAction("Print"){
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    //TODO
+                    if (getDbObject()!=null || save()) {
+                        Xmachineorder mo = (Xmachineorder) getDbObject();
+                        new PrintMachineOrderDialog(mo.getXmachineorderId());
+                    }
+                } catch (Exception ex) {
+                    XlendWorks.logAndShowMessage(ex);
+                }
+            }
+        }));
         return itemBtnPanel;
     }
 

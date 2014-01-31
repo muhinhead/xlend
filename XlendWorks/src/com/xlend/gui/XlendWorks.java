@@ -52,9 +52,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
-    public static final String version = "0.84.a";
+    public static final String version = "0.84.b";
     public static String protocol = "unknown";
+    public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
+    private static String homeDir;
 
     /**
      * @return the exchanger
@@ -84,6 +86,7 @@ public class XlendWorks {
                     String[] dbParams = cnctStr.split(";");
                     XlendWorks.setExchanger(ExchangeFactory.createJDBCexchanger(dbParams));
                 }
+                DashBoard.saveProperties();
             } catch (Exception ex) {
                 XlendWorks.logAndShowMessage(ex);
                 System.exit(1);
@@ -244,6 +247,13 @@ public class XlendWorks {
         return null;
     }
 
+    /**
+     * @return the currentDir
+     */
+    public static String getHomeDir() {
+        return homeDir;
+    }
+
     public static class XDate extends java.sql.Date {
 
         public XDate(long t) {
@@ -276,22 +286,28 @@ public class XlendWorks {
 //            System.out.println("Vr:["+osVersion+"]");
 
             System.out.println("Current dir:" + current);
-            String currentDir = System.getProperty("user.dir");
-            System.out.println("Current dir using System:" + currentDir);
+            homeDir = System.getProperty("user.home") + File.separator;
+            System.out.println("Current dir using System:" + getHomeDir());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
-        String serverIP = DashBoard.readProperty("ServerAddress", "localhost");
+        String serverIP = DashBoard.readProperty("ServerAddress", defaultServerIP);
         while (true) {
             try {
                 IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
                 if (exc == null) {
-                    exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://localhost/xlend"),
+                    exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://"
+                            + defaultServerIP
+                            + "/xlend"),
                             DashBoard.getProperties());
                 }
-                setExchanger(exc);
-                if (matchVersions() && login()) {
+                if (exc == null) {
+                    XlendWorks.configureConnection();
+                } else {
+                    setExchanger(exc);
+                }
+                if (getExchanger() != null && matchVersions() && login()) {
                     new DashBoard(getExchanger());
                     break;
                 } else {
@@ -383,7 +399,7 @@ public class XlendWorks {
 
     public static String serverSetup(String title) {
         String cnctStr = null;
-        String address = DashBoard.readProperty("ServerAddress", "localhost");
+        String address = DashBoard.readProperty("ServerAddress", defaultServerIP);
         String[] vals = address.split(":");
         JTextField imageDirField = new JTextField(DashBoard.getProperties().getProperty("imagedir"));
         JTextField addressField = new JTextField(16);
@@ -391,7 +407,9 @@ public class XlendWorks {
         JSpinner portSpinner = new JSpinner(new SpinnerNumberModel(
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
         JTextField dbConnectionField = new JTextField(DashBoard.getProperties()
-                .getProperty("JDBCconnection", "jdbc:mysql://localhost/xlend"));
+                .getProperty("JDBCconnection", "jdbc:mysql://"
+                + defaultServerIP
+                + "/xlend"));
         JTextField dbDriverField = new JTextField(DashBoard.getProperties()
                 .getProperty("dbDriverName", "com.mysql.jdbc.Driver"));
         JTextField dbUserField = new JTextField(DashBoard.getProperties()
@@ -415,6 +433,10 @@ public class XlendWorks {
                         + dbConnectionField.getText() + ";"
                         + dbUserField.getText() + ";"
                         + new String(dbPasswordField.getPassword());
+                DashBoard.getProperties().setProperty("JDBCconnection", dbConnectionField.getText());
+                DashBoard.getProperties().setProperty("dbDriverName", dbDriverField.getText());
+                DashBoard.getProperties().setProperty("dbUser", dbUserField.getText());
+                DashBoard.getProperties().setProperty("dbPassword", new String(dbPasswordField.getPassword()));
             }
         }
         return cnctStr;
@@ -563,7 +585,7 @@ public class XlendWorks {
         return loadOnSelect("select xorder_id,concat('Order Nr:',ordernumber) "
                 + "from xorder where not ordernumber is null and ordernumber<>''");
     }
-    
+
     public static ComboItem[] loadAllOrders() {
         return loadOnSelect("select -1 as xorder_id,'--ORDER NOT RECEIVED--' as ordernumber "
                 + "union select 0,'--Add new order--' "
@@ -1625,7 +1647,7 @@ public class XlendWorks {
             }
         }
         String[] runCmd = new String[]{mysqlDumpPath, "-u",
-            DashBoard.readProperty("dbUser", "root"), "-p" + DashBoard.readProperty("dbPassword", "root"), 
+            DashBoard.readProperty("dbUser", "root"), "-p" + DashBoard.readProperty("dbPassword", "root"),
             "xlend"
         };
         Calendar cal = Calendar.getInstance();
@@ -1663,7 +1685,7 @@ public class XlendWorks {
             return dumpFileName;
         } catch (Exception ex) {
             log(ex);
-            JOptionPane.showMessageDialog(null, ex.getMessage() 
+            JOptionPane.showMessageDialog(null, ex.getMessage()
                     + "\nThe programm will work as usually",
                     "Backup failed", JOptionPane.WARNING_MESSAGE);
             return null;

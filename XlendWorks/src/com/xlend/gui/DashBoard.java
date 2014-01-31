@@ -76,21 +76,21 @@ public class DashBoard extends AbstractDashBoard {
     protected void fillControlsPanel() throws HeadlessException {
         ImagePanel img = new ImagePanel(XlendWorks.loadImage("AdminFX.png", this));
 
-        adminButton = new ToolBarButton("AdminFX.png",true);
+        adminButton = new ToolBarButton("AdminFX.png", true);
         adminButton.setBounds(75, 37, img.getWidth(), img.getHeight());
         main.add(adminButton);
         adminButton.setVisible(XlendWorks.isCurrentAdmin());
 
-        docsButton = new ToolBarButton("Docs.png",true);
-        sitesButton = new ToolBarButton("Sites.png",true);
-        reportsButton = new ToolBarButton("Reports.png",true);
-        hrbutton = new ToolBarButton("HR.png",true);
-        partsbutton = new ToolBarButton("Parts.png",true);
-        fleetbutton = new ToolBarButton("Fleet.png",true);
-        bankingbutton = new ToolBarButton("Banking.png",true);
-        logisticsButton = new ToolBarButton("Logistics.png",true);
-        logoutButton = new ToolBarButton("ExitFX.png",true);
-        fuelButton = new ToolBarButton("Fuel.png",true);
+        docsButton = new ToolBarButton("Docs.png", true);
+        sitesButton = new ToolBarButton("Sites.png", true);
+        reportsButton = new ToolBarButton("Reports.png", true);
+        hrbutton = new ToolBarButton("HR.png", true);
+        partsbutton = new ToolBarButton("Parts.png", true);
+        fleetbutton = new ToolBarButton("Fleet.png", true);
+        bankingbutton = new ToolBarButton("Banking.png", true);
+        logisticsButton = new ToolBarButton("Logistics.png", true);
+        logoutButton = new ToolBarButton("ExitFX.png", true);
+        fuelButton = new ToolBarButton("Fuel.png", true);
 
         img = new ImagePanel(XlendWorks.loadImage("Docs.png", this));
         docsButton.setBounds(32, 285, img.getWidth(), img.getHeight());
@@ -135,7 +135,7 @@ public class DashBoard extends AbstractDashBoard {
         img = new ImagePanel(XlendWorks.loadImage("Fuel.png", this));
         fuelButton.setBounds(590, 445, img.getWidth(), img.getHeight());
         main.add(fuelButton);
-        
+
         img = new ImagePanel(XlendWorks.loadImage("ExitFX.png", this));
         logoutButton.setBounds(dashWidth - img.getWidth() - 76, 37, img.getWidth(), img.getHeight());
         main.add(logoutButton);
@@ -466,10 +466,16 @@ public class DashBoard extends AbstractDashBoard {
         addWindowListener(new DashBoard.WinListener(this));
     }
 
+    private static String getPropertyFileName() {
+        String propFileName = (new File(PROPERTYFILENAME).exists() ? PROPERTYFILENAME : XlendWorks.getHomeDir()+PROPERTYFILENAME);
+        System.out.println("!!!! propFileName="+propFileName);
+        return propFileName;
+    }
+    
     public static void saveProperties() {
         try {
             if (props != null) {
-                props.store(new FileOutputStream(PROPERTYFILENAME),
+                props.store(new FileOutputStream(getPropertyFileName()),
                         "-----------------------");
             }
         } catch (IOException e) {
@@ -483,7 +489,8 @@ public class DashBoard extends AbstractDashBoard {
             if (XlendWorks.getCurrentUser() != null) {
                 props.setProperty(LASTLOGIN, XlendWorks.getCurrentUser().getLogin());
             }
-            props.setProperty("ServerAddress", props.getProperty("ServerAddress", "localhost:1099"));
+            props.setProperty("ServerAddress", props.getProperty("ServerAddress", 
+                    XlendWorks.defaultServerIP + ":1099"));
         }
         Preferences userPref = Preferences.userRoot();
         saveProperties();
@@ -498,11 +505,11 @@ public class DashBoard extends AbstractDashBoard {
         if (null == props) {
             props = new Properties();
             try {
-                File propFile = new File(PROPERTYFILENAME);
+                File propFile = new File(getPropertyFileName());
                 if (!propFile.exists() || propFile.length() == 0) {
-                    String curPath = propFile.getAbsolutePath();
-                    curPath = curPath.substring(0,
-                            curPath.indexOf(PROPERTYFILENAME)).replace('\\', '/');
+//                    String curPath = propFile.getAbsolutePath();
+//                    curPath = curPath.substring(0,
+//                            curPath.indexOf(getPropertyFileName())).replace('\\', '/');
                     props.setProperty("user", "admin");
                     props.setProperty("userPassword", "admin");
                     propFile.createNewFile();

@@ -25,7 +25,7 @@ import javax.swing.JEditorPane;
 public class MachineOrderReport extends GeneralReportPanel {
 
     public MachineOrderReport(IMessageSender exchanger, Integer xmachineorderID) {
-        super(exchanger, xmachineorderID);
+        super(exchanger, xmachineorderID, 90);
         updateReport();
     }
 

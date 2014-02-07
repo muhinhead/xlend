@@ -28,7 +28,7 @@ public class AssignmentsReport extends GeneralReportPanel {
     private final String OLD_WHERE = "where a.date_end is null";
 
     public AssignmentsReport(IMessageSender exchanger) {
-        super(exchanger);
+        super(exchanger, null);
         upperPane.add(new JLabel("On date:"));
         upperPane.add(onDateSP = new SelectedDateSpinner());
         upperPane.add(filterBtn = new JButton(new AbstractAction("show") {//null, new ImageIcon(Util.loadImage("filter-icon.png"))) {

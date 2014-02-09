@@ -358,7 +358,7 @@ public class Selects {
             "Select xpayment_id \"Id\", companyname \"Supplier\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "
             + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=paydby_id and clock_num<>'000') \"Paid By\" "
             + "from xpayment, xsupplier, cbitems "
-            + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom "
+            + "where xsupplier.xsupplier_id=xpayment.xsupplier_id and cbitems.id=xpayment.paidfrom and cbitems.name='paidfrom' "
             + "order by paydate desc";
     public static final String SELECT_SUPPLIERS_PAYMENTS =
             "Select xpayment_id \"Id\", to_char(paydate,'DD/MM/YYYY') \"Pay Date\", round(ammount,2) \"Amount\", val \"Paid From\", "

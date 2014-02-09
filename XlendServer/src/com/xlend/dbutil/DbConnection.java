@@ -98,7 +98,7 @@ public class DbConnection {
         + "    xmachine_id         int not null,"
         + "    xemployee_id        int not null,"
         + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
-        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id),"
+        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id) on delete cascade,"
         + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
         + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
         + ")"

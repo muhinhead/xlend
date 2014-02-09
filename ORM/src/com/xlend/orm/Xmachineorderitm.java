@@ -8,41 +8,44 @@ import com.xlend.orm.dbobject.Triggers;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Xemployeeincident extends DbObject  {
+public class Xmachineorderitm extends DbObject  {
     private static Triggers activeTriggers = null;
-    private Integer xemployeeincidentId = null;
-    private Integer xincidentsId = null;
+    private Integer xmachineorderitmId = null;
+    private Integer xmachineorderId = null;
+    private Integer xmachineId = null;
     private Integer xemployeeId = null;
 
-    public Xemployeeincident(Connection connection) {
-        super(connection, "xemployeeincident", "xemployeeincident_id");
-        setColumnNames(new String[]{"xemployeeincident_id", "xincidents_id", "xemployee_id"});
+    public Xmachineorderitm(Connection connection) {
+        super(connection, "xmachineorderitm", "xmachineorderitm_id");
+        setColumnNames(new String[]{"xmachineorderitm_id", "xmachineorder_id", "xmachine_id", "xemployee_id"});
     }
 
-    public Xemployeeincident(Connection connection, Integer xemployeeincidentId, Integer xincidentsId, Integer xemployeeId) {
-        super(connection, "xemployeeincident", "xemployeeincident_id");
-        setNew(xemployeeincidentId.intValue() <= 0);
-//        if (xemployeeincidentId.intValue() != 0) {
-            this.xemployeeincidentId = xemployeeincidentId;
+    public Xmachineorderitm(Connection connection, Integer xmachineorderitmId, Integer xmachineorderId, Integer xmachineId, Integer xemployeeId) {
+        super(connection, "xmachineorderitm", "xmachineorderitm_id");
+        setNew(xmachineorderitmId.intValue() <= 0);
+//        if (xmachineorderitmId.intValue() != 0) {
+            this.xmachineorderitmId = xmachineorderitmId;
 //        }
-        this.xincidentsId = xincidentsId;
+        this.xmachineorderId = xmachineorderId;
+        this.xmachineId = xmachineId;
         this.xemployeeId = xemployeeId;
     }
 
     public DbObject loadOnId(int id) throws SQLException, ForeignKeyViolationException {
-        Xemployeeincident xemployeeincident = null;
+        Xmachineorderitm xmachineorderitm = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xemployeeincident_id,xincidents_id,xemployee_id FROM xemployeeincident WHERE xemployeeincident_id=" + id;
+        String stmt = "SELECT xmachineorderitm_id,xmachineorder_id,xmachine_id,xemployee_id FROM xmachineorderitm WHERE xmachineorderitm_id=" + id;
         try {
             ps = getConnection().prepareStatement(stmt);
             rs = ps.executeQuery();
             if (rs.next()) {
-                xemployeeincident = new Xemployeeincident(getConnection());
-                xemployeeincident.setXemployeeincidentId(new Integer(rs.getInt(1)));
-                xemployeeincident.setXincidentsId(new Integer(rs.getInt(2)));
-                xemployeeincident.setXemployeeId(new Integer(rs.getInt(3)));
-                xemployeeincident.setNew(false);
+                xmachineorderitm = new Xmachineorderitm(getConnection());
+                xmachineorderitm.setXmachineorderitmId(new Integer(rs.getInt(1)));
+                xmachineorderitm.setXmachineorderId(new Integer(rs.getInt(2)));
+                xmachineorderitm.setXmachineId(new Integer(rs.getInt(3)));
+                xmachineorderitm.setXemployeeId(new Integer(rs.getInt(4)));
+                xmachineorderitm.setNew(false);
             }
         } finally {
             try {
@@ -51,7 +54,7 @@ public class Xemployeeincident extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        return xemployeeincident;
+        return xmachineorderitm;
     }
 
     protected void insert() throws SQLException, ForeignKeyViolationException {
@@ -60,27 +63,28 @@ public class Xemployeeincident extends DbObject  {
          }
          PreparedStatement ps = null;
          String stmt =
-                "INSERT INTO xemployeeincident ("+(getXemployeeincidentId().intValue()!=0?"xemployeeincident_id,":"")+"xincidents_id,xemployee_id) values("+(getXemployeeincidentId().intValue()!=0?"?,":"")+"?,?)";
+                "INSERT INTO xmachineorderitm ("+(getXmachineorderitmId().intValue()!=0?"xmachineorderitm_id,":"")+"xmachineorder_id,xmachine_id,xemployee_id) values("+(getXmachineorderitmId().intValue()!=0?"?,":"")+"?,?,?)";
          try {
              ps = getConnection().prepareStatement(stmt);
              int n = 0;
-             if (getXemployeeincidentId().intValue()!=0) {
-                 ps.setObject(++n, getXemployeeincidentId());
+             if (getXmachineorderitmId().intValue()!=0) {
+                 ps.setObject(++n, getXmachineorderitmId());
              }
-             ps.setObject(++n, getXincidentsId());
+             ps.setObject(++n, getXmachineorderId());
+             ps.setObject(++n, getXmachineId());
              ps.setObject(++n, getXemployeeId());
              ps.execute();
          } finally {
              if (ps != null) ps.close();
          }
          ResultSet rs = null;
-         if (getXemployeeincidentId().intValue()==0) {
-             stmt = "SELECT max(xemployeeincident_id) FROM xemployeeincident";
+         if (getXmachineorderitmId().intValue()==0) {
+             stmt = "SELECT max(xmachineorderitm_id) FROM xmachineorderitm";
              try {
                  ps = getConnection().prepareStatement(stmt);
                  rs = ps.executeQuery();
                  if (rs.next()) {
-                     setXemployeeincidentId(new Integer(rs.getInt(1)));
+                     setXmachineorderitmId(new Integer(rs.getInt(1)));
                  }
              } finally {
                  try {
@@ -106,13 +110,14 @@ public class Xemployeeincident extends DbObject  {
             }
             PreparedStatement ps = null;
             String stmt =
-                    "UPDATE xemployeeincident " +
-                    "SET xincidents_id = ?, xemployee_id = ?" + 
-                    " WHERE xemployeeincident_id = " + getXemployeeincidentId();
+                    "UPDATE xmachineorderitm " +
+                    "SET xmachineorder_id = ?, xmachine_id = ?, xemployee_id = ?" + 
+                    " WHERE xmachineorderitm_id = " + getXmachineorderitmId();
             try {
                 ps = getConnection().prepareStatement(stmt);
-                ps.setObject(1, getXincidentsId());
-                ps.setObject(2, getXemployeeId());
+                ps.setObject(1, getXmachineorderId());
+                ps.setObject(2, getXmachineId());
+                ps.setObject(3, getXemployeeId());
                 ps.execute();
             } finally {
                 if (ps != null) ps.close();
@@ -130,29 +135,29 @@ public class Xemployeeincident extends DbObject  {
         }
         PreparedStatement ps = null;
         String stmt =
-                "DELETE FROM xemployeeincident " +
-                "WHERE xemployeeincident_id = " + getXemployeeincidentId();
+                "DELETE FROM xmachineorderitm " +
+                "WHERE xmachineorderitm_id = " + getXmachineorderitmId();
         try {
             ps = getConnection().prepareStatement(stmt);
             ps.execute();
         } finally {
             if (ps != null) ps.close();
         }
-        setXemployeeincidentId(new Integer(-getXemployeeincidentId().intValue()));
+        setXmachineorderitmId(new Integer(-getXmachineorderitmId().intValue()));
         if (getTriggers() != null) {
             getTriggers().afterDelete(this);
         }
     }
 
     public boolean isDeleted() {
-        return (getXemployeeincidentId().intValue() < 0);
+        return (getXmachineorderitmId().intValue() < 0);
     }
 
     public static DbObject[] load(Connection con,String whereCondition,String orderCondition) throws SQLException {
         ArrayList lst = new ArrayList();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xemployeeincident_id,xincidents_id,xemployee_id FROM xemployeeincident " +
+        String stmt = "SELECT xmachineorderitm_id,xmachineorder_id,xmachine_id,xemployee_id FROM xmachineorderitm " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 " WHERE " + whereCondition : "") +
                 ((orderCondition != null && orderCondition.length() > 0) ?
@@ -162,7 +167,7 @@ public class Xemployeeincident extends DbObject  {
             rs = ps.executeQuery();
             while (rs.next()) {
                 DbObject dbObj;
-                lst.add(dbObj=new Xemployeeincident(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3))));
+                lst.add(dbObj=new Xmachineorderitm(con,new Integer(rs.getInt(1)),new Integer(rs.getInt(2)),new Integer(rs.getInt(3)),new Integer(rs.getInt(4))));
                 dbObj.setNew(false);
             }
         } finally {
@@ -172,10 +177,10 @@ public class Xemployeeincident extends DbObject  {
                 if (ps != null) ps.close();
             }
         }
-        Xemployeeincident[] objects = new Xemployeeincident[lst.size()];
+        Xmachineorderitm[] objects = new Xmachineorderitm[lst.size()];
         for (int i = 0; i < lst.size(); i++) {
-            Xemployeeincident xemployeeincident = (Xemployeeincident) lst.get(i);
-            objects[i] = xemployeeincident;
+            Xmachineorderitm xmachineorderitm = (Xmachineorderitm) lst.get(i);
+            objects[i] = xmachineorderitm;
         }
         return objects;
     }
@@ -187,7 +192,7 @@ public class Xemployeeincident extends DbObject  {
         boolean ok = false;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String stmt = "SELECT xemployeeincident_id FROM xemployeeincident " +
+        String stmt = "SELECT xmachineorderitm_id FROM xmachineorderitm " +
                 ((whereCondition != null && whereCondition.length() > 0) ?
                 "WHERE " + whereCondition : "");
         try {
@@ -205,39 +210,51 @@ public class Xemployeeincident extends DbObject  {
     }
 
     //public String toString() {
-    //    return getXemployeeincidentId() + getDelimiter();
+    //    return getXmachineorderitmId() + getDelimiter();
     //}
 
     public Integer getPK_ID() {
-        return xemployeeincidentId;
+        return xmachineorderitmId;
     }
 
     public void setPK_ID(Integer id) throws ForeignKeyViolationException {
         boolean prevIsNew = isNew();
-        setXemployeeincidentId(id);
+        setXmachineorderitmId(id);
         setNew(prevIsNew);
     }
 
-    public Integer getXemployeeincidentId() {
-        return xemployeeincidentId;
+    public Integer getXmachineorderitmId() {
+        return xmachineorderitmId;
     }
 
-    public void setXemployeeincidentId(Integer xemployeeincidentId) throws ForeignKeyViolationException {
-        setWasChanged(this.xemployeeincidentId != null && this.xemployeeincidentId != xemployeeincidentId);
-        this.xemployeeincidentId = xemployeeincidentId;
-        setNew(xemployeeincidentId.intValue() == 0);
+    public void setXmachineorderitmId(Integer xmachineorderitmId) throws ForeignKeyViolationException {
+        setWasChanged(this.xmachineorderitmId != null && this.xmachineorderitmId != xmachineorderitmId);
+        this.xmachineorderitmId = xmachineorderitmId;
+        setNew(xmachineorderitmId.intValue() == 0);
     }
 
-    public Integer getXincidentsId() {
-        return xincidentsId;
+    public Integer getXmachineorderId() {
+        return xmachineorderId;
     }
 
-    public void setXincidentsId(Integer xincidentsId) throws SQLException, ForeignKeyViolationException {
-        if (xincidentsId!=null && !Xincidents.exists(getConnection(),"xincidents_id = " + xincidentsId)) {
-            throw new ForeignKeyViolationException("Can't set xincidents_id, foreign key violation: xemployeeincident_xincidents_fk");
+    public void setXmachineorderId(Integer xmachineorderId) throws SQLException, ForeignKeyViolationException {
+        if (xmachineorderId!=null && !Xmachineorder.exists(getConnection(),"xmachineorder_id = " + xmachineorderId)) {
+            throw new ForeignKeyViolationException("Can't set xmachineorder_id, foreign key violation: xmachineorderitm_xmachineorder_fk");
         }
-        setWasChanged(this.xincidentsId != null && !this.xincidentsId.equals(xincidentsId));
-        this.xincidentsId = xincidentsId;
+        setWasChanged(this.xmachineorderId != null && !this.xmachineorderId.equals(xmachineorderId));
+        this.xmachineorderId = xmachineorderId;
+    }
+
+    public Integer getXmachineId() {
+        return xmachineId;
+    }
+
+    public void setXmachineId(Integer xmachineId) throws SQLException, ForeignKeyViolationException {
+        if (xmachineId!=null && !Xmachine.exists(getConnection(),"xmachine_id = " + xmachineId)) {
+            throw new ForeignKeyViolationException("Can't set xmachine_id, foreign key violation: xmachineorderitm_xmachine_fk");
+        }
+        setWasChanged(this.xmachineId != null && !this.xmachineId.equals(xmachineId));
+        this.xmachineId = xmachineId;
     }
 
     public Integer getXemployeeId() {
@@ -246,16 +263,17 @@ public class Xemployeeincident extends DbObject  {
 
     public void setXemployeeId(Integer xemployeeId) throws SQLException, ForeignKeyViolationException {
         if (xemployeeId!=null && !Xemployee.exists(getConnection(),"xemployee_id = " + xemployeeId)) {
-            throw new ForeignKeyViolationException("Can't set xemployee_id, foreign key violation: xemployeeincident_xemployee_fk");
+            throw new ForeignKeyViolationException("Can't set xemployee_id, foreign key violation: xmachineorderitm_xemployee_fk");
         }
         setWasChanged(this.xemployeeId != null && !this.xemployeeId.equals(xemployeeId));
         this.xemployeeId = xemployeeId;
     }
     public Object[] getAsRow() {
-        Object[] columnValues = new Object[3];
-        columnValues[0] = getXemployeeincidentId();
-        columnValues[1] = getXincidentsId();
-        columnValues[2] = getXemployeeId();
+        Object[] columnValues = new Object[4];
+        columnValues[0] = getXmachineorderitmId();
+        columnValues[1] = getXmachineorderId();
+        columnValues[2] = getXmachineId();
+        columnValues[3] = getXemployeeId();
         return columnValues;
     }
 
@@ -272,17 +290,22 @@ public class Xemployeeincident extends DbObject  {
     public void fillFromString(String row) throws ForeignKeyViolationException, SQLException {
         String[] flds = splitStr(row, delimiter);
         try {
-            setXemployeeincidentId(Integer.parseInt(flds[0]));
+            setXmachineorderitmId(Integer.parseInt(flds[0]));
         } catch(NumberFormatException ne) {
-            setXemployeeincidentId(null);
+            setXmachineorderitmId(null);
         }
         try {
-            setXincidentsId(Integer.parseInt(flds[1]));
+            setXmachineorderId(Integer.parseInt(flds[1]));
         } catch(NumberFormatException ne) {
-            setXincidentsId(null);
+            setXmachineorderId(null);
         }
         try {
-            setXemployeeId(Integer.parseInt(flds[2]));
+            setXmachineId(Integer.parseInt(flds[2]));
+        } catch(NumberFormatException ne) {
+            setXmachineId(null);
+        }
+        try {
+            setXemployeeId(Integer.parseInt(flds[3]));
         } catch(NumberFormatException ne) {
             setXemployeeId(null);
         }

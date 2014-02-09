@@ -42,7 +42,7 @@
                                 <% ImagePanel maxImg = new ImagePanel(Util.loadImage("Banking.png", getServletContext()));%>
                                 <td align="center"  cursor="pointer">
                                     <% ImagePanel btnImg = new ImagePanel(Util.loadImage("Docs.png", getServletContext()));%>
-                                    <a href="javascript:alert('Not implemented yet')">
+                                    <a href="./contracts.jsp">
                                         <img src="images/Docs.png" alt="Docs" width="<%=maxImg.getWidth()%>" height="<%=btnImg.getHeight() + 10%>">
                                     </a>
                                 </td>

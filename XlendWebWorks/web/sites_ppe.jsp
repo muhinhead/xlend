@@ -4,6 +4,7 @@
     Author     : Admin
 --%>
 
+<%@page import="com.xlend.web.Util.TableCeil"%>
 <%@page import="com.xlend.util.ImagePanel"%>
 <%@page import="com.xlend.constants.Selects"%>
 <%@page import="com.xlend.web.Util"%>
@@ -62,9 +63,29 @@
         <form>
             <table class="gridtable">
                 <tr><th>PPE Purchases</th></tr>
-                <tr><td><%=Util.showTable(Selects.SELECT_FROM_PPEBUYS, connection, null)%></td></tr>
+                        <%
+                            TableCeil inAddCeil = new Util.TableCeil("Items Bought") {
+                                public String getCeil(int id) {
+                                    return Util.showTable(
+                                            "select xppetype \"Type\",quantity \"Quantity\", priceperunit \"Price per unit\" "
+                                            + "from xppebuyitem i, xppetype t "
+                                            + "where i.xppetype_id=t.xppetype_id "
+                                            + " and xppebuy_id="+id,connection);
+                                }
+                            };
+                            TableCeil outAddCeil = new Util.TableCeil("Items Issued") {
+                                public String getCeil(int id) {
+                                    return Util.showTable(
+                                            "select xppetype \"Type\",quantity \"Quantity\" "
+                                            + "from xppeissueitem i, xppetype t "
+                                            + "where i.xppetype_id=t.xppetype_id "
+                                            + " and xppeissue_id="+id,connection);
+                                }
+                            };
+                        %>
+                <tr><td><%=Util.showTable(Selects.SELECT_FROM_PPEBUYS, connection, new TableCeil[]{inAddCeil})%></td></tr>
                 <tr><th>PPE Issues</th></tr>
-                <tr><td><%=Util.showTable(Selects.SELECT_FROM_PPEISSUES, connection, null)%></td></tr>
+                <tr><td><%=Util.showTable(Selects.SELECT_FROM_PPEISSUES, connection, new TableCeil[]{outAddCeil})%></td></tr>
             </table>
         </form>
     </body>

@@ -41,6 +41,8 @@ public class Type {
         sql2java.put("decimal", "Double");
         sql2java.put("float", "Float");
         sql2java.put("double", "Double");
+        sql2java.put("mediumblob", "Object");
+        sql2java.put("blob", "Object");
         sql2java.put("other", "Object");
     }
 

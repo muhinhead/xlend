@@ -1,0 +1,58 @@
+/**
+ * modal-dialog.css
+ * place in same directory as WebViewConfirm.java
+ * ensure your build system copies the file to your build output directory
+ */
+ 
+.root {
+  -fx-glass-color: rgba(95, 158, 160, 0.9);
+  -fx-background-color: black
+}
+ 
+.modal-dialog {
+  -fx-padding: 20;
+  -fx-spacing: 10;
+  -fx-alignment: center;
+  -fx-font-size: 20;
+  -fx-background-color: linear-gradient(to bottom, derive(-fx-glass-color, 20%), -fx-glass-color);
+  -fx-border-color: derive(-fx-glass-color, -20%);
+  -fx-border-width: 5;
+  -fx-background-insets: 12;
+  -fx-border-insets: 10;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+}
+
+.modal-dialog:pressed {
+  -fx-cursor: move;
+}
+ 
+.modal-dialog .button:pressed {
+  -fx-cursor: default;
+}
+ 
+.confirmation-results {
+  -fx-background-color: cornsilk;
+  -fx-padding: 5;
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#61a2b1, #2A5058);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#2A5058, #61a2b1);
+}
+
+
+.text-area {
+    -fx-text-fill: white;
+    -fx-font-size: 16pt;
+    -fx-font-family: Monospaced;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#aa0000, #550000);
+}

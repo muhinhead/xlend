@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.xlend.SiteAssignmentsController">
+  <children>
+    <BorderPane layoutX="0.0" layoutY="0.0" prefHeight="400.0" prefWidth="600.0">
+      <bottom>
+        <FlowPane alignment="CENTER" prefHeight="40.0" prefWidth="600.0">
+          <children>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#handleCancelAction" text="Close" />
+          </children>
+        </FlowPane>
+      </bottom>
+      <center>
+        <TextArea fx:id="textArea" editable="false" prefWidth="200.0" text="zzzz&#10;xxxx&#10;" wrapText="true" />
+      </center>
+    </BorderPane>
+  </children>
+  <stylesheets>
+    <URL value="@modal-dialog.css" />
+  </stylesheets>
+</AnchorPane>

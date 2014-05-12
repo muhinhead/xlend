@@ -60,8 +60,8 @@ public class SiteMap extends Application {
                     (java.sql.Driver) Class.forName(Utils.readProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
             setConnection(DriverManager.getConnection(
                     Utils.readProperty("dbConnection", "jdbc:mysql://localhost/xlend"),
-                    Utils.readProperty("dbUser", "root"),
-                    Utils.readProperty("dbPassword", "root")));
+                    Utils.readProperty("dbUser", "jaco"),
+                    Utils.readProperty("dbPassword", "jaco84oliver")));
             getConnection().setAutoCommit(true);
             updateDb(false);
         } catch (Exception ex) {
@@ -183,6 +183,7 @@ public class SiteMap extends Application {
                             site.setXorder3Id(null);
                         }
                         site.save();
+                        Utils.saveProperties();
                     } catch (Exception ex) {
                         Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
                     }

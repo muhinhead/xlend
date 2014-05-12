@@ -199,6 +199,8 @@ create table xsite
     xorder2_id      int,
     xorder3_id      int,
     is_active       bit,
+    x_map           int,
+    y_map           int,
     stamp timestamp,
     constraint xsite_id primary key (xsite_id),
     constraint xsite_xorder_fk foreign key (xorder_id) references xorder (xorder_id),

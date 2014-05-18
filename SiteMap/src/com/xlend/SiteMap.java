@@ -44,6 +44,7 @@ import javafx.stage.StageStyle;
  */
 public class SiteMap extends Application {
 
+    public static final String VERSION = "0.4";
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
     private static final int VERTICAL = 36;
@@ -54,21 +55,20 @@ public class SiteMap extends Application {
     private Hashtable<Node, Integer> buttonsTable = new Hashtable<Node, Integer>();
     private static Stage mainStage;
 
-    static {
-        try {
-            DriverManager.registerDriver(
-                    (java.sql.Driver) Class.forName(Utils.readProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
-            setConnection(DriverManager.getConnection(
-                    Utils.readProperty("dbConnection", "jdbc:mysql://localhost/xlend"),
-                    Utils.readProperty("dbUser", "jaco"),
-                    Utils.readProperty("dbPassword", "jaco84oliver")));
-            getConnection().setAutoCommit(true);
-            updateDb(false);
-        } catch (Exception ex) {
-            Utils.logAndShowMessage(ex);
-        }
-    }
-
+//    static {
+//        try {
+//            DriverManager.registerDriver(
+//                    (java.sql.Driver) Class.forName(Utils.readProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
+//            setConnection(DriverManager.getConnection(
+//                    Utils.readProperty("dbConnection", "jdbc:mysql://localhost/xlend"),
+//                    Utils.readProperty("dbUser", "jaco"),
+//                    Utils.readProperty("dbPassword", "jaco84oliver")));
+//            getConnection().setAutoCommit(true);
+//            updateDb(false);
+//        } catch (Exception ex) {
+//            Utils.logAndShowMessage(ex);
+//        }
+//    }
     private static void updateDb(boolean logErrors) {
         PreparedStatement ps = null;
         try {
@@ -127,6 +127,19 @@ public class SiteMap extends Application {
     @Override
     public void start(Stage primaryStage) {
 //        final ArrayList<Node> buttons = new ArrayList<Node>();
+        try {
+            DriverManager.registerDriver(
+                    (java.sql.Driver) Class.forName(Utils.readProperty("dbDriverName", "com.mysql.jdbc.Driver")).newInstance());
+            setConnection(DriverManager.getConnection(
+                    Utils.readProperty("dbConnection", "jdbc:mysql://localhost/xlend"),
+                    Utils.readProperty("dbUser", "jaco"),
+                    Utils.readProperty("dbPassword", "jaco84oliver")));
+            getConnection().setAutoCommit(true);
+            updateDb(false);
+        } catch (Exception ex) {
+            Utils.logAndShowMessage(ex);
+            Platform.exit();
+        }
         mainStage = primaryStage;
         primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.setResizable(false);
@@ -235,7 +248,7 @@ public class SiteMap extends Application {
 
         Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-        primaryStage.setTitle("Sites Map");
+        primaryStage.setTitle("Sites Map v."+VERSION);
         primaryStage.setScene(scene);
         scene.getStylesheets().add(SiteMap.class.getResource("SiteMap.css").toExternalForm());
         primaryStage.show();
@@ -339,7 +352,8 @@ public class SiteMap extends Application {
                         site.getYMap() == null ? 0 : site.getYMap()));
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+            Utils.logAndShowMessage(ex);
+//            Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

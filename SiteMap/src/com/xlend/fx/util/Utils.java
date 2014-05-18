@@ -1,5 +1,6 @@
 package com.xlend.fx.util;
 
+import com.xlend.SiteMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -59,7 +60,7 @@ public class Utils {
     }
 
     public static void logAndShowMessage(Throwable ne) {
-        Dialogs.showErrorDialog(mainStage, ne.getMessage(), "Error:", "");
+        Dialogs.showErrorDialog(mainStage, ne.getMessage(), "Error:", "v."+SiteMap.VERSION);
         log(ne);
     }
 

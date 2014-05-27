@@ -256,6 +256,7 @@ create cached table xemployee
     photo3          other,
     deceased        bit,
     dismissed       bit,
+    why_dismissed   text,
     absconded       bit,
     resigned        bit,
     deceased_date   date,

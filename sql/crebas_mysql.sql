@@ -254,6 +254,7 @@ create table xemployee
     photo3          mediumblob,
     deceased        bit,
     dismissed       bit,
+    why_dismissed   text,
     absconded       bit,
     resigned        bit,
     deceased_date   date,

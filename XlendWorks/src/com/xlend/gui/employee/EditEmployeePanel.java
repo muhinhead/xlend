@@ -21,6 +21,7 @@ import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,52 @@ import javax.swing.event.ChangeListener;
  * @author nick
  */
 class EditEmployeePanel extends EditPanelWithPhoto {
+    
+    static boolean okReasonPressed;
+    private class EditMemoDialog extends PopupDialog {
 
+        private JButton okBtn;
+        private JButton cancelBtn;
+
+        EditMemoDialog(JTextArea tf) {
+            super(null, "Reason for Dismissal", tf);
+        }
+
+        @Override
+        protected void fillContent() {
+            super.fillContent();
+            okReasonPressed = false;
+            JPanel centerPanel = new JPanel(new BorderLayout());
+            centerPanel.add(new JPanel(), BorderLayout.NORTH);
+            centerPanel.add(new JPanel(), BorderLayout.WEST);
+            centerPanel.add(new JPanel(), BorderLayout.EAST);
+            JScrollPane sp;
+            centerPanel.add(sp = new JScrollPane((JTextArea) getObject(),
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+            sp.setPreferredSize(new Dimension(300,200));
+            JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            cancelBtn = new JButton(new AbstractAction("Cancel"){
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    okReasonPressed = false;
+                    dispose();
+                }
+            });
+            okBtn = new JButton(new AbstractAction("Ok") {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    okReasonPressed = true;
+                    dispose();
+                }
+            });
+            btnPanel.add(okBtn);
+            btnPanel.add(cancelBtn);
+            getContentPane().add(centerPanel, BorderLayout.CENTER);
+            getContentPane().add(btnPanel, BorderLayout.SOUTH);
+            getRootPane().setDefaultButton(okBtn);
+        }
+    }
     private static DefaultComboBoxModel positionCbModel;
     private static DefaultComboBoxModel wageCategoryDbModel;
     private static ComboItem[] durations = new ComboItem[]{
@@ -98,6 +144,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private JLabel managementTeamLbl;
     private JEditorPane imagePanel2;
     private JEditorPane imagePanel3;
+    private JTextArea whyTextArea;
     private JTextArea notesTextArea;
     private AbstractAction openInWindowAction2;
     private AbstractAction printImageAction2;
@@ -126,6 +173,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private MouseAdapter imagePanel3MouseAdapter;
     private PopupListener imagePanel2PopupListener;
     private PopupListener imagePanel3PopupListener;
+    private JButton whyBtn;
 
     public EditEmployeePanel(DbObject dbObject) {
         super(dbObject);
@@ -148,6 +196,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             "", "", "",
             "", "", ""
         };
+        whyTextArea = new JTextArea();
 //        ComboItem[] durations = new ComboItem[]{
 //            new ComboItem(1, "1 month"),
 //            new ComboItem(2, "2 month"),
@@ -252,7 +301,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             }),
             getGridPanel(new JComponent[]{
                 deceasedDateSP = new SelectedDateSpinner(),
-                dismissedDateSP = new SelectedDateSpinner(),
+                getBorderPanel(new JComponent[]{
+                    new JPanel(),
+                    dismissedDateSP = new SelectedDateSpinner(),
+                    whyBtn = new JButton(new AbstractAction("Why") {
+                        @Override
+                        public void actionPerformed(ActionEvent ae) {
+                            new EditMemoDialog(whyTextArea);
+                        }
+                    })
+                }),
                 abscondedDateSP = new SelectedDateSpinner(),
                 resignedDateSP = new SelectedDateSpinner()
             })
@@ -273,6 +331,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
         deceasedDateSP.setVisible(false);
         dismissedDateSP.setVisible(false);
+        whyBtn.setVisible(false);
         abscondedDateSP.setVisible(false);
         resignedDateSP.setVisible(false);
         for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
@@ -298,7 +357,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         dismissedCB.addChangeListener(dismissedCbListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                dismissedDateSP.setVisible(dismissedCB.isSelected());
+                boolean isSelected = dismissedCB.isSelected();
+                dismissedDateSP.setVisible(isSelected);
+                whyBtn.setVisible(isSelected);
             }
         });
         abscondedCB.addChangeListener(abscondedCbListener = new ChangeListener() {
@@ -475,6 +536,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 dt = new java.util.Date(emp.getDismissedDate().getTime());
                 dismissedDateSP.setValue(dt);
             }
+            whyTextArea.setText(emp.getWhyDismissed());
             if (emp.getAbscondedDate() != null) {
                 dt = new java.util.Date(emp.getAbscondedDate().getTime());
                 abscondedDateSP.setValue(dt);
@@ -586,6 +648,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                     emp.setDeceasedDate(new java.sql.Date(dt.getTime()));
                 } else {
                     emp.setDeceasedDate(null);
+                }
+                if(okReasonPressed) {
+                    emp.setWhyDismissed(whyTextArea.getText());
                 }
                 emp.setDismissed(dismissedCB.isSelected() ? 1 : 0);
                 if (dismissedCB.isSelected() && dismissedDateSP.getValue() != null) {

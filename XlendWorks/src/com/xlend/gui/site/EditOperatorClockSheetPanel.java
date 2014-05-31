@@ -1,5 +1,6 @@
 package com.xlend.gui.site;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.RecordEditPanel;
@@ -70,7 +71,7 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
         siteCbModel = new DefaultComboBoxModel();
         operatorCbModel = new DefaultComboBoxModel();
         machineCbModel = new DefaultComboBoxModel();
-        for (ComboItem ci : XlendWorks.loadActiveSites()) {
+        for (ComboItem ci : XlendWorks.loadAllSites()) {
             if (!ci.getValue().startsWith("--")) {
                 siteCbModel.addElement(ci);
             }
@@ -95,7 +96,9 @@ class EditOperatorClockSheetPanel extends RecordEditPanel {
             getGridPanel(new JComponent[]{
                 comboPanelWithLookupBtn(operatorCB = new JComboBox(operatorCbModel), new EmployeeLookupAction(operatorCB)),
                 new JLabel("Site:", SwingConstants.RIGHT),
-                comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), new SiteLookupAction(siteCB))
+//                comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel),new SiteLookupAction(siteCB))
+                comboPanelWithLookupBtn(siteCB = new JComboBox(siteCbModel), 
+                    new SiteLookupAction(siteCB,Selects.SELECT_SITES4LOOKUP.replaceFirst("is_active=1", "1=1")))
             }),
             getGridPanel(new JComponent[]{
                 getBorderPanel(new JComponent[]{weekendSP = new SelectedDateSpinner()}),

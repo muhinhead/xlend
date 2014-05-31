@@ -41,7 +41,11 @@ public class SiteLookupAction extends AbstractAction {
             ComboItem citm = (ComboItem) siteCB.getSelectedItem();
             String slct = getLookupSelect();
             if (citm != null) {
-                slct = slct.replaceFirst("is_active=1", "(is_active=1 or xsite_id=" + citm.getId() + ")");
+                if (slct.indexOf("is_active=1") > 0) {
+                    slct = slct.replaceFirst("is_active=1", "(is_active=1 or xsite_id=" + citm.getId() + ")");
+//                } else {
+//                    slct = slct.replaceFirst("1=1", "xsite_id=" + citm.getId());
+                }
             }
             LookupDialog ld = new LookupDialog("Site Lookup", siteCB,
                     new SitesGrid(XlendWorks.getExchanger(),

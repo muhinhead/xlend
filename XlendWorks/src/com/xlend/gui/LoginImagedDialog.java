@@ -164,6 +164,13 @@ public class LoginImagedDialog extends PopupDialog {
             }
         }));
         bar.add(m);
+        bar.add(new JMenuItem(new AbstractAction("About") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AboutDialog();
+            }
+        }));
+        
         setJMenuBar(bar);
     }
 

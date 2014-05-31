@@ -185,7 +185,7 @@ public class EditTimeSheetPanel extends EditPanelWithPhoto {
         for (ComboItem itm : XlendWorks.loadAllOrders()) {
             orderCbModel.addElement(itm);
         }
-        for (ComboItem itm : XlendWorks.loadSites("1=1")) {
+        for (ComboItem itm : XlendWorks.loadAllSites()) {
             siteCbModel.addElement(itm);
         }
         for (ComboItem ci : XlendWorks.loadAllMachines()) {

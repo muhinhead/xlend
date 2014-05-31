@@ -69,6 +69,7 @@ public class ConfigEditor extends PopupDialog {
     protected void fillContent() {
         super.fillContent();
         XlendWorks.setWindowIcon(this, "Xcost.png");
+        
         JComponent[] comps = (JComponent[]) getObject();
         imageDirField = (JTextField) comps[0];
         addressField = (JTextField) comps[1];

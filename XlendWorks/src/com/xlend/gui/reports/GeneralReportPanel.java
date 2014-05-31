@@ -20,12 +20,24 @@ public abstract class GeneralReportPanel extends JPanel {
     protected StringBuffer html;
     private JLabel procLbl;
     protected int prevZoomerValue = 100;
+    protected Integer intParameter = null;
 
+    public GeneralReportPanel(IMessageSender exchanger, Integer intParam) {
+        this(exchanger, intParam, 100);
+    }
+    
     public GeneralReportPanel(IMessageSender exchanger) {
+        this(exchanger, null, 100);
+    }
+        
+    public GeneralReportPanel(IMessageSender exchanger, Integer intParam, int scale) {
         super(new BorderLayout());
+        prevZoomerValue = scale;
+        this.intParameter = intParam;
         upperPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
         add(upperPane, BorderLayout.NORTH);
         upperPane.add(zoomer = new JSlider(50, 150));
+        zoomer.setValue(scale);
         upperPane.add(procLbl = new JLabel("%" + zoomer.getValue()));
         zoomer.addChangeListener(new ChangeListener() {
             @Override

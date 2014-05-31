@@ -468,7 +468,7 @@ public class DashBoard extends AbstractDashBoard {
 
     private static String getPropertyFileName() {
         String propFileName = (new File(PROPERTYFILENAME).exists() ? PROPERTYFILENAME : XlendWorks.getHomeDir()+PROPERTYFILENAME);
-        System.out.println("!!!! propFileName="+propFileName);
+//        System.out.println("!!!! propFileName="+propFileName);
         return propFileName;
     }
     
@@ -558,7 +558,7 @@ public class DashBoard extends AbstractDashBoard {
         exchanger = iMessageSender;
     }
 
-    @Override
+//    @Override
     protected String getBackGroundImage() {
         return BACKGROUNDIMAGE;
     }

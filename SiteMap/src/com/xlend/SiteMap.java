@@ -41,7 +41,7 @@ import javafx.stage.StageStyle;
  */
 public class SiteMap extends Application {
 
-    public static final String VERSION = "0.6";
+    public static final String VERSION = "0.7";
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
     private static final int VERTICAL = 32;

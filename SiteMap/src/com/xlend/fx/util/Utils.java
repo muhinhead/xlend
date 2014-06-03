@@ -5,19 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.util.prefs.Preferences;
 import javafx.stage.Stage;
 import javafx.scene.control.Dialogs;
 
@@ -60,8 +52,13 @@ public class Utils {
     }
 
     public static void logAndShowMessage(Throwable ne) {
-        Dialogs.showErrorDialog(mainStage, ne.getMessage(), "Error:", "v."+SiteMap.VERSION);
+        Dialogs.showErrorDialog(mainStage, ne.getMessage(), "Error:", "v."+SiteMap.VERSION+" ("+SiteMap.protocol+")");
         log(ne);
+    }
+
+    public static void logAndShowMessage(String msg) {
+        Dialogs.showErrorDialog(mainStage, msg, "Error:", "v."+SiteMap.VERSION+" ("+SiteMap.protocol+")");
+        log(msg);
     }
 
     public static void notImplementedYet() {
@@ -124,142 +121,146 @@ public class Utils {
 //        return s;
 //    }    
     
-    public static int getCount(Connection connection, String select) throws SQLException {
-        StringBuffer slct;
-        int count = 0;
-        int p = select.toLowerCase().lastIndexOf("order by");
-        slct = new StringBuffer("select count(*) from (" + select.substring(0, p > 0 ? p : select.length()) + ") intab");
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = connection.prepareStatement(slct.toString());
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                count = rs.getInt(1);
-            }
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException se1) {
-            } finally {
-                try {
-                    if (ps != null) {
-                        ps.close();
-                    }
-                } catch (SQLException se2) {
-                }
-            }
-        }
-        return count;
-    }
+//    public static int getCount(Connection connection, String select) throws SQLException {
+//        StringBuffer slct;
+//        int count = 0;
+//        int p = select.toLowerCase().lastIndexOf("order by");
+//        slct = new StringBuffer("select count(*) from (" + select.substring(0, p > 0 ? p : select.length()) + ") intab");
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        try {
+//            ps = connection.prepareStatement(slct.toString());
+//            rs = ps.executeQuery();
+//            if (rs.next()) {
+//                count = rs.getInt(1);
+//            }
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//            } catch (SQLException se1) {
+//            } finally {
+//                try {
+//                    if (ps != null) {
+//                        ps.close();
+//                    }
+//                } catch (SQLException se2) {
+//                }
+//            }
+//        }
+//        return count;
+//    }
     
-    public static Vector[] getTableBody(Connection connection, String select) throws SQLException {
-        return getTableBody(connection, select, 0, 0);
-    }
-    
-    public static Vector[] getTableBody(Connection connection, String select, int page, int pagesize) throws SQLException {
-        Vector headers = getColNames(connection, select);
-        int startrow = 0, endrow = 0;
-        if (page > 0 || pagesize > 0) {
-            startrow = page * pagesize + 1; //int page starts from 0, int startrow starts from 1
-            endrow = (page + 1) * pagesize; //last row of page
-        }
-        return new Vector[]{headers, getRows(connection, select, headers.size(), startrow, endrow)};
-    }
+//    public static Vector[] getTableBody(Connection connection, String select) throws SQLException {
+//        return getTableBody(connection, select, 0, 0);
+//    }
+//    
+//    public static Vector[] getTableBody(Connection connection, String select, int page, int pagesize) throws SQLException {
+//        Vector headers = getColNames(connection, select);
+//        int startrow = 0, endrow = 0;
+//        if (page > 0 || pagesize > 0) {
+//            startrow = page * pagesize + 1; //int page starts from 0, int startrow starts from 1
+//            endrow = (page + 1) * pagesize; //last row of page
+//        }
+//        return new Vector[]{headers, getRows(connection, select, headers.size(), startrow, endrow)};
+//    }
+//
+//    private static Vector getRows(Connection connection, String select, int cols, int startrow, int endrow) throws SQLException {
+//        Vector rows = new Vector();
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        try {
+//            String pagedSelect;
+//            if (select.toUpperCase().indexOf(" LIMIT ") > 0 || (startrow == 0 && endrow == 0)) {
+//                pagedSelect = select;
+//            } else {
+//                pagedSelect = select.replaceFirst("select", "SELECT").replaceAll("Select", "SELECT");
+//                    pagedSelect += (" LIMIT " + (startrow - 1) + "," + (endrow - startrow + 1));
+//            }
+//            Vector line;
+//            ps = connection.prepareStatement(pagedSelect);
+//            rs = ps.executeQuery();
+//            while (rs.next()) {
+//                line = new Vector();
+//                for (int c = 0; c < cols; c++) {
+//                    String ceil = rs.getString(c + 1);
+//                    ceil = ceil == null ? "" : ceil;
+//                    line.add(ceil);
+//                }
+//                rows.add(line);
+//            }
+//            return rows;
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//            } catch (SQLException se1) {
+//            } finally {
+//                try {
+//                    if (ps != null) {
+//                        ps.close();
+//                    }
+//                } catch (SQLException se2) {
+//                }
+//            }
+//        }
+//    }
+//    
+//    public static Vector getColNames(Connection connection, String select) throws SQLException {
+//        String original = null;
+//        Vector colNames = new Vector();
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//        try {
+//            int i;
+//            int bracesLevel = 0;
+//            StringBuffer sb = null;
+//            for (i = 0; i < select.length(); i++) {
+//                char c = select.charAt(i);
+//                if (c == '(') {
+//                    bracesLevel++;
+//                } else if (c == ')') {
+//                    bracesLevel--;
+//                } else if (bracesLevel == 0 && select.substring(i).toUpperCase().startsWith("WHERE ")) {
+//                    if (sb == null) {
+//                        original = select;
+//                        sb = new StringBuffer(select);
+//                    }
+//                    sb.insert(i + 6, "1=0 AND ");
+//                    break;
+//                }
+//            }
+//            if (sb != null) {
+//                select = sb.toString();
+//            }
+//            ps = connection.prepareStatement(select);
+//            rs = ps.executeQuery();
+//            ResultSetMetaData md = rs.getMetaData();
+//            for (i = 0; i < md.getColumnCount(); i++) {
+//                colNames.add(md.getColumnLabel(i + 1));
+//            }
+//        } finally {
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//            } catch (SQLException se1) {
+//            } finally {
+//                try {
+//                    if (ps != null) {
+//                        ps.close();
+//                    }
+//                } catch (SQLException se2) {
+//                }
+//            }
+//        }
+//        return colNames;
+//    }
 
-    private static Vector getRows(Connection connection, String select, int cols, int startrow, int endrow) throws SQLException {
-        Vector rows = new Vector();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            String pagedSelect;
-            if (select.toUpperCase().indexOf(" LIMIT ") > 0 || (startrow == 0 && endrow == 0)) {
-                pagedSelect = select;
-            } else {
-                pagedSelect = select.replaceFirst("select", "SELECT").replaceAll("Select", "SELECT");
-                    pagedSelect += (" LIMIT " + (startrow - 1) + "," + (endrow - startrow + 1));
-            }
-            Vector line;
-            ps = connection.prepareStatement(pagedSelect);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                line = new Vector();
-                for (int c = 0; c < cols; c++) {
-                    String ceil = rs.getString(c + 1);
-                    ceil = ceil == null ? "" : ceil;
-                    line.add(ceil);
-                }
-                rows.add(line);
-            }
-            return rows;
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException se1) {
-            } finally {
-                try {
-                    if (ps != null) {
-                        ps.close();
-                    }
-                } catch (SQLException se2) {
-                }
-            }
-        }
-    }
-    
-    public static Vector getColNames(Connection connection, String select) throws SQLException {
-        String original = null;
-        Vector colNames = new Vector();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            int i;
-            int bracesLevel = 0;
-            StringBuffer sb = null;
-            for (i = 0; i < select.length(); i++) {
-                char c = select.charAt(i);
-                if (c == '(') {
-                    bracesLevel++;
-                } else if (c == ')') {
-                    bracesLevel--;
-                } else if (bracesLevel == 0 && select.substring(i).toUpperCase().startsWith("WHERE ")) {
-                    if (sb == null) {
-                        original = select;
-                        sb = new StringBuffer(select);
-                    }
-                    sb.insert(i + 6, "1=0 AND ");
-                    break;
-                }
-            }
-            if (sb != null) {
-                select = sb.toString();
-            }
-            ps = connection.prepareStatement(select);
-            rs = ps.executeQuery();
-            ResultSetMetaData md = rs.getMetaData();
-            for (i = 0; i < md.getColumnCount(); i++) {
-                colNames.add(md.getColumnLabel(i + 1));
-            }
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException se1) {
-            } finally {
-                try {
-                    if (ps != null) {
-                        ps.close();
-                    }
-                } catch (SQLException se2) {
-                }
-            }
-        }
-        return colNames;
+    public static Properties getProperties() {
+        return props;
     }
 
 }

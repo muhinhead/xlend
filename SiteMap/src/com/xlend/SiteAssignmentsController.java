@@ -43,14 +43,17 @@ public class SiteAssignmentsController implements Initializable {
 
     public void populateControls(Integer siteID) {
         try {
-            Xsite site = (Xsite) new Xsite(SiteMap.getConnection()).loadOnId(siteID);
-            int machines = Utils.getCount(SiteMap.getConnection(),
+            Xsite site = (Xsite) SiteMap.getExchanger().loadDbObjectOnID(Xsite.class, siteID);//new Xsite(SiteMap.getConnection()).loadOnId(siteID);
+            int machines = SiteMap.getExchanger().getCount(
                     "select 1 from xopmachassing where date_end is null and xsite_id="
-                    + siteID + " and xmachine_id in(select xmachine_id from xmachine where classify='M')");
-            int trucks = Utils.getCount(SiteMap.getConnection(),
+                    + + siteID + " and xmachine_id in(select xmachine_id from xmachine where classify='M')");
+//                    Utils.getCount(SiteMap.getConnection(),
+//                    "select 1 from xopmachassing where date_end is null and xsite_id="
+//                    + siteID + " and xmachine_id in(select xmachine_id from xmachine where classify='M')");
+            int trucks = SiteMap.getExchanger().getCount(
                     "select 1 from xopmachassing where date_end is null and xsite_id="
                     + siteID + " and xmachine_id in(select xmachine_id from xmachine where classify='T')");
-            int personnel = Utils.getCount(SiteMap.getConnection(),
+            int personnel = SiteMap.getExchanger().getCount(
                     "select 1 from xopmachassing where date_end is null and xsite_id="
                     + siteID + " and not xemployee_id is null");
 
@@ -73,8 +76,8 @@ public class SiteAssignmentsController implements Initializable {
         return s;
     }
 
-    private String showAssignmentsDetails(Integer siteID) throws SQLException {
-        Vector[] answer = Utils.getTableBody(SiteMap.getConnection(), SELECT_SITE_ASSIGNMENTS.replaceAll("#", siteID.toString()));
+    private String showAssignmentsDetails(Integer siteID) throws Exception {
+        Vector[] answer = SiteMap.getExchanger().getTableBody(SELECT_SITE_ASSIGNMENTS.replaceAll("#", siteID.toString()));
         StringBuilder sb = new StringBuilder("");
         Vector headers = answer[0];
         Vector lines = answer[1];

@@ -21,3 +21,9 @@
 .button:hover {
     -fx-background-color: linear-gradient(#2A5058, #61a2b1);
 }
+
+.radio-button {
+    -fx-text-fill: white;
+    -fx-font-family: "Arial Narrow";
+    /*-fx-font-weight: bold;*/
+}

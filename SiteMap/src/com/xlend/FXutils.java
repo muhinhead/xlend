@@ -45,7 +45,7 @@ public class FXutils {
         }
 
         final ColorAdjust effectPressed = ColorAdjustBuilder.create().brightness(-0.5d).build();
-        node.setOnMouseReleased(new EventHandler<MouseEvent>() {
+        node.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 // в обработчике нажатия применяем эффект. Тут имеется следующая тонкость: это уже второй эффект для кнопки,
                 // поэтому мы его выставляем не напрямую, а как input для первого эффекта
@@ -63,7 +63,9 @@ public class FXutils {
         // обработчик нажатия мыши
         node.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-                action.run();
+                if (!event.isShiftDown()) {
+                    action.run();
+                }
             }
         });
         // при наведении курсора мы запускаем анимацию увеличения кнопки

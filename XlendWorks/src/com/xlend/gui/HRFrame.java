@@ -55,12 +55,12 @@ public class HRFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUser(sheets()[3])) {
             hrTab.addTab(getWagesSummaryPanel(), sheets()[3]);
         }
-        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
-            hrTab.addTab(new JPanel(), sheets()[4]);
-        }
-        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
-            hrTab.addTab(new JPanel(), sheets()[5]);
-        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[4])) {
+//            hrTab.addTab(new JPanel(), sheets()[4]);
+//        }
+//        if (XlendWorks.availableForCurrentUser(sheets()[5])) {
+//            hrTab.addTab(new JPanel(), sheets()[5]);
+//        }
         if (XlendWorks.availableForCurrentUser(sheets()[6])) {
             hrTab.addTab(getAbsenteismPanel(), sheets()[6]);
         }

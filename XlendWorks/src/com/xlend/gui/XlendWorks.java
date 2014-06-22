@@ -13,6 +13,7 @@ import com.xlend.remote.IMessageSender;
 import com.xlend.rmi.ExchangeFactory;
 import com.xlend.util.FileFilterOnExtension;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javafx.scene.paint.Color;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -44,6 +46,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 
 /**
  *
@@ -52,7 +55,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
-    public static final String version = "0.86.a";
+    public static final String version = "0.86.b";
     public static String protocol = "unknown";
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
@@ -209,6 +212,11 @@ public class XlendWorks {
             InstantiationException, IllegalAccessException,
             UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(lf);
+
+//        FontUIResource font = new FontUIResource("Verdana", Font.PLAIN, 16);
+//        UIManager.put("Table.font", font);
+//        UIManager.put("Table.foreground", Color.AQUAMARINE);
+
         SwingUtilities.updateComponentTreeUI(root);
         DashBoard.getProperties().setProperty("LookAndFeel", lf);
         DashBoard.saveProps();

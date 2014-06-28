@@ -124,29 +124,30 @@ public class GroupTableGridPanel extends JPanel {
     }
 
     private DbObject[] getRecs(int row) throws RemoteException {
+        final String YYYY_MM_DD = "YYYY-MM-DD";
         Vector line = (Vector) tableView.getRowData().get(row);
         String dateReq = (String) line.get(0);
         DbObject[] recs = null;
         if (dateCB.isSelected()) {
             recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "'", null);
+                    "to_char(date_required,'"+YYYY_MM_DD+"')='" + dateReq + "'", null);
             EditTransscheduleitmPanel.resetFixedAttribute();
         } else if (dateMachineCB.isSelected()) {
             String machineName = (String) line.get(1);
             recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and machine_id="
+                    "to_char(date_required,'"+YYYY_MM_DD+"')='" + dateReq + "' and machine_id="
                     + "(select max(xmachine_id) from xmachine where concat(classify,tmvnr)='" + machineName + "')", null);
 //                    EditTransscheduleitmPanel.setFixedAttribute("machine_id");
         } else if (dateFromSiteCB.isSelected()) {
             String siteName = (String) line.get(1);
             recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and site_from_id="
+                    "to_char(date_required,'"+YYYY_MM_DD+"')='" + dateReq + "' and site_from_id="
                     + "(select max(xsite_id) from xsite where name='" + siteName + "')", null);
 //                    EditTransscheduleitmPanel.setFixedAttribute("site_from_id");
         } else if (dateToSiteCB.isSelected()) {
             String siteName = (String) line.get(1);
             recs = exchanger.getDbObjects(Xtransscheduleitm.class,
-                    "to_char(date_required,'DD/MM/YYYY')='" + dateReq + "' and site_to_id="
+                    "to_char(date_required,'"+YYYY_MM_DD+"')='" + dateReq + "' and site_to_id="
                     + "(select max(xsite_id) from xsite where name='" + siteName + "')", null);
 //                    EditTransscheduleitmPanel.setFixedAttribute("site_to_id");
         }

@@ -55,7 +55,7 @@ import javax.swing.plaf.FontUIResource;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
-    public static final String version = "0.86.b";
+    public static final String version = "0.86.c";
     public static String protocol = "unknown";
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;

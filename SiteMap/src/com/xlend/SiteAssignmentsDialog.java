@@ -1,7 +1,6 @@
 package com.xlend;
 
 import com.xlend.fx.util.PopupFXdialog;
-import com.xlend.orm.dbobject.DbObject;
 import java.io.IOException;
 import javafx.stage.Stage;
 

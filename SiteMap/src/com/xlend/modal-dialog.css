@@ -48,6 +48,13 @@
     -fx-background-color: linear-gradient(#2A5058, #61a2b1);
 }
 
+.password-field {
+    -fx-text-fill: white;
+    -fx-font-size: 16pt;
+    -fx-font-family: Monospaced;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#550000, #aa0000);
+}
 
 .text-area {
     -fx-text-fill: white;

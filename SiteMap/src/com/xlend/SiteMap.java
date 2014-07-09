@@ -21,7 +21,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialogs;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -32,6 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -39,13 +43,20 @@ import javafx.stage.StageStyle;
  */
 public class SiteMap extends Application {
 
-    public static final String VERSION = "0.8";
+    public static final String VERSION = "0.9";
 //    public static Integer movingButton = null;
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
     private static final int VERTICAL = 32;
 //    private static Connection connection = null;
     public static String protocol;
+
+    /**
+     * @return the mainStage
+     */
+    public static Stage getMainStage() {
+        return mainStage;
+    }
     private ArrayList<Node> buttons = new ArrayList<Node>();
     private ArrayList<Xsite> sites = new ArrayList<Xsite>();
     private Hashtable<Integer, Rectangle> linesTable = new Hashtable<Integer, Rectangle>();
@@ -54,6 +65,7 @@ public class SiteMap extends Application {
     private static Stage mainStage;
     private static IMessageSender exchanger;
     public static final String defaultServerIP = "192.168.1.3";
+    private static boolean wasDragged = false;
 
     /**
      * @return the exchanger
@@ -109,15 +121,18 @@ public class SiteMap extends Application {
         @Override
         public void run() {
             try {
-                SiteAssignmentsDialog sa = SiteAssignmentsDialog.instance;
-                if (sa == null) {
-                    sa = new SiteAssignmentsDialog(mainStage,
-                            "Site info", "modal-dialog.css", siteID);
-                } else {
-                    SiteAssignmentsDialog.instanceStage.setTitle("Site info");
-                    sa.loadData(siteID);
+                if (!wasDragged) {
+                    SiteAssignmentsDialog sa = SiteAssignmentsDialog.instance;
+                    if (sa == null) {
+                        sa = new SiteAssignmentsDialog(getMainStage(),
+                                "Site info", "modal-dialog.css", siteID);
+                    } else {
+                        SiteAssignmentsDialog.instanceStage.setTitle("Site info");
+                        sa.loadData(siteID);
+                    }
+                    sa.showAndWait();
                 }
-                sa.showAndWait();
+                wasDragged = false;
             } catch (IOException ex) {
                 Utils.logAndShowMessage(ex);
             }
@@ -136,33 +151,43 @@ public class SiteMap extends Application {
         canvas = new Canvas(WIDTH, HEIGHT);
         root.getChildren().add(canvas);
 
+        mainStage.setOnHiding(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent event) {
+                saveAll();
+            }
+
+            private void saveAll() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
         Button closeBtn = new Button("Close");
         closeBtn.setTooltip(new Tooltip("Save links and exit"));
         closeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                for (Xsite site : sites) {
-                    try {
-                        Rectangle rect = linesTable.get(site.getXsiteId());
-                        if (rect.getWidth() > 0 || rect.getHeight() > 0) {
-                            site.setXMap((int) rect.getWidth() + (int) (rect.getX()-20) * 10000);
-                            site.setYMap((int) rect.getHeight() + (int) (rect.getY()-15) * 10000);
-                        }
-                        if (site.getXorderId() != null && site.getXorderId().intValue() == 0) {
-                            site.setXorderId(null);
-                        }
-                        if (site.getXorder2Id() != null && site.getXorder2Id().intValue() == 0) {
-                            site.setXorder2Id(null);
-                        }
-                        if (site.getXorder3Id() != null && site.getXorder3Id().intValue() == 0) {
-                            site.setXorder3Id(null);
-                        }
-                        getExchanger().saveDbObject(site);
-                    } catch (Exception ex) {
-                        Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                Utils.saveProperties();
+//                for (Xsite site : sites) {
+//                    try {
+//                        Rectangle rect = linesTable.get(site.getXsiteId());
+//                        if (rect.getWidth() > 0 || rect.getHeight() > 0) {
+//                            site.setXMap((int) rect.getWidth() + (int) (rect.getX() - 20) * 10000);
+//                            site.setYMap((int) rect.getHeight() + (int) (rect.getY() - 15) * 10000);
+//                        }
+//                        if (site.getXorderId() != null && site.getXorderId().intValue() == 0) {
+//                            site.setXorderId(null);
+//                        }
+//                        if (site.getXorder2Id() != null && site.getXorder2Id().intValue() == 0) {
+//                            site.setXorder2Id(null);
+//                        }
+//                        if (site.getXorder3Id() != null && site.getXorder3Id().intValue() == 0) {
+//                            site.setXorder3Id(null);
+//                        }
+//                        getExchanger().saveDbObject(site);
+//                    } catch (Exception ex) {
+//                        Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                }
+//                Utils.saveProperties();
                 Platform.exit();
             }
         });
@@ -178,16 +203,18 @@ public class SiteMap extends Application {
         clearAllBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                gc.clearRect(0, 0, WIDTH, HEIGHT);
-                for (Xsite site : sites) {
-                    try {
-                        Rectangle rect = linesTable.get(site.getXsiteId());
-                        site.setXMap(0);
-                        site.setYMap(0);
-                        rect.setWidth(0);
-                        rect.setHeight(0);
-                    } catch (Exception ex) {
-                        Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+                if (checkAdminsPermission()) {
+                    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                    for (Xsite site : sites) {
+                        try {
+                            Rectangle rect = linesTable.get(site.getXsiteId());
+                            site.setXMap(0);
+                            site.setYMap(0);
+                            rect.setWidth(0);
+                            rect.setHeight(0);
+                        } catch (Exception ex) {
+                            Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             }
@@ -196,7 +223,7 @@ public class SiteMap extends Application {
         hideBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                gc.clearRect(0, 0, WIDTH, HEIGHT);
+                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
             }
         });
         drawBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -207,17 +234,17 @@ public class SiteMap extends Application {
         });
 
         Pane centerPane = new Pane();
-        clearAllBtn.setLayoutX(650);
-        clearAllBtn.setLayoutY(670);
+        clearAllBtn.setLayoutX(10);
+        clearAllBtn.setLayoutY(10);
         centerPane.getChildren().add(clearAllBtn);
-        hideBtn.setLayoutX(713);
-        hideBtn.setLayoutY(670);
+        hideBtn.setLayoutX(70);
+        hideBtn.setLayoutY(10);
         centerPane.getChildren().add(hideBtn);
-        drawBtn.setLayoutX(770);
-        drawBtn.setLayoutY(670);
+        drawBtn.setLayoutX(130);
+        drawBtn.setLayoutY(10);
         centerPane.getChildren().add(drawBtn);
-        closeBtn.setLayoutX(830);
-        closeBtn.setLayoutY(670);
+        closeBtn.setLayoutX(190);
+        closeBtn.setLayoutY(10);
         centerPane.getChildren().add(closeBtn);
 
         canvas.widthProperty().bind(root.widthProperty());
@@ -282,11 +309,36 @@ public class SiteMap extends Application {
         redrawLines();
     }
 
+    private void saveAll() {
+        for (Xsite site : sites) {
+            try {
+                Rectangle rect = linesTable.get(site.getXsiteId());
+                if (rect.getWidth() > 0 || rect.getHeight() > 0) {
+                    site.setXMap((int) rect.getWidth() + (int) (rect.getX() - 20) * 10000);
+                    site.setYMap((int) rect.getHeight() + (int) (rect.getY() - 15) * 10000);
+                }
+                if (site.getXorderId() != null && site.getXorderId().intValue() == 0) {
+                    site.setXorderId(null);
+                }
+                if (site.getXorder2Id() != null && site.getXorder2Id().intValue() == 0) {
+                    site.setXorder2Id(null);
+                }
+                if (site.getXorder3Id() != null && site.getXorder3Id().intValue() == 0) {
+                    site.setXorder3Id(null);
+                }
+                getExchanger().saveDbObject(site);
+            } catch (Exception ex) {
+                Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        Utils.saveProperties();
+    }
+
     private void redrawLines() {
         gc = canvas.getGraphicsContext2D();
         gc.setStroke(Color.RED);
         gc.setLineWidth(1);
-        gc.clearRect(0, 0, WIDTH, HEIGHT);
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (Node b : buttons) {
 
             Integer siteID = buttonsPaneTable.get(b);
@@ -307,7 +359,7 @@ public class SiteMap extends Application {
 
     private Node createLabeledButton(String imgFile, String lbl, final Integer siteID, int leftRight) {
         Node btn = FXutils.createButton(getClass(), imgFile, new SiteInfoRunnable(siteID), false);
-        Tooltip t = new Tooltip(lbl);
+        Tooltip t = new Tooltip(lbl + "\npress Shift to draw a line");
         Tooltip.install(btn, t);
         Node pane;
         Label label = new Label(lbl);
@@ -338,7 +390,7 @@ public class SiteMap extends Application {
             @Override
             public void handle(MouseEvent event) {
                 Rectangle rect = linesTable.get(siteID);
-                if (!event.isShiftDown()) {
+                if (event.isShiftDown()) {
                     if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
                     } else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         rect.setWidth(event.getSceneX());
@@ -371,6 +423,7 @@ public class SiteMap extends Application {
                         mousex = event.getSceneX();
                         mousey = event.getSceneY();
                         redrawLines();
+                        wasDragged = true;
                     }
                 }
             }
@@ -394,6 +447,20 @@ public class SiteMap extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private boolean checkAdminsPermission() {
+        boolean ok = false;
+        PasswordDialog pwdDialog = PasswordDialog.instance;
+        try {
+            if (pwdDialog == null) {
+                pwdDialog = new PasswordDialog(getMainStage(), "Admin's password", "modal-dialog.css");
+            }
+            pwdDialog.showAndWait();
+        } catch (IOException ex) {
+            Logger.getLogger(SiteMap.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return PasswordDialogController.okPressed;
     }
 
     private void loadSites() {

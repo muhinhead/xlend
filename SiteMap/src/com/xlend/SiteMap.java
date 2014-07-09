@@ -155,10 +155,6 @@ public class SiteMap extends Application {
             public void handle(WindowEvent event) {
                 saveAll();
             }
-
-            private void saveAll() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
         });
 
         Button closeBtn = new Button("Close");
@@ -166,6 +162,7 @@ public class SiteMap extends Application {
         closeBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
+                saveAll();
 //                for (Xsite site : sites) {
 //                    try {
 //                        Rectangle rect = linesTable.get(site.getXsiteId());

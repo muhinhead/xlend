@@ -34,13 +34,18 @@ public class TrackGrid extends GeneralGridPanel {
         super(exchanger, select, maxWidths, readOnly);
     }
 
+    private String whatIsThis() {
+        return (getSelect().indexOf("is_lowbed=1") > 0) ? "Low Bed" : "Truck";
+    }
+
     @Override
     protected AbstractAction addAction() {
-        return new AbstractAction("New Truck") {
+        return new AbstractAction("New " + whatIsThis()) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    EditTrackDialog ed = new EditTrackDialog("New Truck", null);
+                    EditTrackPanel.setLowbed(getSelect().indexOf("is_lowbed=1") > 0);
+                    EditTrackDialog ed = new EditTrackDialog("New " + whatIsThis(), null);
                     if (EditTrackDialog.okPressed) {
                         Xmachine machine = (Xmachine) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
@@ -56,14 +61,15 @@ public class TrackGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Entry") {
+        return new AbstractAction("Edit " + whatIsThis()) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 if (id > 0) {
                     try {
                         Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                        new EditTrackDialog("Edit Truck", machine);
+                        EditTrackPanel.setLowbed(getSelect().indexOf("is_lowbed=1") > 0);
+                        new EditTrackDialog("Edit " + whatIsThis(), machine);
                         if (EditTrackDialog.okPressed) {
                             GeneralFrame.updateGrid(exchanger, getTableView(),
                                     getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
@@ -79,13 +85,14 @@ public class TrackGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Entry") {
+        return new AbstractAction("Delete " + whatIsThis()) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
                 try {
                     Xmachine machine = (Xmachine) exchanger.loadDbObjectOnID(Xmachine.class, id);
-                    if (machine != null && GeneralFrame.yesNo("Attention!", "Do you want to delete Truck [Reg.Nr "
+                    if (machine != null && GeneralFrame.yesNo("Attention!",
+                            "Do you want to delete " + whatIsThis() + " [Reg.Nr "
                             + machine.getRegNr() + "]?") == JOptionPane.YES_OPTION) {
                         exchanger.deleteObject(machine);
                         GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), null, getPageSelector().getSelectedIndex());

@@ -1,7 +1,7 @@
 package com.xlend.gui.fleet;
 
 import com.xlend.gui.EditRecordDialog;
-import com.xlend.orm.Xlowbed;
+//import com.xlend.orm.Xlowbed;
 import com.xlend.orm.Xtrip;
 
 /**

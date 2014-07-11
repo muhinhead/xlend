@@ -18,8 +18,8 @@ import java.util.Properties;
  */
 public class ExchangeFactory {
 
-    private static final int DB_VERSION_ID = 52;
-    public static final String DB_VERSION = "0.52";
+    private static final int DB_VERSION_ID = 53;
+    public static final String DB_VERSION = "0.53";
     private static String[] fixLocalDBsqls = new String[]{
         "update dbversion set version_id = " + DB_VERSION_ID + ",version = '" + DB_VERSION + "'",
         //        "alter table xemployee add notes text",
@@ -71,7 +71,20 @@ public class ExchangeFactory {
         + "   set fmt = replace(fmt,'MI','%i');\n"
         + "   set fmt = replace(fmt,'SS','%S');\n"
         + "   return DATE_FORMAT(dt, fmt);\n"
-        + "end;"
+        + "end;",
+        //52->53
+        "alter table xmachine add is_lowbed bit default 0",
+        "update xmachine set is_lowbed=1 where xmachine_id in (select xmachine_id from xlowbed)",
+        "alter table xtrip drop foreign key xtrip_xlowbed_fk",
+        "update xtrip set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtrip.xlowbed_id)",
+        "alter table xtrip add constraint xtrip_xmachine_fk1 foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        "alter table xtripsheet drop foreign key xtripsheet_xlowbed_fk",
+        "update xtripsheet set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtripsheet.xlowbed_id)",
+        "alter table xtripsheet add constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        "alter table xtransscheduleitm drop foreign key xtransscheduleitm_xmachine_fk2",
+        "update xtransscheduleitm set lowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtransscheduleitm.lowbed_id)",
+        "alter table xtransscheduleitm add constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id)",
+        "drop table xlowbed"
     };
 
     public static IMessageSender getExchanger(String connectString, Properties props) {

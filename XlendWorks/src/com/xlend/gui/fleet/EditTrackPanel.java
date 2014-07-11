@@ -10,7 +10,7 @@ import javax.swing.SwingConstants;
  * @author nick
  */
 class EditTrackPanel extends EditMachinePanel {
-
+    
     public EditTrackPanel(DbObject dbObject) {
         super(dbObject);
     }

@@ -55,7 +55,7 @@ import javax.swing.plaf.FontUIResource;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2013";
-    public static final String version = "0.86.c";
+    public static final String version = "0.87";
     public static String protocol = "unknown";
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
@@ -1045,7 +1045,7 @@ public class XlendWorks {
     public static ComboItem[] loadAllTracks() {
         return loadOnSelect("Select xmachine_id, concat(m.classify,m.tmvnr) "
                 + "from xmachine m left join xmachtype t1 "
-                + "on m.xmachtype_id=t1.xmachtype_id");// and t1.classify='T'");
+                + "on m.xmachtype_id=t1.xmachtype_id and t1.classify='T'");
     }
 
     public static ComboItem[] loadRatedMachines() {
@@ -1104,10 +1104,12 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllLowbeds() {
         return loadOnSelect(
-                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
-                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
-                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
-                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id");
+                "select xmachine_id,concat('Lowbed:',classify,tmvnr) from xmachine where is_lowbed=1"
+//                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
+//                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
+//                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+//                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
+                );
     }
 
     public static ComboItem[] loadConsumesForMachine(Integer xmachineID) {

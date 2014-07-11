@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import com.xlend.constants.Selects;
 import com.xlend.gui.fleet.*;
 import com.xlend.remote.IMessageSender;
 //import com.xlend.gui.HTMLpanel;
@@ -132,7 +133,10 @@ public class FleetFrame extends GeneralFrame {
     private JPanel getLowBedsPanel() {
         if (lowbedsPanel == null) {
             try {
-                registerGrid(lowbedsPanel = new LowBedGrid(getExchanger()));
+                registerGrid(lowbedsPanel = new TrackGrid(getExchanger(),
+                        Selects.SELECT_FROM_MACHINE.replace(
+                        "classify='M'", "classify='T' and is_lowbed=1"), false) //LowBedGrid(getExchanger())
+                        );
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());

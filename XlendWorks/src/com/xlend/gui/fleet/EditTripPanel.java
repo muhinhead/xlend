@@ -8,7 +8,8 @@ import com.xlend.gui.assign.ChooseDepotForOperatorDialog;
 import com.xlend.gui.hr.EmployeeLookupAction;
 import com.xlend.gui.site.SiteLookupAction;
 import com.xlend.orm.Xemployee;
-import com.xlend.orm.Xlowbed;
+import com.xlend.orm.Xmachine;
+//import com.xlend.orm.Xlowbed;
 import com.xlend.orm.Xopmachassing;
 import com.xlend.orm.Xtrip;
 import com.xlend.orm.dbobject.ComboItem;
@@ -173,12 +174,12 @@ public class EditTripPanel extends RecordEditPanel {
         idField.setEnabled(false);
         organizePanels(titles, edits, null);
 
-        lowbedCB.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                syncDriverAndAssistant();
-            }
-        });
+//        lowbedCB.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                syncDriverAndAssistant();
+//            }
+//        });
 
         add(detailsPanel());
     }
@@ -187,20 +188,20 @@ public class EditTripPanel extends RecordEditPanel {
         return new OtherFieldShowAction(otherFld);
     }
 
-    private void syncDriverAndAssistant() {
-        ComboItem itm = (ComboItem) lowbedCB.getSelectedItem();
-        if (itm == null) {
-            itm = (ComboItem) lowbedCbModel.getElementAt(0);
-        }
-        try {
-            Xlowbed lowbed = (Xlowbed) XlendWorks.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
-            selectComboItem(driverCB, lowbed.getDriverId());
-            selectComboItem(assistantCB, lowbed.getAssistantId());
-        } catch (RemoteException ex) {
-            XlendWorks.log(ex);
-        }
-
-    }
+//    private void syncDriverAndAssistant() {
+//        ComboItem itm = (ComboItem) lowbedCB.getSelectedItem();
+//        if (itm == null) {
+//            itm = (ComboItem) lowbedCbModel.getElementAt(0);
+//        }
+//        try {
+//            Xlowbed lowbed = (Xlowbed) XlendWorks.getExchanger().loadDbObjectOnID(Xlowbed.class, itm.getId());
+//            selectComboItem(driverCB, lowbed.getDriverId());
+//            selectComboItem(assistantCB, lowbed.getAssistantId());
+//        } catch (RemoteException ex) {
+//            XlendWorks.log(ex);
+//        }
+//
+//    }
 
     private JPanel detailsPanel() {
         Xtrip xtr = (Xtrip) getDbObject();
@@ -221,10 +222,11 @@ public class EditTripPanel extends RecordEditPanel {
 
     @Override
     public void loadData() {
-        Xlowbed xlb = null;
+//        Xlowbed 
+        Xmachine xlb = null;
         if (xlowbed_id != null) {
             try {
-                xlb = (Xlowbed) XlendWorks.getExchanger().loadDbObjectOnID(Xlowbed.class, xlowbed_id);
+                xlb = (Xmachine) XlendWorks.getExchanger().loadDbObjectOnID(Xmachine.class, xlowbed_id);
             } catch (RemoteException ex) {
                 XlendWorks.log(ex);
             }
@@ -248,13 +250,13 @@ public class EditTripPanel extends RecordEditPanel {
 
             if (xtr.getDriverId() != null) {
                 selectComboItem(driverCB, xtr.getDriverId());
-            } else if (xlb != null) {
-                selectComboItem(driverCB, xlb.getDriverId());
+//            } else if (xlb != null) {
+//                selectComboItem(driverCB, xlb.getDriverId());
             }
             if (xtr.getAssistantId() != null) {
                 selectComboItem(assistantCB, xtr.getAssistantId());
-            } else if (xlb != null) {
-                selectComboItem(assistantCB, xlb.getAssistantId());
+//            } else if (xlb != null) {
+//                selectComboItem(assistantCB, xlb.getAssistantId());
             }
             if (xtr.getTripType() != null) {
                 switch (xtr.getTripType()) {
@@ -279,7 +281,7 @@ public class EditTripPanel extends RecordEditPanel {
             switchDetailPanel();
         } else {
             establishRB.setSelected(true);
-            syncDriverAndAssistant();
+//            syncDriverAndAssistant();
         }
     }
 

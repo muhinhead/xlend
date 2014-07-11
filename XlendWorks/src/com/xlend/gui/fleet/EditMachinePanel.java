@@ -55,6 +55,22 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
     private JLabel lastServicedByLBL;
     private JRadioButton dieselRB;
     private JRadioButton petrolRB;
+    private JCheckBox isLowbedChB;
+    private static boolean lowbed = false;
+
+    /**
+     * @return the lowbed
+     */
+    public static boolean isLowbed() {
+        return lowbed;
+    }
+
+    /**
+     * @param aLowbed the lowbed to set
+     */
+    public static void setLowbed(boolean aLowbed) {
+        lowbed = aLowbed;
+    }
 
     public EditMachinePanel(DbObject dbObject) {
         super(dbObject);
@@ -67,8 +83,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             machineTypeCbModel.addElement(itm);
         }
         licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
-                    "Current", "2 Month Warning", "Dealer Stock", "Expired"
-                });
+            "Current", "2 Month Warning", "Dealer Stock", "Expired"
+        });
         machineType2CbModel = new DefaultComboBoxModel();
         String[] titles = new String[]{
             "ID:",
@@ -113,6 +129,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             lastServiceDateLBL = new JLabel(""),
             lastServicedByLBL = new JLabel("")
         };
+        isLowbedChB = new JCheckBox("Low bed");
 
         lastServiceDateLBL.setBorder(BorderFactory.createEtchedBorder());
         lastServicedByLBL.setBorder(BorderFactory.createEtchedBorder());
@@ -123,7 +140,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
 //        licenseStatusCB.getEditor().getEditorComponent().setMaximumSize(new Dimension(100,prefs.height));
 //        insuranceTypeCB.setEditable(true);
         for (SelectedDateSpinner sp : new SelectedDateSpinner[]{
-                    expDateSP, payStartDateSP, payEndDateSP}) {
+            expDateSP, payStartDateSP, payEndDateSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
         }
@@ -141,19 +158,23 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
 
         componentRows.add(new JComponent[]{labels[idx++], idPanel, labels[idx++], tmvnrPanel, labels[idx++], regNrPanel});
         componentRows.add(new JComponent[]{labels[idx++], machineTypeCB, labels[idx++], machType2CB, getConsumptionLabel(),
-                    getBorderPanel(new JComponent[]{consumptionSP})
+            getBorderPanel(new JComponent[]{consumptionSP})
 //            new JButton(getAssignmentsAction("Assignments..."))
-                });
+        });
         componentRows.add(new JComponent[]{labels[idx++], licensedChB, labels[idx++], expDateSP, labels[idx++], licenseStatusLBL});
         componentRows.add(new JComponent[]{labels[idx++], vehicleNrField, labels[idx++], engineNrField, labels[idx++], chassisNrField});
         componentRows.add(new JComponent[]{labels[idx++], insuranceNrField, labels[idx++], insuranceTypeCB, labels[idx++], insurabceAmtSP});
         componentRows.add(new JComponent[]{labels[idx++], depositAmtSP, labels[idx++], contractFeeSP, new JPanel(), new JPanel()});
         componentRows.add(new JComponent[]{labels[idx++], monthlyPaySP, labels[idx++], payStartDateSP, labels[idx++], payEndDateSP});
         componentRows.add(new JComponent[]{labels[idx++], siteAssignLbl = new JLabel("site"),
-                    new JLabel("operator:", SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
-                    new JButton(getAssignmentsAction("Assignments..."))});
-        componentRows.add(new JComponent[]{labels[idx++], lastServiceDateLBL, new JLabel("Fuel used:", SwingConstants.RIGHT), dieselRB = new JRadioButton("Diesel"), new JPanel(), new JPanel()});
-        componentRows.add(new JComponent[]{labels[idx++], lastServicedByLBL, new JPanel(), petrolRB = new JRadioButton("Petrol"), new JPanel(), new JPanel()});
+            new JLabel("operator:", SwingConstants.RIGHT), operatorAssignLbl = new JLabel("operator"), new JPanel(),
+            new JButton(getAssignmentsAction("Assignments..."))});
+        componentRows.add(new JComponent[]{labels[idx++], lastServiceDateLBL,
+            new JLabel("Fuel used:", SwingConstants.RIGHT),
+            dieselRB = new JRadioButton("Diesel"), new JPanel(), new JPanel()});
+        componentRows.add(new JComponent[]{labels[idx++], lastServicedByLBL,
+            new JPanel(), petrolRB = new JRadioButton("Petrol"),
+            new JPanel(), isLowbedChB});
         ButtonGroup group = new ButtonGroup();
         group.add(dieselRB);
         group.add(petrolRB);
@@ -167,6 +188,8 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
 
         consumptionSP.setMaximumSize(regNrField.getPreferredSize());
         add(getTabbedPanel(), BorderLayout.CENTER);
+        isLowbedChB.setVisible(getFleetNumberChar().equals("T"));
+        isLowbedChB.setEnabled(!isLowbed());
     }
 
     protected void organizePanels(ArrayList<JComponent[]> componentRows) {
@@ -242,10 +265,13 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
             } else {
                 petrolRB.setSelected(true);
             }
+            isLowbedChB.setSelected(machine.getIsLowbed() != null && machine.getIsLowbed().intValue() == 1);
             adjustLicenseFierlds();
             repaintLicFields();
             fillAssignmentInfo();
             fillLastServiceInfo();
+        } else {
+            isLowbedChB.setSelected(isLowbed());
         }
         syncTypes();
         if (machine != null && machine.getXmachtype2Id() != null) {
@@ -307,7 +333,7 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         machine.setPhoto(imageData);
         machine.setConsumption((Integer) consumptionSP.getValue());
         machine.setFueltype(dieselRB.isSelected() ? 1 : 2);
-
+        machine.setIsLowbed(isLowbedChB.isSelected() ? 1 : 0);
         try {
             machine.setNew(isNew);
             DbObject saved = XlendWorks.getExchanger().saveDbObject(machine);

@@ -317,7 +317,8 @@ create table xmachine
     photo           mediumblob,
     consumption     int,
     fueltype        int,
-    stamp timestamp,
+    is_lowbed       bit default 0,
+    stamp           timestamp,
     constraint xmachine_pk primary key (xmachine_id),
     constraint xmachine_xmachtype_fk foreign key (xmachtype_id) references xmachtype (xmachtype_id)
 );
@@ -382,18 +383,6 @@ create table xwagesumitem
     constraint xwagesumitem_xtimesheet_fk foreign key (xtimesheet_id) references xtimesheet (xtimesheet_id)
 );
 
-create table xlowbed
-(
-    xlowbed_id      int not null auto_increment,
-    xmachine_id     int not null,
-    driver_id       int,
-    assistant_id    int,
-    stamp timestamp,
-    constraint xlowbed_pk primary key (xlowbed_id),
-    constraint xlowbed_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
-    constraint xlowbed_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
-    constraint xlowbed_xemployee_fk2 foreign key (assistant_id) references xemployee (xemployee_id)
-);
 
 create table xtrip
 (
@@ -415,7 +404,7 @@ create table xtrip
     operator_id     int,
     stamp timestamp,
     constraint xtrip_pk primary key (xtrip_id),
-    constraint xtrip_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id) on delete cascade,
+    constraint xtrip_xmachine_fk1 foreign key (xlowbed_id) references xmachine (xmachine_id) on delete cascade,
     constraint xtrip_xsite_fk foreign key (fromsite_id) references xsite (xsite_id),
     constraint xtrip_xsite_fk2 foreign key (tosite_id) references xsite (xsite_id),
     constraint xtrip_xsite_fk3 foreign key (insite_id) references xsite (xsite_id),
@@ -473,40 +462,6 @@ create table xpaidmethod
     constraint xpaidmethod_pk primary key (xpaidmethod_id)
 );
 
---create table xdieselpchs
---(
---    xdieselpchs_id   int not null auto_increment,
---    xsupplier_id     int not null,
---    purchased        date not null,
---    authorizer_id    int,
---    amount_liters    int not null,
---    amount_rands     decimal(10,2) not null,
---    paidby_id        int,
---    xpaidmethod_id   int not null,
---    stamp timestamp,
---    constraint xdieselpchs_pk primary key (xdieselpchs_id),
---    constraint xdieselpchs_xsupplier_fk foreign key (xsupplier_id) references xsupplier (xsupplier_id),
---    constraint xdieselpchs_xemployee_fk foreign key (authorizer_id) references xemployee (xemployee_id),
---    constraint xdieselpchs_xemployee_fk2 foreign key (paidby_id) references xemployee (xemployee_id),
---    constraint xdieselpchs_xpaidmethod_fk foreign key (xpaidmethod_id) references xpaidmethod (xpaidmethod_id)
---);
-
---create table xdieselcard
---(
---    xdieselcard_id    int not null auto_increment,
---    carddate          date not null,
---    xmachine_id       int not null,
---    operator_id       int not null,
---    xsite_id          int not null,
---    amount_liters     int,
---    personiss_id      int,
---    stamp timestamp,
---    constraint xdieselcard_pk primary key (xdieselcard_id),
---    constraint xdieselcard_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
---    constraint xdieselcard_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
---    constraint xdieselcard_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
---    constraint xdieselcard_xemployee_fk2 foreign key (personiss_id) references xemployee (xemployee_id)
---);
 
 create table xconsume
 (
@@ -654,89 +609,6 @@ create table xabsenteeism
     constraint xabsenteeism_xemployee_fk4 foreign key (grantedby_id) references xemployee (xemployee_id) on delete cascade
 );
 
---create table xissuing
---(
---    xissuing_id int not null auto_increment,
---    issueddate  date not null,
---    operator_id int not null,
---    xmachine_id int not null,
---    xsite_id    int not null,
---    time1_start  time,
---    time1_end    time,
---    time2_start  time,
---    time2_end    time,
---    time3_start  time,
---    time3_end    time,
---    time4_start  time,
---    time4_end    time,
---    time5_start  time,
---    time5_end    time,
---    time6_start  time,
---    time6_end    time,
---    time7_start  time,
---    time7_end    time,
---    hours1_start int,
---    hours1_end   int,
---    hours2_start int,
---    hours2_end   int,
---    hours3_start int,
---    hours3_end   int,
---    hours4_start int,
---    hours4_end   int,
---    hours5_start int,
---    hours5_end   int,
---    hours6_start int,
---    hours6_end   int,
---    hours7_start int,
---    hours7_end   int,
---    liters1_start int,
---    liters1_end   int,
---    liters2_start int,
---    liters2_end   int,
---    liters3_start int,
---    liters3_end   int,
---    liters4_start int,
---    liters4_end   int,
---    liters5_start int,
---    liters5_end   int,
---    liters6_start int,
---    liters6_end   int,
---    liters7_start int,
---    liters7_end   int,
---    issuedby1_start int,
---    issuedby1_end   int,
---    issuedby2_start int,
---    issuedby2_end   int,
---    issuedby3_start int,
---    issuedby3_end   int,
---    issuedby4_start int,
---    issuedby4_end   int,
---    issuedby5_start int,
---    issuedby5_end   int,
---    issuedby6_start int,
---    issuedby6_end   int,
---    issuedby7_start int,
---    issuedby7_end   int,
---    stamp timestamp,
---    constraint xissuing_pk primary key (xissuing_id),
---    constraint xissuing_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id),
---    constraint xissuing_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),
---    constraint xissuing_xsite_fk foreign key (xsite_id) references xsite (xsite_id),
---    constraint xissuing_xemployee_fk1s foreign key (issuedby1_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk1e foreign key (issuedby1_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk2s foreign key (issuedby2_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk2e foreign key (issuedby2_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk3s foreign key (issuedby3_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk3e foreign key (issuedby3_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk4s foreign key (issuedby4_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk4e foreign key (issuedby4_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk5s foreign key (issuedby5_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk5e foreign key (issuedby5_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk6s foreign key (issuedby6_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk6e foreign key (issuedby6_end) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk7s foreign key (issuedby7_start) references xemployee (xemployee_id),
---    constraint xissuing_xemployee_fk7e foreign key (issuedby7_end) references xemployee (xemployee_id)
---);
 
 create table xtripsheet
 (
@@ -747,7 +619,7 @@ create table xtripsheet
     authorized_id int not null,
     stamp timestamp,
     constraint xtripsheet_pk primary key (xtripsheet_id),
-    constraint xtripsheet_xlowbed_fk foreign key (xlowbed_id) references xlowbed (xlowbed_id),
+    constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xmachine (xmachine_id),
     constraint xtripsheet_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
     constraint xtripsheet_xemployee_fk2 foreign key (authorized_id) references xemployee (xemployee_id)
 );
@@ -1294,7 +1166,7 @@ create table xtransscheduleitm
     constraint xtransscheduleitm_xmachine_fk foreign key (machine_id) references xmachine (xmachine_id),
     constraint xtransscheduleitm_xsite_fk foreign key (site_from_id) references xsite (xsite_id),
     constraint xtransscheduleitm_xsite_fk2 foreign key (site_to_id) references xsite (xsite_id),
-    constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xlowbed (xlowbed_id),
+    constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id),
     constraint xtransscheduleitm_xemployee_fk foreign key (operator_id) references xemployee (xemployee_id)
 );
 
@@ -1756,7 +1628,7 @@ create function to_char(dt datetime, fmt varchar(32))
 returns varchar(32) deterministic
 begin
    declare fmt char(32) default fmt;
-   set fmt = replace(fmt,'DD','%e');
+   set fmt = replace(fmt,'DD','%d');
    set fmt = replace(fmt,'MM','%m');
    set fmt = replace(fmt,'YYYY','%Y');
    set fmt = replace(fmt,'YY','%y');

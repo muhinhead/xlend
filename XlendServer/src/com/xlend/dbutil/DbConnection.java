@@ -42,8 +42,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 51;
-    public static final String DB_VERSION = "0.51";
+    private static final int DB_VERSION_ID = 53;
+    public static final String DB_VERSION = "0.53";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -69,39 +69,55 @@ public class DbConnection {
         //        "alter table xpetty modify change_amt decimal(10,2)",
         //        "alter table xpettyitem modify amount decimal(10,2)",
         // 49->50
-        "alter table xemployee add notes text",
-        "alter table xsupplier add is_fuel_suppllier bit default 0",
-        // 50->51
-        "create table xmachineorder"
-        + "("
-        + "    xmachineorder_id    int not null auto_increment,"
-        + "    issue_date          date not null,"
-        + "    require_date        date not null,"
-        + "    xemployee_id        int not null,"
-        + "    xsite_id            int not null,"
-        + "    xclient_id          int,"
-        + "    xorder_id           int,"
-        + "    site_address        varchar(128),"
-        + "    distance2site       int,"
-        + "    foreman_req_plant   varchar(128),"
-        + "    foreman_contact     varchar(128),"
-        + "    constraint xmachineorder_pk primary key (xmachineorder_id),"
-        + "    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
-        + "    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
-        + "    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),"
-        + "    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)"
-        + ")",
-        "create table xmachineorderitm"
-        + "("
-        + "    xmachineorderitm_id int not null auto_increment,"
-        + "    xmachineorder_id    int not null,"
-        + "    xmachine_id         int not null,"
-        + "    xemployee_id        int not null,"
-        + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
-        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id) on delete cascade,"
-        + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
-        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
-        + ")"
+//        "alter table xemployee add notes text",
+//        "alter table xsupplier add is_fuel_suppllier bit default 0",
+//        // 50->51
+//        "create table xmachineorder"
+//        + "("
+//        + "    xmachineorder_id    int not null auto_increment,"
+//        + "    issue_date          date not null,"
+//        + "    require_date        date not null,"
+//        + "    xemployee_id        int not null,"
+//        + "    xsite_id            int not null,"
+//        + "    xclient_id          int,"
+//        + "    xorder_id           int,"
+//        + "    site_address        varchar(128),"
+//        + "    distance2site       int,"
+//        + "    foreman_req_plant   varchar(128),"
+//        + "    foreman_contact     varchar(128),"
+//        + "    constraint xmachineorder_pk primary key (xmachineorder_id),"
+//        + "    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
+//        + "    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
+//        + "    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),"
+//        + "    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)"
+//        + ")",
+//        "create table xmachineorderitm"
+//        + "("
+//        + "    xmachineorderitm_id int not null auto_increment,"
+//        + "    xmachineorder_id    int not null,"
+//        + "    xmachine_id         int not null,"
+//        + "    xemployee_id        int not null,"
+//        + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
+//        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id) on delete cascade,"
+//        + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+//        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
+//        + ")",
+        //51->52
+        "alter table xsite add (x_map int, y_map int)",
+        "alter table xemployee add (why_dismissed text)",
+        //52->53
+        "alter table xmachine add is_lowbed bit default 0",
+        "update xmachine set is_lowbed=1 where xmachine_id in (select xmachine_id from xlowbed)",
+        "alter table xtrip drop foreign key xtrip_xlowbed_fk",
+        "update xtrip set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtrip.xlowbed_id)",
+        "alter table xtrip add constraint xtrip_xmachine_fk1 foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        "alter table xtripsheet drop foreign key xtripsheet_xlowbed_fk",
+        "update xtripsheet set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtripsheet.xlowbed_id)",
+        "alter table xtripsheet add constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        "alter table xtransscheduleitm drop foreign key xtransscheduleitm_xmachine_fk2",
+        "update xtransscheduleitm set lowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtransscheduleitm.lowbed_id)",
+        "alter table xtransscheduleitm add constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id)",
+        "drop table xlowbed"
     };
 
 //    public synchronized static Connection getLogDBconnection() {

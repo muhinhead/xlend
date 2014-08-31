@@ -64,7 +64,7 @@ public class SiteMap extends Application {
     private Hashtable<Integer, Node> buttonTable = new Hashtable<Integer, Node>();
     private static Stage mainStage;
     private static IMessageSender exchanger;
-    public static final String defaultServerIP = "192.168.1.3";
+    public static final String defaultServerIP = "localhost";//"192.168.1.3";
     private static boolean wasDragged = false;
 
     /**

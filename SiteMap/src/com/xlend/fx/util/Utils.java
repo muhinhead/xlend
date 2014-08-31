@@ -76,8 +76,9 @@ public class Utils {
                             curPath.indexOf(PROPERTYFILENAME)).replace('\\', '/');
                     props.setProperty("dbDriverName", "com.mysql.jdbc.Driver");
                     props.setProperty("dbConnection", "jdbc:mysql://localhost/xlend?characterEncoding=UTF8");
-                    props.setProperty("dbUser", "jaco");
-                    props.setProperty("dbPassword", "jaco84oliver");
+//                            "jdbc:mysql://192.168.1.3/xlend?characterEncoding=UTF8");
+                    props.setProperty("dbUser", "root");//jaco");
+                    props.setProperty("dbPassword", "root");// "jaco84oliver");
                     propFile.createNewFile();
                 } else {
                     props.load(new FileInputStream(propFile));

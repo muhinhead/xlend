@@ -14,8 +14,11 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Dialogs;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
@@ -29,6 +32,14 @@ public class PasswordDialogController implements Initializable {
     @FXML
     private PasswordField passwordField;
     static PasswordDialogController instance;
+    @FXML
+    private Label messageLabel;
+    @FXML
+    private HBox actionParent;
+    @FXML
+    private Button okButton;
+    @FXML
+    private Button cancelButton;
 
     /**
      * Initializes the controller class.

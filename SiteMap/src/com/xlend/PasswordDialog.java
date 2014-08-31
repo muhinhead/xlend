@@ -2,7 +2,6 @@ package com.xlend;
 
 import com.xlend.fx.util.PopupFXdialog;
 import java.io.IOException;
-import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 
 /**

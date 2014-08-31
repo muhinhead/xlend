@@ -147,24 +147,24 @@ public class DbConnection {
     }
 
     public static String getFtpURL() {
-        return props.getProperty("ftpURL", "162.209.108.207"//"ec2-23-22-145-131.compute-1.amazonaws.com"
-        );
+        return props.getProperty("ftpURL", "162.209.108.207");
+                //"ec2-23-22-145-131.compute-1.amazonaws.com");
     }
 
     public static String getFtpPath() {
-        return props.getProperty("ftpPath", "/");
+        return props.getProperty("ftpPath", "/");//"/root/backups/");
     }
 
     public static String getFtpLogin() {
-        return props.getProperty("ftpLogin", "jake");
+        return props.getProperty("ftpLogin", "jake");//"jaco");
     }
 
     public static String getFtpPassword() {
-        return props.getProperty("ftpPassword", "840905");
+        return props.getProperty("ftpLogin", "840905");//jaco84oliver");
     }
 
     public static boolean needBackup() {
-        return props.getProperty("doBackup", "yes").equals("yes");
+        return props.getProperty("doBackup", "no").equals("yes");
     }
 
     private static void runPingService() throws RemoteException {

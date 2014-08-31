@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Properties;
@@ -42,7 +43,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.88";
+    private static final String version = "0.87";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

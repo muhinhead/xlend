@@ -1,0 +1,12 @@
+/* 
+    Document   : Xlend
+    Created on : 05.12.2013, 11:14:18
+    Author     : Nick Mukhin
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.root { 
+    -fx-background-image: url("Background.png");
+}
+

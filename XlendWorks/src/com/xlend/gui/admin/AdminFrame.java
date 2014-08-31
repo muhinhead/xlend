@@ -1,13 +1,13 @@
 package com.xlend.gui.admin;
 
-import com.jidesoft.swing.JideTabbedPane;
+//import com.jidesoft.swing.JideTabbedPane;
 import com.xlend.constants.Selects;
 import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.GeneralGridPanel;
 import com.xlend.gui.MyJideTabbedPane;
 import com.xlend.gui.XlendWorks;
-import com.xlend.gui.HTMLapplet;
+//import com.xlend.gui.HTMLapplet;
 import com.xlend.mvc.Controller;
 import com.xlend.mvc.dbtable.DbTableView;
 import com.xlend.remote.IMessageSender;
@@ -26,7 +26,7 @@ public class AdminFrame extends GeneralFrame {
     private GeneralGridPanel usersPanel;
     private MachineTypeGrid machineTypesPanel;
     private MachineTypeGrid machineSubTypesPanel;
-    private JideTabbedPane dictionaryPanel;
+    private JTabbedPane dictionaryPanel;
     private JPanel dataControlPanel;
     private PaidMethodsGrid paidMathodsPanel;
     private PayFromGrid payFromPanel;
@@ -87,11 +87,11 @@ public class AdminFrame extends GeneralFrame {
                 XlendWorks.log(ex);
                 errMessageBox("Error:", ex.getMessage());
             }
-            dictionaryPanel = new JideTabbedPane();
-            dictionaryPanel.setShowTabButtons(true);
-            dictionaryPanel.setBoldActiveTab(true);
-            dictionaryPanel.setColorTheme(JideTabbedPane.COLOR_THEME_OFFICE2003);
-            dictionaryPanel.setTabShape(JideTabbedPane.SHAPE_BOX);
+            dictionaryPanel = new JTabbedPane();
+//            dictionaryPanel.setShowTabButtons(true);
+//            dictionaryPanel.setBoldActiveTab(true);
+//            dictionaryPanel.setColorTheme(JideTabbedPane.COLOR_THEME_OFFICE2003);
+//            dictionaryPanel.setTabShape(JideTabbedPane.SHAPE_BOX);
 
             dictionaryPanel.addTab("Machine Types", getMachineTypeSplitPanel());//machitypeSplitPanel);
             dictionaryPanel.addTab("Pay Methods", paidMathodsPanel);
@@ -148,14 +148,14 @@ public class AdminFrame extends GeneralFrame {
         return dataControlPanel;
     }
 
-    private JComponent getWebView() {
-        if (webViewHTMLpanel == null) {
-            webViewHTMLpanel = new JPanel(new BorderLayout());
-            HTMLapplet browser = new HTMLapplet("http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
-            browser.init();
-            webViewHTMLpanel.add(browser.getContentPane());
-            browser.start();
-        }
-        return webViewHTMLpanel;
-    }
+//    private JComponent getWebView() {
+//        if (webViewHTMLpanel == null) {
+//            webViewHTMLpanel = new JPanel(new BorderLayout());
+//            HTMLapplet browser = new HTMLapplet("http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
+//            browser.init();
+//            webViewHTMLpanel.add(browser.getContentPane());
+//            browser.start();
+//        }
+//        return webViewHTMLpanel;
+//    }
 }

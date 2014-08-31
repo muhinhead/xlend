@@ -230,18 +230,18 @@ public class FleetFrame extends GeneralFrame {
     private JComponent getDieselPrices() {
         if (dieselPricesHTMLpanel == null) {
             dieselPricesHTMLpanel = new JPanel(new BorderLayout());
-            if (System.getProperty("os.name").equals("Windows XP")) {
-                HTMLapplet browser = new HTMLapplet("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-//            HTMLapplet.setUrl(//"http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
-//                "http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
-                browser.init();
-                dieselPricesHTMLpanel.add(browser.getContentPane());
-                browser.start();
-            } else {
+//            if (System.getProperty("os.name").equals("Windows XP")) {
+//                HTMLapplet browser = new HTMLapplet("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+////            HTMLapplet.setUrl(//"http://ec2-23-22-145-131.compute-1.amazonaws.com:8080/XlendWebWorks");
+////                "http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
+//                browser.init();
+//                dieselPricesHTMLpanel.add(browser.getContentPane());
+//                browser.start();
+//            } else {
                 String html = loadHtmlFromURL("http://www.aa.co.za/on-the-road/calculator-tools/fuel-pricing.html");
                 JEditorPane htmlPanel = new JEditorPane("text/html", html);
                 dieselPricesHTMLpanel.add(new JScrollPane(htmlPanel));
-            }
+//            }
         }
         return dieselPricesHTMLpanel;
     }

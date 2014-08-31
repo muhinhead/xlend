@@ -1,6 +1,6 @@
 package com.xlend.gui;
 
-import com.jidesoft.swing.JideTabbedPane;
+//import com.jidesoft.swing.JideTabbedPane;
 import static com.xlend.gui.GeneralFrame.errMessageBox;
 import com.xlend.gui.work.*;
 import com.xlend.remote.IMessageSender;

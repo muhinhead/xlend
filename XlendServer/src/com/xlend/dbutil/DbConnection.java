@@ -42,8 +42,8 @@ public class DbConnection {
         }
     }
 //    private static Connection logDBconnection = null;
-    private static final int DB_VERSION_ID = 53;
-    public static final String DB_VERSION = "0.53";
+    private static final int DB_VERSION_ID = 54;
+    public static final String DB_VERSION = "0.54";
     private static boolean isFirstTime = true;
     private static Properties props = new Properties();
     private static String[] createLocalDBsqls = loadDDLscript("crebas_mysql.sql", ";");//"crebas_hsqldb.sql",";");
@@ -69,39 +69,39 @@ public class DbConnection {
         //        "alter table xpetty modify change_amt decimal(10,2)",
         //        "alter table xpettyitem modify amount decimal(10,2)",
         // 49->50
-//        "alter table xemployee add notes text",
-//        "alter table xsupplier add is_fuel_suppllier bit default 0",
-//        // 50->51
-//        "create table xmachineorder"
-//        + "("
-//        + "    xmachineorder_id    int not null auto_increment,"
-//        + "    issue_date          date not null,"
-//        + "    require_date        date not null,"
-//        + "    xemployee_id        int not null,"
-//        + "    xsite_id            int not null,"
-//        + "    xclient_id          int,"
-//        + "    xorder_id           int,"
-//        + "    site_address        varchar(128),"
-//        + "    distance2site       int,"
-//        + "    foreman_req_plant   varchar(128),"
-//        + "    foreman_contact     varchar(128),"
-//        + "    constraint xmachineorder_pk primary key (xmachineorder_id),"
-//        + "    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
-//        + "    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
-//        + "    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),"
-//        + "    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)"
-//        + ")",
-//        "create table xmachineorderitm"
-//        + "("
-//        + "    xmachineorderitm_id int not null auto_increment,"
-//        + "    xmachineorder_id    int not null,"
-//        + "    xmachine_id         int not null,"
-//        + "    xemployee_id        int not null,"
-//        + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
-//        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id) on delete cascade,"
-//        + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
-//        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
-//        + ")",
+        //        "alter table xemployee add notes text",
+        "alter table xsupplier add is_fuel_suppllier bit default 0",
+        //        // 50->51
+        //        "create table xmachineorder"
+        //        + "("
+        //        + "    xmachineorder_id    int not null auto_increment,"
+        //        + "    issue_date          date not null,"
+        //        + "    require_date        date not null,"
+        //        + "    xemployee_id        int not null,"
+        //        + "    xsite_id            int not null,"
+        //        + "    xclient_id          int,"
+        //        + "    xorder_id           int,"
+        //        + "    site_address        varchar(128),"
+        //        + "    distance2site       int,"
+        //        + "    foreman_req_plant   varchar(128),"
+        //        + "    foreman_contact     varchar(128),"
+        //        + "    constraint xmachineorder_pk primary key (xmachineorder_id),"
+        //        + "    constraint xmachineorder_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
+        //        + "    constraint xmachineorder_xsite_fk foreign key (xsite_id) references xsite (xsite_id),"
+        //        + "    constraint xmachineorder_xclient_fk foreign key (xclient_id) references xclient (xclient_id),"
+        //        + "    constraint xmachineorder_xorder_fk foreign key (xorder_id) references xorder (xorder_id)"
+        //        + ")",
+        //        "create table xmachineorderitm"
+        //        + "("
+        //        + "    xmachineorderitm_id int not null auto_increment,"
+        //        + "    xmachineorder_id    int not null,"
+        //        + "    xmachine_id         int not null,"
+        //        + "    xemployee_id        int not null,"
+        //        + "    constraint xmachineorderitm_pk primary key (xmachineorderitm_id),"
+        //        + "    constraint xmachineorderitm_xmachineorder_fk foreign key (xmachineorder_id) references xmachineorder (xmachineorder_id) on delete cascade,"
+        //        + "    constraint xmachineorderitm_xmachine_fk foreign key (xmachine_id) references xmachine (xmachine_id),"
+        //        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
+        //        + ")",
         //51->52
         "alter table xsite add (x_map int, y_map int)",
         "alter table xemployee add (why_dismissed text)",
@@ -117,7 +117,25 @@ public class DbConnection {
         "alter table xtransscheduleitm drop foreign key xtransscheduleitm_xmachine_fk2",
         "update xtransscheduleitm set lowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtransscheduleitm.lowbed_id)",
         "alter table xtransscheduleitm add constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id)",
-        "drop table xlowbed"
+        "drop table xlowbed",
+        //53->54
+        "create table xessential "
+        + "( "
+        + "    xessential_id int not null auto_increment,"
+        + "    out_date date not null,"
+        + "    return_date date null,"
+        + "    redress_date date null,"
+        + "    redress_amt decimal(10,2),"
+        + "    essential varchar(64) not null," // spare wheel / jack / wheel spanner
+        + "    driver_id int not null,"
+        + "    issued_by int not null,"
+        + "    received_by int,"
+        + "    stamp timestamp,"
+        + "    constraint xessential_pk primary key (xessential_id),"
+        + "    constraint xessential_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),"
+        + "    constraint xessential_xemployee_fk1 foreign key (issued_by) references xemployee (xemployee_id),"
+        + "    constraint xessential_xemployee_fk2 foreign key (received_by) references xemployee (xemployee_id)"
+        + ")"
     };
 
 //    public synchronized static Connection getLogDBconnection() {
@@ -148,7 +166,7 @@ public class DbConnection {
 
     public static String getFtpURL() {
         return props.getProperty("ftpURL", "162.209.108.207");
-                //"ec2-23-22-145-131.compute-1.amazonaws.com");
+        //"ec2-23-22-145-131.compute-1.amazonaws.com");
     }
 
     public static String getFtpPath() {
@@ -164,7 +182,7 @@ public class DbConnection {
     }
 
     public static boolean needBackup() {
-        return props.getProperty("doBackup", "no").equals("yes");
+        return props.getProperty("doBackup", "yes").equals("yes");
     }
 
     private static void runPingService() throws RemoteException {
@@ -207,11 +225,11 @@ public class DbConnection {
             Locale.setDefault(Locale.ENGLISH);
             DriverManager.registerDriver(
                     (java.sql.Driver) Class.forName(
-                    props.getProperty("dbDriverName",
-                    "com.mysql.jdbc.Driver")).newInstance());
+                            props.getProperty("dbDriverName",
+                                    "com.mysql.jdbc.Driver")).newInstance());
             connection = DriverManager.getConnection(
                     props.getProperty("dbConnection",
-                    "jdbc:mysql://localhost/xlend?characterEncoding=UTF8"),
+                            "jdbc:mysql://localhost/xlend?characterEncoding=UTF8"),
                     //"jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
                     getLogin(), getPassword());
             connection.setAutoCommit(true);

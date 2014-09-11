@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import java.awt.Dimension;
 
 /**
  *
@@ -23,11 +24,11 @@ public class ToolBarButton extends JButton implements MouseListener {
     private boolean containsCursor = false;
     private static ImageIcon staticIcon = null;
     private static Image staticImage = null;
-    private Image originalImage = null;
-    private ImageIcon originalIcon = null;
-    private int originalWidth;
-    private Rectangle originalRect;
-    private boolean animate = false;
+    protected Image originalImage = null;
+    protected ImageIcon originalIcon = null;
+    protected int originalWidth;
+    protected Rectangle originalRect;
+    protected boolean animate = false;
 
     public ToolBarButton(Icon icon) {
         super(icon);
@@ -43,8 +44,21 @@ public class ToolBarButton extends JButton implements MouseListener {
         this.animate = animate;
         originalImage = staticImage;
         originalIcon = staticIcon;
-        originalWidth = staticIcon.getIconWidth();
+        originalWidth = originalIcon.getIconWidth();
         addMouseListener(this);
+    }
+
+//    public ToolBarButton(String imageFile, boolean animate, Dimension d) {
+//        this(imageFile, animate);
+//        scaleTo(d);
+//    }
+    
+    public void scaleTo(Dimension d) {
+        if (originalIcon != null) {
+            originalImage = originalIcon.getImage().getScaledInstance(d.width, d.height, Image.SCALE_SMOOTH);
+            originalIcon.setImage(originalImage);
+            originalWidth = originalIcon.getIconWidth();
+        }
     }
 
     public ToolBarButton(String imageFile) {
@@ -90,9 +104,9 @@ public class ToolBarButton extends JButton implements MouseListener {
                     int deltaX, deltaY;
                     deltaX = (int) (originalWidth * 1.3 - originalWidth) / 2;
                     deltaY = (int) (originalRect.height * 1.3 - originalRect.height) / 2;
-                    Rectangle newBounds =
-                            new Rectangle(originalRect.x - deltaX, originalRect.y - deltaY,
-                            (int) (originalRect.width * KOEFF), (int) (originalRect.height * KOEFF));
+                    Rectangle newBounds
+                            = new Rectangle(originalRect.x - deltaX, originalRect.y - deltaY,
+                                    (int) (originalRect.width * KOEFF), (int) (originalRect.height * KOEFF));
                     setBounds(newBounds);
                     Image scaledImage = originalImage.getScaledInstance(
                             (int) (originalWidth * KOEFF), -1, Image.SCALE_FAST);

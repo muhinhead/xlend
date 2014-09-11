@@ -107,7 +107,7 @@ public abstract class GeneralGridPanel extends DbTableGridPanel {
         countLabel.setText("Total: " + getTableView().getRowCount() + " rows");
     }
 
-    protected void refresh() {
+    public void refresh() {
         int id = getSelectedID();
         if (id > 0) {
             try {

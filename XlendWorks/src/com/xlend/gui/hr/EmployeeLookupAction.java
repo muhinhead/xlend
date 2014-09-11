@@ -1,7 +1,6 @@
 package com.xlend.gui.hr;
 
 import com.xlend.constants.Selects;
-import com.xlend.gui.DashBoard;
 import com.xlend.gui.GeneralFrame;
 import com.xlend.gui.LookupDialog;
 import com.xlend.gui.XlendWorks;

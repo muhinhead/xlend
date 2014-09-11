@@ -74,7 +74,8 @@ public class EmployeesGrid extends GeneralGridPanel {
                     if (EditEmployeeDialog.okPressed) {
                         Xemployee emp = (Xemployee) ed.getEditPanel().getDbObject();
                         GeneralFrame.updateGrid(exchanger,
-                                getTableView(), getTableDoc(), getSelect(), emp.getXemployeeId(), getPageSelector().getSelectedIndex());
+                                getTableView(), getTableDoc(), getSelect(), 
+                                emp.getXemployeeId(), getPageSelector().getSelectedIndex());
                         XlendWorks.refreshEmployeeCache();
                     }
                 } catch (RemoteException ex) {

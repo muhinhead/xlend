@@ -89,11 +89,11 @@ public class ExchangeFactory {
         "create table xessential "
         + "( "
         + "    xessential_id int not null auto_increment,"
-        + "    out_date date not null,"
+        + "    issue_date date not null,"
         + "    return_date date null,"
         + "    redress_date date null,"
         + "    redress_amt decimal(10,2),"
-        + "    essential varchar(64) not null," // spare wheel / jack / wheel spanner
+        + "    essential varchar(255) not null," // spare wheel / jack / wheel spanner
         + "    driver_id int not null,"
         + "    issued_by int not null,"
         + "    received_by int,"

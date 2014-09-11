@@ -1187,6 +1187,19 @@ create table xopmachassing
 
 create unique index xopmachassing_uniq_idx on xopmachassing (date_start, xsite_id, xemployee_id, xmachine_id);
 
+create table xessential
+(
+    xessential_id int not null auto_increment,
+    date_out date not null,
+    date_return date null,
+    essential varchar(64) not null,
+    driver_id int not null, 
+    stamp timestamp,
+    constraint xessential_pk primary key (xessential_id),
+    constraint xessential_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id)    
+);
+
+
 drop table junk;
 create table junk (j char(1), primary key (j));
 insert into junk values('j');
@@ -1581,6 +1594,23 @@ create table xmachineorderitm
     constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)
 );
 
+create table xessential
+(
+    xessential_id int not null auto_increment,
+    issue_date date not null,
+    return_date date null,
+    redress_date date null,
+    redress_amt decimal(10,2),
+    essential varchar(64) not null, #—- spare wheel / jack / wheel spanner
+    driver_id int not null, 
+    issued_by int not null,
+    received_by int,
+    stamp timestamp,
+    constraint xessential_pk primary key (xessential_id),
+    constraint xessential_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),
+    constraint xessential_xemployee_fk1 foreign key (issued_by) references xemployee (xemployee_id),
+    constraint xessential_xemployee_fk2 foreign key (received_by) references xemployee (xemployee_id)
+);
 
 #----------------- auxiliary tables -------------------
 

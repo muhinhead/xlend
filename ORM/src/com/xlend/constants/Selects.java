@@ -712,6 +712,29 @@ public class Selects {
                 + //                + "clock_num!='000' and " +
                 "ifnull(deceased,0)=0 and ifnull(dismissed,0)=0 and ifnull(absconded,0)=0 and ifnull(resigned,0)=0 and ");
     }
+    
+    public static String SELECT_ESSENTIALS = 
+            "select xessential_id \"Id\", "
+            + "(select concat(clock_num,' ',first_name,' ',sur_name) "
+            + "from xemployee where xemployee_id=driver_id) \"Driver\","
+            + "essential \"Essentials\", "
+            + "to_char(issue_date,'DD/MM/YYYY') \"Issue Date\", "
+            + "to_char(return_date,'DD/MM/YYYY') \"Return Date\","
+            + "to_char(redress_date,'DD/MM/YYYY') \"Redress Date\","
+            + "concat('R',redress_amt) \"Redress Amt,R\","
+            + "(select concat(first_name,' ',last_name) "
+            + "from profile where profile_id=issued_by) \"Issued By\","
+            + "(select concat(first_name,' ',last_name) "
+            + "from profile where profile_id=received_by) \"Received By\" from xessential";
+
+    public static String SELECT_ESSENTIALS_ON_DRIVER = 
+            "select xessential_id \"Id\", "
+            + "essential \"Essentials\", "
+            + "to_char(issue_date,'DD/MM/YYYY') \"Issue Date\", "
+            + "(select concat(first_name,' ',last_name) "
+            + "from profile where profile_id=issued_by) \"Issued By\" "
+            + "from xessential where driver_id=# and return_date is null and redress_date is null";
+    
 //    public static final String[] getStringArray(String select) {
 //        try {
 //            Vector[] body = DashBoard.getExchanger().getTableBody(select);

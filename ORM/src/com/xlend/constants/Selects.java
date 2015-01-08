@@ -117,7 +117,9 @@ public class Selects {
     public static final String SELECT_FROM_EMPLOYEE =
             "Select xemployee_id \"Id\",clock_num \"Clock Nr\","
             + "id_num \"ID Number\",first_name \"First Name\", "
-            + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\" "
+            + "sur_name \"Surname\", phone0_num \"Phone Nr\", val \"Wage Cat.\", "
+            + "concat(if(photo is null,' ','#'),if(photo2 is null,' ','#'),if(photo3 is null,' ','#')) \"Photo\""
+//            + "if(photo is null and photo2 is null and photo3 is null,' ','*') \"Photo\""
             + ",(select max(s.name) from xsite s,xopmachassing a "
             + " where a.xemployee_id=xemployee.xemployee_id and s.xsite_id=a.xsite_id and date_end is null"
             + " and xopmachassing_id=(select max(xopmachassing_id) from xopmachassing "

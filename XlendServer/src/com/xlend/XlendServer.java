@@ -43,7 +43,7 @@ import migration.MigrationDialog;
  */
 public class XlendServer {
 
-    private static final String version = "0.88";
+    private static final String version = "0.89";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;
@@ -450,7 +450,7 @@ public class XlendServer {
             popup.add(miLog);
             popup.add(miAbout);
 
-            if (props.getProperty("dbDriverName", "org.hsqldb.jdbcDriver").equals("org.hsqldb.jdbcDriver")) {
+            if (props.getProperty("dbDriverName", "").equals("org.hsqldb.jdbcDriver")) {
                 MenuItem miMigrate = new MenuItem("Migrate");
                 miMigrate.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {

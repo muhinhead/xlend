@@ -137,7 +137,6 @@ public class LogViewDialog extends PopupDialog {
 
     public static boolean sendLog(String email) {
         Properties mailProps = new Properties();
-//        String[] versions = (String[]) getObject();
         String STARTTLS = "true";
         String AUTH = "true";
         String DEBUG = "true";

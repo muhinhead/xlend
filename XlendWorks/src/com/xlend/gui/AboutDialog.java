@@ -47,7 +47,7 @@ public class AboutDialog extends PopupDialog {
         protocol.setBounds(270, 30, protocol.getPreferredSize().width, protocol.getPreferredSize().height);
         main.add(protocol);
 
-        JLabel devBy = new JLabel("Nick Mukhin (mukhin.nick@gmail.com) (c) 2013");
+        JLabel devBy = new JLabel("Nick Mukhin (mukhin.nick@gmail.com) (c) 2013-2015");
         devBy.setBounds(41, 110, devBy.getPreferredSize().width, devBy.getPreferredSize().height);
         main.add(devBy);
 

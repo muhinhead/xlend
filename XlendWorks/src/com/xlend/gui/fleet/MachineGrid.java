@@ -54,7 +54,7 @@ public class MachineGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction editAction() {
-        return new AbstractAction("Edit Entry") {
+        return new AbstractAction("Edit Machine") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();
@@ -77,7 +77,7 @@ public class MachineGrid extends GeneralGridPanel {
 
     @Override
     protected AbstractAction delAction() {
-        return new AbstractAction("Delete Entry") {
+        return new AbstractAction("Delete Machine") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int id = getSelectedID();

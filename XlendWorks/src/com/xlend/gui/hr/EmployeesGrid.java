@@ -25,6 +25,7 @@ public class EmployeesGrid extends GeneralGridPanel {
 
     static {
         maxWidths.put(0, 40);
+        maxWidths.put(7, 60);
     }
     private JCheckBox showDisappearedCB;
 
@@ -52,8 +53,8 @@ public class EmployeesGrid extends GeneralGridPanel {
                 td.setSelectStatement(newSelect);
                 try {
                     td.setBody(exchanger.getTableBody(newSelect, 0, PAGESIZE));
-                    updatePageCounter(newSelect);
                     GeneralFrame.updateGrid(exchanger, getTableView(), getTableDoc(), getSelect(), id, getPageSelector().getSelectedIndex());
+                    updatePageCounter(newSelect);
                 } catch (RemoteException ex) {
                     GeneralFrame.errMessageBox("Error:", ex.getMessage());
                     XlendWorks.log(ex);

@@ -22,6 +22,7 @@ import com.xlend.util.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,8 +41,12 @@ import javax.swing.event.ChangeListener;
  * @author nick
  */
 class EditEmployeePanel extends EditPanelWithPhoto {
-    
+
     static boolean okReasonPressed;
+    private SelectedNumberSpinner overSizeSP;
+    private SelectedNumberSpinner shoesSizeSP;
+    private SelectedDateSpinner medExpSP;
+
     private class EditMemoDialog extends PopupDialog {
 
         private JButton okBtn;
@@ -63,9 +68,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             centerPanel.add(sp = new JScrollPane((JTextArea) getObject(),
                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
-            sp.setPreferredSize(new Dimension(300,200));
+            sp.setPreferredSize(new Dimension(300, 200));
             JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            cancelBtn = new JButton(new AbstractAction("Cancel"){
+            cancelBtn = new JButton(new AbstractAction("Cancel") {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     okReasonPressed = false;
@@ -336,7 +341,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         resignedDateSP.setVisible(false);
         for (JSpinner sp : new JSpinner[]{contractStartSP, contractEndSP,
             emplStartSP, deceasedDateSP, dismissedDateSP, abscondedDateSP,
-            resignedDateSP}) {
+            resignedDateSP, medExpSP}) {
             sp.setEditor(new JSpinner.DateEditor(sp, "dd/MM/yyyy"));
             Util.addFocusSelectAllAction(sp);
         }
@@ -516,6 +521,16 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             selectComboItem(positionCB, emp.getXpositionId());
             selectComboItem(contractLenCB, emp.getContractLen());
             selectComboItem(wageCategoryCB, emp.getWageCategory());
+            if (emp.getOverallSize() != null) {
+                overSizeSP.setValue(emp.getOverallSize());
+            }
+            if (emp.getShoeSize() != null) {
+                shoesSizeSP.setValue(emp.getShoeSize());
+            }
+            if (emp.getMedicalExpires() != null) {
+                dt = new java.util.Date(emp.getMedicalExpires().getTime());
+                medExpSP.setValue(dt);
+            }
             if (emp.getContractStart() != null) {
                 dt = new java.util.Date(emp.getContractStart().getTime());
                 contractStartSP.setValue(dt);
@@ -649,7 +664,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 } else {
                     emp.setDeceasedDate(null);
                 }
-                if(okReasonPressed) {
+                if (okReasonPressed) {
                     emp.setWhyDismissed(whyTextArea.getText());
                 }
                 emp.setDismissed(dismissedCB.isSelected() ? 1 : 0);
@@ -688,6 +703,10 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 emp.setPhoto3(imageData3);
                 emp.setManagement(managementCb.isSelected() ? 1 : 0);
                 emp.setNotes(notesTextArea.getText());
+                dt = (Date) medExpSP.getValue();
+                emp.setMedicalExpires(new java.sql.Date(dt.getTime()));
+                emp.setOverallSize((Integer) overSizeSP.getValue());
+                emp.setShoeSize((Integer) shoesSizeSP.getValue());
                 setDbObject(XlendWorks.getExchanger().saveDbObject(emp));
                 return true;
             } catch (Exception ex) {
@@ -722,11 +741,30 @@ class EditEmployeePanel extends EditPanelWithPhoto {
 
     @Override
     protected JComponent getRightUpperPanel() {
+        JPanel rightUpperPanel = new JPanel(new BorderLayout());
         JTabbedPane picsTabs = new MyJideTabbedPane();
         picsTabs.add(super.getRightUpperPanel(), "Photo 1");
         picsTabs.add(getRightUpperPanel2(), "Photo 2");
         picsTabs.add(getRightUpperPanel3(), "Photo 3");
-        return picsTabs;
+        //return picsTabs;
+        rightUpperPanel.add(picsTabs, BorderLayout.CENTER);
+        JPanel downPanel = new JPanel(new BorderLayout());
+        JPanel leftLabelPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        leftLabelPanel.add(new JLabel("Overall Size:", SwingConstants.RIGHT));
+        leftLabelPanel.add(new JLabel("Shoe Size:", SwingConstants.RIGHT));
+        downPanel.add(leftLabelPanel, BorderLayout.WEST);
+        JPanel centerFldPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        centerFldPanel.add(overSizeSP = new SelectedNumberSpinner(10, 10, 200, 1));
+        centerFldPanel.add(new JPanel());
+        centerFldPanel.add(shoesSizeSP = new SelectedNumberSpinner(1, 1, 12, 1));
+        centerFldPanel.add(new JPanel());
+        downPanel.add(centerFldPanel, BorderLayout.CENTER);
+        JPanel rightPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+        rightPanel.add(new JLabel("Medical Expires On:"));
+        rightPanel.add(medExpSP = new SelectedDateSpinner());
+        downPanel.add(rightPanel, BorderLayout.EAST);
+        rightUpperPanel.add(downPanel, BorderLayout.SOUTH);
+        return rightUpperPanel;
     }
 
     private JPopupMenu getPhotoPopupMenu2() {

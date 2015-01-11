@@ -60,7 +60,7 @@ public class XlendWorksFX extends Application {
     private Pane loginPane;
     private Pane dashboardPane;
     private StackPane root;
-    public static final String version = "0.87";
+    public static final String version = "0.88";
     private static String directoryResult;
     private static String serverAddressResult;
     private ComboBox<String> usersCB;
@@ -78,7 +78,7 @@ public class XlendWorksFX extends Application {
             dashboardPane.setVisible(false);
 
             Scene scene = new Scene(root, 800, 620);
-
+            
             primaryStage.setTitle("Xlend Works");
             primaryStage.setScene(scene);
             scene.getStylesheets().add(XlendWorksFX.class.getResource("Xlend.css").toExternalForm());
@@ -239,9 +239,6 @@ public class XlendWorksFX extends Application {
             @Override
             public void run() {
                 try {
-                    //TODO: open admin console
-                    //                Dialogs.DialogResponse result = new UserListDialog("Admin's console", "Adjust settings").show();
-                    //                System.out.println("!!result=" + result.toString());
                     AdmnUserDialog adud = new AdmnUserDialog(XlendWorksFX.mainStage,null);
                     adud.showAndWait();
                 } catch (IOException ex) {

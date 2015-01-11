@@ -7,7 +7,7 @@ CREAte table dbversion
     constraint dbversion_pk primary key (dbversion_id)
 );
 
-insert into dbversion values(1,50,'0.50');
+insert into dbversion values(1,55,'0.55');
 
 create table picture
 (
@@ -275,6 +275,9 @@ create table xemployee
     management      bit default 0,
     clock_numonly   smallint,
     notes           text,
+    overall_size  tinyint,
+    shoe_size     tinyint,
+    medical_expires date,
     stamp timestamp,
     constraint xemployee_pk primary key (xemployee_id),
     constraint xemployee_xposition_fk foreign key (xposition_id) references xposition (xposition_id)

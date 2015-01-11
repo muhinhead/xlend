@@ -20,6 +20,7 @@ import com.xlend.orm.dbobject.ComboItem;
 import com.xlend.orm.dbobject.DbObject;
 import com.xlend.util.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -33,6 +34,7 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -46,6 +48,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private SelectedNumberSpinner overSizeSP;
     private SelectedNumberSpinner shoesSizeSP;
     private SelectedDateSpinner medExpSP;
+    private JLabel medExpStatusLBL;
 
     private class EditMemoDialog extends PopupDialog {
 
@@ -755,18 +758,48 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         downPanel.add(leftLabelPanel, BorderLayout.WEST);
         JPanel centerFldPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         centerFldPanel.add(overSizeSP = new SelectedNumberSpinner(10, 10, 200, 1));
-        centerFldPanel.add(new JPanel());
+        centerFldPanel.add(new JLabel("Medical Expires On:"));
         centerFldPanel.add(shoesSizeSP = new SelectedNumberSpinner(1, 1, 12, 1));
-        centerFldPanel.add(new JPanel());
+        centerFldPanel.add(getBorderPanel(new JComponent[]{medExpSP = new SelectedDateSpinner()}));
         downPanel.add(centerFldPanel, BorderLayout.CENTER);
         JPanel rightPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-        rightPanel.add(new JLabel("Medical Expires On:"));
-        rightPanel.add(medExpSP = new SelectedDateSpinner());
+        rightPanel.add(new JLabel("Med.Exp.Status:"));
+        rightPanel.add(medExpStatusLBL = new JLabel(""));
+        medExpStatusLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         downPanel.add(rightPanel, BorderLayout.EAST);
         rightUpperPanel.add(downPanel, BorderLayout.SOUTH);
+        
+        medExpSP.addChangeListener(expDateSPchangeListener());
+        
         return rightUpperPanel;
     }
 
+    protected ChangeListener expDateSPchangeListener() {
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                repaintLicFields();
+            }
+        };
+    }
+    
+    protected void repaintLicFields() {
+        Date expDt = (Date) medExpSP.getValue();
+        Date today = Calendar.getInstance().getTime();
+        long diff = (expDt.getTime() - today.getTime()) / (1000 * 3600 * 24);
+        medExpStatusLBL.setForeground(Color.black);
+        medExpStatusLBL.setBackground(Color.white);
+        if (expDt.before(today)) {
+            medExpStatusLBL.setForeground(Color.red);
+            medExpStatusLBL.setText("Expired");
+        } else if (diff <= 60) {
+            medExpStatusLBL.setForeground(Color.blue);
+            medExpStatusLBL.setText("2 Month Warning");
+        } else {
+            medExpStatusLBL.setText("Current");
+        }
+    }
+    
     private JPopupMenu getPhotoPopupMenu2() {
         if (null == picturePopMenu2) {
             picturePopMenu2 = new JPopupMenu();

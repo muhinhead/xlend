@@ -82,9 +82,9 @@ public class EditMachinePanel extends AbstractMechDevicePanel {
         for (ComboItem itm : XlendWorks.loadRootMachTypes(getFleetNumberChar())) {
             machineTypeCbModel.addElement(itm);
         }
-        licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
-            "Current", "2 Month Warning", "Dealer Stock", "Expired"
-        });
+//        licenseStatusCbModel = new DefaultComboBoxModel(new String[]{
+//            "Current", "2 Month Warning", "Dealer Stock", "Expired"
+//        });
         machineType2CbModel = new DefaultComboBoxModel();
         String[] titles = new String[]{
             "ID:",

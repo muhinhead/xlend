@@ -14,7 +14,12 @@ import com.xlend.rmi.ExchangeFactory;
 import com.xlend.util.FileFilterOnExtension;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +65,9 @@ public class XlendWorks {
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
     private static String homeDir;
+    private static DashBoard dashBoard;
+    private static boolean isTraySupported = SystemTray.isSupported();
+    private static TrayIcon ti;
 
     /**
      * @return the exchanger
@@ -262,6 +270,50 @@ public class XlendWorks {
         return homeDir;
     }
 
+    private static void initTray() {
+        final SystemTray tray = SystemTray.getSystemTray();
+        try {
+            Image icon = loadImage("Xcost.png",dashBoard);
+            final PopupMenu popup = new PopupMenu();
+            MenuItem miShow = new MenuItem("Show dashboard");
+            miShow.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dashBoard.setState(Frame.NORMAL);
+                    dashBoard.toFront();
+                }
+            });
+            popup.add(miShow);
+            MenuItem miHide = new MenuItem("Hide dashboard");
+            miHide.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    dashBoard.setState(Frame.ICONIFIED);
+                }
+            });
+            popup.add(miHide);
+            popup.addSeparator();
+            MenuItem miAbout = new MenuItem("About...");
+            miAbout.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    new AboutDialog();
+                }
+            });
+            popup.add(miAbout);
+            popup.addSeparator();
+            MenuItem miExit = new MenuItem("Exit");
+            miExit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+            popup.add(miExit);
+            ti = new TrayIcon(icon, "Xlend Client", popup);
+            tray.add(ti);
+        } catch (Exception ex) {
+            logAndShowMessage(ex);
+        }
+    }
+
     public static class XDate extends java.sql.Date {
 
         public XDate(long t) {
@@ -287,12 +339,6 @@ public class XlendWorks {
     public static void main(String[] args) {
         try {
             String current = new java.io.File(".").getCanonicalPath();
-//            String osName = System.getProperty("os.name");
-//            String osVersion = System.getProperty("os.version");
-//    if("Windows 7".equals(osName))
-//            System.out.println("OS:["+osName+"]");
-//            System.out.println("Vr:["+osVersion+"]");
-
             System.out.println("Current dir:" + current);
             homeDir = System.getProperty("user.home") + File.separator;
             System.out.println("Current dir using System:" + getHomeDir());
@@ -316,7 +362,10 @@ public class XlendWorks {
                     setExchanger(exc);
                 }
                 if (getExchanger() != null && matchVersions() && login()) {
-                    new DashBoard(getExchanger());
+                    dashBoard = new DashBoard(getExchanger());
+                    if(isTraySupported) {
+                        initTray();
+                    }
                     break;
                 } else {
                     System.exit(1);

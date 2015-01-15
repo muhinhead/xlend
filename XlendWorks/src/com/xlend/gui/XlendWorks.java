@@ -60,7 +60,7 @@ import javax.swing.plaf.FontUIResource;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2015";
-    public static final String version = "0.89";
+    public static final String version = "0.90";
     public static String protocol = "unknown";
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
@@ -327,8 +327,8 @@ public class XlendWorks {
     }
 
     static void setDashBoard(DashBoard dashBoard) {
-        miShow.setEnabled(dashBoard!=null);
-        miHide.setEnabled(dashBoard!=null);
+        miShow.setEnabled(dashBoard != null);
+        miHide.setEnabled(dashBoard != null);
         XlendWorks.dashBoard = dashBoard;
     }
 
@@ -370,17 +370,19 @@ public class XlendWorks {
         }
         while (true) {
             try {
-                IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
-                if (exc == null) {
-                    exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://"
-                            + defaultServerIP
-                            + "/xlend"),
-                            DashBoard.getProperties());
-                }
-                if (exc == null) {
-                    XlendWorks.configureConnection();
-                } else {
-                    setExchanger(exc);
+                if (getExchanger() == null) {
+                    IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
+                    if (exc == null) {
+                        exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://"
+                                + defaultServerIP
+                                + "/xlend"),
+                                DashBoard.getProperties());
+                    }
+                    if (exc == null) {
+                        XlendWorks.configureConnection();
+                    } else {
+                        setExchanger(exc);
+                    }
                 }
                 if (dashBoard == null) {
                     if (getExchanger() != null && matchVersions() && login()) {
@@ -484,8 +486,8 @@ public class XlendWorks {
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
         JTextField dbConnectionField = new JTextField(DashBoard.getProperties()
                 .getProperty("JDBCconnection", "jdbc:mysql://"
-                        + defaultServerIP
-                        + "/xlend"));
+                + defaultServerIP
+                + "/xlend"));
         JTextField dbDriverField = new JTextField(DashBoard.getProperties()
                 .getProperty("dbDriverName", "com.mysql.jdbc.Driver"));
         JTextField dbUserField = new JTextField(DashBoard.getProperties()
@@ -1172,12 +1174,11 @@ public class XlendWorks {
 
     public static ComboItem[] loadAllLowbeds() {
         return loadOnSelect(
-                "select xmachine_id,concat('Lowbed:',classify,tmvnr) from xmachine where is_lowbed=1"
-        //                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
-        //                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
-        //                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
-        //                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
-        );
+                "select xmachine_id,concat('Lowbed:',classify,tmvnr) from xmachine where is_lowbed=1" //                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
+                //                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
+                //                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+                //                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
+                );
     }
 
     public static ComboItem[] loadConsumesForMachine(Integer xmachineID) {

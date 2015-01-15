@@ -106,7 +106,19 @@ public class ExchangeFactory {
         //54->55
         "alter table xemployee add overall_size tinyint",
         "alter table xemployee add shoe_size tinyint",
-        "alter table xemployee add medical_expires date"
+        "alter table xemployee add medical_expires date",
+        "create table xaccpayment "
+        + "("
+        + "    xaccpayment_id int not null auto_increment,"
+        + "    xemployee_id   int not null,"
+        + "    amount         decimal(8,2) not null,"
+        + "    xsite_id       int not null,"
+        + "    date1          date not null,"
+        + "    date2          date not null,"
+        + "    constraint xaccpayment_pk primary key (xaccpayment_id),"
+        + "    constraint xaccpayment_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
+        + "    constraint xaccpayment_xsite_fk foreign key (xsite_id) references xsite (xsite_id)"
+        + ")"        
     };
 
     public static IMessageSender getExchanger(String connectString, Properties props) {

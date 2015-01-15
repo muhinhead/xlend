@@ -1,5 +1,6 @@
 package com.xlend.gui;
 
+import static com.xlend.gui.GeneralFrame.errMessageBox;
 import com.xlend.gui.site.IssueToDieselCartGrid;
 import com.xlend.gui.site.*;
 import com.xlend.gui.work.SitesGrid;
@@ -30,6 +31,7 @@ public class SitesFrame extends GeneralFrame {
     private GeneralGridPanel operatorClockSheetPanel;
     private GeneralGridPanel ppeBuysPanel;
     private GeneralGridPanel ppeIssuesPanel;
+    private GeneralGridPanel accPaymentPanel;
 //    private GeneralGridPanel issueToDieselCartPanel;
 //    private GeneralGridPanel dieselToPlantPanel;
     private static String[] sheetList = new String[]{
@@ -44,6 +46,7 @@ public class SitesFrame extends GeneralFrame {
         "Incidents",
         "Operator Clock Sheet",
         "PPE and Safety",
+        "Accomodation Payments"
 //        "Issue to Diesel Cart",
 //        "Diesel to Plant"
     };
@@ -98,6 +101,9 @@ public class SitesFrame extends GeneralFrame {
         }
         if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
             workTab.addTab(getPPEandSafetyPanel(), sheets()[n]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[++n])) {
+            workTab.addTab(getAccPaymentPanel(), sheets()[n]);
         }
 //        if (XlendWorks.availableForCurrentUser(sheets()[8])) {
 //            workTab.addTab(getIssueToDieselCartPanel(), sheets()[8]);
@@ -269,5 +275,17 @@ public class SitesFrame extends GeneralFrame {
             sp.add(new JLabel(ex.getMessage(), SwingConstants.CENTER));
         }
         return sp;
+    }
+    
+    private JComponent getAccPaymentPanel() {
+        if(accPaymentPanel == null) {
+            try {
+                registerGrid(accPaymentPanel = new AccPaymentsGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return accPaymentPanel;
     }
 }

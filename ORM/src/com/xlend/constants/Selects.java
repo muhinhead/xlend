@@ -494,7 +494,7 @@ public class Selects {
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopclocksheet.xemployee_id) \"Operator\", "
             + "(Select name from xsite where xsite_id=xopclocksheet.xsite_id) \"Site\", "
             + "(Select concat(classify,tmvnr) from xmachine where xmachine_id=xopclocksheet.xmachine_id) \"Machine/Truck\" "
-            + "from xopclocksheet";
+            + "from xopclocksheet order by sheet_date desc";
     public static final String SELECT_DUPLICATEDOPCLOCKSHEET =
             "Select xopclocksheet_id \"Id\", to_char(sheet_date,'MM/YYYY') \"Month\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xopclocksheet.xemployee_id) \"Operator\", "
@@ -503,6 +503,13 @@ public class Selects {
             + "from xopclocksheet "
             + "where (sheet_date,xemployee_id) in (select sheet_date,xemployee_id from xopclocksheet group by xemployee_id,sheet_date having count(*)>1) "
             + "order by sheet_date,xemployee_id";
+    public static final String SELECT_ACCPAYMENTS =
+            "Select xaccpayment_id \"Id\", "
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xaccpayment.xemployee_id) \"Employee\", "
+            + "amount \"Amount,R\","
+            + "(Select name from xsite where xsite_id=xaccpayment.xsite_id) \"Site\", "
+            + "to_char(date1,'DD/MM/YYYY') \"Date1\", "
+            + "to_char(date2,'DD/MM/YYYY') \"Date2\" from xaccpayment order by date1 desc";
     public static final String SELECT_FROM_JOBCARDS =
             "Select xjobcard_id \"Id\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xjobcard.xemployee_id) \"Name\", "

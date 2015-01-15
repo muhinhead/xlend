@@ -68,6 +68,8 @@ public class XlendWorks {
     private static DashBoard dashBoard = null;
     private static boolean isTraySupported = SystemTray.isSupported();
     private static TrayIcon ti;
+    private static MenuItem miShow;
+    private static MenuItem miHide;
 
     /**
      * @return the exchanger
@@ -274,18 +276,22 @@ public class XlendWorks {
         try {
             Image icon = loadImage("Xcost.png", getDashBoard());
             final PopupMenu popup = new PopupMenu();
-            MenuItem miShow = new MenuItem("Show dashboard");
+            miShow = new MenuItem("Show dashboard");
             miShow.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    getDashBoard().setState(Frame.NORMAL);
-                    getDashBoard().toFront();
+                    if (getDashBoard() != null) {
+                        getDashBoard().setState(Frame.NORMAL);
+                        getDashBoard().toFront();
+                    }
                 }
             });
             popup.add(miShow);
-            MenuItem miHide = new MenuItem("Hide dashboard");
+            miHide = new MenuItem("Hide dashboard");
             miHide.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    getDashBoard().setState(Frame.ICONIFIED);
+                    if (getDashBoard() != null) {
+                        getDashBoard().setState(Frame.ICONIFIED);
+                    }
                 }
             });
             popup.add(miHide);
@@ -321,6 +327,8 @@ public class XlendWorks {
     }
 
     static void setDashBoard(DashBoard dashBoard) {
+        miShow.setEnabled(dashBoard!=null);
+        miHide.setEnabled(dashBoard!=null);
         XlendWorks.dashBoard = dashBoard;
     }
 
@@ -374,12 +382,9 @@ public class XlendWorks {
                 } else {
                     setExchanger(exc);
                 }
-                if (getDashBoard() == null) {
+                if (dashBoard == null) {
                     if (getExchanger() != null && matchVersions() && login()) {
-//                    if(isTraySupported) {
-//                        initTray();
-//                    }   
-                        dashBoard = new DashBoard(getExchanger(), !isTraySupported);
+                        setDashBoard(new DashBoard(getExchanger(), !isTraySupported));
                     } else {
                         System.exit(1);
                     }

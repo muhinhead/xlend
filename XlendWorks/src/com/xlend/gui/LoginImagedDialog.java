@@ -31,6 +31,7 @@ import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -139,6 +140,7 @@ public class LoginImagedDialog extends PopupDialog {
         }
         getRootPane().setDefaultButton(okButton);
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
     private void buildMenu() {

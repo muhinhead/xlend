@@ -64,8 +64,8 @@ public class DashBoard extends AbstractDashBoard {
 //    private int dashWidth;
 //    private int dashHeight;
 
-    public DashBoard(IMessageSender exch) {
-        super("Xcost", true);
+    public DashBoard(IMessageSender exch, boolean decorated) {
+        super("Xcost", decorated);
         ourInstance = this;
         setExchanger(exch);
         updateSheetList(exch);
@@ -217,6 +217,7 @@ public class DashBoard extends AbstractDashBoard {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DashBoard.ourInstance.exit();
+                XlendWorks.setDashBoard((DashBoard)null);
             }
         });
 

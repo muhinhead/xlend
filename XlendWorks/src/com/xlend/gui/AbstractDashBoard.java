@@ -9,6 +9,12 @@ import com.xlend.util.TexturedPanel;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -32,6 +38,7 @@ public abstract class AbstractDashBoard extends JFrame {
     protected JPanel controlsPanel;
     protected int dashWidth;
     protected int dashHeight;
+    protected boolean decorated;
 
     protected abstract String getBackGroundImage();
 
@@ -64,6 +71,7 @@ public abstract class AbstractDashBoard extends JFrame {
 
     public AbstractDashBoard(String title, boolean decorated) {
         super(title);
+        this.decorated = decorated;
         setUndecorated(!decorated);
 //        setResizable(false);
         lowLevelInit();
@@ -72,7 +80,6 @@ public abstract class AbstractDashBoard extends JFrame {
     }
 
     protected void initBackground() {
-//        setMsgSender(exch);
         XlendWorks.setWindowIcon(this, "Xcost.png");
 //        addWindowListener(new DashBoard.WinListener(this));
         controlsPanel = new JPanel(new BorderLayout());
@@ -133,6 +140,31 @@ public abstract class AbstractDashBoard extends JFrame {
 
     protected void exit() {
         dispose();
-        System.exit(1);
+//        try {
+//            restartApplication();
+//            //System.exit(1);
+//        } catch (Exception ex) {
+//            Logger.getLogger(AbstractDashBoard.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
+
+//    public void restartApplication() throws IOException, URISyntaxException {
+//        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+//        final File currentJar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+//
+//        /* is it a jar file? */
+//        if (!currentJar.getName().endsWith(".jar")) {
+//            System.exit(0);
+//        }
+//
+//        /* Build command: java -jar application.jar */
+//        final ArrayList<String> command = new ArrayList<String>();
+//        command.add(javaBin);
+//        command.add("-jar");
+//        command.add(currentJar.getPath());
+//
+//        final ProcessBuilder builder = new ProcessBuilder(command);
+//        builder.start();
+//        System.exit(0);
+//    }
 }

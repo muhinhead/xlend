@@ -65,7 +65,7 @@ public class XlendWorks {
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
     private static String homeDir;
-    private static DashBoard dashBoard;
+    private static DashBoard dashBoard = null;
     private static boolean isTraySupported = SystemTray.isSupported();
     private static TrayIcon ti;
 
@@ -224,7 +224,6 @@ public class XlendWorks {
 //        FontUIResource font = new FontUIResource("Verdana", Font.PLAIN, 16);
 //        UIManager.put("Table.font", font);
 //        UIManager.put("Table.foreground", Color.AQUAMARINE);
-
         SwingUtilities.updateComponentTreeUI(root);
         DashBoard.getProperties().setProperty("LookAndFeel", lf);
         DashBoard.saveProps();
@@ -273,20 +272,20 @@ public class XlendWorks {
     private static void initTray() {
         final SystemTray tray = SystemTray.getSystemTray();
         try {
-            Image icon = loadImage("Xcost.png",dashBoard);
+            Image icon = loadImage("Xcost.png", getDashBoard());
             final PopupMenu popup = new PopupMenu();
             MenuItem miShow = new MenuItem("Show dashboard");
             miShow.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    dashBoard.setState(Frame.NORMAL);
-                    dashBoard.toFront();
+                    getDashBoard().setState(Frame.NORMAL);
+                    getDashBoard().toFront();
                 }
             });
             popup.add(miShow);
             MenuItem miHide = new MenuItem("Hide dashboard");
             miHide.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    dashBoard.setState(Frame.ICONIFIED);
+                    getDashBoard().setState(Frame.ICONIFIED);
                 }
             });
             popup.add(miHide);
@@ -312,6 +311,17 @@ public class XlendWorks {
         } catch (Exception ex) {
             logAndShowMessage(ex);
         }
+    }
+
+    /**
+     * @return the dashBoard
+     */
+    static DashBoard getDashBoard() {
+        return dashBoard;
+    }
+
+    static void setDashBoard(DashBoard dashBoard) {
+        XlendWorks.dashBoard = dashBoard;
     }
 
     public static class XDate extends java.sql.Date {
@@ -347,6 +357,9 @@ public class XlendWorks {
         }
         LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
         String serverIP = DashBoard.readProperty("ServerAddress", defaultServerIP);
+        if (isTraySupported) {
+            initTray();
+        }
         while (true) {
             try {
                 IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
@@ -361,14 +374,15 @@ public class XlendWorks {
                 } else {
                     setExchanger(exc);
                 }
-                if (getExchanger() != null && matchVersions() && login()) {
-                    dashBoard = new DashBoard(getExchanger());
-                    if(isTraySupported) {
-                        initTray();
+                if (getDashBoard() == null) {
+                    if (getExchanger() != null && matchVersions() && login()) {
+//                    if(isTraySupported) {
+//                        initTray();
+//                    }   
+                        dashBoard = new DashBoard(getExchanger(), !isTraySupported);
+                    } else {
+                        System.exit(1);
                     }
-                    break;
-                } else {
-                    System.exit(1);
                 }
             } catch (Exception ex) {
                 logAndShowMessage(ex);
@@ -465,8 +479,8 @@ public class XlendWorks {
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
         JTextField dbConnectionField = new JTextField(DashBoard.getProperties()
                 .getProperty("JDBCconnection", "jdbc:mysql://"
-                + defaultServerIP
-                + "/xlend"));
+                        + defaultServerIP
+                        + "/xlend"));
         JTextField dbDriverField = new JTextField(DashBoard.getProperties()
                 .getProperty("dbDriverName", "com.mysql.jdbc.Driver"));
         JTextField dbUserField = new JTextField(DashBoard.getProperties()
@@ -1154,11 +1168,11 @@ public class XlendWorks {
     public static ComboItem[] loadAllLowbeds() {
         return loadOnSelect(
                 "select xmachine_id,concat('Lowbed:',classify,tmvnr) from xmachine where is_lowbed=1"
-//                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
-//                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
-//                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
-//                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
-                );
+        //                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
+        //                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
+        //                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+        //                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
+        );
     }
 
     public static ComboItem[] loadConsumesForMachine(Integer xmachineID) {

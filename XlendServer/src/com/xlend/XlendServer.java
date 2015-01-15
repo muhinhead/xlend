@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import migration.MigrationDialog;
+//import migration.MigrationDialog;
 
 /**
  *
@@ -450,16 +450,16 @@ public class XlendServer {
             popup.add(miLog);
             popup.add(miAbout);
 
-            if (props.getProperty("dbDriverName", "").equals("org.hsqldb.jdbcDriver")) {
-                MenuItem miMigrate = new MenuItem("Migrate");
-                miMigrate.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        new MigrationDialog();
-                    }
-                });
-                popup.addSeparator();
-                popup.add(miMigrate);
-            }
+//            if (props.getProperty("dbDriverName", "").equals("org.hsqldb.jdbcDriver")) {
+//                MenuItem miMigrate = new MenuItem("Migrate");
+//                miMigrate.addActionListener(new ActionListener() {
+//                    public void actionPerformed(ActionEvent e) {
+//                        new MigrationDialog();
+//                    }
+//                });
+//                popup.addSeparator();
+//                popup.add(miMigrate);
+//            }
 
             popup.addSeparator();
             popup.add(miExit);

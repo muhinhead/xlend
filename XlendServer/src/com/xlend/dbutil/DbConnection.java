@@ -70,7 +70,7 @@ public class DbConnection {
         //        "alter table xpettyitem modify amount decimal(10,2)",
         // 49->50
         //        "alter table xemployee add notes text",
-//        "alter table xsupplier add is_fuel_suppllier bit default 0",
+        //        "alter table xsupplier add is_fuel_suppllier bit default 0",
         //        // 50->51
         //        "create table xmachineorder"
         //        + "("
@@ -103,43 +103,55 @@ public class DbConnection {
         //        + "    constraint xmachineorderitm_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id)"
         //        + ")",
         //51->52
-//        "alter table xsite add (x_map int, y_map int)",
-//        "alter table xemployee add (why_dismissed text)",
-//        //52->53
-//        "alter table xmachine add is_lowbed bit default 0",
-//        "update xmachine set is_lowbed=1 where xmachine_id in (select xmachine_id from xlowbed)",
-//        "alter table xtrip drop foreign key xtrip_xlowbed_fk",
-//        "update xtrip set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtrip.xlowbed_id)",
-//        "alter table xtrip add constraint xtrip_xmachine_fk1 foreign key (xlowbed_id) references xmachine (xmachine_id)",
-//        "alter table xtripsheet drop foreign key xtripsheet_xlowbed_fk",
-//        "update xtripsheet set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtripsheet.xlowbed_id)",
-//        "alter table xtripsheet add constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xmachine (xmachine_id)",
-//        "alter table xtransscheduleitm drop foreign key xtransscheduleitm_xmachine_fk2",
-//        "update xtransscheduleitm set lowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtransscheduleitm.lowbed_id)",
-//        "alter table xtransscheduleitm add constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id)",
-//        "drop table xlowbed",
-//        //53->54
-//        "create table xessential "
-//        + "( "
-//        + "    xessential_id int not null auto_increment,"
-//        + "    issue_date date not null,"
-//        + "    return_date date null,"
-//        + "    redress_date date null,"
-//        + "    redress_amt decimal(10,2),"
-//        + "    essential varchar(255) not null," // spare wheel / jack / wheel spanner
-//        + "    driver_id int not null,"
-//        + "    issued_by int not null,"
-//        + "    received_by int,"
-//        + "    stamp timestamp,"
-//        + "    constraint xessential_pk primary key (xessential_id),"
-//        + "    constraint xessential_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),"
-//        + "    constraint xessential_xemployee_fk1 foreign key (issued_by) references xemployee (xemployee_id),"
-//        + "    constraint xessential_xemployee_fk2 foreign key (received_by) references xemployee (xemployee_id)"
-//        + ")",
+        //        "alter table xsite add (x_map int, y_map int)",
+        //        "alter table xemployee add (why_dismissed text)",
+        //        //52->53
+        //        "alter table xmachine add is_lowbed bit default 0",
+        //        "update xmachine set is_lowbed=1 where xmachine_id in (select xmachine_id from xlowbed)",
+        //        "alter table xtrip drop foreign key xtrip_xlowbed_fk",
+        //        "update xtrip set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtrip.xlowbed_id)",
+        //        "alter table xtrip add constraint xtrip_xmachine_fk1 foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        //        "alter table xtripsheet drop foreign key xtripsheet_xlowbed_fk",
+        //        "update xtripsheet set xlowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtripsheet.xlowbed_id)",
+        //        "alter table xtripsheet add constraint xtripsheet_xmachine_fk foreign key (xlowbed_id) references xmachine (xmachine_id)",
+        //        "alter table xtransscheduleitm drop foreign key xtransscheduleitm_xmachine_fk2",
+        //        "update xtransscheduleitm set lowbed_id=(select xmachine_id from xlowbed where xlowbed_id=xtransscheduleitm.lowbed_id)",
+        //        "alter table xtransscheduleitm add constraint xtransscheduleitm_xmachine_fk2 foreign key (lowbed_id) references xmachine (xmachine_id)",
+        //        "drop table xlowbed",
+        //        //53->54
+        //        "create table xessential "
+        //        + "( "
+        //        + "    xessential_id int not null auto_increment,"
+        //        + "    issue_date date not null,"
+        //        + "    return_date date null,"
+        //        + "    redress_date date null,"
+        //        + "    redress_amt decimal(10,2),"
+        //        + "    essential varchar(255) not null," // spare wheel / jack / wheel spanner
+        //        + "    driver_id int not null,"
+        //        + "    issued_by int not null,"
+        //        + "    received_by int,"
+        //        + "    stamp timestamp,"
+        //        + "    constraint xessential_pk primary key (xessential_id),"
+        //        + "    constraint xessential_xemployee_fk foreign key (driver_id) references xemployee (xemployee_id),"
+        //        + "    constraint xessential_xemployee_fk1 foreign key (issued_by) references xemployee (xemployee_id),"
+        //        + "    constraint xessential_xemployee_fk2 foreign key (received_by) references xemployee (xemployee_id)"
+        //        + ")",
         //54->55
         "alter table xemployee add overall_size tinyint",
         "alter table xemployee add shoe_size tinyint",
-        "alter table xemployee add medical_expires date"
+        "alter table xemployee add medical_expires date",
+        "create table xaccpayment "
+        + "("
+        + "    xaccpayment_id int not null auto_increment,"
+        + "    xemployee_id   int not null,"
+        + "    amount         decimal(8,2) not null,"
+        + "    xsite_id       int not null,"
+        + "    date1          date not null,"
+        + "    date2          date not null,"
+        + "    constraint xaccpayment_pk primary key (xaccpayment_id),"
+        + "    constraint xaccpayment_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
+        + "    constraint xaccpayment_xsite_fk foreign key (xsite_id) references xsite (xsite_id)"
+        + ")"
     };
 
 //    public synchronized static Connection getLogDBconnection() {
@@ -229,11 +241,11 @@ public class DbConnection {
             Locale.setDefault(Locale.ENGLISH);
             DriverManager.registerDriver(
                     (java.sql.Driver) Class.forName(
-                            props.getProperty("dbDriverName",
-                                    "com.mysql.jdbc.Driver")).newInstance());
+                    props.getProperty("dbDriverName",
+                    "com.mysql.jdbc.Driver")).newInstance());
             connection = DriverManager.getConnection(
                     props.getProperty("dbConnection",
-                            "jdbc:mysql://localhost/xlend?characterEncoding=UTF8"),
+                    "jdbc:mysql://localhost/xlend?characterEncoding=UTF8"),
                     //"jdbc:hsqldb:file://" + getCurDir() + "/DB/XlendServer"),
                     getLogin(), getPassword());
             connection.setAutoCommit(true);

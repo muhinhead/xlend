@@ -1615,6 +1615,19 @@ create table xessential
     constraint xessential_xemployee_fk2 foreign key (received_by) references xemployee (xemployee_id)
 );
 
+create table xaccpayment
+(
+    xaccpayment_id int not null auto_increment,
+    xemployee_id   int not null,
+    amount         decimal(8,2) not null,
+    xsite_id       int not null,
+    date1          date not null,
+    date2          date not null,
+    constraint xaccpayment_pk primary key (xaccpayment_id),
+    constraint xaccpayment_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
+    constraint xaccpayment_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
+);
+
 #----------------- auxiliary tables -------------------
 
 create or replace view v_userprofile as

@@ -365,31 +365,44 @@ public class XlendWorks {
         }
         LookAndFeelFactory.installDefaultLookAndFeelAndExtension();
         String serverIP = DashBoard.readProperty("ServerAddress", defaultServerIP);
+
         if (isTraySupported) {
             initTray();
         }
-        while (true) {
-            try {
-                if (getExchanger() == null) {
-                    IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
-                    if (exc == null) {
-                        exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://"
-                                + defaultServerIP
-                                + "/xlend"),
-                                DashBoard.getProperties());
-                    }
-                    if (exc == null) {
-                        XlendWorks.configureConnection();
-                    } else {
-                        setExchanger(exc);
-                    }
+        try {
+            if (getExchanger() == null) {
+                IMessageSender exc = ExchangeFactory.getExchanger("rmi://" + serverIP + "/XlendServer", DashBoard.getProperties());
+                if (exc == null) {
+                    exc = ExchangeFactory.getExchanger(DashBoard.readProperty("JDBCconnection", "jdbc:mysql://"
+                            + defaultServerIP
+                            + "/xlend"),
+                            DashBoard.getProperties());
                 }
+                if (exc == null) {
+                    XlendWorks.configureConnection();
+                } else {
+                    setExchanger(exc);
+                }
+            }
+        } catch (Exception ex) {
+            logAndShowMessage(ex);
+            if ((serverIP = serverSetup("Check server settings")) == null) {
+                System.exit(1);
+            } else {
+                DashBoard.saveProps();
+            }
+        }
+
+        while (getExchanger() != null) {
+            try {
                 if (dashBoard == null) {
-                    if (getExchanger() != null && matchVersions() && login()) {
+                    if (matchVersions() && login()) {
                         setDashBoard(new DashBoard(getExchanger(), !isTraySupported));
                     } else {
                         System.exit(1);
                     }
+                } else {
+                    Thread.sleep(2000);
                 }
             } catch (Exception ex) {
                 logAndShowMessage(ex);

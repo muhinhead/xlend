@@ -34,9 +34,12 @@ public class IncidentsGrid extends GeneralGridPanel {
 
     public IncidentsGrid(IMessageSender exchanger, int employee_id) throws RemoteException {
         super(exchanger, Selects.SELECT_FROM_INCIDENTS.replaceAll("where requestedby_id=#",
-                "where xincidents_id in (select xincidents_id from xemployeeincident where xemployee_id=" + employee_id + ")"), maxWidths, false);
+                "where xincidents_id in (select xincidents_id from xemployeeincident where xemployee_id=" + employee_id + ")")
+                .replaceAll("lost_income \"Lost income\"", "lost_income \"Lost income\", "
+                        + "(select sum(points) from xemployeepenalty where xemployee_id=" + employee_id + " and xincidents_id=xincidents.xincidents_id) \"Rate decreased,%\" "),
+                maxWidths, false);
         getAddAction().setEnabled(false);
-        getEditAction().setEnabled(getTableView().getRowCount()>0);
+        getEditAction().setEnabled(getTableView().getRowCount() > 0);
         getDelAction().setEnabled(false);
     }
 

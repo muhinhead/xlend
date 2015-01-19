@@ -15,6 +15,7 @@ import com.xlend.util.SelectedDateSpinner;
 import com.xlend.util.SelectedNumberSpinner;
 import com.xlend.util.Util;
 import java.sql.Date;
+import java.util.Calendar;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -128,6 +129,5 @@ class EditAccPaymentPanel extends RecordEditPanel {
 
     @Override
     public void freeResources() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -1,0 +1,22 @@
+/* 
+    Document   : fxdashboard
+    Created on : 29.09.2013, 8:52:13
+    Author     : Nick Mukhin
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+#AnchorPane {
+    -fx-background-image: url("BackgroundFX.png");
+    -fx-background-repeat: stretch;   
+    -fx-background-position: center center;
+}
+
+/*.hbox {
+    -fx-padding: 15;
+    -fx-spacing: 10;
+}*/

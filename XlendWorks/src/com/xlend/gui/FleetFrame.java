@@ -2,6 +2,7 @@ package com.xlend.gui;
 
 import com.xlend.constants.Selects;
 import com.xlend.gui.fleet.*;
+import com.xlend.gui.parts.MovePartsGrid;
 import com.xlend.remote.IMessageSender;
 //import com.xlend.gui.HTMLpanel;
 import java.awt.BorderLayout;
@@ -41,11 +42,12 @@ public class FleetFrame extends GeneralFrame {
     private GeneralGridPanel machineServicesPanel;
     private GeneralGridPanel batteriesPurchasePanel;
     private GeneralGridPanel batteriesIssuePanel;
+    private GeneralGridPanel moveableAssetsPanel;
     private JPanel dieselPricesHTMLpanel;
     private static String[] sheetList = new String[]{
         "Machine Files", "Truck Files", "Low-Beds", "Pool Vehicles",
         "Company Vehicles", "Machine Rental Rates", "Diesel Carts",
-        "Service", "Batteries", "Diesel Price"
+        "Service", "Batteries", "Diesel Price", "Movable Assets"
     };
 
     public FleetFrame(IMessageSender exch) {
@@ -102,6 +104,10 @@ public class FleetFrame extends GeneralFrame {
         if (XlendWorks.availableForCurrentUser(sheets()[9])) {
 //            XlendWorks.log("@@@@ Before call FleetFrame.getDieselPrices()...");
             fleetTab.addTab(getDieselPrices(), sheets()[9]);
+        }
+        if (XlendWorks.availableForCurrentUser(sheets()[10])) {
+//            XlendWorks.log("@@@@ Before call FleetFrame.getDieselPrices()...");
+            fleetTab.addTab(getMoveableAssetsPanel(), sheets()[10]);
         }
         return fleetTab;
     }
@@ -203,6 +209,18 @@ public class FleetFrame extends GeneralFrame {
             }
         }
         return dieselCartsPanel;
+    }
+
+    public JComponent getMoveableAssetsPanel() {
+        if(moveableAssetsPanel == null) {
+            try {
+                registerGrid(moveableAssetsPanel = new MoveableAssetsGrid(getExchanger()));
+            } catch (RemoteException ex) {
+                XlendWorks.log(ex);
+                errMessageBox("Error:", ex.getMessage());
+            }
+        }
+        return moveableAssetsPanel;
     }
 
     private JComponent getBatteries() {
@@ -310,4 +328,5 @@ public class FleetFrame extends GeneralFrame {
         }
         return sb.toString();
     }
+
 }

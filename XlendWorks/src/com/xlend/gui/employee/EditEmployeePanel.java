@@ -49,6 +49,8 @@ class EditEmployeePanel extends EditPanelWithPhoto {
     private SelectedNumberSpinner shoesSizeSP;
     private SelectedDateSpinner medExpSP;
     private JLabel medExpStatusLBL;
+    private JLabel ratingLabel;
+    private JButton penaltyBtn;
 
     private class EditMemoDialog extends PopupDialog {
 
@@ -229,8 +231,25 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             getGridPanel(new JComponent[]{
                 idField = new JTextField(),
                 new JLabel("Clock Nr:", SwingConstants.RIGHT),
-                clockNumField = new JTextField()
-            }, 5),
+                clockNumField = new JTextField(),
+                new JLabel("Performance rating:", SwingConstants.RIGHT),
+                getBorderPanel(new JComponent[]{
+                    new JPanel(),
+                    ratingLabel = new JLabel("100%", SwingConstants.CENTER),
+                    penaltyBtn = new JButton(new AbstractAction("Penalty") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            Xemployee xemp = (Xemployee) getDbObject();
+                            if (xemp != null) {
+                                new PenaltyListDialog(null, xemp.getXemployeeId());
+                                updateRating(xemp);
+                            } else {
+                                GeneralFrame.errMessageBox("Attention!", "Save employee record please first");
+                            }
+                        }
+                    })
+                })
+            }),
             getGridPanel(new JComponent[]{
                 firstNameField = new JTextField(),
                 new JLabel("Surname:", SwingConstants.RIGHT),
@@ -323,6 +342,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
                 resignedDateSP = new SelectedDateSpinner()
             })
         };
+        ratingLabel.setBorder(BorderFactory.createEtchedBorder());
         wageCategoryCB.addActionListener(wageCategoryCBaction = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -594,8 +614,14 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             }
             managementCb.setSelected(emp.getManagement() != null && emp.getManagement() == 1);
             notesTextArea.setText(emp.getNotes());
+            updateRating(emp);
             fillAssignmentInfo();
         }
+    }
+
+    private void updateRating(Xemployee emp) {
+        String srating = XlendWorks.getThisYearRating(emp.getXemployeeId());
+        ratingLabel.setText(srating + "%");
     }
 
     @Override
@@ -768,9 +794,9 @@ class EditEmployeePanel extends EditPanelWithPhoto {
         medExpStatusLBL.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         downPanel.add(rightPanel, BorderLayout.EAST);
         rightUpperPanel.add(downPanel, BorderLayout.SOUTH);
-        
+
         medExpSP.addChangeListener(expDateSPchangeListener());
-        
+
         return rightUpperPanel;
     }
 
@@ -782,7 +808,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             }
         };
     }
-    
+
     protected void repaintLicFields() {
         Date expDt = (Date) medExpSP.getValue();
         Date today = Calendar.getInstance().getTime();
@@ -799,7 +825,7 @@ class EditEmployeePanel extends EditPanelWithPhoto {
             medExpStatusLBL.setText("Current");
         }
     }
-    
+
     private JPopupMenu getPhotoPopupMenu2() {
         if (null == picturePopMenu2) {
             picturePopMenu2 = new JPopupMenu();

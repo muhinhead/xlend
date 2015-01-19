@@ -60,7 +60,7 @@ import javax.swing.plaf.FontUIResource;
 public class XlendWorks {
 
     public static final String NMSOFTWARE = "Nick Mukhin (c)2015";
-    public static final String version = "0.90";
+    public static final String version = "0.91";
     public static String protocol = "unknown";
     public static final String defaultServerIP = "192.168.1.3";
     private static IMessageSender exchanger;
@@ -332,6 +332,26 @@ public class XlendWorks {
         XlendWorks.dashBoard = dashBoard;
     }
 
+    public static int getYearFromDate(java.util.Date date) {
+        int result = -1;
+        if (date != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            result = cal.get(Calendar.YEAR);
+        }
+        return result;
+    }
+
+    public static String getThisYearRating(Integer xemployeeId) {
+        ComboItem[] rslt = loadOnSelect("select ifnull(100 - sum(points),100),'' from xemployeepenalty where xemployee_id=" + xemployeeId.toString() + " and year="
+                + getYearFromDate(Calendar.getInstance().getTime()));
+        if (rslt.length == 0 || rslt[0] == null) {
+            return "100";
+        } else {
+            return "" + rslt[0].getId();
+        }
+    }
+
     public static class XDate extends java.sql.Date {
 
         public XDate(long t) {
@@ -499,8 +519,8 @@ public class XlendWorks {
                 vals.length > 1 ? new Integer(vals[1]) : 1099, 0, 65536, 1));
         JTextField dbConnectionField = new JTextField(DashBoard.getProperties()
                 .getProperty("JDBCconnection", "jdbc:mysql://"
-                + defaultServerIP
-                + "/xlend"));
+                        + defaultServerIP
+                        + "/xlend"));
         JTextField dbDriverField = new JTextField(DashBoard.getProperties()
                 .getProperty("dbDriverName", "com.mysql.jdbc.Driver"));
         JTextField dbUserField = new JTextField(DashBoard.getProperties()
@@ -576,6 +596,13 @@ public class XlendWorks {
     public static void refreshEmployeeCache() {
         employeesCache.clear();
         loadEmployees();
+    }
+
+    public static ComboItem[] loadAllCurrentYearIncidents(Integer xemployeeID) {
+        return loadOnSelect("select i.xincidents_id,concat(incidentdate,'(',substr(description,1,60),'...',')') "
+                + "from xincidents i,xemployeeincident ei"
+                + " where ei.xincidents_id=i.xincidents_id"
+                + " and year(i.incidentdate)=year(now()) and ei.xemployee_id=" + xemployeeID.toString());
     }
 
     public static ArrayList<ComboItem> loadAllEmployees() {
@@ -746,6 +773,15 @@ public class XlendWorks {
 //        }
 //        return null;
         return loadOnSelect("select xclient_id,companyname from xclient order by companyname");
+    }
+
+    public static List loadDistinctAssets() {
+        ComboItem[] ciLst = loadOnSelect("select distinct 0,asset_name from xmoveableassets");
+        ArrayList assets = new ArrayList(ciLst.length);
+        for (ComboItem ci : ciLst) {
+            assets.add(ci.getValue());
+        }
+        return assets;
     }
 
     public static List loadAllLogins() {
@@ -1188,10 +1224,10 @@ public class XlendWorks {
     public static ComboItem[] loadAllLowbeds() {
         return loadOnSelect(
                 "select xmachine_id,concat('Lowbed:',classify,tmvnr) from xmachine where is_lowbed=1" //                "select l.xlowbed_id,concat('Machine:',m.classify,m.tmvnr,"
-                //                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
-                //                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
-                //                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
-                );
+        //                + "'; Driver:',d.clock_num,' ',d.first_name,'; Assistant:',a.clock_num,' ',a.first_name) "
+        //                + "from xlowbed l, xmachine m, xemployee d, xemployee a where l.xmachine_id=m.xmachine_id "
+        //                + "and l.driver_id=d.xemployee_id and l.assistant_id=a.xemployee_id"
+        );
     }
 
     public static ComboItem[] loadConsumesForMachine(Integer xmachineID) {

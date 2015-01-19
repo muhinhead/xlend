@@ -43,7 +43,7 @@ import javax.swing.JOptionPane;
  */
 public class XlendServer {
 
-    private static final String version = "0.90";
+    private static final String version = "0.91";
     public static final String PROPERTYFILENAME = "XlendServer.config";
     private static final String ICONNAME = "Xcost.png";
     private static Logger logger = null;

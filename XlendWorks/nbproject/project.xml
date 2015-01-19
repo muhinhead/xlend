@@ -21,7 +21,7 @@
             <reference>
                 <foreign-project>ORM</foreign-project>
                 <artifact-type>jar</artifact-type>
-                <script>nbbuild.xml</script>
+                <script>build.xml</script>
                 <target>jar</target>
                 <clean-target>clean</clean-target>
                 <id>jar</id>

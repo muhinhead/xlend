@@ -21,14 +21,19 @@ public class Java2sAutoComboBox extends JComboBox {
             return (Java2sAutoTextField) editor;
         }
 
-        AutoTextFieldEditor(java.util.List list) {
+        AutoTextFieldEditor(java.util.List list, boolean strict) {
             editor = new Java2sAutoTextField(list, Java2sAutoComboBox.this);
+            ((Java2sAutoTextField)editor).setStrict(strict);
         }
     }
 
     public Java2sAutoComboBox(java.util.List list) {
+        this(list, true);
+    }
+    
+    public Java2sAutoComboBox(java.util.List list, boolean strict) {
         isFired = false;
-        autoTextFieldEditor = new AutoTextFieldEditor(list);
+        autoTextFieldEditor = new AutoTextFieldEditor(list, strict);
         setEditable(true);
         setModel(new DefaultComboBoxModel(list.toArray()) {
 

@@ -1,4 +1,3 @@
-
 CREAte table dbversion
 (
     dbversion_id    int not null auto_increment,
@@ -1626,6 +1625,34 @@ create table xaccpayment
     constraint xaccpayment_pk primary key (xaccpayment_id),
     constraint xaccpayment_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
     constraint xaccpayment_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
+);
+
+create table xmoveableassets
+(
+    xmoveableassets_id int not null auto_increment,
+    asset_name varchar(64) not null,
+    booked_to  int not null,
+    xsite_id       int not null,
+    booked_out date not null,
+    deadline      date not null,
+    returned      date,
+    constraint xmoveableassets_pk primary key (xmoveableassets_id),
+    constraint xmoveableassets_xemployee_fk foreign key (booked_to) references xemployee (xemployee_id),
+    constraint xmoveableassets_xsite_fk foreign key (xsite_id) references xsite (xsite_id)
+);
+
+create table xemployeepenalty
+(
+    xemployeepenalty_id  int not null auto_increment,
+    points tinyint not null,
+    xemployee_id int not null,
+    year smallint not null,
+    xincidents_id int,
+    decreased_at date not null,
+    notes varchar(512),
+    constraint xemployeepenalty_pk primary key (xemployeepenalty_id),
+    constraint xemployeepenalty_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),
+    constraint xemployeepenalty_xincidents_fk foreign key (xincidents_id) references xincidents (xincidents_id) on delete cascade
 );
 
 #----------------- auxiliary tables -------------------

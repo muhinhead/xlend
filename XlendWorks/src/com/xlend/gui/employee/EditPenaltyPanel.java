@@ -43,8 +43,8 @@ class EditPenaltyPanel extends RecordEditPanel {
     private JTextField idField;
     private JTextArea notesField;
     private SelectedNumberSpinner decrPointsSP;
-    private JComboBox decreasedByCB;
-    private DefaultComboBoxModel decreasedByCbModel;
+//    private JComboBox decreasedByCB;
+//    private DefaultComboBoxModel decreasedByCbModel;
     private SelectedDateSpinner decreasedAtSP;
     private JComboBox incidentsCB;
     private DefaultComboBoxModel incidentsCbModel;
@@ -59,36 +59,35 @@ class EditPenaltyPanel extends RecordEditPanel {
         String[] titles = new String[]{
             "ID:", // "Clock Nr:", 
             "Decrease points:",//"For incident:"
-            "Decreased by:", //"Decreased at:"
+            "Decreased at:"
         };
-        decreasedByCbModel = new DefaultComboBoxModel(XlendWorks.loadAllEmployees().toArray());
+//        decreasedByCbModel = new DefaultComboBoxModel(XlendWorks.loadAllEmployees().toArray());
         incidentsCbModel = new DefaultComboBoxModel(XlendWorks.loadAllCurrentYearIncidents(EditPenaltyDialog.xemployeeID));
         JComponent[] edits = new JComponent[]{
             getGridPanel(idField = new JTextField(), 8),
             getBorderPanel(new JComponent[]{
                 decrPointsSP = new SelectedNumberSpinner(0, 0, 100, 1),
                 getBorderPanel(new JComponent[]{
-                    new JPanel(),
-                    forIncidentCP = new JCheckBox("For incident"),
-                    incidentsCB = new JComboBox(incidentsCbModel)
+                    forIncidentCP = new JCheckBox(" For incident"),
+                    incidentsCB = new JComboBox(incidentsCbModel),
+                    new JPanel()
                 })
             }),
             getBorderPanel(new JComponent[]{
-                decreasedByCB = new JComboBox(decreasedByCbModel),
-                new JLabel(" at:", SwingConstants.RIGHT),
-                decreasedAtSP = new SelectedDateSpinner()
+                decreasedAtSP = new SelectedDateSpinner(),
+                new JPanel(), new JPanel()
             })
         };
         idField.setEnabled(false);
         incidentsCB.setVisible(false);
-        decreasedByCB.setEnabled(XlendWorks.isCurrentAdmin());
-        selectComboItem(decreasedByCB, XlendWorks.getCurrentUser().getPK_ID());
+//        decreasedByCB.setEnabled(XlendWorks.isCurrentAdmin());
+//        selectComboItem(decreasedByCB, XlendWorks.getCurrentUser().getPK_ID());
         decreasedAtSP.setEditor(new JSpinner.DateEditor(decreasedAtSP, "dd/MM/yyyy"));
         Util.addFocusSelectAllAction(decreasedAtSP);
         
         organizePanels(titles, edits, null);
         JScrollPane sp;
-        add(sp = new JScrollPane(notesField = new JTextArea(6,40),
+        add(sp = new JScrollPane(notesField = new JTextArea(6,80),
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         sp.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Reason"));
@@ -121,11 +120,12 @@ class EditPenaltyPanel extends RecordEditPanel {
             decreasedAtSP.setValue(new java.util.Date(dt.getTime()));
             forIncidentCP.setSelected(xp.getXincidentsId()!=null);
             selectComboItem(incidentsCB, xp.getXincidentsId());
-            selectComboItem(decreasedByCB, xp.getDecreasedBy());
+            //selectComboItem(decreasedByCB, xp.getDecreasedBy());
             decrPointsSP.setValue(xp.getPoints());
             notesField.setText(xp.getNotes());
-        } else
-            selectComboItem(decreasedByCB, XlendWorks.getCurrentUser().getProfileId());
+        } 
+//        else
+//            selectComboItem(decreasedByCB, XlendWorks.getCurrentUser().getProfileId());
     }
 
     @Override
@@ -143,7 +143,7 @@ class EditPenaltyPanel extends RecordEditPanel {
         } else {
             xp.setXincidentsId(null);
         }
-        xp.setDecreasedBy(getSelectedCbItem(decreasedByCB));
+        //xp.setDecreasedBy(getSelectedCbItem(decreasedByCB));
         xp.setPoints((Integer) decrPointsSP.getValue());
         xp.setNotes(notesField.getText());
         xp.setYear(XlendWorks.getYearFromDate(dt));

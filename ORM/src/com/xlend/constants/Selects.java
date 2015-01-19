@@ -8,8 +8,7 @@ public class Selects {
 
     public static final String SELECT_PENALTIES = 
             "Select xemployeepenalty_id \"Id\", points \"Points decreased\","
-            + "concat(substr(notes,1,30),'...') \"Description\","
-            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xemployeepenalty.decreased_by) \"Decreased by\","
+            + "concat(substr(notes,1,40),'...') \"Description\","
             + "to_char(decreased_at,'DD-MM-YYYY') \"Date\" "
             + "from xemployeepenalty where xemployee_id=# and year(decreased_at)=year(now()) order by xemployeepenalty_id";
     public static final String SELECT_FROM_USERS =

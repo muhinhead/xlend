@@ -139,13 +139,11 @@ public class ExchangeFactory {
         + "    xemployee_id int not null,"
         + "    year smallint not null,"
         + "    xincidents_id int,"
-        + "    decreased_by int not null,"
         + "    decreased_at date not null,"
         + "    notes varchar(512),"
         + "    constraint xemployeepenalty_pk primary key (xemployeepenalty_id),"
         + "    constraint xemployeepenalty_xemployee_fk foreign key (xemployee_id) references xemployee (xemployee_id),"
-        + "    constraint xemployeepenalty_xincidents_fk foreign key (xincidents_id) references xincidents (xincidents_id) on delete cascade,"
-        + "    constraint xemployeepenalty_xemployee_fk2 foreign key (decreased_by) references xemployee (xemployee_id)"
+        + "    constraint xemployeepenalty_xincidents_fk foreign key (xincidents_id) references xincidents (xincidents_id) on delete cascade"
         + ")"
     };
 

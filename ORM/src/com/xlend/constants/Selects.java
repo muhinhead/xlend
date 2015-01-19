@@ -6,6 +6,12 @@ package com.xlend.constants;
  */
 public class Selects {
 
+    public static final String SELECT_PENALTIES = 
+            "Select xemployeepenalty_id \"Id\", points \"Points decreased\","
+            + "concat(substr(notes,1,30),'...') \"Description\","
+            + "(select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xemployeepenalty.decreased_by) \"Decreased by\","
+            + "to_char(decreased_at,'DD-MM-YYYY') \"Date\" "
+            + "from xemployeepenalty where xemployee_id=# and year(decreased_at)=year(now()) order by xemployeepenalty_id";
     public static final String SELECT_FROM_USERS =
             "Select profile_id \"Id\","
             + "first_name \"First Name\",last_name \"Last Name\","
@@ -510,6 +516,16 @@ public class Selects {
             + "(Select name from xsite where xsite_id=xaccpayment.xsite_id) \"Site\", "
             + "to_char(date1,'DD/MM/YYYY') \"Date1\", "
             + "to_char(date2,'DD/MM/YYYY') \"Date2\" from xaccpayment order by date1 desc";
+    public static final String SELECT_MOVEABLE_ASSETS = 
+            "Select xmoveableassets_id \"Id\","
+            + "asset_name \"Assets\","
+            + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xmoveableassets.booked_to) \"Booked out to\", "
+            + "(Select name from xsite where xsite_id=xmoveableassets.xsite_id) \"Site\", "
+            + "to_char(booked_out,'DD/MM/YYYY') \"Booked out\","
+            + "to_char(deadline,'DD/MM/YYYY') \"Maturity date\","
+            + "to_char(returned,'DD/MM/YYYY') \"Returned\","
+            + "if(returned is null and datediff(now(),deadline)>0,'Expired','') \"Expiration\" "
+            + " from xmoveableassets order by booked_out";
     public static final String SELECT_FROM_JOBCARDS =
             "Select xjobcard_id \"Id\", "
             + "(Select concat(clock_num,' ',first_name) from xemployee where xemployee_id=xjobcard.xemployee_id) \"Name\", "
